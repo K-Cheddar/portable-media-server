@@ -1,0 +1,88 @@
+import React from 'react';
+import deleteX from './assets/deleteX.png';
+import add from './assets/addItem.png';
+import DeleteConfirmation from './DeleteConfirmation'
+
+export default class AllItems extends React.Component{
+
+  constructor(){
+    super();
+    this.state={
+      text: "",
+      deleteOverlay: false,
+      name: ""
+    }
+
+    this.cancel = this.cancel.bind(this);
+    this.confirm = this.confirm.bind(this);
+    this.updateText = this.updateText.bind(this);
+  }
+
+  updateText(event){
+    this.setState({text: event.target.value})
+  }
+
+  openConfirmation(name){
+    this.setState({
+      deleteOverlay: true,
+      name: name
+    })
+  }
+
+  cancel(){
+    this.setState({deleteOverlay: false})
+  }
+
+  confirm(){
+    this.setState({deleteOverlay: false})
+    this.props.deleteItem(this.state.name)
+  }
+
+  render(){
+  let {allItems} = this.props;
+  let {text, deleteOverlay, name} = this.state;
+
+  let filteredList = [];
+  if(text.length > 0){
+    filteredList = allItems.filter(ele => ele.name.toLowerCase().includes(text.toLowerCase()))
+  }
+  else{
+    filteredList = allItems.slice(0);
+  }
+
+  let SL = filteredList.map((element, index) => {
+  return(
+    <div style={{display:'flex', padding:'1%'}} key={index}>
+      <div style={{width:'75%', fontSize:'1.15vw'}}>{element.name}</div>
+        <div style={{width:'25%'}}>
+          <img style={{width:'1.5vw', height:'1.5vw'}}
+             onClick={() => (this.props.addItemToList(element))}
+             alt="add" src={add}
+            />
+          <img style={{paddingLeft:'5%', width:'1.5vw', height:'1.5vw'}}
+             onClick={ () => (this.openConfirmation(element.name))}
+             alt="delete" src={deleteX}
+            />
+        </div>
+    </div>
+  )
+
+})
+    return (
+
+      <div>
+        <div>All Items</div>
+        <input type='text' value={this.state.text} onChange={this.updateText}
+          style={{width:'70%', padding:'1%'}}/>
+        <div style={{overflowY: 'scroll', height:'31vh'}}>{SL}</div>
+        {deleteOverlay &&
+          <div style={{position:'fixed', top:0, left:0, height:'100vh', width:'100vw',
+             zIndex: 2, backgroundColor:'rgba(62, 64, 66, 0.5)'}}>
+             <DeleteConfirmation confirm={this.confirm}
+               cancel={this.cancel} name={name}  />
+        </div>}
+      </div>
+    )
+  }
+
+}
