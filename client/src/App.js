@@ -191,6 +191,7 @@ class App extends Component {
 
   componentDidMount(){
 
+    console.log('hi');
     let database = 'demo'
 
     let sLoggedIn = sessionStorage.getItem('loggedIn');
