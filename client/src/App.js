@@ -191,7 +191,11 @@ class App extends Component {
 
   componentDidMount(){
 
-    console.log('hi');
+    fetch('/api/hello')
+    .then(response => response.json())
+    .then(resJson => {
+      console.log(resJson);
+    })
     let database = 'demo'
 
     let sLoggedIn = sessionStorage.getItem('loggedIn');
