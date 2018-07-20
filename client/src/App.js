@@ -191,7 +191,7 @@ class App extends Component {
   update(){
      let {item, needsUpdate, selectedItemList, allItems, itemList, db} = this.state;
      if(needsUpdate && db.get){
-        DBUpdater.update(db, item, selectedItemList, itemList, allItems);
+        DBUpdater.update(db, item, selectedItemList, itemList, allItems, this.updateState);
          this.setState({needsUpdate: false});
      }
   }

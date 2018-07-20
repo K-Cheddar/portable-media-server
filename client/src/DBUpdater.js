@@ -1,5 +1,5 @@
 let interval = null
-export function update(db, item, selectedItemList, itemList, allItems){
+export function update(db, item, selectedItemList, itemList, allItems, updateState){
   if(item.name){
     db.get(item._id).then(function (doc) {
       doc.name = item.name;
@@ -16,13 +16,28 @@ export function update(db, item, selectedItemList, itemList, allItems){
   }
 
  db.get(selectedItemList).then(function (doc) {
+   console.log('updating');
+   for(let i = 0; i <doc.items.length; ++i){
+     let val = itemList.find(e => e.name === doc.items[i].name)
+     if(!val)
+      itemList.push(doc.item[i])
+   }
    doc.items = itemList
+   if(doc.items.length !== itemList.length)
+    updateState({itemList: itemList})
    db.put(doc)
  }).catch(function(){
    console.log('selectedItemList not working');
  });
 
  db.get('allItems').then(function (doc) {
+   for(let i = 0; i <doc.items.length; ++i){
+     let val = allItems.find(e => e.name === doc.items[i].name)
+     if(!val)
+      allItems.push(doc.item[i])
+   }
+     if(doc.items.length !== allItems.length)
+        updateState({allItems: allItems})
      doc.items = allItems;
      db.put(doc);
  }).catch(function(){

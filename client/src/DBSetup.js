@@ -53,6 +53,7 @@ export default function DBSetup(db){
         }
       }
       db.put(upload);
+      window.location.reload(false)
     })
 
   db.get("images").catch(function(doc){

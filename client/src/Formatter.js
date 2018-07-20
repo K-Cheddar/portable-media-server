@@ -87,7 +87,7 @@ export function formatLyrics(name, songOrder, formattedLyrics, fontSize){
     let fLyrics = [];
     let obj = getNumLines(lyrics, fontSize);
     let maxLines = obj.maxLines;
-    if(maxLines > 7)
+    if(maxLines > 8)
       maxLines--;
 
     let lines = lyrics.split("\n");
