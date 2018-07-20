@@ -349,27 +349,25 @@ class App extends Component {
     let date = new Date();
     let time = date.getTime();
 
-    console.log("Seconds", time);
     let obj = {
       words: words,
       background: background,
       style: style,
       time: time
     }
+
     this.setState({currentInfo: obj})
     DBUpdater.updateCurrent(this.state.db, words, background, style, time-1);
     localStorage.setItem('presentation', JSON.stringify(obj));
   }
 
   setItemIndex(index){
-    let {itemList, itemIndex, freeze} = this.state;
+    let {itemList, freeze} = this.state;
 
     var mElement = document.getElementById("MItem"+index);
     if(mElement)
       mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'});
     this.setState({itemIndex: index})
-    if(itemIndex !== index)
-      this.setState({wordIndex: 0})
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
       DBUpdater.updateItem(this.state.db, itemID, this.updateState, freeze, this.updateCurrent)

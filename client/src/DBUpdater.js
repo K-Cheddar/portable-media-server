@@ -72,7 +72,6 @@ export function keepPresentationAlive(db){
 }
 
 export function updateCurrent(db, words, background, style, time){
-
   function updateValues(doc) {
     doc.info.words = words;
     doc.info.background = background;
@@ -87,16 +86,13 @@ export function updateCurrent(db, words, background, style, time){
 
 export function updateItem(db, itemID, updateState, freeze, updateCurrent){
   db.get(itemID).then(function (doc) {
-    updateState({
-      item: doc,
-      wordIndex: 0,
-    })
+    updateState({item: doc});
     let style = {
       color: doc.style.color,
       fontSize: doc.nameSize,
     }
     if(!freeze)
-      updateCurrent(db, doc.words[0].words, doc.background, style);
+      updateCurrent({words: doc.words[0].words, background: doc.background, style: style, index: 0});
   })
 }
 
