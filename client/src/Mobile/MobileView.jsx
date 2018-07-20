@@ -5,7 +5,6 @@ import MobileDisplay from './MobileDisplay';
 import MobileListChanger from './MobileListChanger';
 import on from '../assets/on.png';
 import off from '../assets/off.png';
-import lock from '../assets/lock.png';
 
 
 export default class MobileView extends Component{
@@ -34,11 +33,6 @@ export default class MobileView extends Component{
       toggleFreeze, freeze } = this.props;
 
     let buttonLoggedIn = {margin:'0.5%', width:'60%', minWidth:'18vw'}
-    let buttonLoggedOut = {margin:'0.5%', width:'60%', minWidth:'18vw', opacity: '0.5'}
-    let lockStyle = {
-      padding:'0.1vw', width:'5vw', height:'5vw', position:'absolute', zIndex:2,
-      maxHeight:'4vh', maxWidth:'4vh'
-    }
 
     return (
       <div style={{width:'100%', overflow:'hidden', height:'100vh', backgroundColor:'#d9e3f4',

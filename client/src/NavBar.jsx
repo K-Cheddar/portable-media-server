@@ -52,7 +52,7 @@ export default class NavBar extends Component {
   render(){
 
     let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFormat,
-       wordIndex, freeze, item, addItem, user} = this.props;
+       wordIndex, freeze, item, addItem, user, retrieved} = this.props;
 
     let {bibleOpen, nameOpen, type} = this.state;
 
@@ -114,6 +114,7 @@ export default class NavBar extends Component {
             }
           </li>
           <li style={{fontSize: "calc(12px + 0.5vw)"}}>Logged In As: {user}</li>
+          {!retrieved.finished && <div class='loader'></div>}
         </ul>
         {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={this.props.formatBible}/>}
         {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={this.props.db}

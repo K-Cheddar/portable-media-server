@@ -21,7 +21,7 @@ export default class MiniPresentation extends React.Component{
 
   render() {
 
-    let {backgrounds, background, style, words, time} = this.props;
+    let {backgrounds, background, style, words} = this.props;
 
     let img = blank, asset;
     let isVideo = false;

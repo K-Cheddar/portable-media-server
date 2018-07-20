@@ -1,35 +1,39 @@
-export function init(db, updateState, readingFromDataBase){
+export function init(db, updateState, getSuccess, getAttempted){
   db.get('currentInfo').then(function(doc){
     updateState({currentInfo: doc.info})
+    getSuccess('currentInfo')
   }).catch(function(){
-    console.log('currentInfo not working');
+    console.log('currentInfo not loaded');
   }).then(function(){
-    readingFromDataBase('currentInfo')
-  });
+    getAttempted('currentInfo', db)
+  })
   db.get('Item List 1').then(function (doc) {
     updateState({itemList: doc.items}) //actual list of items
+    getSuccess('Item List')
   }).catch(function(){
-    console.log('item list 1 not working');
+    console.log('item list 1 not loaded');
   }).then(function(){
-    readingFromDataBase('Item List')
-  });;
+    getAttempted('Item List 1', db)
+  });
   db.get('ItemLists').then(function (doc) {
     updateState({
       itemLists: doc.itemLists,// list of item list names
       selectedItemList: doc.itemLists[0] //name of first item list
     })
+    getSuccess('Item Lists')
   }).catch(function(){
-    console.log('itemLists not working');
+    console.log('itemLists not loaded');
   }).then(function(){
-    readingFromDataBase('Item Lists')
-  });;
+    getAttempted('Item Lists', db)
+  })
   db.get('allItems').then(function (doc) {
     updateState({allItems: doc.items}) //every single Item
+    getSuccess('allItems')
   }).catch(function(){
-    console.log('allItems not working');
+    console.log('allItems not loaded');
   }).then(function(){
-    readingFromDataBase('allItems')
-  });;
+    getAttempted('allItems', db)
+  });
 }
 
 export function changes(db, updateState, getTime){
@@ -47,7 +51,7 @@ export function changes(db, updateState, getTime){
   })
 }
 
-export function retrieveImages(db, updateState, cloud, readingFromDataBase){
+export function retrieveImages(db, updateState, cloud, getSuccess, getAttempted){
   let backgrounds = []
   db.get('images').then(function(doc){
     for (let i = 0; i < doc.backgrounds.length; i++) {
@@ -82,12 +86,13 @@ export function retrieveImages(db, updateState, cloud, readingFromDataBase){
 
       backgrounds.push(imgData);
     }
+    getSuccess('images')
     updateState({backgrounds: backgrounds})
   }).catch(function(){
-    console.log('images not working');
+    console.log('images not loaded');
   }).then(function(){
-    readingFromDataBase('images')
-  });;
+    getAttempted('images', db)
+  });
 }
 
 export function getItem(db, id, updateState, setItemIndex, itemIndex){
@@ -95,7 +100,7 @@ export function getItem(db, id, updateState, setItemIndex, itemIndex){
     updateState({item: doc})
     setItemIndex(itemIndex+1)
   }).catch(function(){
-    console.log('getItem not working');
+    console.log('getItem not loaded');
   });
 }
 
@@ -103,6 +108,6 @@ export function selectItemList(db, id, updateState){
   db.get(id).then(function(doc){
     updateState({itemList: doc.items})
   }).catch(function(){
-    console.log('selectitemlist not working');
+    console.log('selectitemlist not loaded');
   });
 }

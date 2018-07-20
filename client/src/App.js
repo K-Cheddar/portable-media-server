@@ -75,7 +75,8 @@ const initialState = {
   db: {},
   user: "Demo",
   upload_preset:"bpqu4ma5",
-  reading:{}
+  retrieved:{},
+  attempted:{}
 }
 
 /* App component */
@@ -109,7 +110,8 @@ class App extends Component {
     this.setSlideBackground = this.setSlideBackground.bind(this);
     this.openUploader = this.openUploader.bind(this);
     this.updateState = this.updateState.bind(this);
-    this.readingFromDataBase = this.readingFromDataBase.bind(this);
+    this.getSuccess = this.getSuccess.bind(this);
+    this.getAttempted = this.getAttempted.bind(this);
     this.getTime = this.getTime.bind(this);
   }
 
@@ -158,15 +160,32 @@ class App extends Component {
   }
 
 //don't begin auto update until all values have been retrieved
-  readingFromDataBase(type){
-    let {reading} = this.state;
-    reading[type] = true;
-    console.log("Finished: ", type);
-    if(Object.keys(reading).length >= 5){
+  getSuccess(type){
+    let {retrieved} = this.state;
+    retrieved[type] = true;
+    if(Object.keys(retrieved).length >= 5){
+        retrieved.finished = true;
         this.updateInterval = setInterval(this.update, 1000); //auto save to database every second if update has occurred
     }
-    this.setState({reading: reading})
+    this.setState({retrieved: retrieved})
 
+  }
+
+  getAttempted(type, db){
+    let {attempted, retrieved} = this.state;
+    attempted[type] = true;
+    if(Object.keys(attempted).length >= 5){
+        if(!retrieved.finished){
+          attempted = {}
+          let obj = Object.assign({}, initialState);
+          this.setState(obj)
+          DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
+          DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
+          DBGetter.changes(db, this.updateState, this.getTime)
+          DBUpdater.keepPresentationAlive(db);
+        }
+    }
+    this.setState({attempted: attempted})
   }
 
   update(){
@@ -223,8 +242,8 @@ class App extends Component {
     var db = new PouchDB(dbName);
     this.setState({db: db})
     DBSetup(db);
-    DBGetter.init(db, this.updateState, this.readingFromDataBase);
-    DBGetter.retrieveImages(db, this.updateState, cloud, this.readingFromDataBase)
+    DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
+    DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
     DBGetter.changes(db, this.updateState, this.getTime)
 
     DBUpdater.keepPresentationAlive(db);
@@ -547,8 +566,8 @@ class App extends Component {
 
     DBSetup(db);
 
-    DBGetter.init(db, this.updateState, this.readingFromDataBase);
-    DBGetter.retrieveImages(db, this.updateState, cloud, this.readingFromDataBase)
+    DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
+    DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
     DBGetter.changes(db, this.updateState, this.getTime)
 
     DBUpdater.keepPresentationAlive(db);
@@ -568,8 +587,8 @@ class App extends Component {
     let obj = Object.assign({}, initialState);
     this.setState(obj)
     this.setState({db:db})
-    DBGetter.init(db, this.updateState, this.readingFromDataBase);
-    DBGetter.retrieveImages(db, this.updateState, cloud, this.readingFromDataBase)
+    DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
+    DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
     DBGetter.changes(db, this.updateState, this.getTime)
 
     DBUpdater.keepPresentationAlive(db);
@@ -624,7 +643,7 @@ class App extends Component {
         itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze} updateFormat={this.updateFormat}
         addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
         backgrounds={this.state.backgrounds} formatBible={Formatter.formatBible} db={this.state.db}
-        test={this.test} user={user}/>
+        test={this.test} user={user} retrieved={this.state.retrieved}/>
         <div>
             {/* Route components are rendered if the path prop matches the current URL */}
             <Switch>
