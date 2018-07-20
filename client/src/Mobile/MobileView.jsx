@@ -53,12 +53,7 @@ export default class MobileView extends Component{
             >Change Item</button>
           {freeze && <div style={{display:'flex', margin:'auto', width:'30%', height:'4.5vh',
              fontSize:'calc(8px + 0.75vmax)'}}>
-             {!isLoggedIn && <img style={lockStyle}
-                alt="lock" src={lock}
-               />
-             }
-              {isLoggedIn &&<button style={buttonLoggedIn} onClick={toggleFreeze}>Unfreeze</button>}
-              {!isLoggedIn &&<button style={buttonLoggedOut}>Unfreeze</button>}
+              <button style={buttonLoggedIn} onClick={toggleFreeze}>Unfreeze</button>
               <img style={{paddingLeft:'5%', paddingTop:'1%', width:'40%', height:'5.5vw',
                 maxHeight:'4.5vh', maxWidth:'8vh'}}
                  alt="off" src={off}
@@ -67,12 +62,7 @@ export default class MobileView extends Component{
             }
             {!freeze && <div style={{display:'flex', margin:'auto', width:'30%', height:'4.5vh',
                fontSize:'calc(8px + 0.75vmax)'}}>
-             {!isLoggedIn && <img style={lockStyle}
-                alt="lock" src={lock}
-               />
-             }
-            {isLoggedIn &&<button style={buttonLoggedIn} onClick={toggleFreeze}>Freeze</button>}
-            {!isLoggedIn &&<button style={buttonLoggedOut}>Freeze</button>}
+            <button style={buttonLoggedIn} onClick={toggleFreeze}>Freeze</button>
               <img style={{paddingLeft:'5%', paddingTop:'1%', width:'40%', height:'5.5vw',
               maxHeight:'4.5vh', maxWidth:'8vh'}}
                  alt="on" src={on}

@@ -7,10 +7,15 @@ class Presentation extends React.Component{
     super();
     this.state = {
       width: 0,
-      height: 0
+      height: 0,
+      pBackground: '',
+      pWords: '',
+      pStyle: {},
+      pTime: -1
     }
 
     this.updateDimensions = this.updateDimensions.bind(this);
+    this.updateStorage = this.updateStorage.bind(this);
   }
 
   updateDimensions(){
@@ -20,10 +25,25 @@ class Presentation extends React.Component{
     })
   }
 
+  updateStorage(e){
+    if(e.key === 'presentation'){
+      let val = JSON.parse(e.newValue);
+      if (!val)
+        return;
+      this.setState({
+        pBackground: val.background,
+        pWords: val.words,
+        pStyle: val.style,
+        pTime: val.time
+      })
+    }
+  }
+
   componentDidMount(){
     this.updateDimensions();
+    window.addEventListener("storage", this.updateStorage);
     window.addEventListener("resize", this.updateDimensions);
-    let video = document.getElementById('background-video-presenation');
+    let video = document.getElementById('background-video-presentation');
     if(video)
       video.loop = true;
   }
@@ -39,7 +59,16 @@ class Presentation extends React.Component{
 
   render() {
 
-    let {backgrounds, background, style} = this.props;
+
+    let {backgrounds, background, words, style, time} = this.props;
+    let {pBackground, pWords, pStyle, pTime} = this.state;
+
+    if(pTime >= time){
+      background = pBackground;
+      words = pWords;
+      style = pStyle
+    }
+
     let {width, height} = this.state;
     let img = blank, asset;
     let isVideo = false;
@@ -57,7 +86,7 @@ class Presentation extends React.Component{
       width: '85%',
       whiteSpace:'pre-wrap',
       color: style.color,
-      fontSize: style.fontSize*2.3+"vw",
+      fontSize: style.fontSize*2.25+"vw",
       fontFamily: "Verdana",
       padding: "4% 7.5% 7.5%"
     }
@@ -87,18 +116,18 @@ class Presentation extends React.Component{
       <div>
         {!isVideo &&<div style={backgroundStyle}>
           <div style={styleFull}>
-              {this.props.text}
+              {words}
           </div>
         </div>
         }
         {isVideo &&<div style={{width: '100vw', height: '100vh', maxHeight:'75vw'}}>
-          <video loop autoPlay id="background-video-presenation"
+          <video loop autoPlay id="background-video-presentation"
             style={{width:'100%', height:'100%', position:'absolute', zIndex:'-1'}} >
             <source src={asset.video.src} type="video/mp4"/>
             <source src={asset.video.src} type="video/ogg" />
           </video>
           <div style={styleFull}>
-              {this.props.text}
+              {words}
           </div>
         </div>}
 

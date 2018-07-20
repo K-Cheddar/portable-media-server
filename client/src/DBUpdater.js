@@ -14,7 +14,7 @@ export function update(db, item, selectedItemList, itemList, allItems){
      console.log('get item to update not working');
    });
   }
-  
+
  db.get(selectedItemList).then(function (doc) {
    doc.items = itemList
    db.put(doc)
@@ -56,12 +56,13 @@ export function keepPresentationAlive(db){
   }
 }
 
-export function updateCurrent(db, words, background, style){
+export function updateCurrent(db, words, background, style, time){
 
   function updateValues(doc) {
     doc.info.words = words;
     doc.info.background = background;
     doc.info.style = style;
+    doc.info.time = time;
     doc.info.updated = true;
     return doc;
   }
@@ -69,7 +70,7 @@ export function updateCurrent(db, words, background, style){
   db.upsert('currentInfo', updateValues);
 }
 
-export function updateItem(db, itemID, updateState, freeze){
+export function updateItem(db, itemID, updateState, freeze, updateCurrent){
   db.get(itemID).then(function (doc) {
     updateState({
       item: doc,
@@ -165,7 +166,6 @@ export function deleteItemFromList(db, selectedItemList, itemList, updateState){
     return db.put(doc);
   })
 }
-
 
 export function updateImages(db, uploads){
   db.get('images').then(function(doc){

@@ -36,8 +36,8 @@ export default class FullView extends React.Component{
                   setItemBackground={setItemBackground} user={user}
                   setSlideBackground={setSlideBackground} item={item} openUploader={openUploader}
                   />
-                <MiniPresentation backgrounds={backgrounds} text={currentInfo.words} style={currentInfo.style}
-                  background={currentInfo.background}
+                <MiniPresentation backgrounds={backgrounds} words={currentInfo.words} style={currentInfo.style}
+                  background={currentInfo.background} time={currentInfo.time}
                   />
               </div>
             </div>

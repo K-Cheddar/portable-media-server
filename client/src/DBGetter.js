@@ -32,14 +32,18 @@ export function init(db, updateState, readingFromDataBase){
   });;
 }
 
-export function changes(db, updateState){
+export function changes(db, updateState, getTime){
   db.changes({
     since: 'now',
     live: true,
     include_docs: true
   }).on('change', function(change) {
-    if(change.id === "currentInfo")
-      updateState({currentInfo: change.doc.info})
+    if(change.id === "currentInfo"){
+      if(getTime() < change.doc.info.time){
+        updateState({currentInfo: change.doc.info})
+      }
+      console.log("getTime", getTime(), "time", change.doc.info.time);
+    }
   })
 }
 

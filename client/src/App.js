@@ -67,7 +67,8 @@ const initialState = {
     style:{
       color:'',
       fontSize:''
-    }
+    },
+    time: -1,
   },
   allItems:[],
   freeze: true,
@@ -109,6 +110,7 @@ class App extends Component {
     this.openUploader = this.openUploader.bind(this);
     this.updateState = this.updateState.bind(this);
     this.readingFromDataBase = this.readingFromDataBase.bind(this);
+    this.getTime = this.getTime.bind(this);
   }
 
   updateFormat({
@@ -197,17 +199,17 @@ class App extends Component {
       //   console.log(responseData)
       // })
     let database = 'demo'
-
-    let sLoggedIn = sessionStorage.getItem('loggedIn');
-    let sUser = sessionStorage.getItem('user');
-    let sDatabase = sessionStorage.getItem('database');
-    let sUploadPreset = sessionStorage.getItem('upload_preset');
+    localStorage.setItem('presentation', 'null');
+    let sLoggedIn = localStorage.getItem('loggedIn');
+    let sUser = localStorage.getItem('user');
+    let sDatabase = localStorage.getItem('database');
+    let sUploadPreset = localStorage.getItem('upload_preset');
 
     if(sLoggedIn === 'true')
       this.setState({isLoggedIn: true})
     else
       this.setState({isLoggedIn: false})
-    if(sUser)
+    if(sUser !== 'null' && sUser !== null)
       this.setState({user: sUser})
     if(sDatabase && sDatabase !== 'null'){
         database = sDatabase
@@ -223,15 +225,17 @@ class App extends Component {
     DBSetup(db);
     DBGetter.init(db, this.updateState, this.readingFromDataBase);
     DBGetter.retrieveImages(db, this.updateState, cloud, this.readingFromDataBase)
-    DBGetter.changes(db, this.updateState)
+    DBGetter.changes(db, this.updateState, this.getTime)
 
     DBUpdater.keepPresentationAlive(db);
-
     // db.sync(localDB, {
     //   live: true,
     //   retry: true
       // })
+  }
 
+  getTime(){
+    return this.state.currentInfo.time
   }
 
   setItemBackground(background){
@@ -323,8 +327,19 @@ class App extends Component {
     if(index >= 0)
       background = this.state.item.words[index].background
 
-    DBUpdater.updateCurrent(this.state.db, words, background, style);
+    let date = new Date();
+    let time = date.getTime();
 
+    console.log("Seconds", time);
+    let obj = {
+      words: words,
+      background: background,
+      style: style,
+      time: time
+    }
+    this.setState({currentInfo: obj})
+    DBUpdater.updateCurrent(this.state.db, words, background, style, time-1);
+    localStorage.setItem('presentation', JSON.stringify(obj));
   }
 
   setItemIndex(index){
@@ -338,8 +353,9 @@ class App extends Component {
       this.setState({wordIndex: 0})
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
-      DBUpdater.updateItem(this.state.db, itemID, this.updateState, freeze)
+      DBUpdater.updateItem(this.state.db, itemID, this.updateState, freeze, this.updateCurrent)
     }
+
   }
 
   sortItemList(list){
@@ -512,10 +528,10 @@ class App extends Component {
 
     clearInterval(this.updateInterval);
 
-    sessionStorage.setItem('loggedIn', true);
-    sessionStorage.setItem('user', user);
-    sessionStorage.setItem('database', database);
-    sessionStorage.setItem('upload_preset', upload_preset);
+    localStorage.setItem('loggedIn', true);
+    localStorage.setItem('user', user);
+    localStorage.setItem('database', database);
+    localStorage.setItem('upload_preset', upload_preset);
 
     let dbName = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
     var db = new PouchDB(dbName);
@@ -533,7 +549,7 @@ class App extends Component {
 
     DBGetter.init(db, this.updateState, this.readingFromDataBase);
     DBGetter.retrieveImages(db, this.updateState, cloud, this.readingFromDataBase)
-    DBGetter.changes(db, this.updateState)
+    DBGetter.changes(db, this.updateState, this.getTime)
 
     DBUpdater.keepPresentationAlive(db);
 
@@ -542,10 +558,10 @@ class App extends Component {
   logout(){
     clearInterval(this.updateInterval);
 
-    sessionStorage.setItem('loggedIn', false);
-    sessionStorage.setItem('user', null);
-    sessionStorage.setItem('database', null);
-    sessionStorage.setItem('upload_preset', null);
+    localStorage.setItem('loggedIn', false);
+    localStorage.setItem('user', null);
+    localStorage.setItem('database', null);
+    localStorage.setItem('upload_preset', null);
 
     let dbName = process.env.REACT_APP_DATABASE_STRING + "portable-media-demo"
     var db = new PouchDB(dbName);
@@ -554,7 +570,7 @@ class App extends Component {
     this.setState({db:db})
     DBGetter.init(db, this.updateState, this.readingFromDataBase);
     DBGetter.retrieveImages(db, this.updateState, cloud, this.readingFromDataBase)
-    DBGetter.changes(db, this.updateState)
+    DBGetter.changes(db, this.updateState, this.getTime)
 
     DBUpdater.keepPresentationAlive(db);
   }
@@ -642,8 +658,9 @@ class App extends Component {
                   <Login {...props} login={this.login}
                   />}/>
               <Route path="/presentation" render={(props) =>
-                  <Presentation {...props}  text={currentInfo.words} style={currentInfo.style}
+                  <Presentation {...props}  words={currentInfo.words} style={currentInfo.style}
                     background={currentInfo.background} backgrounds={this.state.backgrounds}
+                    time={currentInfo.time}
                   />}/>
             </Switch>
         </div>
