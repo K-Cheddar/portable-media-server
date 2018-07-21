@@ -61,7 +61,8 @@ export default class MobileSlides extends React.Component{
           onClick={() => (that.clickSlide(index, lyrics))}
           >
           <MobileSlideInList words={lyrics} background={item.background} color={item.style.color}
-            fontSize={(index === 0) ? item.nameSize : item.style.fontSize} backgrounds={backgrounds}/>
+            fontSize={(index === 0) ? item.nameSize : item.style.fontSize} backgrounds={backgrounds}
+            sBackground={item.words[index].background}/>
         </div>
       );
     })

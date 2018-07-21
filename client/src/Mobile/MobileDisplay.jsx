@@ -23,6 +23,7 @@ export default class DisplayEditor extends Component{
     let {wordIndex, item, backgrounds} = this.props;
     let words = item.words;
     let text = "", background = blank, asset;
+    let search = item.background;
     let isVideo = false;
     let style = {
       textAlign: 'center',
@@ -43,10 +44,12 @@ export default class DisplayEditor extends Component{
         style.fontSize = item.nameSize*2.25 + "vw";
       else
        style.fontSize = item.style.fontSize*2.25+ "vw";
+       if(item.words[wordIndex] && item.words[wordIndex].background)
+       search = item.words[wordIndex].background;
     }
 
       if(backgrounds.some(e => e.name === item.background)){
-        asset = backgrounds.find(e => e.name === item.background);
+        asset = backgrounds.find(e => e.name === search);
         background = asset.image.src;
         if(asset.type === 'video')
           isVideo = true;

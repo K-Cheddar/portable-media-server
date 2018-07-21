@@ -4,7 +4,7 @@ export default class MobileSlideInList extends React.Component{
 
 
   render(){
-  let {words, backgrounds, background, color, fontSize} = this.props;
+  let {words, backgrounds, sBackground, background, color, fontSize} = this.props;
   let img = "";
   let style = {
     textAlign: 'center',
@@ -22,8 +22,12 @@ export default class MobileSlideInList extends React.Component{
   if (color)
     style.color = color
 
-  if(backgrounds.some(e => e.name === background))
-    img = backgrounds.find(e => e.name === background).image.src;
+  if(backgrounds){
+    if(sBackground)
+      background = sBackground
+    if(backgrounds.some(e => e.name === background))
+      img = backgrounds.find(e => e.name === background).image.src;
+  }
 
     return (
         <div style={{backgroundImage: 'url('+img+')',
