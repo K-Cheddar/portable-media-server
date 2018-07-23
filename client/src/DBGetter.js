@@ -36,18 +36,27 @@ export function init(db, updateState, getSuccess, getAttempted){
   });
 }
 
-export function changes(db, updateState, getTime){
+export function changes(db, updateState, getTime, getSelectedList, cloud, getSuccess, getAttempted){
   db.changes({
     since: 'now',
     live: true,
-    include_docs: true
+    include_docs: true,
+    timeout: false
   }).on('change', function(change) {
     if(change.id === "currentInfo"){
-      if(getTime() < change.doc.info.time){
-        updateState({currentInfo: change.doc.info})
-      }
-      console.log("getTime", getTime(), "time", change.doc.info.time);
+      if(getTime() < change.doc.info.time)
+        updateState({currentInfo: change.doc.info, needsUpdate: false})
     }
+    if(change.id === 'images'){
+      retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
+    }
+    if(change.id === 'allItems'){
+      updateState({allItems: change.doc.items, needsUpdate: false})
+    }
+    if(change.id === getSelectedList()){
+      updateState({itemList: change.doc.items, needsUpdate: false})
+    }
+
   })
 }
 
@@ -71,6 +80,7 @@ export function retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
           type: type,
           video: video
         }
+        video.preload = true;
       }
       else {
         tag = cloud.url(element.name);

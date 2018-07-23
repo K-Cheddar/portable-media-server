@@ -184,3 +184,17 @@ export function updateImages(db, uploads){
     return db.put(doc);
   })
 }
+
+export function updateItemLists(db, itemLists, newList){
+  db.get('ItemLists').then(function(doc){
+    doc.itemLists = itemLists;
+    return db.put(doc)
+  })
+  db.get(newList.id).catch(function (err) {
+    var SL = {
+    "_id": newList.id,
+    "items" : []
+    };
+     db.put(SL)
+  })
+}

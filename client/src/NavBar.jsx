@@ -3,6 +3,8 @@ import { Link} from 'react-router-dom';
 import FormatEditor from './FormatEditor';
 import on from './assets/on.png';
 import off from './assets/off.png';
+import new_button from './assets/new-button.png';
+import edit from './assets/edit.png';
 import Bible from './Bible'
 import CreateName from './CreateName';
 
@@ -52,7 +54,7 @@ export default class NavBar extends Component {
   render(){
 
     let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFormat,
-       wordIndex, freeze, item, addItem, user, retrieved} = this.props;
+       wordIndex, freeze, item, addItem, user, retrieved, addItemList} = this.props;
 
     let {bibleOpen, nameOpen, type} = this.state;
 
@@ -69,20 +71,26 @@ export default class NavBar extends Component {
           </li>
           <li>
             <div style={{paddingTop:'1%', margin:'auto'}}>
-              <select style={{fontSize: "calc(10px + 0.35vw)"}} value={selectedItemList}
+              <select style={{fontSize: "calc(10px + 0.35vw)"}} value={selectedItemList.name}
                 onChange={(e) => (selectItemList(e.target.value))}>
                 {itemLists.map((element, index) =>
-                  <option key={index}> {element} </option>
+                  <option key={index}> {element.name} </option>
                 )}
               </select>
             </div>
+          </li>
+          <li style={{paddingLeft: '0'}}>
+            <img style={{width:'1.5vw', height:'1.5vw'}}
+               alt="new" src={new_button}
+              onClick={addItemList}
+              />
           </li>
           <li style={{display:'flex', margin:'auto', marginLeft:'3vw'}}>
             <div style={{width: '30%', margin:'auto'}}>
               <button style={buttonLoggedIn} onClick={this.openBible}>Add Bible</button>
             </div>
             <div style={{width: '30%', margin:'auto'}}>
-              <button style={buttonLoggedIn} onClick={this.openImage}>Add Image</button>
+              <button style={buttonLoggedIn} onClick={this.openImage}>Add Media</button>
             </div>
             <div style={{width: '30%', margin:'auto'}}>
               <button style={buttonLoggedIn} onClick={this.openSong}>Add Song</button>

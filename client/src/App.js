@@ -113,6 +113,8 @@ class App extends Component {
     this.getSuccess = this.getSuccess.bind(this);
     this.getAttempted = this.getAttempted.bind(this);
     this.getTime = this.getTime.bind(this);
+    this.getSelectedList = this.getSelectedList.bind(this)
+    this.addItemList = this.addItemList.bind(this)
   }
 
   updateFormat({
@@ -176,13 +178,18 @@ class App extends Component {
     attempted[type] = true;
     if(Object.keys(attempted).length >= 5){
         if(!retrieved.finished){
-          attempted = {}
-          let obj = Object.assign({}, initialState);
-          this.setState(obj)
-          DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
-          DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
-          DBGetter.changes(db, this.updateState, this.getTime)
-          DBUpdater.keepPresentationAlive(db);
+          if(navigator.onLine){
+            attempted = {}
+            let obj = Object.assign({}, initialState);
+            this.setState(obj)
+            DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
+            DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
+            DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
+          }
+          else{
+            alert("Please reconnect to the internet to continue")
+          }
+          // DBUpdater.keepPresentationAlive(db);
         }
     }
     this.setState({attempted: attempted})
@@ -199,14 +206,14 @@ class App extends Component {
   updateState(obj){
 
     this.setState({
-      currentInfo: obj.currentInfo ? obj.currentInfo : this.state.currentInfo,
-      itemList: obj.itemList ? obj.itemList : this.state.itemList,
-      itemLists: obj.itemLists ? obj.itemLists : this.state.itemLists,
-      selectedItemList: obj.selectedItemList ? obj.selectedItemList : this.state.selectedItemList,
-      allItems: obj.allItems ? obj.allItems : this.state.allItems,
-      backgrounds: obj.backgrounds ? obj.backgrounds : this.state.backgrounds,
-      item: obj.item ? obj.item : this.state.item,
-      needsUpdate: true,
+      currentInfo: obj.currentInfo || this.state.currentInfo,
+      itemList: obj.itemList || this.state.itemList,
+      itemLists: obj.itemLists || this.state.itemLists,
+      selectedItemList: obj.selectedItemList || this.state.selectedItemList,
+      allItems: obj.allItems || this.state.allItems,
+      backgrounds: obj.backgrounds || this.state.backgrounds,
+      item: obj.item || this.state.item,
+      needsUpdate: (obj.needsUpdate === false) ? false : true,
     })
   }
 
@@ -244,9 +251,9 @@ class App extends Component {
     DBSetup(db);
     DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
     DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
-    DBGetter.changes(db, this.updateState, this.getTime)
+    DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
 
-    DBUpdater.keepPresentationAlive(db);
+    // DBUpdater.keepPresentationAlive(db);
     // db.sync(localDB, {
     //   live: true,
     //   retry: true
@@ -255,6 +262,10 @@ class App extends Component {
 
   getTime(){
     return this.state.currentInfo.time
+  }
+
+  getSelectedList(){
+    return this.state.selectedItemList
   }
 
   setItemBackground(background){
@@ -367,7 +378,7 @@ class App extends Component {
     var mElement = document.getElementById("MItem"+index);
     if(mElement)
       mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'});
-    this.setState({itemIndex: index})
+    this.setState({itemIndex: index, wordIndex: 0})
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
       DBUpdater.updateItem(this.state.db, itemID, this.updateState, freeze, this.updateCurrent)
@@ -461,7 +472,10 @@ class App extends Component {
 
   }
 
-  selectItemList(id){
+  selectItemList(name){
+    console.log("SIL", name);
+    let {itemLists} = this.state;
+    let id = itemLists.find(e => e.name === name).id;
     this.setState({selectedItemList: id})
     DBGetter.selectItemList(this.state.db, id, this.updateState)
   }
@@ -485,6 +499,15 @@ class App extends Component {
 
     this.setWordIndex(targetIndex);
     this.setState({item: item, needsUpdate: true});
+  }
+
+  addItemList(){
+    let {itemLists} = this.state;
+    let name = "Item List " + (itemLists.length+1);
+    let newList = {id: name, name: name}
+    itemLists.push(newList);
+    this.setState({itemLists: itemLists})
+    DBUpdater.updateItemLists(this.state.db, itemLists, newList);
   }
 
   openUploader(){
@@ -566,9 +589,9 @@ class App extends Component {
 
     DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
     DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
-    DBGetter.changes(db, this.updateState, this.getTime)
+    DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
 
-    DBUpdater.keepPresentationAlive(db);
+    // DBUpdater.keepPresentationAlive(db);
 
   }
 
@@ -587,9 +610,9 @@ class App extends Component {
     this.setState({db:db})
     DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
     DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
-    DBGetter.changes(db, this.updateState, this.getTime)
+    DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
 
-    DBUpdater.keepPresentationAlive(db);
+    // DBUpdater.keepPresentationAlive(db);
   }
 
   render() {
@@ -641,7 +664,7 @@ class App extends Component {
         itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze} updateFormat={this.updateFormat}
         addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
         backgrounds={this.state.backgrounds} formatBible={Formatter.formatBible} db={this.state.db}
-        test={this.test} user={user} retrieved={this.state.retrieved}/>
+        test={this.test} user={user} retrieved={this.state.retrieved} addItemList={this.addItemList}/>
         <div>
             {/* Route components are rendered if the path prop matches the current URL */}
             <Switch>

@@ -49,17 +49,30 @@ class Presentation extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    let {background} = this.props;
+    console.log('update');
+    let {backgrounds, background} = this.props;
+    // let backgroundP = this.prevProps.background || null;
+    // let backgroundsP = this.prevProps.backgrounds || [];
+    let assetN//, assetP;
     if(background !== prevProps.background ){
-      let video = document.getElementById('background-video-presentation');
-      if(video)
-        video.loop = true;
+      if(backgrounds.some(e => e.name === background)){
+        assetN = backgrounds.find(e => e.name === background);
+      }
+      // if(backgroundsP.some(e => e.name === backgroundP)){
+      //   assetP = backgroundsP.find(e => e.name === backgroundP);
+      // }
+      let videoN = document.getElementById('background-video-presentation');
+      if(videoN){
+        videoN.src = assetN.video.src;
+        videoN.loop = true;
+
+      }
     }
   }
 
   render() {
 
-
+    console.log('render');
     let {backgrounds, background, words, style, time} = this.props;
     let {pBackground, pWords, pStyle, pTime} = this.state;
 
@@ -121,7 +134,7 @@ class Presentation extends React.Component{
         </div>
         }
         {isVideo &&<div style={{width: '100vw', height: '100vh', maxHeight:'75vw'}}>
-          <video loop autoPlay id="background-video-presentation"
+          <video preload="auto" loop autoPlay id="background-video-presentation"
             style={{width:'100%', height:'100%', position:'absolute', zIndex:'-1'}} >
             <source src={asset.video.src} type="video/mp4"/>
             <source src={asset.video.src} type="video/ogg" />
