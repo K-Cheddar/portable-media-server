@@ -5,7 +5,8 @@ export default class MobileListChanger extends React.Component{
   render(){
   let {itemLists, selectItemList, selectedItemList} = this.props;
 
-  let list = itemLists.map((element, index) => {
+  let list = itemLists.map((ele, index) => {
+  let element = ele.name
   return(
     <div style={{display:'flex'}} key={index} id={"MItem"+index}>
       <div style={(selectedItemList === element) ? {border:'0.75vmax', borderColor: '#4286f4', borderStyle:'solid',
