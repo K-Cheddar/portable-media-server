@@ -2,7 +2,7 @@ export function formatSong(item){
   let name = item.name;
   let songOrder = item.songOrder;
   let formattedLyrics = item.formattedLyrics;
-  let fontSize = item.slides[1].boxes[0].fontSize;
+  let fontSize = item.slides[1] ? item.slides[1].boxes[0].fontSize : 2.5;
   let nameSize = item.slides[0].boxes[0].fontSize;
   let slides = formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSize);
   for (let i = 0; i < slides.length; i++) {
@@ -11,7 +11,7 @@ export function formatSong(item){
       slides[i].boxes[0].fontColor = item.slides[i].boxes[0].fontColor
     }
     else{
-      slides[i].boxes[0].fontColor = item.slides[1].boxes[0].fontColor
+      slides[i].boxes[0].fontColor = 'rgba(255, 255, 255, 1)'
     }
 
   }
