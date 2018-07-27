@@ -98,6 +98,8 @@ class Presentation extends React.Component{
     let {backgrounds, background, words, style, time} = this.props;
     let {pBackground, pWords, pStyle, pTime} = this.state;
 
+    console.log(this.props);
+
     if(pTime >= time){
       background = pBackground;
       words = pWords;
