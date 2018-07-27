@@ -121,6 +121,8 @@ class App extends Component {
   updateFormat({
     c = this.state.item.slides[this.state.wordIndex].boxes[0].fontColor,
     fontSize = this.state.item.slides[this.state.wordIndex].boxes[0].fontSize,
+    updateColor = false,
+    updateFont = false,
     } = {}){
 
     let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = this.state;
@@ -134,6 +136,7 @@ class App extends Component {
       color = 'rgba('+c.r+' , ' +c.g+' , '+c.b+' , '+c.a+')';
 
     item.slides[wordIndex].boxes[0].fontColor = color;
+
     if(boxIndex === 0){
       if(wordIndex !== 0){
         for(let i = 1; i < item.slides.length; ++i){
@@ -144,7 +147,6 @@ class App extends Component {
         item.slides[0].boxes[0].fontSize = fontSize;
       }
     }
-
     //update color of item in current list
     itemList[itemIndex].nameColor = item.slides[0].boxes[0].fontColor
 
@@ -152,7 +154,7 @@ class App extends Component {
     let index = allItems.findIndex(e => e._id === item._id)
     allItems[index].nameColor = item.slides[0].boxes[0].fontColor
 
-    if(item.type === 'bible' && wordIndex !== 0){}
+    if(item.type === 'bible' && wordIndex !== 0 && !updateColor)
       item = Formatter.formatBible(item, 'edit');
 
     if(item.type === 'song' && wordIndex !== 0)
@@ -161,7 +163,13 @@ class App extends Component {
     if(wordIndex >= item.slides.length)
       wordIndex = item.slides.length-1
 
-    //update state, ready to update
+    if(item.type === 'bible' && wordIndex !== 0){
+      for(let i = 1; i < item.slides.length; ++i){
+        item.slides[i].boxes[0].fontColor = color;
+      }
+    }
+
+    // update state, ready to update
     this.setState({
       item: item,
       itemList: itemList,
@@ -303,16 +311,11 @@ class App extends Component {
 
   setSlideBackground(background){
     let {item, wordIndex} = this.state;
-    let ta = this;
-    console.log("BEFORE", item);
-
     item.slides[wordIndex].boxes[0].background = background;
-    console.log("DURING", item);
     this.setState({
       item: item,
       needsUpdate: true
     })
-    setTimeout(function(){console.log("After", ta.state.item);},1000)
   }
 
   setWordIndex(index, lyrics){
@@ -336,7 +339,6 @@ class App extends Component {
     let {item} = this.state;
     let fontSize = item.slides ? item.slides[index].boxes[0].fontSize : 4
     let color = item.slides ? item.slides[index].boxes[0].fontColor : 'rgba(255, 255, 255, 1)'
-
     let style = {
       color: color,
       fontSize: fontSize
@@ -362,7 +364,7 @@ class App extends Component {
 
     let date = new Date();
     let time = date.getTime();
-
+    console.log(style);
     let obj = {
       words: words,
       background: background,
@@ -535,7 +537,7 @@ class App extends Component {
 
         DBUpdater.updateImages(that.state.db, uploads);
         setTimeout(function(){
-          DBGetter.retrieveImages(that.state.db, that.updateState, cloud, that.getAttempted)
+          DBGetter.retrieveImages(that.state.db, that.updateState, cloud, that.getSuccess, that.getAttempted)
         },1000)
        });
 
@@ -685,7 +687,7 @@ class App extends Component {
                   allItems={allItems} deleteItem={this.deleteItem} insertWords={this.insertWords}
                   addItemToList={this.addItemToList} insertItemIntoList={this.insertItemIntoList}
                   currentInfo={currentInfo} formatSong={Formatter.formatSong} user={user}
-                  openUploader={this.openUploader} db={this.state.db}
+                  openUploader={this.openUploader} db={this.state.db} updateCurrent={this.updateCurrent}
                 />}/>
               <Route  path="/mobile" render={(props) =>
                 <MobileView {...props}

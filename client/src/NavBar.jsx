@@ -4,7 +4,7 @@ import FormatEditor from './FormatEditor';
 import on from './assets/on.png';
 import off from './assets/off.png';
 import new_button from './assets/new-button.png';
-import edit from './assets/edit.png';
+// import edit from './assets/edit.png';
 import Bible from './Bible'
 import CreateName from './CreateName';
 

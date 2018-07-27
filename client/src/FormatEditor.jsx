@@ -26,11 +26,6 @@ class FormatEditor extends React.Component{
     this.fontSizeChange = this.fontSizeChange.bind(this);
     this.updateFont = this.updateFont.bind(this);
   }
-  componentDidMount(){
-    let {item, wordIndex} = this.props;
-    // this.setState({fontSize: item.slides[wordIndex].boxes[0].fontSize})
-  }
-
   openColors(){
     this.setState({cPickerOpen: true})
   }
@@ -42,13 +37,11 @@ class FormatEditor extends React.Component{
   }
 
   colorChange(event){
-    let {item} = this.props;
     this.setState({color: event.rgb})
-    this.props.updateFormat({c: event.rgb})
+    this.props.updateFormat({c: event.rgb, updateColor: true})
   }
 
   updateFont(fontSize){
-    let {wordIndex, item} = this.props;
     if(fontSize > 7.5){
       fontSize = 7.5
     }
@@ -107,7 +100,6 @@ class FormatEditor extends React.Component{
   componentDidUpdate(prevProps, prevState){
 
     let{item, wordIndex} = this.props;
-    let {fontSize} = this.state;
 
     if((wordIndex !== prevProps.wordIndex) || (item.name !== prevProps.item.name)){
       this.setState({fontSize: item.slides ? item.slides[wordIndex].boxes[0].fontSize : 4})
@@ -128,7 +120,6 @@ class FormatEditor extends React.Component{
 
   render() {
 
-    let {item} = this.props;
     let {cPickerOpen, fontSize} = this.state;
 
     return (

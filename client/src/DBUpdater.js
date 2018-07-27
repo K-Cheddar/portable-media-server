@@ -49,6 +49,7 @@ export function updateCurrent(db, words, background, style, time){
     doc.info.words = words;
     doc.info.background = background;
     doc.info.time = time;
+    doc.info.style = style
     doc.info.updated = true;
     return doc;
   }

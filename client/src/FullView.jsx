@@ -13,7 +13,7 @@ export default class FullView extends React.Component{
     let {wordIndex, setItemIndex, setWordIndex, insertItemIntoList, insertWords,
       addItem, itemList, deleteItemFromList, item, updateItem, backgrounds, itemIndex,
       setItemBackground, handleFileChange, allItems, deleteItem, addItemToList, user,
-      currentInfo, formatSong, setSlideBackground, openUploader, db} = this.props;
+      currentInfo, formatSong, setSlideBackground, openUploader, db, updateCurrent} = this.props;
 
     return (
       <div style={{width:'99%', marginLeft:'1vw', position:'absolute'}}>
@@ -33,7 +33,7 @@ export default class FullView extends React.Component{
               </div>
               <div style={{marginLeft:'1vw'}}>
                 <Backgrounds backgrounds={backgrounds} handleFileChange={handleFileChange}
-                  setItemBackground={setItemBackground} user={user}
+                  setItemBackground={setItemBackground} user={user} updateCurrent={updateCurrent}
                   setSlideBackground={setSlideBackground} item={item} openUploader={openUploader}
                   />
                 <MiniPresentation backgrounds={backgrounds} words={currentInfo.words} style={currentInfo.style}

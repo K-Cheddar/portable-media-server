@@ -68,11 +68,33 @@ class Presentation extends React.Component{
 
       }
     }
+    let box = document.getElementById("presentation-text");
+    let text = box.innerHTML;
+    let newText = "";
+    for (let i = 0; i < text.length; ++i){
+      if(text[i-1] === '{' && text[i+1] === '}'){
+        newText += text.charAt(i).fontcolor("red")
+        i+=1;
+      }
+      else if(text[i-1] === '{' && text[i+2] === '}'){
+        newText += text.charAt(i).fontcolor("red")
+        newText += text.charAt(i+1).fontcolor("red")
+        i+=2;
+      }
+      else if(text[i-1] === '{' && text[i+3] === '}'){
+        newText += text.charAt(i).fontcolor("red")
+        newText += text.charAt(i+1).fontcolor("red")
+        newText += text.charAt(i+2).fontcolor("red")
+        i+=3;
+      }
+      else if(text[i]!== '{'){
+        newText+=text[i]
+      }
+    }
+    box.innerHTML = newText;
   }
 
   render() {
-
-    console.log('render');
     let {backgrounds, background, words, style, time} = this.props;
     let {pBackground, pWords, pStyle, pTime} = this.state;
 
@@ -98,7 +120,7 @@ class Presentation extends React.Component{
       height: '85%',
       width: '85%',
       whiteSpace:'pre-wrap',
-      color: style.fontColor,
+      color: style.color,
       fontSize: style.fontSize*2.25+"vw",
       fontFamily: "Verdana",
       padding: "4% 7.5% 7.5%"
@@ -119,16 +141,14 @@ class Presentation extends React.Component{
     let fbt = Math.abs(aspectRatio - fourByThree)
     let sbn = Math.abs(aspectRatio - sixteenByNine)
 
-
     if(fbt < sbn){
       styleFull.padding = "15% 7.5% 7.5%"
     }
 
-
     return (
       <div>
         {!isVideo &&<div style={backgroundStyle}>
-          <div style={styleFull}>
+          <div id="presentation-text" style={styleFull}>
               {words}
           </div>
         </div>

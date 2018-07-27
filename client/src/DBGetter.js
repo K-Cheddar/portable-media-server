@@ -1,7 +1,12 @@
 
 export function init(db, updateState, getSuccess, getAttempted){
   db.get('currentInfo').then(function(doc){
-    updateState({currentInfo: doc.info})
+    let obj = {
+      background: doc.info.background,
+      words: ' ',
+      style: doc.info.style
+    }
+    updateState({currentInfo: obj})
     getSuccess('currentInfo')
   }).catch(function(){
     console.log('currentInfo not loaded');

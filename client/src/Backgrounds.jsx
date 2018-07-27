@@ -16,6 +16,7 @@ export default class Backgrounds extends React.Component{
     this.selectBackground = this.selectBackground.bind(this);
     this.setItemBackground = this.setItemBackground.bind(this);
     this.setSlideBackground = this.setSlideBackground.bind(this);
+    this.displayImage = this.displayImage.bind(this);
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
   }
@@ -31,6 +32,11 @@ export default class Backgrounds extends React.Component{
   componentDidMount(){
     let {backgrounds} = this.props
     this.setState({selectBackground: backgrounds[0]})
+  }
+
+  displayImage(){
+    let {selectedBackground} = this.state;
+    this.props.updateCurrent({background: selectedBackground, words: ''})
   }
 
   selectBackground(index){
@@ -91,11 +97,12 @@ export default class Backgrounds extends React.Component{
             />}
         </div>
         <div style={{display:'flex', paddingTop: '1vh'}}>
-          <button onClick={this.setItemBackground}>Set Item Background</button>
-          {item.type==='song' &&<button onClick={this.setSlideBackground}>Set Slide Background</button>}
+          <button style={{width: '7vw'}} onClick={this.displayImage}>Display Image</button>
+          <button style={{marginLeft:'1%', width: '9vw'}} onClick={this.setItemBackground}>Set Item Background</button>
+          {item.type==='song' &&<button style={{marginLeft:'1%', width: '10vw'}} onClick={this.setSlideBackground}>Set Slide Background</button>}
         </div>
         <div style={{display:'flex', overflowX: 'scroll', width: '36vmax'}}>{BCKS}</div>
-        {allOpen  &&<AllBackgrounds setItemBackground={this.props.setItemBackground}
+        {allOpen  &&<AllBackgrounds setItemBackground={this.props.setItemBackground} updateCurrent={this.props.updateCurrent}
           setSlideBackground={this.props.setSlideBackground} item={item} backgrounds={backgrounds}
           />}
       </div>

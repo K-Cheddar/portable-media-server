@@ -61,6 +61,7 @@ class DisplayEditor extends React.Component{
 
     setTimeout(function(){
       document.getElementById("displayEditor").selectionEnd = cursor;
+      document.getElementById("displayEditor").scrollTop = 0;
     }, 10)
     }
 

@@ -12,11 +12,36 @@ export default class MiniPresentation extends React.Component{
 
   componentDidUpdate(prevProps){
     let {background} = this.props;
+
     if(background !== prevProps.background ){
       let video = document.getElementById('background-video-mini');
       if(video)
         video.loop = true;
     }
+    let box = document.getElementById("background-text");
+    let text = box.innerHTML;
+    let newText = "";
+    for (let i = 0; i < text.length; ++i){
+      if(text[i-1] === '{' && text[i+1] === '}'){
+        newText += text.charAt(i).fontcolor("red")
+        i+=1;
+      }
+      else if(text[i-1] === '{' && text[i+2] === '}'){
+        newText += text.charAt(i).fontcolor("red")
+        newText += text.charAt(i+1).fontcolor("red")
+        i+=2;
+      }
+      else if(text[i-1] === '{' && text[i+3] === '}'){
+        newText += text.charAt(i).fontcolor("red")
+        newText += text.charAt(i+1).fontcolor("red")
+        newText += text.charAt(i+2).fontcolor("red")
+        i+=3;
+      }
+      else if(text[i]!== '{'){
+        newText+=text[i]
+      }
+    }
+    box.innerHTML = newText;
   }
 
   render() {
@@ -51,7 +76,7 @@ export default class MiniPresentation extends React.Component{
         </div>
         {!isVideo && <div style={{backgroundImage: 'url('+img+')',
         width: '16vw', height: '9vw', backgroundSize: '100% 100%', position:'absolute'}}>
-          <div style={styleFull}>{words}</div>
+          <div id="background-text" style={styleFull}>{words}</div>
         </div>}
         {isVideo &&<div style={{width:'16vw', height:'9vw',position:'relative'}}>
           <video loop autoPlay id="background-video-mini"

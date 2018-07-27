@@ -54,7 +54,6 @@ export default class CreateName extends React.Component{
     let {type} = this.props;
 
     let firstSlide = "";
-    let nameSize = 4.5;
     let {backgrounds} = this.props;
     let background = "";
 

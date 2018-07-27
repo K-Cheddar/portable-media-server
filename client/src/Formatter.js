@@ -40,7 +40,12 @@ export function formatSong(item){
   return item;
 }
 
+// export function formatVerse(verse, fontSize, background, color){
+//   return formatBibleVerses(verse, fontSize, background, color);
+// }
+
 export function formatBible(item, mode, verses){
+  let initFontSize = 2.5
   let slides = [
             {
               type: 'bible',
@@ -54,9 +59,10 @@ export function formatBible(item, mode, verses){
             }
           ]
   if(verses)
-    slides.push(...formatBibleVerses(verses, item.slides[1].boxes[0].fontSize, item.slides[0].boxes[0].background, item.slides[0].boxes[0].fontColor, mode));
+    slides.push(...formatBibleVerses(verses, initFontSize, item.slides[0].boxes[0].background, item.slides[0].boxes[0].fontColor, mode));
   else
     slides.push(...formatBibleVerses(item.slides.slice(1).map(a => a.boxes[0].words), item.slides[1].boxes[0].fontSize, item.slides[0].boxes[0].background, item.slides[0].boxes[0].fontColor, mode));
+
   item.slides = slides;
   return item;
 }
@@ -70,7 +76,7 @@ function formatBibleVerses(verses, fontSize, background, fontColor, mode){
       let words;
       if(mode === 'create'){
          words = verses[i].text.split(" ");
-         slide += verses[i].verse + " ";
+         slide += "{" + verses[i].verse + "}" + " ";
       }
       if(mode === 'edit')
         words = verses[i].split(" ")
