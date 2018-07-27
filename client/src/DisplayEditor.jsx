@@ -33,12 +33,12 @@ class DisplayEditor extends React.Component{
     let words = event.target.value;
 
     if(item.type === 'bible' && wordIndex === 0){
-      item.words[wordIndex].words = words
+      item.slides[wordIndex].boxes[0].words = words
     }
-    else if(item.words[wordIndex] && wordIndex < item.words.length-1 && wordIndex !== 0){
+    else if(item.slides[wordIndex] && wordIndex < item.slides.length-1 && wordIndex !== 0){
       if(item.type === 'song'){
-        index = item.formattedLyrics.findIndex(e => e.name === item.words[wordIndex].type);
-        let start = wordIndex - item.words[wordIndex].slideIndex;
+        index = item.formattedLyrics.findIndex(e => e.name === item.slides[wordIndex].type);
+        let start = wordIndex - item.slides[wordIndex].boxes[0].slideIndex;
         let end = start + item.formattedLyrics[index].slideSpan - 1;
         let newWords = ""
 
@@ -46,7 +46,7 @@ class DisplayEditor extends React.Component{
           if(i === wordIndex)
             newWords+= words;
           else
-            newWords+= item.words[i].words;
+            newWords+= item.slides[i].boxes[0].words;
         }
         if(newWords !== "")
           item.formattedLyrics[index].words = newWords
@@ -54,7 +54,7 @@ class DisplayEditor extends React.Component{
     }
     else if(item.type === 'song' && wordIndex===0){
       if(words.length > 0)
-        item.words[wordIndex].words = words
+        item.slides[wordIndex].boxes[0].words = words
     }
 
     this.props.updateItem(item);
@@ -66,7 +66,7 @@ class DisplayEditor extends React.Component{
 
   render() {
     let {wordIndex, item, backgrounds} = this.props;
-    let words = item.words;
+    let words = item.slides;
     let text = "", background = blank, asset;
     let search = item.background;
     let isVideo = false;
@@ -85,14 +85,11 @@ class DisplayEditor extends React.Component{
     }
 
     if(words){
-       text = item.words[wordIndex] ? item.words[wordIndex].words : "";
-         style.color = item.style.color;
-      if(wordIndex === 0)
-        style.fontSize = item.nameSize + "vw";
-      else
-         style.fontSize = item.style.fontSize*.95 + "vw";
-      if(item.words[wordIndex] && item.words[wordIndex].background)
-      search = item.words[wordIndex].background;
+       text = item.slides[wordIndex] ? item.slides[wordIndex].boxes[0].words : "";
+       style.color = item.slides ? item.slides[wordIndex].boxes[0].fontColor : 'rgba(255, 255, 255, 1)';
+       style.fontSize = item.slides ? item.slides[wordIndex].boxes[0].fontSize*.95 + "vw" : '1vw';
+      if(item.slides[wordIndex] && item.slides[wordIndex].boxes[0].background)
+      search = item.slides[wordIndex].boxes[0].background;
     }
     if(backgrounds){
       if(backgrounds.some(e => e.name === search)){

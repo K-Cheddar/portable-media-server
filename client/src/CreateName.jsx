@@ -68,16 +68,20 @@ export default class CreateName extends React.Component{
     let item = {
         "_id": name,
         "name": name,
-        "background": background,
-        "words": [{type: 'Name', words: firstSlide}],
+        "slides": [
+          {
+            "type": 'Name',
+            "boxes": [
+              {"background": background,
+               "fontSize": 4.5,
+               "fontColor": 'rgba(255, 255, 255, 1)',
+               "words": firstSlide,
+              }
+            ]
+          }
+        ],
         "formattedLyrics": [],
         "songOrder": [],
-        "nameSize": nameSize
-        ,
-        "style":{
-          color: 'rgba(255, 255, 255, 1)',
-          fontSize: 2.5
-        },
         "type": type
       }
 

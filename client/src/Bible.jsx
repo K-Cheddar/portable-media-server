@@ -77,12 +77,18 @@ export default class Bible extends Component {
       "_id": name,
       "name": name,
       "background": "",
-      "words": [{type: 'Name', words: name}],
-      "nameSize": 4.5,
-      "style":{
-        color: 'rgba(255, 255, 255, 1)',
-        fontSize: 2.25
-      },
+      "slides": [
+        {
+          type: 'Name',
+          boxes: [
+            {background: '',
+             fontSize: 4.5,
+             fontColor: 'rgba(255, 255, 255, 1)',
+             words: name,
+            }
+          ]
+        }
+      ],
       "type": "bible"
     };
 

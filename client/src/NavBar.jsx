@@ -65,7 +65,7 @@ export default class NavBar extends Component {
     return(
       <div style={window.location.hash==="#/fullview" ? {display: 'flex', width:'99vw', height: '3vw'} : {display:'none'}} >
         <ul style={{display:'flex'}}>
-          {/*<li><button onClick={this.props.test}>TEST</button></li>*/}
+          {/*<li><button onClick={this.props.test}>UPDATE ALL</button></li>*/}
           <li>
             <Link to="/">Home</Link>
           </li>

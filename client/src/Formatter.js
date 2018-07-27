@@ -1,10 +1,21 @@
 export function formatSong(item){
-  let words = formatLyrics(item.name, item.songOrder, item.formattedLyrics, item.style.fontSize);
-  for (let i = 0; i < words.length; i++) {
-    if(item.words[i])
-      words[i].background = item.words[i].background
+  let name = item.name;
+  let songOrder = item.songOrder;
+  let formattedLyrics = item.formattedLyrics;
+  let fontSize = item.slides[1].boxes[0].fontSize;
+  let nameSize = item.slides[0].boxes[0].fontSize;
+  let slides = formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSize);
+  for (let i = 0; i < slides.length; i++) {
+    if(item.slides[i]){
+      slides[i].boxes[0].background = item.slides[i].boxes[0].background
+      slides[i].boxes[0].fontColor = item.slides[i].boxes[0].fontColor
+    }
+    else{
+      slides[i].boxes[0].fontColor = item.slides[1].boxes[0].fontColor
+    }
+
   }
-  item.words = words;
+  item.slides = slides;
   for(let i = 0; i < item.formattedLyrics.length; ++i){
     let type = item.formattedLyrics[i].name
     let counter = 0;
@@ -15,8 +26,8 @@ export function formatSong(item){
       if(type === item.songOrder[j])
         ++songOrderCounter;
     }
-    for (let j = 0; j < item.words.length; j++) {
-      if(type === item.words[j].type)
+    for (let j = 0; j < item.slides.length; j++) {
+      if(type === item.slides[j].type)
         ++counter;
     }
     if(songOrderCounter !== 0)
@@ -30,16 +41,27 @@ export function formatSong(item){
 }
 
 export function formatBible(item, mode, verses){
-  let words = [{type: 'bible', words:item.name}]
+  let slides = [
+            {
+              type: 'bible',
+              boxes: [
+                {background: item.slides[0].boxes[0].background,
+                 fontSize: item.slides[0].boxes[0].fontSize,
+                 fontColor: item.slides[0].boxes[0].fontColor,
+                 words: item.name,
+                }
+              ]
+            }
+          ]
   if(verses)
-    words.push(...formatBibleVerses(verses, item.style.fontSize, mode));
+    slides.push(...formatBibleVerses(verses, item.slides[1].boxes[0].fontSize, item.slides[0].boxes[0].background, item.slides[0].boxes[0].fontColor, mode));
   else
-    words.push(...formatBibleVerses(item.words.slice(1).map(a => a.words), item.style.fontSize, mode));
-  item.words = words;
+    slides.push(...formatBibleVerses(item.slides.slice(1).map(a => a.boxes[0].words), item.slides[1].boxes[0].fontSize, item.slides[0].boxes[0].background, item.slides[0].boxes[0].fontColor, mode));
+  item.slides = slides;
   return item;
 }
 
-function formatBibleVerses(verses, fontSize, mode){
+function formatBibleVerses(verses, fontSize, background, fontColor, mode){
 
     let maxLines = getNumLines("verses", fontSize).maxLines;
     let formattedVerses = [];
@@ -61,33 +83,60 @@ function formatBibleVerses(verses, fontSize, mode){
           slide = update;
         else{
           slide = slide.replace(/\s+/g,' ').trim();
-          formattedVerses.push({type: 'bible', words:slide});
+          formattedVerses.push({
+                          type: 'bible',
+                          boxes: [
+                            {background: background,
+                             fontSize: fontSize,
+                             fontColor: fontColor,
+                             words: slide,
+                            }
+                          ]
+                        })
           slide = words[j] +" ";
         }
       }
 
     }
     slide = slide.replace(/\s+/g,' ').trim();
-    formattedVerses.push({type: 'bible', words:slide});
+    formattedVerses.push({
+                    type: 'bible',
+                    boxes: [
+                      {background: background,
+                       fontSize: fontSize,
+                       fontColor: fontColor,
+                       words: slide,
+                      }
+                    ]
+                  });
     return formattedVerses;
 }
 
-export function formatLyrics(name, songOrder, formattedLyrics, fontSize){
-  let words = [{type: 'Name', words: name}];
+export function formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSize){
+  let slides = [
+            {
+              type: 'Name',
+              boxes: [
+                {
+                 fontSize: nameSize,
+                 words: name,
+                }
+              ]
+            }
+          ]
   let counter = 0;
   let lineCounter = 0;
 
   for (let i = 0; i < songOrder.length; ++i){
     let lyrics = formattedLyrics.find(e => e.name === songOrder[i]).words;
-    words.push(...formatSection(lyrics, songOrder[i]));
-    // console.log(words);
+    slides.push(...formatSection(lyrics, songOrder[i]));
   }
 
   function formatSection(lyrics, type){
     let fLyrics = [];
     let obj = getNumLines(lyrics, fontSize);
     let maxLines = obj.maxLines;
-    if(maxLines > 8)
+    if(maxLines >= 8)
       maxLines--;
 
     let lines = lyrics.split("\n");
@@ -110,12 +159,30 @@ export function formatLyrics(name, songOrder, formattedLyrics, fontSize){
         i+=counter-1;
         if(slide === "")
           slide = " "
-        fLyrics.push({type: type, words: slide, slideIndex:fLyrics.length})
+        fLyrics.push({
+                  type: type,
+                  boxes: [
+                    {
+                     fontSize: fontSize,
+                     words: slide,
+                     slideIndex: fLyrics.length
+                    }
+                  ]
+                })
+
     }
     return fLyrics;
   }
-  words.push({words: ' '})
-  return words;
+  slides.push({
+            type: 'end',
+            boxes: [
+              {
+               fontSize: fontSize,
+               words: ' ',
+              }
+            ]
+          })
+  return slides;
 }
 
 

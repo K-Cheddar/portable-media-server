@@ -55,6 +55,7 @@ const initialState = {
   isLoggedIn: false,
   wordIndex: 0,
   itemIndex: 0,
+  boxIndex: 0,
   item: {},
   itemList: [],
   itemLists: [],
@@ -118,12 +119,11 @@ class App extends Component {
   }
 
   updateFormat({
-    c = this.state.item.style.color,
-    fontSize = this.state.item.style.fontSize,
-    nameSize = this.state.item.nameSize
+    c = this.state.item.slides[this.state.wordIndex].boxes[0].fontColor,
+    fontSize = this.state.item.slides[this.state.wordIndex].boxes[0].fontSize,
     } = {}){
 
-    let {item, itemList, itemIndex, allItems, wordIndex} = this.state;
+    let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = this.state;
     let color;
 
     //if it recieves a value it is formatted as {r: r, g: g, b: b, a: a}
@@ -133,30 +133,40 @@ class App extends Component {
     else
       color = 'rgba('+c.r+' , ' +c.g+' , '+c.b+' , '+c.a+')';
 
-    item.nameSize = nameSize;
-    item.style = {
-      color: color,
-      fontSize: fontSize
+    item.slides[wordIndex].boxes[0].fontColor = color;
+    if(boxIndex === 0){
+      if(wordIndex !== 0){
+        for(let i = 1; i < item.slides.length; ++i){
+            item.slides[i].boxes[0].fontSize = fontSize;
+        }
+      }
+      else{
+        item.slides[0].boxes[0].fontSize = fontSize;
+      }
     }
 
     //update color of item in current list
-    itemList[itemIndex].nameColor = color;
+    itemList[itemIndex].nameColor = item.slides[0].boxes[0].fontColor
 
     //update color of item in full list
     let index = allItems.findIndex(e => e._id === item._id)
-    allItems[index].nameColor = color;
+    allItems[index].nameColor = item.slides[0].boxes[0].fontColor
 
-    if(item.type === 'bible' && wordIndex !== 0)
+    if(item.type === 'bible' && wordIndex !== 0){}
       item = Formatter.formatBible(item, 'edit');
 
     if(item.type === 'song' && wordIndex !== 0)
       item = Formatter.formatSong(item);
+
+    if(wordIndex >= item.slides.length)
+      wordIndex = item.slides.length-1
 
     //update state, ready to update
     this.setState({
       item: item,
       itemList: itemList,
       allItems: allItems,
+      wordIndex: wordIndex,
       needsUpdate: true
     });
   }
@@ -189,7 +199,6 @@ class App extends Component {
           else{
             alert("Please reconnect to the internet to continue")
           }
-          // DBUpdater.keepPresentationAlive(db);
         }
     }
     this.setState({attempted: attempted})
@@ -253,7 +262,6 @@ class App extends Component {
     DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
     DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
 
-    // DBUpdater.keepPresentationAlive(db);
     // db.sync(localDB, {
     //   live: true,
     //   retry: true
@@ -272,12 +280,12 @@ class App extends Component {
     let {item, itemIndex, itemList, allItems} = this.state;
     let index = allItems.findIndex(e => e.name === item.name)
 
-    if(!item.words)
+    if(!item.slides)
       return;
 
     //set all slides to match item background
-    for (var i = 0; i < item.words.length; i++) {
-      item.words[i].background = background;
+    for (var i = 0; i < item.slides.length; i++) {
+      item.slides[i].boxes[0].background = background;
     }
     console.log(itemList, itemIndex);
     //update Item background in all places
@@ -298,7 +306,7 @@ class App extends Component {
     let ta = this;
     console.log("BEFORE", item);
 
-    item.words[wordIndex].background = background;
+    item.slides[wordIndex].boxes[0].background = background;
     console.log("DURING", item);
     this.setState({
       item: item,
@@ -311,7 +319,7 @@ class App extends Component {
 
     let scrollTo = index;
 
-    if(index > this.state.wordIndex && index+1 < this.state.item.words.length)
+    if(index > this.state.wordIndex && index+1 < this.state.item.slides.length)
       scrollTo+=1;
     if(index < this.state.wordIndex && index > 0){
       scrollTo-=1;
@@ -326,28 +334,23 @@ class App extends Component {
 
     this.setState({wordIndex: index});
     let {item} = this.state;
-    if(!item.style)
-      return;
-    let fSize;
-    if(index === 0)
-      fSize = item.nameSize
-    else
-      fSize = item.style.fontSize
+    let fontSize = item.slides ? item.slides[index].boxes[0].fontSize : 4
+    let color = item.slides ? item.slides[index].boxes[0].fontColor : 'rgba(255, 255, 255, 1)'
 
     let style = {
-      color: item.style.color,
-      fontSize: fSize,
+      color: color,
+      fontSize: fontSize
     }
-    if(item.words[index].background)
-      this.updateCurrent({words: lyrics, style: style, background:item.words[index].background, index});
+    if(item.slides ? item.slides[index].boxes[0].background : '')
+      this.updateCurrent({words: lyrics, style: style, background:item.slides[index].boxes[0].background, index});
     else
       this.updateCurrent({words: lyrics, style: style});
   }
 
   updateCurrent({
-    words = this.state.item.words[this.state.wordIndex].words,
+    words = this.state.item.slides ? this.state.item.slides[this.state.wordIndex].boxes[0].words : "",
     background = this.state.item.background,
-    style = this.state.item.style,
+    style = this.state.item.slides ? this.state.item.slides[this.state.wordIndex].boxes[0] : {},
     index = -1,
     } = {}){
 
@@ -355,7 +358,7 @@ class App extends Component {
       return;
 
     if(index >= 0)
-      background = this.state.item.words[index].background
+      background = this.state.item.slides[index].boxes[0].background
 
     let date = new Date();
     let time = date.getTime();
@@ -492,10 +495,10 @@ class App extends Component {
 
   insertWords(targetIndex){
     let {item, wordIndex} = this.state;
-    let words = item.words[wordIndex].words;
+    let words = item.slides[wordIndex].boxes[0].words;
 
-    item.words.splice(wordIndex, 1);
-    item.words.splice(targetIndex, 0, words);
+    item.slides.splice(wordIndex, 1);
+    item.slides.splice(targetIndex, 0, words);
 
     this.setWordIndex(targetIndex);
     this.setState({item: item, needsUpdate: true});
@@ -557,6 +560,9 @@ class App extends Component {
   //   });
   //
   // });
+
+  DBUpdater.updateALL(this.state.db);
+
   }
 
 
@@ -591,8 +597,6 @@ class App extends Component {
     DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
     DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
 
-    // DBUpdater.keepPresentationAlive(db);
-
   }
 
   logout(){
@@ -612,7 +616,6 @@ class App extends Component {
     DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
     DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
 
-    // DBUpdater.keepPresentationAlive(db);
   }
 
   render() {

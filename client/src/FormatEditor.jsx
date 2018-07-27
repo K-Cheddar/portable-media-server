@@ -13,7 +13,11 @@ class FormatEditor extends React.Component{
       cPickerOpen: false,
       color: "#FFFFFF",
       fontSize: 5,
+      updating: false
     }
+
+    this.throttle = null
+
     this.colorChange = this.colorChange.bind(this);
     this.openColors = this.openColors.bind(this);
     this.closeColors = this.closeColors.bind(this);
@@ -24,10 +28,7 @@ class FormatEditor extends React.Component{
   }
   componentDidMount(){
     let {item, wordIndex} = this.props;
-    if(wordIndex === 0)
-    this.setState({fontSize: item.nameSize})
-    else
-    this.setState({fontSize: item.style.fontSize})
+    // this.setState({fontSize: item.slides[wordIndex].boxes[0].fontSize})
   }
 
   openColors(){
@@ -43,18 +44,18 @@ class FormatEditor extends React.Component{
   colorChange(event){
     let {item} = this.props;
     this.setState({color: event.rgb})
-    if(item.style)
-      this.props.updateFormat({c: event.rgb})
+    this.props.updateFormat({c: event.rgb})
   }
 
   updateFont(fontSize){
     let {wordIndex, item} = this.props;
-    if(item.style){
-      if(wordIndex === 0)
-        this.props.updateFormat({nameSize: fontSize})
-      else
-        this.props.updateFormat({fontSize: fontSize})
+    if(fontSize > 7.5){
+      fontSize = 7.5
     }
+    else if(fontSize < 0.25){
+      fontSize = 0.25
+    }
+    this.props.updateFormat({fontSize: fontSize})
   }
 
   fontSizeUP(){
@@ -72,33 +73,46 @@ class FormatEditor extends React.Component{
 
   fontSizeChange(event){
     let val;
+    let {updating} = this.state;
+    let that = this;
     if(event.target.value.length === 0)
-      val = 0;
+      val = 1;
     else{
       val = parseInt(event.target.value, 10);
       val/=4;
     }
 
-    this.setState({fontSize: val})
-    this.updateFont(val)
+    if(val > 7.5)
+      val = 7.5
+
+    clearTimeout(this.throttle)
+    if(updating){
+      this.throttle = setTimeout(function(){
+        let fontSize = that.state.fontSize;
+        that.updateFont(fontSize)
+        that.setState({updating: false})
+      }, 100)
+    }
+    else{
+      this.updateFont(val)
+    }
+
+    this.setState({fontSize: val, updating: true})
+    // Helper.debounce(() => (that.updateFont(val)),1000);
+    // Helper.throttle(function(){alert("hi")}, 1000)
   }
+
+
 
   componentDidUpdate(prevProps, prevState){
 
     let{item, wordIndex} = this.props;
     let {fontSize} = this.state;
 
-    if(item.style){
-      if(wordIndex === 0){
-        if(item.nameSize !== fontSize)
-          this.setState({fontSize: item.nameSize})
-      }
-      else{
-        if(item.style.fontSize !== fontSize)
-          this.setState({fontSize: item.style.fontSize})
-      }
+    if((wordIndex !== prevProps.wordIndex) || (item.name !== prevProps.item.name)){
+      this.setState({fontSize: item.slides ? item.slides[wordIndex].boxes[0].fontSize : 4})
       if(prevProps.item._id !== item._id){
-        let stringToRGB = item.style.color.replace(/[^\d,]/g, '').split(',');
+        let stringToRGB = item.slides ? item.slides[wordIndex].boxes[0].fontColor.replace(/[^\d,]/g, '').split(',') : [1,2,3,4];
         this.setState({
           color: {
             r: stringToRGB[0],
@@ -116,10 +130,6 @@ class FormatEditor extends React.Component{
 
     let {item} = this.props;
     let {cPickerOpen, fontSize} = this.state;
-
-    if(!item.style)
-      fontSize = 5;
-
 
     return (
         <div >

@@ -30,8 +30,8 @@ export default class MobileSlides extends React.Component{
 
   nextSlide(index){
     let {item} = this.props;
-    if(index < item.words.length-1){
-        this.props.setWordIndex(index+1, item.words[index+1].words)
+    if(index < item.slides.length-1){
+        this.props.setWordIndex(index+1, item.slides[index+1].boxes[0].words)
     }
 
   }
@@ -39,12 +39,12 @@ export default class MobileSlides extends React.Component{
   prevSlide(index){
     let {item} = this.props;
     if(index > 0)
-      this.props.setWordIndex(index-1, item.words[index-1].words)
+      this.props.setWordIndex(index-1, item.slides[index-1].boxes[0].words)
   }
 
   render() {
     let {item, backgrounds, wordIndex} = this.props;
-    let words = item.words ? item.words.map(a => a.words) : null;
+    let words = item.slides ? item.slides.map(a => a.boxes[0].words) : null;
     //let name = item.name;
     let that = this;
 
@@ -60,8 +60,8 @@ export default class MobileSlides extends React.Component{
            height:"13.4vmax"}} key={index} id={"MSlide"+index}
           onClick={() => (that.clickSlide(index, lyrics))}
           >
-          <MobileSlideInList words={lyrics} background={item.background} color={item.style.color}
-            fontSize={(index === 0) ? item.nameSize : item.style.fontSize} backgrounds={backgrounds}
+          <MobileSlideInList words={lyrics} background={item.background} color={item.slides[wordIndex].boxes[0].fontColor}
+            fontSize={(index === 0) ? item.nameSize : item.slides[wordIndex].boxes[0].fontSize} backgrounds={backgrounds}
             sBackground={item.words[index].background}/>
         </div>
       );

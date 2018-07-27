@@ -149,7 +149,6 @@ export default class LyricsBox extends Component{
 
     console.log("From auto format", item);
     this.props.updateItem(item);
-    // console.log(words)
     this.props.close();
   }
 

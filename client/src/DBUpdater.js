@@ -1,11 +1,10 @@
-let interval = null
+let updaterInterval = null
 export function update(db, item, selectedItemList, itemList, allItems, updateState){
   if(item.name){
     db.get(item._id).then(function (doc) {
       doc.name = item.name;
       doc.background = item.background;
-      doc.words = item.words;
-      doc.style = item.style;
+      doc.slides = item.slides;
       doc.nameSize = item.nameSize;
       doc.formattedLyrics = item.formattedLyrics;
       doc.songOrder = item.songOrder;
@@ -45,37 +44,10 @@ export function update(db, item, selectedItemList, itemList, allItems, updateSta
  });
 }
 
-export function keepPresentationAlive(db){
-
-  var timer = null;
-  clearInterval(interval)
-  interval = setInterval(pUpdate,15000);
-
-  function pUpdate(){
-    db.get("currentInfo").then(function(doc){
-      if(!doc.info.updated){
-        //doc.info.toggle = !doc.info.toggle;
-        doc.info.updated = true;
-        db.put(doc);
-        clearTimeout(timer);
-        timer = setTimeout(function(){
-          db.get("currentInfo").then(function(doc1){
-            doc1.info.updated = false;
-            db.put(doc1)
-          })
-        }, 15000)
-      }
-    }).catch(function(){
-      console.log('current Info update not working not working');
-    });
-  }
-}
-
 export function updateCurrent(db, words, background, style, time){
   function updateValues(doc) {
     doc.info.words = words;
     doc.info.background = background;
-    doc.info.style = style;
     doc.info.time = time;
     doc.info.updated = true;
     return doc;
@@ -88,11 +60,11 @@ export function updateItem(db, itemID, updateState, freeze, updateCurrent){
   db.get(itemID).then(function (doc) {
     updateState({item: doc});
     let style = {
-      color: doc.style.color,
+      color: doc.slides[0].boxes[0].fontColor,
       fontSize: doc.nameSize,
     }
     if(!freeze)
-      updateCurrent({words: doc.words[0].words, background: doc.background, style: style, index: 0});
+      updateCurrent({words: doc.slides[0].boxes[0].words, background: doc.background, style: style, index: 0});
   })
 }
 
@@ -119,7 +91,7 @@ export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemT
         "name": item.name,
         "_id": item._id,
         "background": item.background,
-        "nameColor": item.style.color,
+        "nameColor": item.slides[0].boxes[0].fontColor,
         "type": item.type
       }
       addItemToList(itemObj);
@@ -150,6 +122,8 @@ export function deleteItem(db, name, allItems, index, selectedItemList, setItemI
     updateState({allItems: doc.items});
     return db.put(doc);
   })
+
+  updateState({item: {}})
   //delete item from each list
   for(let i = 1; i <= 5; ++i){
     db.get("Item List "+i).then(function(doc){
@@ -196,5 +170,47 @@ export function updateItemLists(db, itemLists, newList){
     "items" : []
     };
      db.put(SL)
+  })
+}
+
+export function updateALL(db){
+  db.get('allItems').then(function (doc) {
+    let items = doc.items;
+    let i = 0;
+    clearInterval(updaterInterval);
+    updaterInterval = setInterval(function(){
+      if(i < items.length){
+        db.get(items[i]._id).then(function(doc){
+          let words = doc.words;
+          let slides = [];
+          for (let j = 0; j < words.length-1; ++j){
+            let slide = {
+                        "type": words[j].type,
+                        "slideIndex": words[j].slideIndex || 0,
+                        "boxes": [
+                          {"background": words[j].background,
+                           "fontSize": (j===0) ? doc.nameSize : doc.style.fontSize,
+                           "fontColor": doc.style.color,
+                           "words": words[j].words,
+                          }
+                        ]
+                      }
+              slides.push(slide);
+          }
+          console.log("Updated: ", doc.name);
+          doc.slides = slides;
+          delete doc.words;
+          delete doc.background;
+          delete doc.nameSize;
+          delete doc.style;
+          db.put(doc);
+        })
+        ++i
+      }
+      else{
+        clearInterval(updaterInterval)
+      }
+    }, 250)
+
   })
 }

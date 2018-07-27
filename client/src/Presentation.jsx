@@ -98,7 +98,7 @@ class Presentation extends React.Component{
       height: '85%',
       width: '85%',
       whiteSpace:'pre-wrap',
-      color: style.color,
+      color: style.fontColor,
       fontSize: style.fontSize*2.25+"vw",
       fontFamily: "Verdana",
       padding: "4% 7.5% 7.5%"

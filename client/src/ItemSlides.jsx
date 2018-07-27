@@ -80,14 +80,24 @@ class ItemSlides extends React.Component{
 
   addSlide(){
     let {item, wordIndex} = this.props;
-    item.words.splice(wordIndex+1, 0, {type: item.words[wordIndex].type, words:' '})
+    item.slides.splice(wordIndex+1, 0,     {
+                        type: item.slides[wordIndex].type,
+                        boxes: [
+                          {background: item.slides.boxes[0].background,
+                           fontSize: item.slides.boxes[0].fontSize,
+                           fontColor: 'rgba(255, 255, 255, 1)',
+                           words: ' ',
+                          }
+                        ]
+                      })
+
     this.props.updateItem(item);
-    this.props.setWordIndex(item.words.length-1)
+    this.props.setWordIndex(item.slides.length-1)
   }
 
   deleteSlide(index){
     let {item} = this.props;
-    item.words.splice(index, 1);
+    item.slides.splice(index, 1);
     this.props.updateItem(item);
   }
 
@@ -96,7 +106,7 @@ class ItemSlides extends React.Component{
     let {item, backgrounds, wordIndex} = this.props;
     let {mouseX, mouseY, indexBeingDragged} = this.state;
     let type = item.type;
-    let words = item.words ? item.words.map(a => a.words) : null;
+    let words = item.slides ? item.slides.map(a => a.boxes[0].words) : null;
     let that = this;
     let row = [];
     let fullArray = [];
@@ -143,16 +153,16 @@ class ItemSlides extends React.Component{
               onMouseOver={() => (that.setTarget(index*3+i))}
               >
               {(selected && beingDragged) &&
-                <SlideInList words={lyrics} background={item.background} sBackground={item.words[index*3+i].background}
-                  color={item.style.color}
-                  fontSize={(index === 0 && i === 0) ? item.nameSize : item.style.fontSize}
+                <SlideInList words={lyrics} background={item.background} sBackground={item.slides[index*3+i].boxes[0].background}
+                  color={item.slides[index*3+i].boxes[0].fontColor}
+                  fontSize={item.slides[index*3+i].boxes[0].fontSize}
                   backgrounds={backgrounds} x={mouseX} y={mouseY} moving={true}
                   />
               }
               {(!selected || !beingDragged) &&
-                <SlideInList words={lyrics} background={item.background} sBackground={item.words[index*3+i].background}
-                  color={item.style.color}
-                  fontSize={(index === 0 && i === 0) ? item.nameSize : item.style.fontSize}
+                <SlideInList words={lyrics} background={item.background} sBackground={item.slides[index*3+i].boxes[0].background}
+                  color={item.slides[index*3+i].boxes[0].fontColor}
+                  fontSize={item.slides[index*3+i].boxes[0].fontSize}
                   backgrounds={backgrounds}
                   />
               }

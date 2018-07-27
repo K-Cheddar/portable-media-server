@@ -1,3 +1,4 @@
+
 export function init(db, updateState, getSuccess, getAttempted){
   db.get('currentInfo').then(function(doc){
     updateState({currentInfo: doc.info})
@@ -18,7 +19,7 @@ export function init(db, updateState, getSuccess, getAttempted){
   db.get('ItemLists').then(function (doc) {
     updateState({
       itemLists: doc.itemLists,// list of item list names
-      selectedItemList: doc.itemLists[0] //name of first item list
+      selectedItemList: doc.itemLists[0].name //name of first item list
     })
     getSuccess('Item Lists')
   }).catch(function(){
@@ -27,7 +28,7 @@ export function init(db, updateState, getSuccess, getAttempted){
     getAttempted('Item Lists', db)
   })
   db.get('allItems').then(function (doc) {
-    updateState({allItems: doc.items}) //every single Item
+    updateState({allItems: doc.items})
     getSuccess('allItems')
   }).catch(function(){
     console.log('allItems not loaded');
