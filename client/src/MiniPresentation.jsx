@@ -19,29 +19,32 @@ export default class MiniPresentation extends React.Component{
         video.loop = true;
     }
     let box = document.getElementById("background-text");
-    let text = box.innerHTML;
-    let newText = "";
-    for (let i = 0; i < text.length; ++i){
-      if(text[i-1] === '{' && text[i+1] === '}'){
-        newText += text.charAt(i).fontcolor("red")
-        i+=1;
+    if(box){
+      let text = box.innerHTML;
+      let newText = "";
+      for (let i = 0; i < text.length; ++i){
+        if(text[i-1] === '{' && text[i+1] === '}'){
+          newText += text.charAt(i).fontcolor("red")
+          i+=1;
+        }
+        else if(text[i-1] === '{' && text[i+2] === '}'){
+          newText += text.charAt(i).fontcolor("red")
+          newText += text.charAt(i+1).fontcolor("red")
+          i+=2;
+        }
+        else if(text[i-1] === '{' && text[i+3] === '}'){
+          newText += text.charAt(i).fontcolor("red")
+          newText += text.charAt(i+1).fontcolor("red")
+          newText += text.charAt(i+2).fontcolor("red")
+          i+=3;
+        }
+        else if(text[i]!== '{'){
+          newText+=text[i]
+        }
       }
-      else if(text[i-1] === '{' && text[i+2] === '}'){
-        newText += text.charAt(i).fontcolor("red")
-        newText += text.charAt(i+1).fontcolor("red")
-        i+=2;
-      }
-      else if(text[i-1] === '{' && text[i+3] === '}'){
-        newText += text.charAt(i).fontcolor("red")
-        newText += text.charAt(i+1).fontcolor("red")
-        newText += text.charAt(i+2).fontcolor("red")
-        i+=3;
-      }
-      else if(text[i]!== '{'){
-        newText+=text[i]
-      }
+      box.innerHTML = newText;
     }
-    box.innerHTML = newText;
+
   }
 
   render() {

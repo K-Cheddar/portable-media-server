@@ -62,7 +62,7 @@ export default class MobileSlides extends React.Component{
           >
           <MobileSlideInList words={lyrics} background={item.background} color={item.slides[wordIndex].boxes[0].fontColor}
             fontSize={(index === 0) ? item.nameSize : item.slides[wordIndex].boxes[0].fontSize} backgrounds={backgrounds}
-            sBackground={item.words[index].background}/>
+            sBackground={item.slides[index].boxes[0].background}/>
         </div>
       );
     })
