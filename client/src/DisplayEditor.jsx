@@ -35,7 +35,10 @@ class DisplayEditor extends React.Component{
     if(item.type === 'bible' && wordIndex === 0){
       item.slides[wordIndex].boxes[0].words = words
     }
-    else if(item.slides[wordIndex] && wordIndex < item.slides.length-1 && wordIndex !== 0){
+    let slides = item.slides || null;
+    let slide = slides ? slides[wordIndex] : null;
+
+    if(slide && wordIndex < item.slides.length-1 && wordIndex !== 0){
       if(item.type === 'song'){
         index = item.formattedLyrics.findIndex(e => e.name === item.slides[wordIndex].type);
         let start = wordIndex - item.slides[wordIndex].boxes[0].slideIndex;
@@ -52,7 +55,7 @@ class DisplayEditor extends React.Component{
           item.formattedLyrics[index].words = newWords
       }
     }
-    else if(item.type === 'song' && wordIndex===0){
+    else if(item.type === 'song' && wordIndex===0 && slide){
       if(words.length > 0)
         item.slides[wordIndex].boxes[0].words = words
     }
@@ -86,11 +89,13 @@ class DisplayEditor extends React.Component{
     }
 
     if(words){
-       text = item.slides[wordIndex] ? item.slides[wordIndex].boxes[0].words : "";
-       style.color = item.slides ? item.slides[wordIndex].boxes[0].fontColor : 'rgba(255, 255, 255, 1)';
-       style.fontSize = item.slides ? item.slides[wordIndex].boxes[0].fontSize*.95 + "vw" : '1vw';
-      if(item.slides[wordIndex] && item.slides[wordIndex].boxes[0].background)
-      search = item.slides[wordIndex].boxes[0].background;
+      let slides = item.slides || null;
+      let slide = slides ? slides[wordIndex] : null;
+       text = slide ? item.slides[wordIndex].boxes[0].words : "";
+       style.color = slide ? item.slides[wordIndex].boxes[0].fontColor : 'rgba(255, 255, 255, 1)';
+       style.fontSize = slide ? item.slides[wordIndex].boxes[0].fontSize*.95 + "vw" : '1vw';
+      if(slide && item.slides[wordIndex].boxes[0].background)
+        search = item.slides[wordIndex].boxes[0].background;
     }
     if(backgrounds){
       if(backgrounds.some(e => e.name === search)){

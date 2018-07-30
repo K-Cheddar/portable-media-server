@@ -54,14 +54,14 @@ export default class CreateName extends React.Component{
     let {type} = this.props;
 
     let firstSlide = "";
-    let {backgrounds} = this.props;
-    let background = "";
-
-    if (backgrounds[0])
-      background = backgrounds[0].name
+    // let {backgrounds} = this.props;
+    // let background = "";
+    //
+    // if (backgrounds[0])
+    //   background = backgrounds[0].name
 
     if(type === 'song')
-      firstSlide = "\n"+ name;
+      firstSlide = name;
 
 
     let item = {
@@ -71,7 +71,7 @@ export default class CreateName extends React.Component{
           {
             "type": 'Name',
             "boxes": [
-              {"background": background,
+              {"background": "",
                "fontSize": 4.5,
                "fontColor": 'rgba(255, 255, 255, 1)',
                "words": firstSlide,

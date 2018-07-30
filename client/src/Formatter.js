@@ -76,7 +76,7 @@ function formatBibleVerses(verses, fontSize, background, fontColor, mode){
       let words;
       if(mode === 'create'){
          words = verses[i].text.split(" ");
-         slide += "{" + verses[i].verse + "}" + " ";
+         slide += "{" + verses[i].verse + "} ";
       }
       if(mode === 'edit')
         words = verses[i].split(" ")

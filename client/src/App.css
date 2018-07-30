@@ -1,11 +1,12 @@
 li {
-    padding: 1vw;
+    padding: 1vh;
     margin: auto;
 }
 
 ul {
   /* display: flex; */
   margin: 0;
+  padding: 0;
   list-style-type: none;
 }
 

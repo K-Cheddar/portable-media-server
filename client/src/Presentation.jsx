@@ -39,6 +39,21 @@ class Presentation extends React.Component{
     }
   }
 
+  goFullScreen(){
+    let elem = document.getElementById("fullApp");
+    if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
+        if (elem.requestFullScreen) {
+            elem.requestFullScreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullScreen) {
+            elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+    }
+  }
+
   componentDidMount(){
     this.updateDimensions();
     window.addEventListener("storage", this.updateStorage);
@@ -49,7 +64,6 @@ class Presentation extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    console.log('update');
     let {backgrounds, background} = this.props;
     // let backgroundP = this.prevProps.background || null;
     // let backgroundsP = this.prevProps.backgrounds || [];
@@ -101,8 +115,6 @@ class Presentation extends React.Component{
     let {backgrounds, background, words, style, time} = this.props;
     let {pBackground, pWords, pStyle, pTime} = this.state;
 
-    console.log(this.props);
-
     if(pTime >= time){
       background = pBackground;
       words = pWords;
@@ -151,7 +163,7 @@ class Presentation extends React.Component{
     }
 
     return (
-      <div>
+      <div onClick={this.goFullScreen} id="full-presentation">
         {!isVideo &&<div style={backgroundStyle}>
           <div id="presentation-text" style={styleFull}>
               {words}

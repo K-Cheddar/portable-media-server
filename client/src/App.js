@@ -53,8 +53,8 @@ var cloud = new cloudinary.Cloudinary({cloud_name: "portable-media", api_key:pro
 
 const initialState = {
   isLoggedIn: false,
-  wordIndex: 0,
-  itemIndex: 0,
+  wordIndex: -1,
+  itemIndex: -1,
   boxIndex: 0,
   item: {},
   itemList: [],
@@ -119,14 +119,29 @@ class App extends Component {
   }
 
   updateFormat({
-    c = this.state.item.slides[this.state.wordIndex].boxes[0].fontColor,
-    fontSize = this.state.item.slides[this.state.wordIndex].boxes[0].fontSize,
+    c = null,
+    fontSize = null,
     updateColor = false,
     updateFont = false,
     } = {}){
 
     let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = this.state;
     let color;
+    let slides = item.slides || null;
+    let slide = slides ? slides[wordIndex] : null;
+
+    if(!slide)
+      return;
+
+    if(slide && !c)
+      c = slide.boxes[0].fontColor
+    else if(!c)
+      c = 'rgba(255, 255, 255, 1)'
+
+    if(slide && !fontSize)
+      fontSize = slide.boxes[0].fontSize
+    else if(!fontSize)
+      fontSize = 5
 
     //if it recieves a value it is formatted as {r: r, g: g, b: b, a: a}
     //otherwise the saved value is formatted as rgba(r, g, b, a)
@@ -135,9 +150,10 @@ class App extends Component {
     else
       color = 'rgba('+c.r+' , ' +c.g+' , '+c.b+' , '+c.a+')';
 
+   if(slide)
     item.slides[wordIndex].boxes[0].fontColor = color;
 
-    if(boxIndex === 0){
+    if(boxIndex === 0 && slide){
       if(wordIndex !== 0){
         for(let i = 1; i < item.slides.length; ++i){
             item.slides[i].boxes[0].fontSize = fontSize;
@@ -148,11 +164,12 @@ class App extends Component {
       }
     }
     //update color of item in current list
-    itemList[itemIndex].nameColor = item.slides[0].boxes[0].fontColor
-
-    //update color of item in full list
-    let index = allItems.findIndex(e => e._id === item._id)
-    allItems[index].nameColor = item.slides[0].boxes[0].fontColor
+    if(slide){
+      itemList[itemIndex].nameColor = item.slides[0].boxes[0].fontColor
+      //update color of item in full list
+      let index = allItems.findIndex(e => e._id === item._id)
+      allItems[index].nameColor = item.slides[0].boxes[0].fontColor
+    }
 
     if(item.type === 'bible' && wordIndex !== 0 && !updateColor)
       item = Formatter.formatBible(item, 'edit');
@@ -321,7 +338,8 @@ class App extends Component {
   setWordIndex(index, lyrics){
 
     let scrollTo = index;
-
+    if(!this.state.item.slides)
+      return;
     if(index > this.state.wordIndex && index+1 < this.state.item.slides.length)
       scrollTo+=1;
     if(index < this.state.wordIndex && index > 0){
@@ -343,24 +361,45 @@ class App extends Component {
       color: color,
       fontSize: fontSize
     }
-    if(item.slides ? item.slides[index].boxes[0].background : '')
-      this.updateCurrent({words: lyrics, style: style, background:item.slides[index].boxes[0].background, index});
+    if(item.slides && item.slides[index].boxes[0].background)
+      this.updateCurrent({words: lyrics, style: style, background:item.slides[index].boxes[0].background});
     else
       this.updateCurrent({words: lyrics, style: style});
   }
 
   updateCurrent({
-    words = this.state.item.slides ? this.state.item.slides[this.state.wordIndex].boxes[0].words : "",
-    background = this.state.item.background,
-    style = this.state.item.slides ? this.state.item.slides[this.state.wordIndex].boxes[0] : {},
+    words = null,
+    background = null,
+    style = {},
     index = -1,
     } = {}){
+
 
     if(this.state.freeze)
       return;
 
-    if(index >= 0)
-      background = this.state.item.slides[index].boxes[0].background
+    let {item, wordIndex} = this.state;
+    let slides = item.slides || null;
+    let slide = slides ? slides[wordIndex] : null;
+
+    if(slide && !words)
+      words = slide.boxes[0].words;
+    else if(!words)
+      words = ""
+
+    if(slide && !background)
+      background = slide.boxes[0].background;
+    else if(!background)
+      background = ""
+
+    if(slide && !style)
+      style = slide.boxes[0];
+    else if(!style)
+      style = {}
+
+    //
+    // if(index >= 0)
+    //   background = this.state.item.slides[index].boxes[0].background
 
     let date = new Date();
     let time = date.getTime();
@@ -383,7 +422,7 @@ class App extends Component {
     var mElement = document.getElementById("MItem"+index);
     if(mElement)
       mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'});
-    this.setState({itemIndex: index, wordIndex: 0})
+    this.setState({itemIndex: index})
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
       DBUpdater.updateItem(this.state.db, itemID, this.updateState, freeze, this.updateCurrent)
@@ -436,7 +475,7 @@ class App extends Component {
     };
 
     //put item in current item list
-    DBUpdater.selectList(this.state.db, itemObj, selectedItemList, itemIndex, this.updateState)
+    DBUpdater.putInList(this.state.db, itemObj, selectedItemList, itemIndex, this.updateState)
     //select created item
     DBGetter.getItem(this.state.db, item._id, this.updateState, this.setItemIndex, itemIndex)
 
@@ -563,7 +602,9 @@ class App extends Component {
   //
   // });
 
-  DBUpdater.updateALL(this.state.db);
+  // DBUpdater.updateALL(this.state.db);
+  // window.open()
+
 
   }
 
@@ -664,12 +705,13 @@ class App extends Component {
 
 
     return (
-      <div style={style}>
+      <div id="fullApp" style={style}>
         <NavBar selectedItemList={this.state.selectedItemList} selectItemList={this.selectItemList}
         itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze} updateFormat={this.updateFormat}
         addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
         backgrounds={this.state.backgrounds} formatBible={Formatter.formatBible} db={this.state.db}
-        test={this.test} user={user} retrieved={this.state.retrieved} addItemList={this.addItemList}/>
+        test={this.test} user={user} retrieved={this.state.retrieved} addItemList={this.addItemList}
+        logout={this.logout}/>
         <div>
             {/* Route components are rendered if the path prop matches the current URL */}
             <Switch>

@@ -12,7 +12,8 @@ export default class Login extends Component {
     this.state = {
       username: "",
       password: "",
-      wrongCred: false
+      wrongCred: false,
+      isMobile: false
     }
     this.login = this.login.bind(this);
     this.usernameChange = this.usernameChange.bind(this);
@@ -27,10 +28,22 @@ export default class Login extends Component {
     this.setState({password: event.target.value});
   }
 
+  componentDidMount(){
+    if( navigator.userAgent.match(/Android/i)
+      || navigator.userAgent.match(/webOS/i)
+      || navigator.userAgent.match(/iPhone/i)
+      || navigator.userAgent.match(/iPod/i)
+      || navigator.userAgent.match(/BlackBerry/i)
+      || navigator.userAgent.match(/Windows Phone/i)
+    ){
+      this.setState({isMobile: true})
+    }
+  }
+
   login(event) {
 
     event.preventDefault();
-    let {username, password} = this.state;
+    let {username, password, isMobile} = this.state;
     let that = this;
     db.get('logins').then(function(doc){
       let obj = doc.logins.find(e => e.username === username);
@@ -39,7 +52,10 @@ export default class Login extends Component {
       else if (obj.password === password){
         that.props.login(obj.database, obj.username, obj.upload_preset);
         that.setState({wrongCred: false})
-        that.props.history.push("/");
+        if(isMobile)
+          that.props.history.push("/mobile");
+        else
+          that.props.history.push("/fullview");
       }
       else{
         that.setState({wrongCred: true})

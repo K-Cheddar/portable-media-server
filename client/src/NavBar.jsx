@@ -15,7 +15,8 @@ export default class NavBar extends Component {
     this.state = {
       bibleOpen: false,
       nameOpen: false,
-      type: ""
+      type: "",
+      mousedOver: false
     }
 
     this.openBible = this.openBible.bind(this);
@@ -23,6 +24,16 @@ export default class NavBar extends Component {
     this.openImage = this.openImage.bind(this);
     this.closeBible = this.closeBible.bind(this);
     this.closeName = this.closeName.bind(this);
+    this.openMenu = this.openMenu.bind(this);
+    this.closeMenu = this.closeMenu.bind(this);
+  }
+
+  openMenu(){
+    this.setState({mousedOver: true})
+  }
+
+  closeMenu(){
+    this.setState({mousedOver: false})
   }
 
   openBible(){
@@ -51,23 +62,39 @@ export default class NavBar extends Component {
     this.setState({nameOpen: false})
   }
 
+  openPresentation(){
+    let url = window.location.origin;
+    window.open(url+'#presentation', "Presentation", "height=350,width=350,alwaysRaised");
+  }
+
   render(){
 
     let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFormat,
        wordIndex, freeze, item, addItem, user, retrieved, addItemList} = this.props;
 
-    let {bibleOpen, nameOpen, type} = this.state;
+    let {bibleOpen, nameOpen, type, mousedOver} = this.state;
 
     let buttonLoggedIn = {
        fontSize: "calc(5px + 0.35vw)", margin:'0.25%', width:'6vw'
     }
 
+    let menuItem = {
+      display:'inline-block', width:'90%', padding: '2.5%', backgroundColor:'#fff', margin: '5%',
+      cursor: 'pointer'
+    }
+
     return(
-      <div style={window.location.hash==="#/fullview" ? {display: 'flex', width:'99vw', height: '3vw'} : {display:'none'}} >
-        <ul style={{display:'flex'}}>
+      <div style={window.location.hash==="#/fullview" ? {display: 'flex', width:'100vw', height: '3vw'} : {display:'none'}} >
+        <ul style={{display:'flex', zIndex: 2}}>
           {/*<li><button onClick={this.props.test}>UPDATE ALL</button></li>*/}
-          <li>
-            <Link to="/">Home</Link>
+          <li onMouseEnter={this.openMenu} onMouseLeave={this.closeMenu}>
+            <button style={{fontFamily: 'Arial', backgroundColor:'#fff',fontSize: "calc(10px + 0.35vmax)"}}>Menu<i class="fa fa-caret-down"></i></button>
+              <div style={mousedOver ? {backgroundColor:'#fff', position:'absolute', width:'7vw'} : {display:'none'}}>
+                <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
+                <button style={menuItem}><Link to="/">Home</Link></button>
+                {!this.props.isLoggedIn && <button style={menuItem}><Link to="/login">Login</Link></button>}
+                {this.props.isLoggedIn && <button style={menuItem} onClick={this.props.logout}>Logout</button>}
+              </div>
           </li>
           <li>
             <div style={{paddingTop:'1%', margin:'auto'}}>

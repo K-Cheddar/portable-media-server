@@ -49,8 +49,8 @@ export default class ItemList extends React.Component{
     })
 
     this.checkHeld = setTimeout(function() {
-      let {mouseDown} = this.state;
-      if(mouseDown){
+      let {mouseDown, indexBeingDragged} = this.state;
+      if(mouseDown && indexBeingDragged==-1){
         this.setState({indexBeingDragged: index})
       }
 
@@ -161,7 +161,7 @@ export default class ItemList extends React.Component{
         {nameOpen && <CreateName option="edit" name={name} id={id} db={db}
         close={this.close} updateItem={this.props.updateItem}
         />}
-        <div style={{ height:'87.5vh', overflowY: 'scroll'}} onMouseMove={this.updateMouse}
+        <div style={{ height:'92.5vh', overflowY: 'scroll'}} onMouseMove={this.updateMouse}
            onMouseUp={this.releaseElement} onMouseLeave={this.releaseElement}>{SL}</div>
 
       </div>

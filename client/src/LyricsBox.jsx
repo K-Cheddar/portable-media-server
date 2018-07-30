@@ -119,17 +119,9 @@ export default class LyricsBox extends Component{
     let lines = lyrics.split("\n\n");
     for(let i = 0; i < lines.length; ++i){
       let index = lines.findIndex(e => e === lines[i])
-      if(index !== i){
-        type = "Chorus"
-        formattedLyrics[index].type = "Chorus"
-      }
-      else if(i === lines.length-1)
-        type = "Ending"
-      else
-        type = "Verse"
-
       formattedLyrics.push({
-        type: type,
+        type: "Verse",
+        name: "Verse",
         words: lines[i]
       })
     }
@@ -156,8 +148,8 @@ export default class LyricsBox extends Component{
     let {formattedLyrics} = this.state;
     formattedLyrics.push({
       type: "Verse",
-      words: "",
-      name: "Verse"
+      name: "Verse",
+      words: ""
     })
     this.updateSections(formattedLyrics)
   //  this.setState({formattedLyrics: formattedLyrics})
@@ -276,10 +268,24 @@ export default class LyricsBox extends Component{
 
     this.setState({
       formattedLyrics: formattedLyrics,
-      sectionsPresent: sections,
-      songOrder: songOrder
+      sectionsPresent: this.sortList(sections),
+      songOrder: songOrder,
+      newType: sectionsPresent[0]
     })
 
+  }
+
+  sortList(list){
+    return list.sort(function(a,b){
+      var nameA = a.toUpperCase();
+      var nameB = b.toUpperCase();
+
+      if(nameA < nameB)
+       return -1;
+      if(nameA > nameB)
+       return 1;
+      return 0;
+    });
   }
 
   deleteSectionFromOrder(index){
@@ -321,7 +327,6 @@ export default class LyricsBox extends Component{
   changeNewType(e){
     this.setState({newType: e.target.value});
   }
-
 
   insertSongIntoOrder(targetIndex){
     let {songOrder, songIndex} = this.state;

@@ -81,7 +81,7 @@ export default class MiniPresentation extends React.Component{
         width: '16vw', height: '9vw', backgroundSize: '100% 100%', position:'absolute'}}>
           <div id="background-text" style={styleFull}>{words}</div>
         </div>}
-        {isVideo &&<div style={{width:'16vw', height:'9vw',position:'relative'}}>
+        {isVideo &&<div style={{width:'16vw', height:'9.5vw',position:'relative'}}>
           <video loop autoPlay id="background-video-mini"
             style={{width:'100%', height:'100%', position:'absolute', zIndex:'-1'}} >
             <source src={asset.video.src} type="video/mp4"/>

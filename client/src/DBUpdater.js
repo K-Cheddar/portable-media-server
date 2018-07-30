@@ -57,19 +57,19 @@ export function updateCurrent(db, words, background, style, time){
   db.upsert('currentInfo', updateValues);
 }
 
-export function updateItem(db, itemID, updateState, freeze, updateCurrent){
+export function updateItem(db, itemID, updateState, freeze, updateCurrent, setWordIndex){
   db.get(itemID).then(function (doc) {
     updateState({item: doc});
     let style = {
       color: doc.slides[0].boxes[0].fontColor,
-      fontSize: doc.nameSize,
+      fontSize: doc.slides[0].boxes[0].fontSize,
     }
     if(!freeze)
       updateCurrent({words: doc.slides[0].boxes[0].words, background: doc.background, style: style, index: 0});
   })
 }
 
-export function selectList(db, itemObj, selectedItemList, itemIndex, updateState){
+export function putInList(db, itemObj, selectedItemList, itemIndex, updateState){
   db.get(selectedItemList).then(function (doc) {
     doc.items.splice(itemIndex+1, 0, itemObj);
     updateState({itemList: doc.items});
@@ -104,8 +104,7 @@ export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemT
       });
       db.put(item).then(function(){
         updateState({item: item});
-        let index = (itemIndex===0)? 0 : itemIndex +1
-        setItemIndex(index)
+        setItemIndex(itemIndex +1)
       });
   })
 }

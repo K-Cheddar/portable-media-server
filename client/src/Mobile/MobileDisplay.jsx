@@ -21,7 +21,6 @@ export default class DisplayEditor extends Component{
   render() {
 
     let {wordIndex, item, backgrounds} = this.props;
-    let slides = item.slides;
     let text = "", background = blank, asset;
     let search = item.background;
     let isVideo = false;
@@ -37,23 +36,23 @@ export default class DisplayEditor extends Component{
       whiteSpace:'pre-wrap',
     }
 
-    if(slides){
-       text = item.slides[wordIndex] ? item.slides[wordIndex].boxes[0].words : "";
-         style.color = item.slides[wordIndex].boxes[0].fontColor;
-      if(wordIndex === 0)
-        style.fontSize = item.nameSize*2.25 + "vw";
-      else
-       style.fontSize = item.slides[wordIndex].boxes[0].fontSize*2.25+ "vw";
-       if(item.slides[wordIndex] && item.slides[wordIndex].boxes[0].background)
-       search = item.slides[wordIndex].boxes[0].background;
-    }
 
-      if(backgrounds.some(e => e.name === item.background)){
-        asset = backgrounds.find(e => e.name === search);
-        background = asset.image.src;
-        if(asset.type === 'video')
-          isVideo = true;
-      }
+    let slides = item.slides || null;
+    let slide = slides ? slides[wordIndex] : null;
+
+    text = slide ? item.slides[wordIndex].boxes[0].words : "";
+    style.color = slide ? item.slides[wordIndex].boxes[0].fontColor: 'rgba(255, 255, 255, 1)';
+    style.fontSize = slide ? item.slides[wordIndex].boxes[0].fontSize*2.25 + "vw" : '1vw';
+
+    if(slide && item.slides[wordIndex].boxes[0].background)
+      search = item.slides[wordIndex].boxes[0].background;
+
+    if(backgrounds.some(e => e.name === item.background)){
+      asset = backgrounds.find(e => e.name === search);
+      background = asset.image.src;
+      if(asset.type === 'video')
+        isVideo = true;
+    }
 
     return (
       <div>
