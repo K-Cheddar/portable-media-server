@@ -50,7 +50,7 @@ export default class ItemList extends React.Component{
 
     this.checkHeld = setTimeout(function() {
       let {mouseDown, indexBeingDragged} = this.state;
-      if(mouseDown && indexBeingDragged==-1){
+      if(mouseDown && indexBeingDragged===-1){
         this.setState({indexBeingDragged: index})
       }
 

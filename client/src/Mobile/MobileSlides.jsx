@@ -60,7 +60,7 @@ export default class MobileSlides extends React.Component{
            height:"13.4vmax"}} key={index} id={"MSlide"+index}
           onClick={() => (that.clickSlide(index, lyrics))}
           >
-          <MobileSlideInList words={lyrics} background={item.background} color={item.slides[wordIndex].boxes[0].fontColor}
+          <MobileSlideInList words={lyrics} background={item.background} color={item.slides[index].boxes[0].fontColor}
             fontSize={(index === 0) ? item.nameSize : item.slides[index].boxes[0].fontSize} backgrounds={backgrounds}
             sBackground={item.slides[index].boxes[0].background}/>
         </div>

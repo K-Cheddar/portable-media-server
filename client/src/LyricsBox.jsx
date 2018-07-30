@@ -114,11 +114,8 @@ export default class LyricsBox extends Component{
 
   createSections(lyrics){
     let formattedLyrics = [];
-    let type = ""
-
     let lines = lyrics.split("\n\n");
     for(let i = 0; i < lines.length; ++i){
-      let index = lines.findIndex(e => e === lines[i])
       formattedLyrics.push({
         type: "Verse",
         name: "Verse",
