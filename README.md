@@ -4,7 +4,7 @@ A web alternative to apps like MediaShout and ProPresenter
 
 Currently in Beta.
 
-Website: https://k-cheddar.github.io/portable-media/#/
+Website: https://portable-media.herokuapp.com
 
 ## Features
 - Create songs
