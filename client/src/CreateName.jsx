@@ -106,7 +106,7 @@ export default class CreateName extends React.Component{
 
     let style={
       position:'absolute',
-      zIndex:3,
+      zIndex:5,
       left:'35%',
       top:'45%',
       backgroundColor: '#EEE',
@@ -118,7 +118,7 @@ export default class CreateName extends React.Component{
 
       return (
         <div style={{position:'fixed', top:0, left:0, height:'100vh',
-          zIndex: 2, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
+          zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
           <div style={style}>
           {(message.length > 0) && <div>{message}</div>}
           <form onSubmit={this.submitName}>

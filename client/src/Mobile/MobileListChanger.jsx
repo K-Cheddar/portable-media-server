@@ -9,7 +9,7 @@ export default class MobileListChanger extends React.Component{
   let element = ele.name
   return(
     <div style={{display:'flex'}} key={index} id={"MItem"+index}>
-      <div style={(selectedItemList === element) ? {border:'0.75vmax', borderColor: '#4286f4', borderStyle:'solid',
+      <div style={(selectedItemList.name === element) ? {border:'0.75vmax', borderColor: '#4286f4', borderStyle:'solid',
          width:"20vmax", height:"5vmax", marginTop:"3%"}
        : {border:'0.75vmax', borderColor: '#93bbf9', borderStyle:'solid',
           width:"20vmax", height:"5vmax", marginTop:"3%"}}

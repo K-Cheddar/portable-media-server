@@ -77,7 +77,7 @@ export default class AllItems extends React.Component{
         <div style={{overflowY: 'scroll', height:'31vh'}}>{SL}</div>
         {deleteOverlay &&
           <div style={{position:'fixed', top:0, left:0, height:'100vh', width:'100vw',
-             zIndex: 2, backgroundColor:'rgba(62, 64, 66, 0.5)'}}>
+             zIndex: 9, backgroundColor:'rgba(62, 64, 66, 0.5)'}}>
              <DeleteConfirmation confirm={this.confirm}
                cancel={this.cancel} name={name}  />
         </div>}

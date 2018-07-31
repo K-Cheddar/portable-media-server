@@ -6,34 +6,44 @@ export function init(db, updateState, getSuccess, getAttempted){
     //   words: ' ',
     //   style: doc.info.style
     // }
-    updateState({currentInfo: doc.info})
+    updateState({currentInfo: doc.info, needsUpdate: false})
     getSuccess('currentInfo')
   }).catch(function(){
     console.log('currentInfo not loaded');
   }).then(function(){
     getAttempted('currentInfo', db)
   })
-  db.get('Item List 1').then(function (doc) {
-    updateState({itemList: doc.items}) //actual list of items
-    getSuccess('Item List')
-  }).catch(function(){
-    console.log('item list 1 not loaded');
-  }).then(function(){
-    getAttempted('Item List 1', db)
-  });
   db.get('ItemLists').then(function (doc) {
-    updateState({
-      itemLists: doc.itemLists,// list of item list names
-      selectedItemList: doc.itemLists[0].name //name of first item list
-    })
+    if(doc.itemLists[0]){
+      db.get(doc.itemLists[0].id).then(function(doc2){
+        updateState({itemList: doc2.items, needsUpdate: false}) //actual list of items
+      })
+      updateState({
+        itemLists: doc.itemLists,// list of item list names
+        selectedItemList:{name: doc.itemLists[0].name, id: doc.itemLists[0].id}, //name of first item list
+        needsUpdate: false
+      })
+    }
+
     getSuccess('Item Lists')
   }).catch(function(){
     console.log('itemLists not loaded');
   }).then(function(){
     getAttempted('Item Lists', db)
   })
+  db.get('allItemLists').then(function (doc) {
+    updateState({
+      allItemLists: doc.itemLists,// list of item list names
+      needsUpdate: false
+    })
+    getSuccess('All Item Lists')
+  }).catch(function(){
+    console.log('itemLists not loaded');
+  }).then(function(){
+    getAttempted('All Item Lists', db)
+  })
   db.get('allItems').then(function (doc) {
-    updateState({allItems: doc.items})
+    updateState({allItems: doc.items, needsUpdate: false})
     getSuccess('allItems')
   }).catch(function(){
     console.log('allItems not loaded');
@@ -103,7 +113,7 @@ export function retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
       backgrounds.push(imgData);
     }
     getSuccess('images')
-    updateState({backgrounds: backgrounds})
+    updateState({backgrounds: backgrounds, needsUpdate: false})
   }).catch(function(){
     console.log('images not loaded');
   }).then(function(){
@@ -113,7 +123,7 @@ export function retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
 
 export function getItem(db, id, updateState, setItemIndex, itemIndex){
   db.get(id).then(function(doc){
-    updateState({item: doc})
+    updateState({item: doc, needsUpdate: false})
     setItemIndex(itemIndex+1)
   }).catch(function(){
     console.log('getItem not loaded');
@@ -122,7 +132,7 @@ export function getItem(db, id, updateState, setItemIndex, itemIndex){
 
 export function selectItemList(db, id, updateState){
   db.get(id).then(function(doc){
-    updateState({itemList: doc.items})
+    updateState({itemList: doc.items, needsUpdate: false})
   }).catch(function(){
     console.log('selectitemlist not loaded');
   });

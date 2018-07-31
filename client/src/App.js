@@ -59,8 +59,9 @@ const initialState = {
   item: {},
   itemList: [],
   itemLists: [],
+  allItemLists: [],
   backgrounds: [],
-  selectedItemList: "",
+  selectedItemList: {},
   needsUpdate: false,
   currentInfo : {
     words:"",
@@ -114,8 +115,8 @@ class App extends Component {
     this.getSuccess = this.getSuccess.bind(this);
     this.getAttempted = this.getAttempted.bind(this);
     this.getTime = this.getTime.bind(this);
+    this.newItemList = this.newItemList.bind(this)
     this.getSelectedList = this.getSelectedList.bind(this)
-    this.addItemList = this.addItemList.bind(this)
   }
 
   updateFormat({
@@ -200,7 +201,7 @@ class App extends Component {
   getSuccess(type){
     let {retrieved} = this.state;
     retrieved[type] = true;
-    if(Object.keys(retrieved).length >= 5){
+    if(Object.keys(retrieved).length >= 4){
         retrieved.finished = true;
         this.updateInterval = setInterval(this.update, 1000); //auto save to database every second if update has occurred
     }
@@ -211,7 +212,7 @@ class App extends Component {
   getAttempted(type, db){
     let {attempted, retrieved} = this.state;
     attempted[type] = true;
-    if(Object.keys(attempted).length >= 5){
+    if(Object.keys(attempted).length >= 4){
         if(!retrieved.finished){
           if(navigator.onLine){
             attempted = {}
@@ -230,9 +231,9 @@ class App extends Component {
   }
 
   update(){
-     let {item, needsUpdate, selectedItemList, allItems, itemList, db} = this.state;
+     let {item, needsUpdate, selectedItemList, allItems, itemList, itemLists, allItemLists, db} = this.state;
      if(needsUpdate && db.get){
-        DBUpdater.update(db, item, selectedItemList, itemList, allItems, this.updateState);
+        DBUpdater.update(db, item, selectedItemList, itemList, allItems, itemLists, allItemLists, this.updateState);
          this.setState({needsUpdate: false});
      }
   }
@@ -243,6 +244,7 @@ class App extends Component {
       currentInfo: obj.currentInfo || this.state.currentInfo,
       itemList: obj.itemList || this.state.itemList,
       itemLists: obj.itemLists || this.state.itemLists,
+      allItemLists: obj.allItemLists || this.state.allItemLists,
       selectedItemList: obj.selectedItemList || this.state.selectedItemList,
       allItems: obj.allItems || this.state.allItems,
       backgrounds: obj.backgrounds || this.state.backgrounds,
@@ -422,7 +424,7 @@ class App extends Component {
     var mElement = document.getElementById("MItem"+index);
     if(mElement)
       mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'});
-    this.setState({itemIndex: index})
+    this.setState({itemIndex: index, wordIndex: 0})
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
       DBUpdater.updateItem(this.state.db, itemID, this.updateState, freeze, this.updateCurrent)
@@ -473,12 +475,16 @@ class App extends Component {
       "nameColor": item.nameColor,
       "type": item.type
     };
-
+    console.log(this.state);
     //put item in current item list
     DBUpdater.putInList(this.state.db, itemObj, selectedItemList, itemIndex, this.updateState)
     //select created item
     DBGetter.getItem(this.state.db, item._id, this.updateState, this.setItemIndex, itemIndex)
 
+  }
+
+  deleteItemList(id){
+    DBUpdater.deleteItemList(this.state.db, id)
   }
 
   addItem(item){
@@ -488,7 +494,7 @@ class App extends Component {
   }
 
   deleteItem(name){
-    let {allItems, item, selectedItemList, itemIndex} = this.state;
+    let {allItems, item, selectedItemList, itemIndex, allItemLists} = this.state;
 
     if(name === item.name){
       let index = (itemIndex !== 0) ? itemIndex-1 : 0;
@@ -498,29 +504,30 @@ class App extends Component {
 
 
     let index = allItems.findIndex(e => e.name === name)
-    DBUpdater.deleteItem(this.state.db, name, allItems, index, selectedItemList, this.setItemIndex, this.updateState)
+    DBUpdater.deleteItem(this.state.db, name, allItems, allItemLists, index, selectedItemList, this.setItemIndex, this.updateState)
   }
 
   deleteItemFromList(index){
     let {itemIndex, itemList, selectedItemList} = this.state;
 
+    this.setState({
+      item: {},
+      wordIndex: 0
+    })
     itemList.splice(index, 1);
-    if(index === itemIndex){
-      this.setWordIndex(0);
-    }
-    if(itemIndex === itemList.length){
-      this.setItemIndex(0);
-    }
-
     DBUpdater.deleteItemFromList(this.state.db, selectedItemList, itemList, this.updateState)
 
+  }
+
+  newItemList(newList){
+    DBUpdater.newList(this.state.db, newList)
   }
 
   selectItemList(name){
     console.log("SIL", name);
     let {itemLists} = this.state;
     let id = itemLists.find(e => e.name === name).id;
-    this.setState({selectedItemList: id})
+    this.setState({selectedItemList: {id: id, name: name}})
     DBGetter.selectItemList(this.state.db, id, this.updateState)
   }
 
@@ -543,15 +550,6 @@ class App extends Component {
 
     this.setWordIndex(targetIndex);
     this.setState({item: item, needsUpdate: true});
-  }
-
-  addItemList(){
-    let {itemLists} = this.state;
-    let name = "Item List " + (itemLists.length+1);
-    let newList = {id: name, name: name}
-    itemLists.push(newList);
-    this.setState({itemLists: itemLists})
-    DBUpdater.updateItemLists(this.state.db, itemLists, newList);
   }
 
   openUploader(){
@@ -664,7 +662,6 @@ class App extends Component {
   render() {
 
     let {wordIndex, itemIndex, currentInfo, isLoggedIn, item, allItems, freeze, user} = this.state;
-
     let style;
     let siteStyle = {
       backgroundColor: '#d9e3f4',
@@ -710,8 +707,9 @@ class App extends Component {
         itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze} updateFormat={this.updateFormat}
         addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
         backgrounds={this.state.backgrounds} formatBible={Formatter.formatBible} db={this.state.db}
-        test={this.test} user={user} retrieved={this.state.retrieved} addItemList={this.addItemList}
-        logout={this.logout}/>
+        test={this.test} user={user} retrieved={this.state.retrieved} newItemList={this.newItemList}
+        logout={this.logout} updateState={this.updateState} allItemLists={this.state.allItemLists}
+        />
         <div>
             {/* Route components are rendered if the path prop matches the current URL */}
             <Switch>

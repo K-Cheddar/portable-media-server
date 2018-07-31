@@ -1,5 +1,5 @@
 let updaterInterval = null
-export function update(db, item, selectedItemList, itemList, allItems, updateState){
+export function update(db, item, selectedItemList, itemList, allItems, itemLists, allItemLists, updateState){
   if(item.name){
     db.get(item._id).then(function (doc) {
       doc.name = item.name;
@@ -10,37 +10,68 @@ export function update(db, item, selectedItemList, itemList, allItems, updateSta
       doc.songOrder = item.songOrder;
      return db.put(doc);
    }).catch(function(err){
-     console.log('get item to update not working');
+     console.log('update item not working');
    });
   }
 
- db.get(selectedItemList).then(function (doc) {
+ db.get(selectedItemList.id).then(function (doc) {
    console.log('updating');
    for(let i = 0; i <doc.items.length; ++i){
      let val = itemList.find(e => e.name === doc.items[i].name)
      if(!val)
-      itemList.push(doc.item[i])
+      itemList.push(doc.items[i])
    }
    doc.items = itemList
    if(doc.items.length !== itemList.length)
     updateState({itemList: itemList})
    db.put(doc)
  }).catch(function(){
-   console.log('selectedItemList not working');
+   console.log('update selectedItemList not working');
+ });
+
+ db.get('allItemLists').then(function (doc) {
+     doc.itemLists = allItemLists;
+     if(doc.itemLists.length === 0){
+       let obj = {id: "Item List 1", name: "Item List 1"};
+       doc.itemLists.push(obj)
+       newList(obj)
+     }
+     db.put(doc);
+ }).catch(function(){
+   console.log('update all itemLists not working');
+ });
+
+ db.get('ItemLists').then(function (doc) {
+    if(doc.itemLists.length === 1 && itemLists.length===1){
+      let obj = doc.itemLists[0]
+      db.get(obj.id).then(function(doc2){
+          updateState({selectedItemList: obj, itemList: doc2.items, needsUpdate: false})
+      })
+
+    }
+    let val = itemLists.find(e => e.id === selectedItemList.id)
+    if(!val)
+      updateState({selectedItemList: {}, itemList: [], item:{}, needsUpdate: false})
+     doc.itemLists = itemLists;
+     db.put(doc);
+ }).catch(function(err){
+   console.log('update itemLists not working');
+   console.log(err);
  });
 
  db.get('allItems').then(function (doc) {
    for(let i = 0; i <doc.items.length; ++i){
      let val = allItems.find(e => e.name === doc.items[i].name)
      if(!val)
-      allItems.push(doc.item[i])
+      allItems.push(doc.items[i])
    }
      if(doc.items.length !== allItems.length)
         updateState({allItems: allItems})
      doc.items = allItems;
      db.put(doc);
- }).catch(function(){
-   console.log('get all items (update) not working');
+ }).catch(function(err){
+   console.log('update all items (update) not working');
+   console.log(err);
  });
 }
 
@@ -59,7 +90,7 @@ export function updateCurrent(db, words, background, style, time){
 
 export function updateItem(db, itemID, updateState, freeze, updateCurrent, setWordIndex){
   db.get(itemID).then(function (doc) {
-    updateState({item: doc});
+    updateState({item: doc, needsUpdate: false});
     let style = {
       color: doc.slides[0].boxes[0].fontColor,
       fontSize: doc.slides[0].boxes[0].fontSize,
@@ -70,9 +101,9 @@ export function updateItem(db, itemID, updateState, freeze, updateCurrent, setWo
 }
 
 export function putInList(db, itemObj, selectedItemList, itemIndex, updateState){
-  db.get(selectedItemList).then(function (doc) {
+  db.get(selectedItemList.id).then(function (doc) {
     doc.items.splice(itemIndex+1, 0, itemObj);
-    updateState({itemList: doc.items});
+    updateState({itemList: doc.items, needsUpdate: false});
     db.put(doc);
   })
 }
@@ -109,7 +140,7 @@ export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemT
   })
 }
 
-export function deleteItem(db, name, allItems, index, selectedItemList, setItemIndex, updateState){
+export function deleteItem(db, name, allItems, allItemLists, index, selectedItemList, setItemIndex, updateState){
 
   //delete item
   db.get(allItems[index]._id).then(function (doc) {
@@ -125,13 +156,13 @@ export function deleteItem(db, name, allItems, index, selectedItemList, setItemI
 
   updateState({item: {}})
   //delete item from each list
-  for(let i = 1; i <= 5; ++i){
+  for(let i = 1; i <= allItemLists.length; ++i){
     db.get("Item List "+i).then(function(doc){
       let sIndex = doc.items.findIndex(e => e.name === name);
       if(sIndex >= 0){
         db.get("Item List "+i).then(function (doc) {
             doc.items.splice(sIndex, 1);
-            if(selectedItemList === "Item List "+i){
+            if(selectedItemList.id === "Item List "+i){
               updateState({itemList: doc.items})
                 setItemIndex(index-1)
             }
@@ -145,7 +176,7 @@ export function deleteItem(db, name, allItems, index, selectedItemList, setItemI
 
 export function deleteItemFromList(db, selectedItemList, itemList, updateState){
 
-  db.get(selectedItemList).then(function (doc) {
+  db.get(selectedItemList.id).then(function (doc) {
     doc.items = itemList;
     updateState({itemList: doc.items})
     return db.put(doc);
@@ -159,17 +190,19 @@ export function updateImages(db, uploads){
   })
 }
 
-export function updateItemLists(db, itemLists, newList){
-  db.get('ItemLists').then(function(doc){
-    doc.itemLists = itemLists;
-    return db.put(doc)
-  })
+export function newList(db, newList){
   db.get(newList.id).catch(function (err) {
     var SL = {
     "_id": newList.id,
     "items" : []
     };
      db.put(SL)
+  })
+}
+
+export function deleteItemList(db, id){
+  db.get(id).then(function(doc){
+      return db.remove(doc);
   })
 }
 

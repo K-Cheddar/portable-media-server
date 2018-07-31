@@ -3,10 +3,11 @@ import { Link} from 'react-router-dom';
 import FormatEditor from './FormatEditor';
 import on from './assets/on.png';
 import off from './assets/off.png';
-import new_button from './assets/new-button.png';
-// import edit from './assets/edit.png';
+// import new_button from './assets/new-button.png';
+import open from './assets/open.png';
 import Bible from './Bible'
 import CreateName from './CreateName';
+import ItemListEditor from './ItemListEditor';
 
 export default class NavBar extends Component {
 
@@ -16,7 +17,8 @@ export default class NavBar extends Component {
       bibleOpen: false,
       nameOpen: false,
       type: "",
-      mousedOver: false
+      mousedOver: false,
+      itemListsOpen: false
     }
 
     this.openBible = this.openBible.bind(this);
@@ -26,6 +28,8 @@ export default class NavBar extends Component {
     this.closeName = this.closeName.bind(this);
     this.openMenu = this.openMenu.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
+    this.openItemLists = this.openItemLists.bind(this);
+    this.closeItemLists = this.closeItemLists.bind(this);
   }
 
   openMenu(){
@@ -34,6 +38,14 @@ export default class NavBar extends Component {
 
   closeMenu(){
     this.setState({mousedOver: false})
+  }
+
+  openItemLists(){
+    this.setState({itemListsOpen: true})
+  }
+
+  closeItemLists(){
+    this.setState({itemListsOpen: false})
   }
 
   openBible(){
@@ -70,9 +82,9 @@ export default class NavBar extends Component {
   render(){
 
     let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFormat,
-       wordIndex, freeze, item, addItem, user, retrieved, addItemList} = this.props;
+       wordIndex, freeze, item, addItem, user, retrieved} = this.props;
 
-    let {bibleOpen, nameOpen, type, mousedOver} = this.state;
+    let {bibleOpen, nameOpen, type, mousedOver, itemListsOpen} = this.state;
 
     let buttonLoggedIn = {
        fontSize: "calc(5px + 0.35vw)", margin:'0.25%', width:'6vw'
@@ -88,7 +100,7 @@ export default class NavBar extends Component {
         <ul style={{display:'flex', zIndex: 2}}>
           {/*<li><button onClick={this.props.test}>UPDATE ALL</button></li>*/}
           <li onMouseEnter={this.openMenu} onMouseLeave={this.closeMenu}>
-            <button style={{fontFamily: 'Arial', backgroundColor:'#fff',fontSize: "calc(10px + 0.35vmax)"}}>Menu<i class="fa fa-caret-down"></i></button>
+            <button style={{fontFamily: 'Arial', backgroundColor:'#fff',fontSize: "calc(10px + 0.35vmax)"}}>Menu</button>
               <div style={mousedOver ? {backgroundColor:'#fff', position:'absolute', width:'7vw'} : {display:'none'}}>
                 <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
                 <button style={menuItem}><Link to="/">Home</Link></button>
@@ -98,7 +110,7 @@ export default class NavBar extends Component {
           </li>
           <li>
             <div style={{paddingTop:'1%', margin:'auto'}}>
-              <select style={{fontSize: "calc(10px + 0.35vw)"}} value={selectedItemList.name}
+              <select style={{fontSize: "calc(10px + 0.35vw)", width: '10vw'}} value={selectedItemList.name}
                 onChange={(e) => (selectItemList(e.target.value))}>
                 {itemLists.map((element, index) =>
                   <option key={index}> {element.name} </option>
@@ -108,8 +120,8 @@ export default class NavBar extends Component {
           </li>
           <li style={{paddingLeft: '0'}}>
             <img style={{width:'1.5vw', height:'1.5vw'}}
-               alt="new" src={new_button}
-              onClick={addItemList}
+               alt="open" src={open}
+              onClick={this.openItemLists}
               />
           </li>
           <li style={{display:'flex', margin:'auto', marginLeft:'3vw'}}>
@@ -154,6 +166,10 @@ export default class NavBar extends Component {
         {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={this.props.formatBible}/>}
         {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={this.props.db}
         close={this.closeName} addItem={this.props.addItem} backgrounds={this.props.backgrounds}
+        />}
+        {itemListsOpen && <ItemListEditor updateState={this.props.updateState} close={this.closeItemLists}
+          itemLists={this.props.itemLists} allItemLists={this.props.allItemLists}
+          newItemList={this.props.newItemList} selectItemList={this.props.selectItemList}
         />}
       </div>
     )

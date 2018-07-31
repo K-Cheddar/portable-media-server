@@ -21,10 +21,8 @@ var listCount = 5;
      db.put(SL)
   })
 
-  db.get("ItemLists").then(function(doc){
-    listCount = doc.itemLists.length
-  }).catch(function (err) {
-    var SL = {
+  db.get("ItemLists").catch(function (err) {
+    let SL = {
     "_id": "ItemLists",
     "itemLists" : [
       {id: "Item List 1", name: "Item List 1"},
@@ -34,7 +32,22 @@ var listCount = 5;
       {id: "Item List 5", name: "Item List 5"}
     ]
     };
-    listCount = 5;
+     db.put(SL)
+  })
+
+  db.get("allItemLists").then(function(doc){
+    listCount = doc.itemLists.length
+  }).catch(function (err) {
+    let SL = {
+    "_id": "allItemLists",
+    "itemLists" : [
+      {id: "Item List 1", name: "Item List 1"},
+      {id: "Item List 2", name: "Item List 2"},
+      {id: "Item List 3", name: "Item List 3"},
+      {id: "Item List 4", name: "Item List 4"},
+      {id: "Item List 5", name: "Item List 5"}
+    ]
+    };
      db.put(SL)
   }).then(function (){
     for (var i = 1; i <= listCount; ++i){

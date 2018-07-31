@@ -13,7 +13,7 @@ export default class DeleteConfirmation extends Component{
       width:'100vw',
       right:0,
       backgroundColor:'#2f3133',
-      zIndex: 3,
+      zIndex: 10,
       color:'#FFF'
     }
 
