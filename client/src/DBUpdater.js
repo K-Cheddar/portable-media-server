@@ -1,6 +1,10 @@
-let updaterInterval = null
+let updaterInterval = null;
+// let previousItems = {};
 export function update(db, item, selectedItemList, itemList, allItems, itemLists, allItemLists, updateState){
-  if(item.name){
+  console.log("Update Called");
+  // if(JSON.stringify(previousItems.item) !== JSON.stringify(item)){
+  //   console.log("Updating item");
+  //   previousItems.item = item;
     db.get(item._id).then(function (doc) {
       doc.name = item.name;
       doc.background = item.background;
@@ -12,67 +16,86 @@ export function update(db, item, selectedItemList, itemList, allItems, itemLists
    }).catch(function(err){
      console.log('update item not working');
    });
-  }
+  // }
 
- db.get(selectedItemList.id).then(function (doc) {
-   console.log('updating');
-   for(let i = 0; i <doc.items.length; ++i){
-     let val = itemList.find(e => e.name === doc.items[i].name)
-     if(!val)
-      itemList.push(doc.items[i])
-   }
-   doc.items = itemList
-   if(doc.items.length !== itemList.length)
-    updateState({itemList: itemList})
-   db.put(doc)
- }).catch(function(){
-   console.log('update selectedItemList not working');
- });
+  // if(JSON.stringify(previousItems.selectedItemList) !== JSON.stringify(selectedItemList)){
+  //   console.log("Updating selectedItemList");
+  //   previousItems.selectedItemList = selectedItemList;
+    db.get(selectedItemList.id).then(function (doc) {
+      for(let i = 0; i <doc.items.length; ++i){
+        let val = itemList.find(e => e.id === doc.items[i].id)
+        if(!val)
+         itemList.push(doc.items[i])
+      }
+      doc.items = itemList
+      if(doc.items.length !== itemList.length)
+       updateState({itemList: itemList, needsUpdate: false})
+      db.put(doc)
+    }).catch(function(){
+      console.log('update selectedItemList not working');
+    });
+  // }
 
- db.get('allItemLists').then(function (doc) {
-     doc.itemLists = allItemLists;
-     if(doc.itemLists.length === 0){
-       let obj = {id: "Item List 1", name: "Item List 1"};
-       doc.itemLists.push(obj)
-       newList(obj)
+
+ // if(JSON.stringify(previousItems.allItemLists) !== JSON.stringify(allItemLists)){
+ //   console.log("Updating allItemLists");
+ //   previousItems.allItemLists = allItemLists;
+   db.get('allItemLists').then(function (doc) {
+       doc.itemLists = allItemLists;
+       if(doc.itemLists.length === 0){
+         let obj = {id: "Item List 1", name: "Item List 1"};
+         doc.itemLists.push(obj)
+         newList(obj)
+       }
+       db.put(doc);
+   }).catch(function(){
+     console.log('update all itemLists not working');
+   });
+ // }
+
+
+ // if(JSON.stringify(previousItems.itemLists) !== JSON.stringify(itemLists)){
+ //   console.log("Updating itemLists");
+ //   previousItems.itemLists = itemLists;
+   db.get('ItemLists').then(function (doc) {
+      if(doc.itemLists.length === 1 && itemLists.length===1){
+        let obj = doc.itemLists[0]
+        db.get(obj.id).then(function(doc2){
+            updateState({selectedItemList: obj, itemList: doc2.items, needsUpdate: false})
+        })
+
+      }
+      let val = itemLists.find(e => e.id === selectedItemList.id)
+      if(!val)
+        updateState({selectedItemList: {}, itemList: [], item:{}, needsUpdate: false})
+       doc.itemLists = itemLists;
+       db.put(doc);
+   }).catch(function(err){
+     console.log('update itemLists not working');
+     console.log(err);
+   });
+ // }
+
+
+ // if(JSON.stringify(previousItems.allItems) !== JSON.stringify(allItems)){
+ //   console.log("Updating allItems");
+ //   previousItems.allItems = allItems;
+   db.get('allItems').then(function (doc) {
+     for(let i = 0; i <doc.items.length; ++i){
+       let val = allItems.find(e => e.id === doc.items[i].id)
+       if(!val)
+        allItems.push(doc.items[i])
      }
-     db.put(doc);
- }).catch(function(){
-   console.log('update all itemLists not working');
- });
+       if(doc.items.length !== allItems.length)
+          updateState({allItems: allItems})
+       doc.items = allItems;
+       db.put(doc);
+   }).catch(function(err){
+     console.log('update all items (update) not working');
+     console.log(err);
+   });
+ // }
 
- db.get('ItemLists').then(function (doc) {
-    if(doc.itemLists.length === 1 && itemLists.length===1){
-      let obj = doc.itemLists[0]
-      db.get(obj.id).then(function(doc2){
-          updateState({selectedItemList: obj, itemList: doc2.items, needsUpdate: false})
-      })
-
-    }
-    let val = itemLists.find(e => e.id === selectedItemList.id)
-    if(!val)
-      updateState({selectedItemList: {}, itemList: [], item:{}, needsUpdate: false})
-     doc.itemLists = itemLists;
-     db.put(doc);
- }).catch(function(err){
-   console.log('update itemLists not working');
-   console.log(err);
- });
-
- db.get('allItems').then(function (doc) {
-   for(let i = 0; i <doc.items.length; ++i){
-     let val = allItems.find(e => e.name === doc.items[i].name)
-     if(!val)
-      allItems.push(doc.items[i])
-   }
-     if(doc.items.length !== allItems.length)
-        updateState({allItems: allItems})
-     doc.items = allItems;
-     db.put(doc);
- }).catch(function(err){
-   console.log('update all items (update) not working');
-   console.log(err);
- });
 }
 
 export function updateCurrent(db, words, background, style, time){
@@ -103,7 +126,7 @@ export function updateItem(db, itemID, updateState, freeze, updateCurrent, setWo
 export function putInList(db, itemObj, selectedItemList, itemIndex, updateState){
   db.get(selectedItemList.id).then(function (doc) {
     doc.items.splice(itemIndex+1, 0, itemObj);
-    updateState({itemList: doc.items, needsUpdate: false});
+    updateState({itemList: doc.items});
     db.put(doc);
   })
 }

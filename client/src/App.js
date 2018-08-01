@@ -12,6 +12,7 @@ import * as Formatter from './Formatter';
 import Home from './Home';
 import MobileView from './Mobile/MobileView'
 import NavBar from './NavBar'
+import Loading from './Loading'
 import cloudinary from 'cloudinary-core';
 
 PouchDB.plugin(require('pouchdb-upsert'));
@@ -90,6 +91,7 @@ class App extends Component {
     this.state = Object.assign({}, initialState);
 
     this.updateInterval = null;
+    this.sync = null
 
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
@@ -203,10 +205,9 @@ class App extends Component {
     retrieved[type] = true;
     if(Object.keys(retrieved).length >= 4){
         retrieved.finished = true;
-        this.updateInterval = setInterval(this.update, 1000); //auto save to database every second if update has occurred
+        this.updateInterval = setInterval(this.update, 3000); //auto save to database every 3 seconds if update has occurred
     }
     this.setState({retrieved: retrieved})
-
   }
 
   getAttempted(type, db){
@@ -215,12 +216,16 @@ class App extends Component {
     if(Object.keys(attempted).length >= 4){
         if(!retrieved.finished){
           if(navigator.onLine){
-            attempted = {}
-            let obj = Object.assign({}, initialState);
-            this.setState(obj)
-            DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
-            DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
-            DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
+            let that = this;
+            setTimeout(function(){
+              attempted = {}
+              let obj = Object.assign({}, initialState);
+              that.setState(obj)
+              DBGetter.init(db, that.updateState, that.getSuccess, that.getAttempted);
+              DBGetter.retrieveImages(db, that.updateState, cloud, that.getSuccess, that.getAttempted)
+              DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted)
+            },5000)
+
           }
           else{
             alert("Please reconnect to the internet to continue")
@@ -281,18 +286,20 @@ class App extends Component {
       this.setState({upload_preset: sUploadPreset})
 
 
-    let dbName = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
-    var db = new PouchDB(dbName);
+    let remoteDB = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
+    let localDB = "portable-media";
+    var opts = {live: true, retry: true};
+    var db = new PouchDB(localDB);
     this.setState({db: db})
-    DBSetup(db);
-    DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
-    DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
-    DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
+    let that = this;
+    PouchDB.replicate(remoteDB, localDB).on('complete', function(info){
+      that.sync = db.sync(remoteDB, opts)
+      DBSetup(db);
+      DBGetter.init(db, that.updateState, that.getSuccess, that.getAttempted);
+      DBGetter.retrieveImages(db, that.updateState, cloud, that.getSuccess, that.getAttempted)
+      DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted)
+    })
 
-    // db.sync(localDB, {
-    //   live: true,
-    //   retry: true
-      // })
   }
 
   getTime(){
@@ -405,7 +412,6 @@ class App extends Component {
 
     let date = new Date();
     let time = date.getTime();
-    console.log(style);
     let obj = {
       words: words,
       background: background,
@@ -508,7 +514,7 @@ class App extends Component {
   }
 
   deleteItemFromList(index){
-    let {itemIndex, itemList, selectedItemList} = this.state;
+    let {itemList, selectedItemList} = this.state;
 
     this.setState({
       item: {},
@@ -533,12 +539,14 @@ class App extends Component {
 
   insertItemIntoList(targetIndex){
     let {itemList, itemIndex} = this.state;
-    let item = itemList[itemIndex]
+    let item = itemList[itemIndex];
     itemList.splice(itemIndex, 1);
     itemList.splice(targetIndex, 0, item);
-
-    this.setItemIndex(targetIndex);
-    this.setState({itemList: itemList, needsUpdate: true});
+    this.setState({
+      itemIndex: targetIndex,
+      itemList: itemList,
+      needsUpdate: true
+    })
   }
 
   insertWords(targetIndex){
@@ -612,56 +620,80 @@ class App extends Component {
   }
 
   login(database, user, upload_preset){
-
     clearInterval(this.updateInterval);
+    this.sync.cancel()
+    let obj = Object.assign({}, initialState);
+    this.setState(obj)
+    this.setState({retrieved: {}, attempted:{}})
 
     localStorage.setItem('loggedIn', true);
     localStorage.setItem('user', user);
     localStorage.setItem('database', database);
     localStorage.setItem('upload_preset', upload_preset);
 
-    let dbName = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
-    var db = new PouchDB(dbName);
+    let remoteDB = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
+    let localDB = "portable-media"
+    var opts = {live: true, retry: true}
+    var db = new PouchDB(localDB);
+    let that = this;
+    db.destroy().then(function(){
+      db = new PouchDB(localDB);
+      PouchDB.replicate(remoteDB, localDB).on('complete', function(info){
+        DBSetup(db);
+        DBGetter.init(db, that.updateState, that.getSuccess, that.getAttempted);
+        DBGetter.retrieveImages(db, that.updateState, cloud, that.getSuccess, that.getAttempted)
+        DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted)
+        that.sync = db.sync(remoteDB, opts)
+        that.setState({
+          isLoggedIn: true,
+          db: db,
+          user: user,
+          upload_preset: upload_preset
+        })
+      })
 
-    let obj = Object.assign({}, initialState);
-    this.setState(obj)
-    this.setState({
-      isLoggedIn: true,
-      db: db,
-      user: user,
-      upload_preset: upload_preset
     })
 
-    DBSetup(db);
-
-    DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
-    DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
-    DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
 
   }
 
   logout(){
     clearInterval(this.updateInterval);
+    this.sync.cancel()
 
     localStorage.setItem('loggedIn', false);
     localStorage.setItem('user', null);
     localStorage.setItem('database', null);
     localStorage.setItem('upload_preset', null);
 
-    let dbName = process.env.REACT_APP_DATABASE_STRING + "portable-media-demo"
-    var db = new PouchDB(dbName);
     let obj = Object.assign({}, initialState);
     this.setState(obj)
-    this.setState({db:db})
-    DBGetter.init(db, this.updateState, this.getSuccess, this.getAttempted);
-    DBGetter.retrieveImages(db, this.updateState, cloud, this.getSuccess, this.getAttempted)
-    DBGetter.changes(db, this.updateState, this.getTime, this.getSelectedList, cloud, this.getSuccess, this.getAttempted)
+    this.setState({retrieved: {}, attempted:{}})
 
+    let database = "demo"
+
+    let remoteDB = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
+    let localDB = "portable-media"
+    var opts = {live: true, retry: true}
+    var db = new PouchDB(localDB);
+    let that = this;
+    db.destroy().then(function(){
+      db = new PouchDB(localDB);
+      PouchDB.replicate(remoteDB, localDB).on('complete', function(info){
+        DBSetup(db);
+        DBGetter.init(db, that.updateState, that.getSuccess, that.getAttempted);
+        DBGetter.retrieveImages(db, that.updateState, cloud, that.getSuccess, that.getAttempted)
+        DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted)
+        that.sync = db.sync(remoteDB, opts)
+        that.setState({db: db})
+      })
+
+    })
   }
 
   render() {
 
-    let {wordIndex, itemIndex, currentInfo, isLoggedIn, item, allItems, freeze, user} = this.state;
+    let {wordIndex, itemIndex, currentInfo, isLoggedIn, item, allItems, freeze, user, retrieved} = this.state;
     let style;
     let siteStyle = {
       backgroundColor: '#d9e3f4',
@@ -707,9 +739,10 @@ class App extends Component {
         itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze} updateFormat={this.updateFormat}
         addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
         backgrounds={this.state.backgrounds} formatBible={Formatter.formatBible} db={this.state.db}
-        test={this.test} user={user} retrieved={this.state.retrieved} newItemList={this.newItemList}
-        logout={this.logout} updateState={this.updateState} allItemLists={this.state.allItemLists}
+        test={this.test} user={user} newItemList={this.newItemList} logout={this.logout}
+        updateState={this.updateState} allItemLists={this.state.allItemLists}
         />
+      {!retrieved.finished && <Loading/>}
         <div>
             {/* Route components are rendered if the path prop matches the current URL */}
             <Switch>

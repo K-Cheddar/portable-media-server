@@ -17,7 +17,7 @@ export default class NavBar extends Component {
       bibleOpen: false,
       nameOpen: false,
       type: "",
-      mousedOver: false,
+      menuMousedOver: false,
       itemListsOpen: false
     }
 
@@ -30,14 +30,15 @@ export default class NavBar extends Component {
     this.closeMenu = this.closeMenu.bind(this);
     this.openItemLists = this.openItemLists.bind(this);
     this.closeItemLists = this.closeItemLists.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   openMenu(){
-    this.setState({mousedOver: true})
+    this.setState({menuMousedOver: true})
   }
 
   closeMenu(){
-    this.setState({mousedOver: false})
+    this.setState({menuMousedOver: false})
   }
 
   openItemLists(){
@@ -67,6 +68,11 @@ export default class NavBar extends Component {
     })
   }
 
+  logout(){
+    this.setState({menuMousedOver: false})
+    this.props.logout();
+  }
+
   closeBible(){
     this.setState({bibleOpen: false})
   }
@@ -82,9 +88,9 @@ export default class NavBar extends Component {
   render(){
 
     let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFormat,
-       wordIndex, freeze, item, addItem, user, retrieved} = this.props;
+       wordIndex, freeze, item, addItem, user} = this.props;
 
-    let {bibleOpen, nameOpen, type, mousedOver, itemListsOpen} = this.state;
+    let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
 
     let buttonLoggedIn = {
        fontSize: "calc(5px + 0.35vw)", margin:'0.25%', width:'6vw'
@@ -101,11 +107,11 @@ export default class NavBar extends Component {
           {/*<li><button onClick={this.props.test}>UPDATE ALL</button></li>*/}
           <li onMouseEnter={this.openMenu} onMouseLeave={this.closeMenu}>
             <button style={{fontFamily: 'Arial', backgroundColor:'#fff',fontSize: "calc(10px + 0.35vmax)"}}>Menu</button>
-              <div style={mousedOver ? {backgroundColor:'#fff', position:'absolute', width:'7vw'} : {display:'none'}}>
+              <div style={menuMousedOver ? {backgroundColor:'#fff', position:'absolute', width:'7vw'} : {display:'none'}}>
                 <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
                 <button style={menuItem}><Link to="/">Home</Link></button>
                 {!this.props.isLoggedIn && <button style={menuItem}><Link to="/login">Login</Link></button>}
-                {this.props.isLoggedIn && <button style={menuItem} onClick={this.props.logout}>Logout</button>}
+                {this.props.isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
               </div>
           </li>
           <li>
@@ -161,7 +167,6 @@ export default class NavBar extends Component {
             }
           </li>
           <li style={{fontSize: "calc(12px + 0.5vw)"}}>Logged In As: {user}</li>
-          {!retrieved.finished && <div className='loader'></div>}
         </ul>
         {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={this.props.formatBible}/>}
         {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={this.props.db}

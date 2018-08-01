@@ -12,12 +12,12 @@ ul {
 
 
 .loader {
-    border: 0.5vw solid #f3f3f3; /* Light grey */
-    border-top: 0.5vw solid #3498db; /* Blue */
+    border: 1.5vw solid #f3f3f3; /* Light grey */
+    border-top: 1.5vw solid #3498db; /* Blue */
     border-radius: 50%;
-    width: 1vw;
-    height: 1vw;
-    animation: spin 2s linear infinite;
+    width: 4vw;
+    height: 4vw;
+    animation: spin 2.5s linear infinite;
 }
 
 @keyframes spin {

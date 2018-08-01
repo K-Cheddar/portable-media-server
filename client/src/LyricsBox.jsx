@@ -300,6 +300,8 @@ export default class LyricsBox extends Component{
       }
     }
 
+    this.updateSections(formattedLyrics)
+
     formattedLyrics.splice(index, 1);
     sectionsPresent.splice(index, 1);
     this.setState({
