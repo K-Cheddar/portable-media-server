@@ -16,30 +16,22 @@ export default class Bible extends Component {
       verseEndSearch: '',
       selectedVerses: []
     }
-    this.updateBook = this.updateBook.bind(this);
-    this.updateChapter = this.updateChapter.bind(this);
-    this.updateStartVerse = this.updateStartVerse.bind(this);
-    this.updateEndVerse = this.updateEndVerse.bind(this);
-    this.selectBook = this.selectBook.bind(this);
-    this.selectChapter = this.selectChapter.bind(this);
-    this.selectStartVerse = this.selectStartVerse.bind(this);
-    this.selectEndVerse = this.selectEndVerse.bind(this);
-    this.createVersesItem = this.createVersesItem.bind(this);
+
   }
 
-  updateBook(e){
+  updateBook = (e) => {
     this.setState({bookSearch: e.target.value})
   }
-  updateChapter(e){
+  updateChapter = (e) => {
     this.setState({chapterSearch: e.target.value})
   }
-  updateStartVerse(e){
+  updateStartVerse = (e) =>{
     this.setState({verseStartSearch: e.target.value})
   }
-  updateEndVerse(e){
+  updateEndVerse = (e) => {
     this.setState({verseEndSearch: e.target.value})
   }
-  selectBook(index){
+  selectBook = (index) => {
     this.setState({
       currentBook: index,
       currentChapter: 0,
@@ -47,24 +39,24 @@ export default class Bible extends Component {
       endVerse: 0
     })
   }
-  selectChapter(index){
+  selectChapter = (index) => {
     this.setState({
       currentChapter: index,
       startVerse: 0,
       endVerse: 0
     })
   }
-  selectStartVerse(index){
+  selectStartVerse = (index) => {
     let {endVerse} = this.state;
     this.setState({startVerse: index})
     if(endVerse < index)
       this.setState({endVerse: index})
   }
-  selectEndVerse(index){
+  selectEndVerse = (index) => {
     this.setState({endVerse: index})
   }
 
-  createVersesItem(){
+  createVersesItem = () => {
     let {currentBook, currentChapter, startVerse, endVerse} = this.state;
     let verses = kjv.books[currentBook].chapters[currentChapter].verses.filter(
       e => (e.verse >= startVerse+1 && e.verse <= endVerse+1)

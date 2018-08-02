@@ -33,23 +33,6 @@ export default class LyricsBox extends Component{
 
     this.checkHeld = null;
 
-    this.submitText = this.submitText.bind(this);
-    this.textChange = this.textChange.bind(this);
-    this.setSectionIndex = this.setSectionIndex.bind(this);
-    this.deleteSection = this.deleteSection.bind(this);
-    this.deleteSectionFromOrder = this.deleteSectionFromOrder.bind(this);
-    this.changeSectionText = this.changeSectionText.bind(this);
-    this.changeSectionType = this.changeSectionType.bind(this);
-    this.changeNewType = this.changeNewType.bind(this);
-    this.updateSections = this.updateSections.bind(this);
-    this.createSections = this.createSections.bind(this);
-    this.newSection = this.newSection.bind(this);
-    this.addSection = this.addSection.bind(this);
-    this.autoFormatLyrics = this.autoFormatLyrics.bind(this);
-    this.updateMouse = this.updateMouse.bind(this);
-    this.setElement = this.setElement.bind(this);
-    this.releaseElement = this.releaseElement.bind(this);
-
   }
 
   componentDidMount(){
@@ -66,14 +49,14 @@ export default class LyricsBox extends Component{
     })
   }
 
-  updateMouse(e){
+  updateMouse = (e) => {
     this.setState({
       mouseX: e.clientX,
       mouseY: e.clientY
     })
   }
 
-  setElement(index){
+  setElement = (index) => {
 
     this.setState({songIndex: index})
 
@@ -91,7 +74,7 @@ export default class LyricsBox extends Component{
 
   }
 
-  setTarget(index){
+  setTarget = (index) => {
     let {indexBeingDragged} = this.state;
     if((indexBeingDragged !== -1) && (indexBeingDragged !== index)){
       this.insertSongIntoOrder(index);
@@ -99,7 +82,7 @@ export default class LyricsBox extends Component{
     }
   }
 
-  releaseElement(){
+  releaseElement = () => {
     clearTimeout(this.checkHeld)
     this.setState({
       indexBeingDragged: -1,
@@ -108,7 +91,7 @@ export default class LyricsBox extends Component{
 
   }
 
-  setSectionIndex(index){
+  setSectionIndex = (index) => {
     this.setState({sectionIndex: index})
   }
 
@@ -127,7 +110,7 @@ export default class LyricsBox extends Component{
 
   }
 
-  autoFormatLyrics(){
+  autoFormatLyrics = () => {
     let {songOrder, formattedLyrics} = this.state;
     let {item} = this.props;
 
@@ -141,7 +124,7 @@ export default class LyricsBox extends Component{
     this.props.close();
   }
 
-  newSection(){
+  newSection = () => {
     let {formattedLyrics} = this.state;
     formattedLyrics.push({
       type: "Verse",
@@ -152,13 +135,13 @@ export default class LyricsBox extends Component{
   //  this.setState({formattedLyrics: formattedLyrics})
   }
 
-  addSection(){
+  addSection = () => {
     let {songOrder, newType} = this.state;
     songOrder.push(newType)
     this.setState({songOrder: songOrder})
   }
 
-  updateSections(formattedLyrics){
+  updateSections = (formattedLyrics) => {
     let sections = [];
     let {songOrder, sectionsPresent} = this.state;
     let indexesChanged = [];
@@ -285,13 +268,13 @@ export default class LyricsBox extends Component{
     });
   }
 
-  deleteSectionFromOrder(index){
+  deleteSectionFromOrder = (index) => {
     let {songOrder} = this.state;
     songOrder.splice(index, 1);
     this.setState({songOrder: songOrder})
   }
 
-  deleteSection(index){
+  deleteSection = (index) => {
     let {formattedLyrics, sectionsPresent, songOrder} = this.state;
 
     for (var i = 0; i < songOrder.length; i++) {
@@ -311,23 +294,23 @@ export default class LyricsBox extends Component{
 
   }
 
-  changeSectionText(e){
+  changeSectionText = (e) => {
     let {formattedLyrics, sectionIndex} = this.state;
     formattedLyrics[sectionIndex].words = e.target.value;
     this.setState({formattedLyrics: formattedLyrics});
   }
 
-  changeSectionType(e){
+  changeSectionType = (e) => {
     let {formattedLyrics, sectionIndex} = this.state;
     formattedLyrics[sectionIndex].type = e.target.value;
     this.updateSections(formattedLyrics);
   }
 
-  changeNewType(e){
+  changeNewType = (e) => {
     this.setState({newType: e.target.value});
   }
 
-  insertSongIntoOrder(targetIndex){
+  insertSongIntoOrder = (targetIndex) => {
     let {songOrder, songIndex} = this.state;
     let song = songOrder[songIndex];
     songOrder.splice(songIndex, 1);
@@ -339,13 +322,13 @@ export default class LyricsBox extends Component{
     })
   }
 
-  submitText(){
+  submitText = () => {
     if(this.state.text.length > 0)
       this.createSections(this.state.text);
     this.setState({text: ""})
   }
 
-  textChange(event){
+  textChange = (event) => {
     this.setState({text: event.target.value})
   }
 

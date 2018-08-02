@@ -22,27 +22,17 @@ export default class ItemListEditor extends Component{
     }
 
     this.messageDisplay = null;
-
-    this.cancel = this.cancel.bind(this);
-    this.confirm = this.confirm.bind(this);
-    this.edit = this.edit.bind(this);
-    this.editName = this.editName.bind(this);
-    this.deleteList = this.deleteList.bind(this);
-    this.addToList = this.addToList.bind(this);
-    this.newItemList = this.newItemList.bind(this);
-    this.updateAilsSearch = this.updateAilsSearch.bind(this);
-    this.updateIlsSearch = this.updateIlsSearch.bind(this);
   }
 
-  updateAilsSearch(event){
+  updateAilsSearch = (event) => {
     this.setState({ailsSearch: event.target.value})
   }
 
-  updateIlsSearch(event){
+  updateIlsSearch = (event) => {
     this.setState({ilsSearch: event.target.value})
   }
 
-  confirm(itemName){
+  confirm = (itemName) => {
     let {name} = this.state;
     let {itemLists, allItemLists} = this.props;
     let index = itemLists.findIndex(e => e.name === itemName)
@@ -56,7 +46,7 @@ export default class ItemListEditor extends Component{
     this.setState({selectedIndex: -1, name: ''})
   }
 
-  openConfirmation(name){
+  openConfirmation = (name) => {
     let index = this.props.allItemLists.findIndex(e => e.name === name)
     this.setState({
       deleteOverlay: true,
@@ -65,7 +55,7 @@ export default class ItemListEditor extends Component{
     })
   }
 
-  cancel(){
+  cancel = () => {
     this.setState({
       selectedIndex: -1,
       name: '',
@@ -74,18 +64,18 @@ export default class ItemListEditor extends Component{
     })
   }
 
-  editName(event){
+  editName = (event) => {
     this.setState({name: event.target.value})
   }
 
-  edit(index, name){
+  edit = (index, name) => {
     this.setState({
       selectedIndex: index,
       name: name
     })
   }
 
-  deleteList(type, name){
+  deleteList = (type, name) => {
     let {itemLists, allItemLists} = this.props;
     let {deleteIndex} = this.state;
     if(type==='one'){
@@ -108,7 +98,7 @@ export default class ItemListEditor extends Component{
 
   }
 
-  newItemList(){
+  newItemList = () => {
     let {itemLists, allItemLists} = this.props;
     let name = "Item List " + (allItemLists.length+1);
     let newList = {id: name, name: name}
@@ -122,7 +112,7 @@ export default class ItemListEditor extends Component{
     // DBUpdater.updateItemLists(this.state.db, itemLists, newList);
   }
 
-  addToList(name){
+  addToList = (name) => {
     let {itemLists, allItemLists} = this.props;
     let index = allItemLists.findIndex(e => e.name === name)
     let val = itemLists.find(e => e.id === allItemLists[index].id)

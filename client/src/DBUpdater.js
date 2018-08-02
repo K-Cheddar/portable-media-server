@@ -1,4 +1,7 @@
+import * as Sort from './Sort'
+
 let updaterInterval = null;
+
 // let previousItems = {};
 export function update(db, item, selectedItemList, itemList, allItems, itemLists, allItemLists, updateState){
   console.log("Update Called");
@@ -131,7 +134,7 @@ export function putInList(db, itemObj, selectedItemList, itemIndex, updateState)
   })
 }
 
-export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemToList, sortItemList){
+export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemToList){
   db.get(item._id).then(function(doc){
     let itemObj = {
       "name": doc.name,
@@ -152,7 +155,7 @@ export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemT
       addItemToList(itemObj);
       db.get('allItems').then(function (allItems) {
         allItems.items.push(itemObj);
-        allItems.items = sortItemList(allItems.items)
+        allItems.items = Sort.sortItemList(allItems.items)
         updateState({allItems: allItems.items})
         db.put(allItems);
       });
@@ -167,7 +170,6 @@ export function deleteItem(db, name, allItems, allItemLists, index, selectedItem
 
   //delete item
   db.get(allItems[index]._id).then(function (doc) {
-    console.log("FOUND");
       return db.remove(doc);
   });
   allItems.splice(index, 1);
@@ -181,18 +183,12 @@ export function deleteItem(db, name, allItems, allItemLists, index, selectedItem
   //delete item from each list
   for(let i = 1; i <= allItemLists.length; ++i){
     db.get("Item List "+i).then(function(doc){
-      let sIndex = doc.items.findIndex(e => e.name === name);
-      if(sIndex >= 0){
-        db.get("Item List "+i).then(function (doc) {
-            doc.items.splice(sIndex, 1);
-            if(selectedItemList.id === "Item List "+i){
-              updateState({itemList: doc.items})
-                setItemIndex(index-1)
-            }
-            return db.put(doc);
-          })
-
+      doc.items = doc.items.filter(e => e.name !== name)
+      if(selectedItemList.id === "Item List "+i){
+        updateState({itemList: doc.items })
+        setItemIndex((doc.items.length > 0) ? index-1 : 0)
       }
+      return db.put(doc);
     })
   }
 }

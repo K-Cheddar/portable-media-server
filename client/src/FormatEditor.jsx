@@ -18,53 +18,45 @@ class FormatEditor extends React.Component{
 
     this.throttle = null
 
-    this.colorChange = this.colorChange.bind(this);
-    this.openColors = this.openColors.bind(this);
-    this.closeColors = this.closeColors.bind(this);
-    this.fontSizeUP = this.fontSizeUP.bind(this);
-    this.fontSizeDOWN = this.fontSizeDOWN.bind(this);
-    this.fontSizeChange = this.fontSizeChange.bind(this);
-    this.updateFont = this.updateFont.bind(this);
   }
-  openColors(){
+  openColors = () => {
     this.setState({cPickerOpen: true})
   }
 
-  closeColors(){
+  closeColors = () => {
     this.setState({
       cPickerOpen: false
     })
   }
 
-  colorChange(event){
+  colorChange = (event) => {
     this.setState({color: event.rgb})
-    this.props.updateFormat({c: event.rgb, updateColor: true})
+    this.props.updateFontColor(event.rgb)
   }
 
-  updateFont(fontSize){
+  updateFont = (fontSize) => {
     if(fontSize > 7.5){
       fontSize = 7.5
     }
     else if(fontSize < 0.25){
       fontSize = 0.25
     }
-    this.props.updateFormat({fontSize: fontSize})
+    this.props.updateFontSize(fontSize)
   }
 
-  fontSizeUP(){
+  fontSizeUP = () => {
     let {fontSize} = this.state;
     this.setState({fontSize: fontSize+0.25})
     this.updateFont(fontSize+0.25)
-
   }
 
-  fontSizeDOWN(){
+  fontSizeDOWN = () => {
     let {fontSize} = this.state;
     this.setState({fontSize: fontSize-0.25})
     this.updateFont(fontSize-0.25)
   }
 
-  fontSizeChange(event){
+  fontSizeChange = (event) => {
     let val;
     let {updating} = this.state;
     let that = this;

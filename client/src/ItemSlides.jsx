@@ -16,18 +16,9 @@ class ItemSlides extends React.Component{
     }
 
     this.checkHeld = null;
-
-    this.addSlide = this.addSlide.bind(this);
-    this.deleteSlide = this.deleteSlide.bind(this);
-    this.openLBox = this.openLBox.bind(this);
-    this.closeLBox = this.closeLBox.bind(this);
-    this.updateMouse = this.updateMouse.bind(this);
-    this.setElement = this.setElement.bind(this);
-    this.releaseElement = this.releaseElement.bind(this);
-
   }
 
-  updateMouse(e){
+  updateMouse = (e) => {
 
     this.setState({
       mouseX: e.clientX,
@@ -35,7 +26,7 @@ class ItemSlides extends React.Component{
     })
   }
 
-  setElement(index, lyrics){
+  setElement = (index, lyrics) => {
 
     this.props.setWordIndex(index, lyrics);
 
@@ -53,7 +44,7 @@ class ItemSlides extends React.Component{
 
   }
 
-  setTarget(index){
+  setTarget = (index) => {
     let {indexBeingDragged} = this.state;
     if((indexBeingDragged !== -1) && (indexBeingDragged !== index)){
       this.props.insertWords(index);
@@ -61,7 +52,7 @@ class ItemSlides extends React.Component{
     }
   }
 
-  releaseElement(){
+  releaseElement = () => {
     clearTimeout(this.checkHeld)
     this.setState({
       indexBeingDragged: -1,
@@ -70,15 +61,15 @@ class ItemSlides extends React.Component{
 
   }
 
-  openLBox(){
+  openLBox = () => {
     this.setState({lBoxOpen: true})
   }
 
-  closeLBox(){
+  closeLBox = () => {
     this.setState({lBoxOpen: false})
   }
 
-  addSlide(){
+  addSlide = () => {
     let {item, wordIndex} = this.props;
     item.slides.splice(wordIndex+1, 0,     {
                         type: item.slides[wordIndex].type,
@@ -95,7 +86,7 @@ class ItemSlides extends React.Component{
     this.props.setWordIndex(item.slides.length-1)
   }
 
-  deleteSlide(index){
+  deleteSlide = (index) => {
     let {item} = this.props;
     item.slides.splice(index, 1);
     this.props.updateItem(item);

@@ -13,27 +13,24 @@ export default class AllItems extends React.Component{
       name: ""
     }
 
-    this.cancel = this.cancel.bind(this);
-    this.confirm = this.confirm.bind(this);
-    this.updateText = this.updateText.bind(this);
   }
 
-  updateText(event){
+  updateText = (event) => {
     this.setState({text: event.target.value})
   }
 
-  openConfirmation(name){
+  openConfirmation = (name) => {
     this.setState({
       deleteOverlay: true,
       name: name
     })
   }
 
-  cancel(){
+  cancel = () => {
     this.setState({deleteOverlay: false})
   }
 
-  confirm(){
+  confirm = () => {
     this.setState({deleteOverlay: false})
     this.props.deleteItem(this.state.name)
   }

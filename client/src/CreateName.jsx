@@ -9,11 +9,6 @@ export default class CreateName extends React.Component{
       name: "",
       message: "",
     }
-
-    this.nameChange = this.nameChange.bind(this);
-    this.submitName = this.submitName.bind(this);
-    this.editName = this.editName.bind(this);
-    this.nameAvailable = this.nameAvailable.bind(this);
   }
 
   componentDidMount(){
@@ -21,7 +16,7 @@ export default class CreateName extends React.Component{
     document.getElementById("nameChange").focus();
   }
 
-  nameAvailable(){
+  nameAvailable = () => {
       let {name} = this.state;
       var that = this;
       this.props.db.get(name).then(function(){
@@ -33,11 +28,11 @@ export default class CreateName extends React.Component{
       })
     }
 
-  nameChange(event){
+  nameChange = (event) => {
     this.setState({name: event.target.value})
   }
 
-  submitName(event){
+  submitName = (event) => {
     event.preventDefault();
     let {option} = this.props;
     if(option === 'edit'){
@@ -49,7 +44,7 @@ export default class CreateName extends React.Component{
     // this.props.submitName(this.state.name)
   }
 
-  addItem(name){
+  addItem = (name) =>{
 
     let {type} = this.props;
 
@@ -87,7 +82,7 @@ export default class CreateName extends React.Component{
       this.props.addItem(item);
     }
 
-  editName(){
+  editName = () => {
 
     let {name} = this.state;
     let {id, updateItem, db} = this.props;

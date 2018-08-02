@@ -20,75 +20,64 @@ export default class NavBar extends Component {
       menuMousedOver: false,
       itemListsOpen: false
     }
-
-    this.openBible = this.openBible.bind(this);
-    this.openSong = this.openSong.bind(this);
-    this.openImage = this.openImage.bind(this);
-    this.closeBible = this.closeBible.bind(this);
-    this.closeName = this.closeName.bind(this);
-    this.openMenu = this.openMenu.bind(this);
-    this.closeMenu = this.closeMenu.bind(this);
-    this.openItemLists = this.openItemLists.bind(this);
-    this.closeItemLists = this.closeItemLists.bind(this);
-    this.logout = this.logout.bind(this);
   }
 
-  openMenu(){
+  openMenu = () => {
     this.setState({menuMousedOver: true})
   }
 
-  closeMenu(){
+  closeMenu = () => {
     this.setState({menuMousedOver: false})
   }
 
-  openItemLists(){
+  openItemLists = () => {
     this.setState({itemListsOpen: true})
   }
 
-  closeItemLists(){
+  closeItemLists = () => {
     this.setState({itemListsOpen: false})
   }
 
-  openBible(){
+  openBible = () => {
     this.setState({
       bibleOpen: true,
       type: 'bible'
     })
   }
-  openSong(){
+  openSong = () => {
     this.setState({
       nameOpen: true,
       type: 'song'
     })
   }
-  openImage(){
+  openImage = () => {
     this.setState({
       nameOpen: true,
       type: 'image'
     })
   }
 
-  logout(){
+  logout = () => {
     this.setState({menuMousedOver: false})
     this.props.logout();
   }
 
-  closeBible(){
+  closeBible = () => {
     this.setState({bibleOpen: false})
   }
-  closeName(){
+  closeName = () => {
     this.setState({nameOpen: false})
   }
 
-  openPresentation(){
+  openPresentation = () => {
     let url = window.location.origin;
     window.open(url+'#presentation', "Presentation", "height=350,width=350,alwaysRaised");
   }
 
   render(){
 
-    let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFormat,
-       wordIndex, freeze, item, addItem, user} = this.props;
+    let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFontSize, 
+       updateFontColor, wordIndex, freeze, item, addItem, user} = this.props;
 
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
 
@@ -143,7 +132,8 @@ export default class NavBar extends Component {
           </li>
           <li>
             <div style={{paddingTop:'1%', margin:'auto'}}>
-               <FormatEditor item={item} updateFormat={updateFormat} wordIndex={wordIndex}/>
+               <FormatEditor item={item} updateFontSize={updateFontSize}
+                 updateFontColor={updateFontColor} wordIndex={wordIndex}/>
             </div>
           </li>
           <li>

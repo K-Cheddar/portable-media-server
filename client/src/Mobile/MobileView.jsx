@@ -14,15 +14,12 @@ export default class MobileView extends Component{
     this.state = {
       itemSelectOpen: false,
     }
-
-    this.openItemSelect = this.openItemSelect.bind(this);
-    this.closeItemSelect = this.closeItemSelect.bind(this);
   }
 
-  openItemSelect(){
+  openItemSelect = () => {
     this.setState({itemSelectOpen: true})
   }
-  closeItemSelect(){
+  closeItemSelect = () => {
     this.setState({itemSelectOpen: false})
   }
 

@@ -5,22 +5,12 @@ import MobileSlideInList from './MobileSlideInList';
 
 export default class MobileSlides extends React.Component{
 
-  constructor(){
-    super();
-
-    this.setWordIndex = this.setWordIndex.bind(this);
-    this.nextSlide = this.nextSlide.bind(this);
-    this.prevSlide = this.prevSlide.bind(this);
-    this.clickSlide = this.clickSlide.bind(this);
-  }
-
-
-  clickSlide(index, lyrics){
+  clickSlide = (index, lyrics) => {
     this.setWordIndex(index, lyrics);
     window.scrollTo(0,0);
   }
 
-  setWordIndex(index, lyrics){
+  setWordIndex = (index, lyrics) => {
     var element = document.getElementById("MSlide"+index);
     console.log("element")
     //if(element)
@@ -28,7 +18,7 @@ export default class MobileSlides extends React.Component{
     this.props.setWordIndex(index, lyrics);
   }
 
-  nextSlide(index){
+  nextSlide = (index) => {
     let {item} = this.props;
     if(index < item.slides.length-1){
         this.props.setWordIndex(index+1, item.slides[index+1].boxes[0].words)
@@ -36,7 +26,7 @@ export default class MobileSlides extends React.Component{
 
   }
 
-  prevSlide(index){
+  prevSlide = (index) => {
     let {item} = this.props;
     if(index > 0)
       this.props.setWordIndex(index-1, item.slides[index-1].boxes[0].words)

@@ -5,16 +5,9 @@ export default class Home extends Component {
   constructor(){
     super();
     this.state = {
-      url: '',
-      isMobile: false,
-      text: 'Ch',
-      c: '5',
-      bookIndex: 5,
-      chapterIndex: 3,
+      isMobile: false
     }
 
-    this.test = this.test.bind(this);
-    this.start = this.start.bind(this);
   }
 
   componentDidMount(){
@@ -29,14 +22,6 @@ export default class Home extends Component {
     }
   }
 
-  start(){
-    let url = 'https://www.biblegateway.com/passage/?search=Jeremiah+4%3A4-10&version=NKJV'
-    this.setState({url:url})
-  }
-
-  test(){
-
-  }
 
   render(){
 

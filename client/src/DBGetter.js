@@ -11,7 +11,7 @@ export function init(db, updateState, getSuccess, getAttempted){
   }).catch(function(){
     console.log('currentInfo not loaded');
   }).then(function(){
-    getAttempted('currentInfo', db)
+    getAttempted('currentInfo')
   })
   db.get('ItemLists').then(function (doc) {
     if(doc.itemLists[0]){
@@ -29,7 +29,7 @@ export function init(db, updateState, getSuccess, getAttempted){
   }).catch(function(){
     console.log('itemLists not loaded');
   }).then(function(){
-    getAttempted('Item Lists', db)
+    getAttempted('Item Lists')
   })
   db.get('allItemLists').then(function (doc) {
     updateState({
@@ -40,7 +40,7 @@ export function init(db, updateState, getSuccess, getAttempted){
   }).catch(function(){
     console.log('itemLists not loaded');
   }).then(function(){
-    getAttempted('All Item Lists', db)
+    getAttempted('All Item Lists')
   })
   db.get('allItems').then(function (doc) {
     updateState({allItems: doc.items, needsUpdate: false})
@@ -48,7 +48,7 @@ export function init(db, updateState, getSuccess, getAttempted){
   }).catch(function(){
     console.log('allItems not loaded');
   }).then(function(){
-    getAttempted('allItems', db)
+    getAttempted('allItems')
   });
 }
 
@@ -124,7 +124,7 @@ export function retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
   }).catch(function(){
     console.log('images not loaded');
   }).then(function(){
-    getAttempted('images', db)
+    getAttempted('images')
   });
 }
 

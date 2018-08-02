@@ -13,19 +13,16 @@ class Presentation extends React.Component{
       pStyle: {},
       pTime: -1
     }
-
-    this.updateDimensions = this.updateDimensions.bind(this);
-    this.updateStorage = this.updateStorage.bind(this);
   }
 
-  updateDimensions(){
+  updateDimensions = () => {
     this.setState({
       width: window.innerWidth,
       height: window.innerHeight
     })
   }
 
-  updateStorage(e){
+  updateStorage = (e) => {
     if(e.key === 'presentation'){
       let val = JSON.parse(e.newValue);
       if (!val)
@@ -88,18 +85,18 @@ class Presentation extends React.Component{
       let newText = "";
       for (let i = 0; i < text.length; ++i){
         if(text[i-1] === '{' && text[i+1] === '}'){
-          newText += text.charAt(i).fontcolor("red")
+          newText += text.charAt(i).fontcolor("#C462FF")
           i+=1;
         }
         else if(text[i-1] === '{' && text[i+2] === '}'){
-          newText += text.charAt(i).fontcolor("red")
-          newText += text.charAt(i+1).fontcolor("red")
+          newText += text.charAt(i).fontcolor("#C462FF")
+          newText += text.charAt(i+1).fontcolor("#C462FF")
           i+=2;
         }
         else if(text[i-1] === '{' && text[i+3] === '}'){
-          newText += text.charAt(i).fontcolor("red")
-          newText += text.charAt(i+1).fontcolor("red")
-          newText += text.charAt(i+2).fontcolor("red")
+          newText += text.charAt(i).fontcolor("#C462FF")
+          newText += text.charAt(i+1).fontcolor("#C462FF")
+          newText += text.charAt(i+2).fontcolor("#C462FF")
           i+=3;
         }
         else if(text[i]!== '{'){
@@ -171,7 +168,7 @@ class Presentation extends React.Component{
         </div>
         }
         {isVideo &&<div style={{width: '100vw', height: '100vh', maxHeight:'75vw'}}>
-          <video preload="auto" loop autoPlay id="background-video-presentation"
+          <video muted preload="auto" loop autoPlay id="background-video-presentation"
             style={{width:'100%', height:'100%', position:'absolute', zIndex:'-1'}} >
             <source src={asset.video.src} type="video/mp4"/>
             <source src={asset.video.src} type="video/ogg" />

@@ -23,16 +23,9 @@ export default class ItemList extends React.Component{
       }
 
       this.checkHeld = null;
-
-      this.editItem = this.editItem.bind(this);
-      this.close = this.close.bind(this);
-      this.updateMouse = this.updateMouse.bind(this);
-      this.setElement = this.setElement.bind(this);
-      this.releaseElement = this.releaseElement.bind(this);
-
     }
 
-  updateMouse(e){
+  updateMouse = (e) => {
 
     this.setState({
       mouseX: e.clientX,
@@ -40,7 +33,7 @@ export default class ItemList extends React.Component{
     })
   }
 
-  setElement(index){
+  setElement = (index) => {
 
     this.props.setItemIndex(index);
 
@@ -58,7 +51,7 @@ export default class ItemList extends React.Component{
 
   }
 
-  setTarget(index){
+  setTarget = (index) => {
     let {indexBeingDragged} = this.state;
     if((indexBeingDragged !== -1) && (indexBeingDragged !== index)){
       this.props.insertItemIntoList(index);
@@ -66,7 +59,7 @@ export default class ItemList extends React.Component{
     }
   }
 
-  releaseElement(){
+  releaseElement = () => {
     clearTimeout(this.checkHeld)
     this.setState({
       indexBeingDragged: -1,
@@ -75,7 +68,7 @@ export default class ItemList extends React.Component{
 
   }
 
-  editItem(name, id){
+  editItem = (name, id) =>{
       this.setState({
         nameOpen: true,
         name: name,
@@ -83,7 +76,7 @@ export default class ItemList extends React.Component{
       })
     }
 
-  close(){
+  close = () => {
       this.setState({nameOpen: false})
     }
 

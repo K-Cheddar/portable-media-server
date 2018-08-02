@@ -61,7 +61,7 @@ export default class DisplayEditor extends Component{
         <div style={style}> {text} </div>
         </div>}
         {isVideo &&<div style={{width:'100vw', height: '35vh',position:'relative'}}>
-          <video loop autoPlay id="background-video-mobile"
+          <video muted loop autoPlay id="background-video-mobile"
             style={{width:'100%', position:'absolute', zIndex:'-1', top:'1%'}} >
             <source src={asset.video.src} type="video/mp4"/>
             <source src={asset.video.src} type="video/ogg" />

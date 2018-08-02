@@ -12,34 +12,27 @@ export default class Backgrounds extends React.Component{
       selectedBackground: "",
       allOpen: false,
     }
-
-    this.selectBackground = this.selectBackground.bind(this);
-    this.setItemBackground = this.setItemBackground.bind(this);
-    this.setSlideBackground = this.setSlideBackground.bind(this);
-    this.displayImage = this.displayImage.bind(this);
-    this.close = this.close.bind(this);
-    this.open = this.open.bind(this);
   }
 
-  close(){
+  close = () => {
     this.setState({allOpen: false})
   }
 
-  open(){
+  open = () => {
     this.setState({allOpen: true})
   }
 
-  componentDidMount(){
+  componentDidMount = () => {
     let {backgrounds} = this.props
     this.setState({selectBackground: backgrounds[0]})
   }
 
-  displayImage(){
+  displayImage = () =>{
     let {selectedBackground} = this.state;
     this.props.updateCurrent({background: selectedBackground, words: ''})
   }
 
-  selectBackground(index){
+  selectBackground = (index) => {
     let {backgrounds} = this.props
     this.setState({
       selected: index,
@@ -47,12 +40,12 @@ export default class Backgrounds extends React.Component{
     })
   }
 
-  setItemBackground(){
+  setItemBackground = () =>{
     let {selectedBackground} = this.state;
     this.props.setItemBackground(selectedBackground)
   }
 
-  setSlideBackground(){
+  setSlideBackground = () => {
     let {selectedBackground} = this.state
     this.props.setSlideBackground(selectedBackground)
   }

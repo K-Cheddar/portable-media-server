@@ -15,16 +15,13 @@ export default class Login extends Component {
       wrongCred: false,
       isMobile: false
     }
-    this.login = this.login.bind(this);
-    this.usernameChange = this.usernameChange.bind(this);
-    this.passwordChange = this.passwordChange.bind(this);
   }
 
-  usernameChange(event) {
+  usernameChange = (event) => {
     this.setState({username: event.target.value});
   }
 
-  passwordChange(event) {
+  passwordChange = (event) => {
     this.setState({password: event.target.value});
   }
 
@@ -40,7 +37,7 @@ export default class Login extends Component {
     }
   }
 
-  login(event) {
+  login = (event) => {
 
     event.preventDefault();
     let {username, password, isMobile} = this.state;

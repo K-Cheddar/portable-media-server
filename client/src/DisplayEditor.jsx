@@ -3,12 +3,6 @@ import blank from './assets/blank.png';
 
 class DisplayEditor extends React.Component{
 
-  constructor(){
-    super();
-
-    this.handleTextChange = this.handleTextChange.bind(this);
-  }
-
   componentDidMount(){
     let video = document.getElementById('background-video');
     if(video)
@@ -24,7 +18,7 @@ class DisplayEditor extends React.Component{
     }
   }
 
-  handleTextChange(event) {
+  handleTextChange = (event) => {
 
     event.preventDefault();
     let cursor = event.target.selectionStart

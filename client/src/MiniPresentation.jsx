@@ -24,18 +24,18 @@ export default class MiniPresentation extends React.Component{
       let newText = "";
       for (let i = 0; i < text.length; ++i){
         if(text[i-1] === '{' && text[i+1] === '}'){
-          newText += text.charAt(i).fontcolor("red")
+          newText += text.charAt(i).fontcolor("#C462FF")
           i+=1;
         }
         else if(text[i-1] === '{' && text[i+2] === '}'){
-          newText += text.charAt(i).fontcolor("red")
-          newText += text.charAt(i+1).fontcolor("red")
+          newText += text.charAt(i).fontcolor("#C462FF")
+          newText += text.charAt(i+1).fontcolor("#C462FF")
           i+=2;
         }
         else if(text[i-1] === '{' && text[i+3] === '}'){
-          newText += text.charAt(i).fontcolor("red")
-          newText += text.charAt(i+1).fontcolor("red")
-          newText += text.charAt(i+2).fontcolor("red")
+          newText += text.charAt(i).fontcolor("#C462FF")
+          newText += text.charAt(i+1).fontcolor("#C462FF")
+          newText += text.charAt(i+2).fontcolor("#C462FF")
           i+=3;
         }
         else if(text[i]!== '{'){
@@ -82,7 +82,7 @@ export default class MiniPresentation extends React.Component{
           <div id="background-text" style={styleFull}>{words}</div>
         </div>}
         {isVideo &&<div style={{width:'16vw', height:'9.5vw',position:'relative'}}>
-          <video loop autoPlay id="background-video-mini"
+          <video muted loop autoPlay id="background-video-mini"
             style={{width:'100%', height:'100%', position:'absolute', zIndex:'-1'}} >
             <source src={asset.video.src} type="video/mp4"/>
             <source src={asset.video.src} type="video/ogg" />
