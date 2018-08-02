@@ -131,8 +131,8 @@ export default class LyricsBox extends Component{
       name: "Verse",
       words: ""
     })
-    this.updateSections(formattedLyrics)
-  //  this.setState({formattedLyrics: formattedLyrics})
+    // this.updateSections(formattedLyrics)
+   this.setState({formattedLyrics: formattedLyrics})
   }
 
   addSection = () => {

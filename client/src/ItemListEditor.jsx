@@ -100,7 +100,9 @@ export default class ItemListEditor extends Component{
 
   newItemList = () => {
     let {itemLists, allItemLists} = this.props;
-    let name = "Item List " + (allItemLists.length+1);
+    let id = allItemLists[allItemLists.length-1].id;
+    let newNumber = parseInt(id.slice(-1), 10) + 1;
+    let name = "Item List " + newNumber
     let newList = {id: name, name: name}
     itemLists.push(newList);
     allItemLists.push(newList);

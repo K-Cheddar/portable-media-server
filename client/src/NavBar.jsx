@@ -76,7 +76,7 @@ export default class NavBar extends Component {
 
   render(){
 
-    let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFontSize, 
+    let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFontSize,
        updateFontColor, wordIndex, freeze, item, addItem, user} = this.props;
 
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
@@ -163,7 +163,7 @@ export default class NavBar extends Component {
         close={this.closeName} addItem={this.props.addItem} backgrounds={this.props.backgrounds}
         />}
         {itemListsOpen && <ItemListEditor updateState={this.props.updateState} close={this.closeItemLists}
-          itemLists={this.props.itemLists} allItemLists={this.props.allItemLists}
+          itemLists={this.props.itemLists} allItemLists={this.props.allItemLists} deleteItemList={this.props.deleteItemList}
           newItemList={this.props.newItemList} selectItemList={this.props.selectItemList}
         />}
       </div>

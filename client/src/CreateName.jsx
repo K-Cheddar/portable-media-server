@@ -90,7 +90,7 @@ export default class CreateName extends React.Component{
     db.get(id).then(function(doc){
       doc.name = name;
       if(doc.type === 'song')
-        doc.words[0].words = name;
+        doc.slides[0].boxes[0].words = name;
       updateItem(doc);
     })
     this.props.close();

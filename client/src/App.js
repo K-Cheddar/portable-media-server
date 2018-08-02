@@ -228,11 +228,6 @@ class App extends Component {
     let remoteDB = new PouchDB(remoteURL);
     let that = this;
     if(!first){
-      //reset to initial state
-      let obj = Object.assign({}, initialState);
-      that.setState(obj)
-      //for some reason these needed to be done separately in the past, perhaps this has changed
-      that.setState({retrieved: {}, attempted:{}})
       db.destroy().then(function(){
         db = new PouchDB(localDB);
         that.DBReplicate(db, remoteDB, localDB)
@@ -291,7 +286,11 @@ class App extends Component {
     localStorage.setItem('upload_preset', null);
 
     let database = "demo"
-
+    //reset to initial state
+    let obj = Object.assign({}, initialState);
+    this.setState(obj)
+    //for some reason these needed to be done separately in the past, perhaps this has changed
+    this.setState({retrieved: {}, attempted:{}})
     this.init(database)
 
   }
@@ -510,7 +509,7 @@ class App extends Component {
     return (
       <div id="fullApp" style={style}>
         <NavBar selectedItemList={this.state.selectedItemList} selectItemList={this.selectItemList}
-        itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze}
+        itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze} deleteItemList={this.deleteItemList}
         addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
         backgrounds={this.state.backgrounds} formatBible={Overflow.formatBible} db={this.state.db}
         test={this.test} user={user} newItemList={this.newItemList} logout={this.logout}
