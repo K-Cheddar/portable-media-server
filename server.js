@@ -2,10 +2,21 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 5000;
+var bodyParser = require('body-parser')
+app.use( bodyParser.json() );
+let currentInfo = {}
 // API calls
 app.get('/api/hello', (req, res) => {
   res.send({ express: 'Hello From Express' });
 });
+
+app.post('/api/currentInfo', (req, res) => {
+  let obj = req.body
+  let t = obj.words
+  res.send({t})
+});
+
+
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
   app.use(express.static(path.join(__dirname, 'client/build')));

@@ -76,6 +76,7 @@ const initialState = {
   allItems:[],
   freeze: true,
   db: {},
+  remoteDB: {},
   user: "Demo",
   upload_preset:"bpqu4ma5",
   retrieved:{},
@@ -260,11 +261,11 @@ class App extends Component {
 
   componentDidMount(){
 
-    fetch('api/hello')
-      .then(response => {console.log(response);})
-      // .then(responseData => {
-      //   console.log(responseData)
-      // })
+    // fetch('hello')
+    //   .then(response => {return response.json()})
+    //   .then(responseData => {
+    //     console.log(responseData)
+    //   })
     let database = 'demo'
     localStorage.setItem('presentation', 'null');
     let sLoggedIn = localStorage.getItem('loggedIn');
@@ -286,19 +287,29 @@ class App extends Component {
       this.setState({upload_preset: sUploadPreset})
 
 
-    let remoteDB = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
+    let remoteURL = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
     let localDB = "portable-media";
-    var opts = {live: true, retry: true};
-    var db = new PouchDB(localDB);
-    this.setState({db: db})
+    let opts = {live: true, retry: true};
+    let db = new PouchDB(localDB);
+    let remoteDB = new PouchDB(remoteURL);
+    this.setState({db: db, remoteDB: remoteDB})
     let that = this;
-    PouchDB.replicate(remoteDB, localDB).on('complete', function(info){
-      that.sync = db.sync(remoteDB, opts)
+    if(navigator.onLine){
+      PouchDB.replicate(remoteURL, localDB).on('complete', function(info){
+        that.sync = db.sync(remoteURL, opts)
+        DBSetup(db);
+        DBGetter.init(db, that.updateState, that.getSuccess, that.getAttempted);
+        DBGetter.retrieveImages(db, that.updateState, cloud, that.getSuccess, that.getAttempted)
+        DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted, remoteDB)
+      })
+    }
+    else{
       DBSetup(db);
       DBGetter.init(db, that.updateState, that.getSuccess, that.getAttempted);
       DBGetter.retrieveImages(db, that.updateState, cloud, that.getSuccess, that.getAttempted)
-      DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted)
-    })
+      DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted, remoteDB)
+    }
+
 
   }
 
@@ -418,9 +429,22 @@ class App extends Component {
       style: style,
       time: time
     }
+    // console.log("Sending Data");
+    // fetch('currentInfo', {
+    //   method: 'POST',
+    //   headers: {
+    //    Accept: 'application/json',
+    //    'Content-Type': 'application/json',
+    //  },
+    //   body: JSON.stringify(obj)
+    // }).then(function(response){
+    //   return response.json();
+    // }).then(function (res){
+    //   console.log(res);
+    // })
 
     this.setState({currentInfo: obj})
-    DBUpdater.updateCurrent(this.state.db, words, background, style, time-1);
+    DBUpdater.updateCurrent(this.state.remoteDB, words, background, style, time-1);
     localStorage.setItem('presentation', JSON.stringify(obj));
   }
 
@@ -631,29 +655,30 @@ class App extends Component {
     localStorage.setItem('database', database);
     localStorage.setItem('upload_preset', upload_preset);
 
-    let remoteDB = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
+    let remoteURL = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
     let localDB = "portable-media"
-    var opts = {live: true, retry: true}
-    var db = new PouchDB(localDB);
+    let opts = {live: true, retry: true}
+    let db = new PouchDB(localDB);
+    let remoteDB = new PouchDB(remoteURL);
     let that = this;
     db.destroy().then(function(){
       db = new PouchDB(localDB);
-      PouchDB.replicate(remoteDB, localDB).on('complete', function(info){
+      PouchDB.replicate(remoteURL, localDB).on('complete', function(info){
         DBSetup(db);
         DBGetter.init(db, that.updateState, that.getSuccess, that.getAttempted);
         DBGetter.retrieveImages(db, that.updateState, cloud, that.getSuccess, that.getAttempted)
-        DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted)
-        that.sync = db.sync(remoteDB, opts)
+        DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted, remoteDB)
+        that.sync = db.sync(remoteURL, opts)
         that.setState({
           isLoggedIn: true,
           db: db,
+          remoteDB: remoteDB,
           user: user,
           upload_preset: upload_preset
         })
       })
 
     })
-
 
   }
 
@@ -672,19 +697,20 @@ class App extends Component {
 
     let database = "demo"
 
-    let remoteDB = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
+    let remoteURL = process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database
     let localDB = "portable-media"
-    var opts = {live: true, retry: true}
-    var db = new PouchDB(localDB);
+    let opts = {live: true, retry: true}
+    let db = new PouchDB(localDB);
+    let remoteDB = new PouchDB(remoteURL);
     let that = this;
     db.destroy().then(function(){
       db = new PouchDB(localDB);
-      PouchDB.replicate(remoteDB, localDB).on('complete', function(info){
+      PouchDB.replicate(remoteURL, localDB).on('complete', function(info){
         DBSetup(db);
         DBGetter.init(db, that.updateState, that.getSuccess, that.getAttempted);
         DBGetter.retrieveImages(db, that.updateState, cloud, that.getSuccess, that.getAttempted)
-        DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted)
-        that.sync = db.sync(remoteDB, opts)
+        DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted, remoteDB)
+        that.sync = db.sync(remoteURL, opts)
         that.setState({db: db})
       })
 

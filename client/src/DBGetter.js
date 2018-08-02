@@ -52,17 +52,13 @@ export function init(db, updateState, getSuccess, getAttempted){
   });
 }
 
-export function changes(db, updateState, getTime, getSelectedList, cloud, getSuccess, getAttempted){
+export function changes(db, updateState, getTime, getSelectedList, cloud, getSuccess, getAttempted, remoteDB){
   db.changes({
     since: 'now',
     live: true,
     include_docs: true,
     timeout: false
   }).on('change', function(change) {
-    if(change.id === "currentInfo"){
-      if(getTime() < change.doc.info.time)
-        updateState({currentInfo: change.doc.info, needsUpdate: false})
-    }
     if(change.id === 'images'){
       retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
     }
@@ -73,6 +69,17 @@ export function changes(db, updateState, getTime, getSelectedList, cloud, getSuc
       updateState({itemList: change.doc.items, needsUpdate: false})
     }
 
+  })
+  remoteDB.changes({
+    since: 'now',
+    live: true,
+    include_docs: true,
+    timeout: false
+  }).on('change', function(change) {
+    if(change.id === "currentInfo"){
+      if(getTime() < change.doc.info.time)
+        updateState({currentInfo: change.doc.info, needsUpdate: false})
+    }
   })
 }
 
