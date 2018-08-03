@@ -28,6 +28,7 @@ export function setItemIndex(index, updateState){
   var mElement = document.getElementById("MItem"+index);
   if(mElement)
     mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'});
+  updateState({itemIndex: index, wordIndex: 0, needsUpdate: false})
 }
 
 export function updateItem(item, itemList, itemIndex, allItems, wordIndex, updateState){

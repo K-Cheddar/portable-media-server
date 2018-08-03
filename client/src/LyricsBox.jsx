@@ -260,7 +260,7 @@ export default class LyricsBox extends Component{
       formattedLyrics: formattedLyrics,
       sectionsPresent: sections,
       songOrder: songOrder,
-      newType: sectionsPresent[0],
+      newType: sections[0],
       sectionIndex: newIndex
     })
 

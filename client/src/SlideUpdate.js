@@ -23,7 +23,7 @@ export function setWordIndex(index, lyrics, item, wordIndex, updateState, update
     mElement.scrollIntoView({behavior: "smooth", block: "nearest", inline:'nearest'});
   if(element)
     element.scrollIntoView({behavior: "smooth", block: "nearest", inline:'nearest'});
-
+    updateState({wordIndex: index, needsUpdate: false});
   let fontSize = item.slides ? item.slides[index].boxes[0].fontSize : 4
   let color = item.slides ? item.slides[index].boxes[0].fontColor : 'rgba(255, 255, 255, 1)'
   let style = {

@@ -97,7 +97,7 @@ class FormatEditor extends React.Component{
       let slides = item.slides || null;
       let slide = slides ? slides[wordIndex] : null;
       this.setState({fontSize: slide ? item.slides[wordIndex].boxes[0].fontSize : 4})
-      if(prevProps.item._id !== item._id){
+      if(prevProps.item._id !== item._id || wordIndex !== prevProps.wordIndex){
         let stringToRGB = slide ? item.slides[wordIndex].boxes[0].fontColor.replace(/[^\d,]/g, '').split(',') : [1,2,3,4];
         this.setState({
           color: {

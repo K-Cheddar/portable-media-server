@@ -212,7 +212,7 @@ class App extends Component {
     //don't begin auto update until all values have been retrieved
     if(Object.keys(retrieved).length >= 4){
         retrieved.finished = true;
-        this.updateInterval = setInterval(this.update, 3000); //auto save to database every 3 seconds if update has occurred
+        this.updateInterval = setInterval(this.update, 1000); //auto save to database every second if update has occurred
     }
     this.setState({retrieved: retrieved})
   }
@@ -263,11 +263,7 @@ class App extends Component {
     localStorage.setItem('upload_preset', upload_preset);
 
 
-    this.setState({
-      isLoggedIn: true,
-      user: user,
-      upload_preset: upload_preset
-    })
+      this.setState({isLoggedIn: true, user: user, upload_preset: upload_preset, retrieved: {}, attempted:{}})
 
     this.init(database)
 
@@ -342,7 +338,6 @@ class App extends Component {
   setItemIndex = (index) => {
     let {itemList, freeze, db} = this.state;
     ItemUpdate.setItemIndex(index, this.updateState)
-    this.setState({itemIndex: index, wordIndex: 0})
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
       DBUpdater.updateItem(db, itemID, this.updateState, freeze, this.updateCurrent)
@@ -356,7 +351,6 @@ class App extends Component {
 
   setWordIndex = (index, lyrics) => {
     let {item, wordIndex} = this.state;
-    this.setState({wordIndex: index});
     SlideUpdate.setWordIndex(index, lyrics, item, wordIndex, this.updateState, this.updateCurrent)
   }
 
@@ -426,6 +420,8 @@ class App extends Component {
     this.setState({
       currentInfo: obj.currentInfo || this.state.currentInfo,
       itemList: obj.itemList || this.state.itemList,
+      itemIndex: (obj.itemIndex !== undefined) ? obj.itemIndex : this.state.itemIndex,
+      wordIndex: (obj.wordIndex !== undefined) ? obj.wordIndex : this.state.wordIndex,
       itemLists: obj.itemLists || this.state.itemLists,
       allItemLists: obj.allItemLists || this.state.allItemLists,
       selectedItemList: obj.selectedItemList || this.state.selectedItemList,
