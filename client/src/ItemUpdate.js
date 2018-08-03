@@ -32,7 +32,7 @@ export function setItemIndex(index, updateState){
 
 export function updateItem(item, itemList, itemIndex, allItems, wordIndex, updateState){
   itemList[itemIndex].name = item.name;
-  allItems = Sort.sortItemList(allItems)
+  allItems = Sort.sortNamesInList(allItems)
   let index = allItems.findIndex(e => e._id === item._id)
   allItems[index].name = item.name;
 

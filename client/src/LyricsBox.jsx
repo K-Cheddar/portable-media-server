@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import deleteX from './assets/deleteX.png';
 import SongSection from './SongSection'
+import * as Sort from './Sort'
 
 export default class LyricsBox extends Component{
 
@@ -19,7 +20,8 @@ export default class LyricsBox extends Component{
         "Pre-Chorus",
         "Reprise",
         "Reading",
-        "Interlude"
+        "Interlude",
+        "Pre-Bridge"
       ],
       sectionsPresent:[],
       songOrder: [],
@@ -131,8 +133,8 @@ export default class LyricsBox extends Component{
       name: "Verse",
       words: ""
     })
-    // this.updateSections(formattedLyrics)
-   this.setState({formattedLyrics: formattedLyrics})
+    this.updateSections(formattedLyrics)
+   // this.setState({formattedLyrics: formattedLyrics})
   }
 
   addSection = () => {
@@ -143,7 +145,7 @@ export default class LyricsBox extends Component{
 
   updateSections = (formattedLyrics) => {
     let sections = [];
-    let {songOrder, sectionsPresent} = this.state;
+    let {songOrder, sectionsPresent, sectionIndex} = this.state;
     let indexesChanged = [];
     let v = 1;
     let c = 1;
@@ -246,26 +248,22 @@ export default class LyricsBox extends Component{
       songOrder = sections;
     }
 
+    let secName = sections[sectionIndex];
+
+    Sort.sortNamesInList(formattedLyrics)
+    Sort.sortList(sections);
+
+    let newIndex = sections.findIndex(e => e === secName)
+    console.log(newIndex);
+
     this.setState({
       formattedLyrics: formattedLyrics,
-      sectionsPresent: this.sortList(sections),
+      sectionsPresent: sections,
       songOrder: songOrder,
-      newType: sectionsPresent[0]
+      newType: sectionsPresent[0],
+      sectionIndex: newIndex
     })
 
-  }
-
-  sortList(list){
-    return list.sort(function(a,b){
-      var nameA = a.toUpperCase();
-      var nameB = b.toUpperCase();
-
-      if(nameA < nameB)
-       return -1;
-      if(nameA > nameB)
-       return 1;
-      return 0;
-    });
   }
 
   deleteSectionFromOrder = (index) => {
@@ -283,14 +281,13 @@ export default class LyricsBox extends Component{
       }
     }
 
-    this.updateSections(formattedLyrics)
-
     formattedLyrics.splice(index, 1);
     sectionsPresent.splice(index, 1);
-    this.setState({
-      formattedLyrics: formattedLyrics,
-      sectionsPresent: sectionsPresent
-    })
+    this.updateSections(formattedLyrics)
+    // this.setState({
+    //   formattedLyrics: formattedLyrics,
+    //   sectionsPresent: sectionsPresent
+    // })
 
   }
 

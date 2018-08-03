@@ -155,7 +155,7 @@ export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemT
       addItemToList(itemObj);
       db.get('allItems').then(function (allItems) {
         allItems.items.push(itemObj);
-        allItems.items = Sort.sortItemList(allItems.items)
+        allItems.items = Sort.sortNamesInList(allItems.items)
         updateState({allItems: allItems.items})
         db.put(allItems);
       });
