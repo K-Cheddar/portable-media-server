@@ -125,6 +125,9 @@ class ItemSlides extends React.Component{
     if(!words)
       return null;
 
+    if(words[0] === "")
+      words[0] = " "
+
     for(var i = 0; i < words.length; i+=slidesPerRow){
       for(var j = i; j < i+slidesPerRow; ++j){
         if(words[j])

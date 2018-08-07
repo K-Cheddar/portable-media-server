@@ -10,13 +10,13 @@ export function setWordIndex(index, lyrics, item, wordIndex, updateState, update
   let scrollTo = index;
   if(!item.slides)
     return;
-  console.log();
+
   if(index > wordIndex && index+1 < item.slides.length)
     scrollTo+=1;
   if(index < wordIndex && index > 0){
     scrollTo-=1;
   }
-  console.log(scrollTo);
+
   var mElement = document.getElementById("MSlide"+scrollTo);
   var element = document.getElementById("Slide"+index);
   if(mElement)
