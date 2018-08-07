@@ -62,7 +62,7 @@ export default class MobileView extends Component{
             }
         </div>
         <div style={{display:'block', fontSize:'calc(10px + 1vmax)'}}>
-          <div style={{width:'100%', height: '35vh'}}>
+          <div style={{width:'100vw', height: '56.25vw'}}>
             <MobileDisplay wordIndex={wordIndex} backgrounds={backgrounds}
               isLoggedIn={isLoggedIn} item={item} updateItem={updateItem}/>
           </div>

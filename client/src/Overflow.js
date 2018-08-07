@@ -11,6 +11,7 @@ export function formatSong(item){
       slides[i].boxes[0].fontColor = item.slides[i].boxes[0].fontColor
     }
     else{
+      slides[i].boxes[0].background = item.slides[0].boxes[0].background
       slides[i].boxes[0].fontColor = 'rgba(255, 255, 255, 1)'
     }
 
@@ -48,7 +49,7 @@ export function formatBible(item, mode, verses){
   let initFontSize = 2.5
   let slides = [
             {
-              type: 'bible',
+              type: 'Bible',
               boxes: [
                 {background: item.slides[0].boxes[0].background,
                  fontSize: item.slides[0].boxes[0].fontSize,
@@ -90,7 +91,7 @@ function formatBibleVerses(verses, fontSize, background, fontColor, mode){
         else{
           slide = slide.replace(/\s+/g,' ').trim();
           formattedVerses.push({
-                          type: 'bible',
+                          type: 'Bible',
                           boxes: [
                             {background: background,
                              fontSize: fontSize,
@@ -106,7 +107,7 @@ function formatBibleVerses(verses, fontSize, background, fontColor, mode){
     }
     slide = slide.replace(/\s+/g,' ').trim();
     formattedVerses.push({
-                    type: 'bible',
+                    type: 'Bible',
                     boxes: [
                       {background: background,
                        fontSize: fontSize,
@@ -142,7 +143,9 @@ export function formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSiz
     let fLyrics = [];
     let obj = getNumLines(lyrics, fontSize);
     let maxLines = obj.maxLines;
-    if(maxLines >= 8)
+    // if(!maxLines)
+    //   return
+    if(maxLines >= 7)
       maxLines--;
 
     let lines = lyrics.split("\n");
@@ -193,15 +196,18 @@ export function formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSiz
 
 
 function getNumLines(text, fontSize){
-  fontSize = fontSize*.95 + "vw"
-  let height = document.getElementById('displayEditor').style.height;
-  height = height.slice(0, height.length-2);
-  height = parseFloat(height);
-  let width = document.getElementById('displayEditor').style.width;
-  width = width.slice(0, width.length-2);
-  width = parseFloat(width);
-  let windowHeight = window.innerHeight;
-  let h = height*.01*windowHeight;//.85 is because there is 7.5% padding all around + a little wiggle room
+  fontSize = fontSize + "vw"
+  // let height = document.getElementById('displayEditor').style.height;
+  let height = 23.9*.825
+  // height = height.slice(0, height.length-1);
+  // height = parseFloat(height);
+  // let width = document.getElementById('displayEditor').style.width;
+  let width = 42.5*.9
+  // width = width.slice(0, width.length-1);
+  // width = parseFloat(width);
+  // let windowHeight = window.innerHeight;
+  let windowWidth = window.innerWidth;
+  let h = height*.01*windowWidth;//
 
   let textSpan = document.createElement("textSpan");
   textSpan.innerHTML=text;
@@ -224,6 +230,7 @@ function getNumLines(text, fontSize){
 
   let lines = Math.floor(textSpanHeight/singleSpanHeight)
   let maxLines = Math.floor(h/singleSpanHeight)
+
   document.body.removeChild(textSpan);
   document.body.removeChild(singleSpan);
   let obj = {lines: lines, maxLines: maxLines}

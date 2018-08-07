@@ -12,7 +12,6 @@ export function update(db, item, selectedItemList, itemList, allItems, itemLists
       doc.name = item.name;
       doc.background = item.background;
       doc.slides = item.slides;
-      doc.nameSize = item.nameSize;
       doc.formattedLyrics = item.formattedLyrics;
       doc.songOrder = item.songOrder;
      return db.put(doc);
@@ -121,6 +120,7 @@ export function updateItem(db, itemID, updateState, freeze, updateCurrent, setWo
       color: doc.slides[0].boxes[0].fontColor,
       fontSize: doc.slides[0].boxes[0].fontSize,
     }
+    setWordIndex(0)
     if(!freeze)
       updateCurrent({words: doc.slides[0].boxes[0].words, background: doc.background, style: style, index: 0});
   })

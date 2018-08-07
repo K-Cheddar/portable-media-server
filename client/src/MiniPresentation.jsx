@@ -51,6 +51,9 @@ export default class MiniPresentation extends React.Component{
 
     let {backgrounds, background, style, words} = this.props;
 
+    let strokeRadius = style.fontSize/100 +"vw"
+    let strokeColor = "#000"
+
     let img = blank, asset;
     let isVideo = false;
     let styleFull = {
@@ -62,7 +65,8 @@ export default class MiniPresentation extends React.Component{
       color: style.color,
       fontSize: style.fontSize*0.366+"vw",
       fontFamily: "Verdana",
-      padding: "4% 7.5% 7.5%"
+      padding: "4% 7.5% 7.5%",
+      webkitTextStroke: `${strokeRadius} ${strokeColor}`
     }
 
     if(backgrounds.some(e => e.name === background)){

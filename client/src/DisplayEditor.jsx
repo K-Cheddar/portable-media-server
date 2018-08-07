@@ -68,17 +68,18 @@ class DisplayEditor extends React.Component{
     let text = "", background = blank, asset;
     let search = item.background;
     let isVideo = false;
+
     let style = {
       textAlign: 'center',
       background: 'transparent',
       border: 'none',
       outline: 'none',
       resize:'none',
-      height: '40vh',
-      maxHeight:"30vw",
-      width: '36vw',
+      whiteSpace:'pre-wrap',
+      height: '85%',
+      width: '90%',
       fontFamily: "Verdana",
-      padding: '7.5%',
+      padding: '5%',
       overflow: 'hidden'
     }
 
@@ -87,7 +88,14 @@ class DisplayEditor extends React.Component{
       let slide = slides ? slides[wordIndex] : null;
        text = slide ? item.slides[wordIndex].boxes[0].words : "";
        style.color = slide ? item.slides[wordIndex].boxes[0].fontColor : 'rgba(255, 255, 255, 1)';
-       style.fontSize = slide ? item.slides[wordIndex].boxes[0].fontSize*.95 + "vw" : '1vw';
+       style.fontSize = slide ? item.slides[wordIndex].boxes[0].fontSize + "vw" : '1vw';
+
+       let fs =  slide ? item.slides[wordIndex].boxes[0].fontSize/40 : 1;
+       let strokeRadius = `calc(${fs*1.25}vw)`
+       let strokeColor = "#000";
+       let SS = `${fs*2}vw`
+       style.WebkitTextStroke = `${strokeRadius} ${strokeColor}`;
+       style.textShadow = `${SS} ${SS} ${SS} black`;
       if(slide && item.slides[wordIndex].boxes[0].background)
         search = item.slides[wordIndex].boxes[0].background;
     }
@@ -102,12 +110,10 @@ class DisplayEditor extends React.Component{
 
 
     return (
-      <div>
+      <div style={{width: '100%', height:'100%'}}>
         {!isVideo &&<div style={{backgroundImage: 'url('+background+')',
           width: "100%", height: "100%", backgroundSize: '100% 100%'}}>
-        <div>
           <textarea id="displayEditor" style={style} value={text} onChange={this.handleTextChange}/>
-          </div>
       </div>}
       {isVideo &&<div style={{width:'100%', height:'100%',position:'relative'}}>
         <video loop autoPlay id="background-video"

@@ -120,8 +120,6 @@ export default class LyricsBox extends Component{
     item.songOrder = songOrder;
     item.formattedLyrics = formattedLyrics;
     item = this.props.formatSong(item);
-
-    console.log("From auto format", item);
     this.props.updateItem(item);
     this.props.close();
   }
@@ -303,8 +301,9 @@ export default class LyricsBox extends Component{
     this.updateSections(formattedLyrics);
   }
 
-  changeNewType = (e) => {
-    this.setState({newType: e.target.value});
+  changeNewType = (newType) => {
+    this.setState({newType: newType});
+    console.log(newType);
   }
 
   insertSongIntoOrder = (targetIndex) => {
@@ -422,7 +421,7 @@ export default class LyricsBox extends Component{
                 </div>
                 <div style={{display:'flex'}}>
                   <div style={{paddingLeft: "1vw", width:'5vw'}}>
-                    <select value={newType} onChange={this.changeNewType}>
+                    <select value={newType} onChange={(e) => (this.changeNewType(e.target.value))}>
                       {sectionsPresent.map((element, index) =>
                         <option key={index}> {element} </option>
                       )}

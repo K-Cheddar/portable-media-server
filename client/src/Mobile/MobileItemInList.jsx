@@ -1,38 +1,26 @@
 import React from 'react';
+import DisplayWindow from '../DisplayWindow';
 
 export default class MobileItemInList extends React.Component{
 
 
   render(){
-  let {name, backgrounds, background, nameColor, type} = this.props;
-  let img = "";
-  if(type === 'image')
-    name = ""
-  let style = {
-    textAlign: 'center',
-    background: 'transparent',
-    border: 0,
-    resize:'none',
-    height: '100%',
-    width: '100%',
-    fontFamily: "Verdana",
-    paddingTop: "2%",
-    fontSize: "4vmax",
-  }
+  let {name, backgrounds, background, nameColor, type, width, height} = this.props;
 
-  if (nameColor)
-    style.color = nameColor
+    let words = name
+    if(type === 'image')
+      words = ""
 
-  if(backgrounds.some(e => e.name === background))
-    img = backgrounds.find(e => e.name === background).image.src;
+    let style ={
+      color: nameColor,
+      fontSize: 7
+    }
+
+
 
     return (
-        <div style={{overflow: 'hide', backgroundImage: 'url('+img+')',
-          width: "100%", height: "100%", backgroundSize: '100% 100%'}}>
-          <div style={style}>
-            {name}
-          </div>
-        </div>
+      <DisplayWindow words={words} style={style} background={background} backgrounds={backgrounds}
+        width={width} height={height} title={name} titleSize={'3vw'}/>
     )
   }
 

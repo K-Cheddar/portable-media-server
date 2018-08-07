@@ -92,7 +92,7 @@ export default class NavBar extends Component {
 
     return(
       <div style={window.location.hash==="#/fullview" ? {display: 'flex', width:'100vw', height: '3vw'} : {display:'none'}} >
-        <ul style={{display:'flex', zIndex: 2}}>
+        <ul style={{display:'flex', zIndex: 3}}>
           {/*<li><button onClick={this.props.test}>UPDATE ALL</button></li>*/}
           <li onMouseEnter={this.openMenu} onMouseLeave={this.closeMenu}>
             <button style={{fontFamily: 'Arial', backgroundColor:'#fff',fontSize: "calc(10px + 0.35vmax)"}}>Menu</button>

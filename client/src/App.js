@@ -122,7 +122,7 @@ class App extends Component {
       this.setState({upload_preset: sUploadPreset})
 
     this.init(database, true)
-
+    // document.addEventListener('keydown', handleKeyDown)
   }
 
   addItem = (item) => {
@@ -263,7 +263,7 @@ class App extends Component {
     localStorage.setItem('upload_preset', upload_preset);
 
 
-      this.setState({isLoggedIn: true, user: user, upload_preset: upload_preset, retrieved: {}, attempted:{}})
+    this.setState({isLoggedIn: true, user: user, upload_preset: upload_preset, retrieved: {}, attempted:{}})
 
     this.init(database)
 
@@ -340,7 +340,7 @@ class App extends Component {
     ItemUpdate.setItemIndex(index, this.updateState)
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
-      DBUpdater.updateItem(db, itemID, this.updateState, freeze, this.updateCurrent)
+      DBUpdater.updateItem(db, itemID, this.updateState, freeze, this.updateCurrent, this.setWordIndex)
     }
   }
 
@@ -349,8 +349,9 @@ class App extends Component {
     SlideUpdate.setSlideBackground(background, item, wordIndex, this.updateState)
   }
 
-  setWordIndex = (index, lyrics) => {
+  setWordIndex = (index) => {
     let {item, wordIndex} = this.state;
+    let lyrics = item.slides[index].boxes[0].words;
     SlideUpdate.setWordIndex(index, lyrics, item, wordIndex, this.updateState, this.updateCurrent)
   }
 

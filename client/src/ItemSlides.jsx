@@ -1,6 +1,8 @@
 import React from 'react';
 import SlideInList from './SlideInList';
 import LyricsBox from './LyricsBox';
+import zoomIn from './assets/zoomIn.png'
+import zoomOut from './assets/zoomOut.png'
 
 class ItemSlides extends React.Component{
 
@@ -13,6 +15,7 @@ class ItemSlides extends React.Component{
       mouseY: 0,
       indexBeingDragged:-1,
       mouseDown: false,
+      slidesPerRow: 4
     }
 
     this.checkHeld = null;
@@ -26,9 +29,9 @@ class ItemSlides extends React.Component{
     })
   }
 
-  setElement = (index, lyrics) => {
+  setElement = (index) => {
 
-    this.props.setWordIndex(index, lyrics);
+    this.props.setWordIndex(index);
 
     // this.setState({
     //   mouseDown: true
@@ -92,20 +95,38 @@ class ItemSlides extends React.Component{
     this.props.updateItem(item);
   }
 
+  increaseRows = () => {
+    let {slidesPerRow} = this.state;
+    if(slidesPerRow < 6)
+      this.setState({slidesPerRow: slidesPerRow+1})
+  }
+
+  decreaseRows = () => {
+    let {slidesPerRow} = this.state;
+    if(slidesPerRow > 2)
+      this.setState({slidesPerRow: slidesPerRow-1})
+  }
 
   render() {
     let {item, backgrounds, wordIndex} = this.props;
-    let {mouseX, mouseY, indexBeingDragged} = this.state;
+    let {mouseX, mouseY, indexBeingDragged, slidesPerRow} = this.state;
     let type = item.type;
     let words = item.slides ? item.slides.map(a => a.boxes[0].words) : null;
     let that = this;
     let row = [];
     let fullArray = [];
+    let name = item.name;
+
+    if(name && name.length > 32){
+      name = name.substring(0, 33)
+      name+="..."
+    }
+
     if(!words)
       return null;
 
-    for(var i = 0; i < words.length; i+=3){
-      for(var j = i; j < i+3; ++j){
+    for(var i = 0; i < words.length; i+=slidesPerRow){
+      for(var j = i; j < i+slidesPerRow; ++j){
         if(words[j])
           row.push(words[j]);
       }
@@ -116,18 +137,27 @@ class ItemSlides extends React.Component{
 
     let style;
 
+    let widthNumber = 40/slidesPerRow
+    let width = widthNumber + "vw"
+    let height = (widthNumber*.5625) + "vw"
+    let titleSize = .5+ 1.25/slidesPerRow + "vw"
+    //.5vw -> padding Top/Bot, .25vw -> border
+    let fullHeight = `calc(${height} + ${titleSize} + .5vw + .25vw)`
+    let slideWidth = 1/slidesPerRow*100 + '%'
+
+
     let slideStyle = { border:'0.25vw', borderColor: '#d9e3f4', borderStyle:'solid',
-      width:"12.24vw", height:"7.5vw"};
+      width:width, height:fullHeight};
     let slideSelectedStyle = {border:'0.25vw', borderColor: '#4286f4', borderStyle:'solid',
-       width:"12.24vw", height:"7.5vw"};
-    let slideDraggedStyle = { border:'0.25vw', borderColor: '#4286f4', borderStyle:'solid',
-      width:"12.24vw", height:"7.5vw", opacity:'0.5'};
+       width:width, height:fullHeight};
+    let slideDraggedStyle = { border:'0.25vw', borderColor: '#ffdb3a', borderStyle:'solid',
+      width:width, height:fullHeight, opacity:'0.5'};
 
     let ROWtest = fullArray.map((element, index) => {
       let row = element.map(function (lyrics, i){
 
-        let selected = (index*3+i === wordIndex);
-        let beingDragged = (indexBeingDragged === index*3+i)
+        let selected = (index*slidesPerRow+i === wordIndex);
+        let beingDragged = (indexBeingDragged === index*slidesPerRow+i)
         if(selected){
           style = slideSelectedStyle;
         }
@@ -138,23 +168,26 @@ class ItemSlides extends React.Component{
           style = slideDraggedStyle;
         }
         return(
-          <div style={{display:'flex', width:'33%', userSelect:'none'}} key={i} id={"Slide"+(index*3+i)}>
+          <div style={{display:'flex', width:slideWidth, userSelect:'none'}} key={i} id={"Slide"+(index*slidesPerRow+i)}>
             <div  style={style}
-              onMouseDown={() => (that.setElement(index*3+i, lyrics))}
-              onMouseOver={() => (that.setTarget(index*3+i))}
+              onMouseDown={() => (that.setElement(index*slidesPerRow+i))}
+              onMouseOver={() => (that.setTarget(index*slidesPerRow+i))}
               >
               {(selected && beingDragged) &&
-                <SlideInList words={lyrics} background={item.background} sBackground={item.slides[index*3+i].boxes[0].background}
-                  color={item.slides[index*3+i].boxes[0].fontColor}
-                  fontSize={item.slides[index*3+i].boxes[0].fontSize}
+                <SlideInList words={lyrics} background={item.slides[index*slidesPerRow+i].boxes[0].background}
+                  color={item.slides[index*slidesPerRow+i].boxes[0].fontColor}
+                  fontSize={item.slides[index*slidesPerRow+i].boxes[0].fontSize}
                   backgrounds={backgrounds} x={mouseX} y={mouseY} moving={true}
+                  name={item.slides[index*slidesPerRow+i].type} width={width} height={height}
+                  titleSize={titleSize}
                   />
               }
               {(!selected || !beingDragged) &&
-                <SlideInList words={lyrics} background={item.background} sBackground={item.slides[index*3+i].boxes[0].background}
-                  color={item.slides[index*3+i].boxes[0].fontColor}
-                  fontSize={item.slides[index*3+i].boxes[0].fontSize}
-                  backgrounds={backgrounds}
+                <SlideInList words={lyrics} background={item.slides[index*slidesPerRow+i].boxes[0].background}
+                  color={item.slides[index*slidesPerRow+i].boxes[0].fontColor}
+                  fontSize={item.slides[index*slidesPerRow+i].boxes[0].fontSize}
+                  name={item.slides[index*slidesPerRow+i].type}  width={width} height={height}
+                  backgrounds={backgrounds} titleSize={titleSize}
                   />
               }
 
@@ -163,38 +196,32 @@ class ItemSlides extends React.Component{
         );
       })
       return (
-        <div style={{display:'flex', paddingBottom:'1vh'}} key={index}> {row}</div>
+        <div style={{display:'flex', paddingBottom:'0.5vh'}} key={index}> {row}</div>
       );
     })
 
-    let buttonLoggedIn = {fontSize: "calc(7px + 0.5vw)", width:'8vw'}
+    let buttonLoggedIn = {fontSize: "calc(7px + 0.5vw)", width:'20%'}
 
     return (
-      <div>
-        {(type === 'song') && <div>
-          <div style={{display:'flex', marginTop:'1%', fontSize: "calc(7px + 0.5vw)",}}>
-            <div style={{fontSize: 'calc(10px + 1vw)'}}> {item.name} </div>
-            <div style={{marginLeft:'1vw'}}>
-              <button style={buttonLoggedIn} onClick={this.openLBox}>Format Lyrics</button>
-            </div>
+        <div>
+          <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)",}}>
+            <div style={{fontSize: 'calc(10px + 1vw)', width: '60%'}}> {name} </div>
+            {(type==='song') && <button style={buttonLoggedIn} onClick={this.openLBox}>Arrange Lyrics</button>}
+            {(type==='bible') && <div style={{ width: '20%'}} ></div>}
+            {(type!=='image') && <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+                onClick={this.decreaseRows}
+                alt="zoomIn" src={zoomIn}
+               />}
+             {(type!=='image') && <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+                 onClick={this.increaseRows}
+                 alt="zoomOut" src={zoomOut}
+                />}
           </div>
-        <div style={{ overflowY: 'scroll', height: "36vh", width:"45vw"}}
+        <div style={{ overflowY: 'scroll', height: "40vh", width:"45vw"}}
           onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
           onMouseLeave={this.releaseElement}>{ROWtest}</div>
         {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item}
         updateItem={this.props.updateItem} formatSong={this.props.formatSong}/>}
-      </div>}
-      {(type === 'bible') && <div>
-        <div style={{display:'flex', marginTop:'1%', fontSize: "calc(7px + 0.5vw)",}}>
-          <div style={{fontSize: 'calc(10px + 1vw)'}}> {item.name} </div>
-        </div>
-      <div style={{ overflowY: 'scroll', height: "36vh", width:"45vw"}}
-        onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
-        onMouseLeave={this.releaseElement}>{ROWtest}</div>
-    </div>}
-      {(type==='image') && <div style={{fontSize: 'calc(10px + 1vw)', margin:'1%'}}>
-        {item.name}
-      </div>}
       </div>
     )
   }

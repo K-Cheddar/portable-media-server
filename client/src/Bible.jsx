@@ -85,7 +85,6 @@ export default class Bible extends Component {
     };
 
     item = this.props.formatBible(item, 'create', verses);
-    console.log(item);
     this.props.addItem(item);
     this.props.close();
   }

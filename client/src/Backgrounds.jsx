@@ -79,7 +79,7 @@ export default class Backgrounds extends React.Component{
       <div>
         <div style={{display:'flex'}}>
         <div>Backgrounds</div>
-        {(user!=='Demo') && <button style={{ marginLeft: '1vw'}} onClick={openUploader}>Upload Backgrounds</button>}
+        {(user!=='Demo') && <button style={{fontSize: "calc(5px + 0.35vw)", marginLeft: '1vw'}} onClick={openUploader}>Upload Backgrounds</button>}
           {!allOpen && <img style={{display:'block', width:'1.5vmax', height:'1.5vmax', paddingLeft:"2%"}}
              onClick={this.open}
              alt="open-all" src={open_all}
@@ -90,9 +90,9 @@ export default class Backgrounds extends React.Component{
             />}
         </div>
         <div style={{display:'flex', paddingTop: '1vh'}}>
-          <button style={{width: '7vw'}} onClick={this.displayImage}>Display Image</button>
-          <button style={{marginLeft:'1%', width: '9vw'}} onClick={this.setItemBackground}>Set Item Background</button>
-          {item.type==='song' &&<button style={{marginLeft:'1%', width: '10vw'}} onClick={this.setSlideBackground}>Set Slide Background</button>}
+          <button style={{width: '7vw', fontSize: "calc(7px + 0.35vw)"}} onClick={this.displayImage}>Display Image</button>
+          <button style={{marginLeft:'1%', width: '9vw', fontSize: "calc(7px + 0.35vw)"}} onClick={this.setItemBackground}>Set Item Background</button>
+          {item.type==='song' &&<button style={{marginLeft:'1%', width: '10vw',fontSize: "calc(7px + 0.35vw)"}} onClick={this.setSlideBackground}>Set Slide Background</button>}
         </div>
         <div style={{display:'flex', overflowX: 'scroll', width: '36vmax'}}>{BCKS}</div>
         {allOpen  &&<AllBackgrounds setItemBackground={this.props.setItemBackground} updateCurrent={this.props.updateCurrent}

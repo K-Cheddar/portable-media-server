@@ -1,50 +1,30 @@
 import React from 'react';
-import blank from './assets/blank.png';
+import DisplayWindow from './DisplayWindow';
 
 export default class ItemInList extends React.Component{
 
 
   render(){
-  let {name, backgrounds, background, nameColor, type, moving, x, y} = this.props;
-  let img = blank;
-  if(type === 'image')
-    name = ""
-  let style = {
-    textAlign: 'center',
-    background: 'transparent',
-    border: 0,
-    resize:'none',
-    height: '96%',
-    width: '96%',
-    fontFamily: "Verdana",
-    padding: "2%",
-    fontSize: "1.25vw",
-  }
+  let {name, backgrounds, background, nameColor, type, moving, x, y, width, height} = this.props;
 
-  if(backgrounds){
-      if(backgrounds.some(e => e.name === background))
-        img = backgrounds.find(e => e.name === background).image.src;
-  }
+  let words = ""
 
-  let backgroundStyle = {overflow: 'hide', backgroundImage: 'url('+img+')',
-    width: "100%", height: "100%", backgroundSize: '100% 100%'}
+  if(type !== 'image')
+    words = name
+
+  let divStyle={width: width, height: height}
 
   if(moving){
-    backgroundStyle.position = 'absolute';
-    backgroundStyle.left = (x+2)  + 'px';
-    backgroundStyle.top = (y+2) + 'px';
-    backgroundStyle.width = "13.5vw";
-    backgroundStyle.height = "7.65vw";
+    divStyle.left = (x)  + 'px';
+    divStyle.top = (y) + 'px';
   }
 
-  if (nameColor)
-    style.color = nameColor
+  let style = {fontSize: 4.5, color: nameColor}
 
     return (
-        <div style={backgroundStyle}>
-          <div style={style}>
-            {name}
-          </div>
+        <div style={divStyle}>
+          <DisplayWindow words={words} style={style} background={background} backgrounds={backgrounds}
+            width={width} height={height} title={name} titleSize={".75vw"}/>
         </div>
     )
   }

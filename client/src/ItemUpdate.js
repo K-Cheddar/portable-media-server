@@ -28,7 +28,8 @@ export function setItemIndex(index, updateState){
   var mElement = document.getElementById("MItem"+index);
   if(mElement)
     mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'});
-  updateState({itemIndex: index, wordIndex: 0, needsUpdate: false})
+  updateState({itemIndex: index, needsUpdate: false})
+
 }
 
 export function updateItem(item, itemList, itemIndex, allItems, wordIndex, updateState){
@@ -52,6 +53,6 @@ export function insertWords(targetIndex, item, wordIndex, setWordIndex, updateSt
   let words = item.slides[wordIndex].boxes[0].words;
   item.slides.splice(wordIndex, 1);
   item.slides.splice(targetIndex, 0, words);
-  setWordIndex(targetIndex);
   updateState({item: item, needsUpdate: true});
+  setWordIndex(targetIndex);
 }

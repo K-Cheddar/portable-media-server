@@ -87,7 +87,7 @@ export default class AllBackgrounds extends React.Component{
 
     return (
       <div>
-        <div style={{position:'fixed', zIndex:3, right:'0.5%', top:'10.5%',
+        <div style={{position:'fixed', zIndex:3, right:'3.5%', top:'10.5%',
           width:'36vw', height: '45vh', backgroundColor:"#d1d1d1", padding:'1%'}}>
           <div style={{display:'flex'}}>
             <button style={{width: '7vw'}} onClick={this.displayImage}>Display Image</button>

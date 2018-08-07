@@ -10,27 +10,27 @@ export function setWordIndex(index, lyrics, item, wordIndex, updateState, update
   let scrollTo = index;
   if(!item.slides)
     return;
-
+  console.log();
   if(index > wordIndex && index+1 < item.slides.length)
     scrollTo+=1;
   if(index < wordIndex && index > 0){
     scrollTo-=1;
   }
-
+  console.log(scrollTo);
   var mElement = document.getElementById("MSlide"+scrollTo);
   var element = document.getElementById("Slide"+index);
   if(mElement)
     mElement.scrollIntoView({behavior: "smooth", block: "nearest", inline:'nearest'});
   if(element)
     element.scrollIntoView({behavior: "smooth", block: "nearest", inline:'nearest'});
-    updateState({wordIndex: index, needsUpdate: false});
-  let fontSize = item.slides ? item.slides[index].boxes[0].fontSize : 4
-  let color = item.slides ? item.slides[index].boxes[0].fontColor : 'rgba(255, 255, 255, 1)'
+  updateState({wordIndex: index, needsUpdate: false});
+  let fontSize = item.slides[index].boxes[0].fontSize;
+  let color = item.slides[index].boxes[0].fontColor;
   let style = {
     color: color,
     fontSize: fontSize
   }
-  if(item.slides && item.slides[index].boxes[0].background)
+  if(item.slides[index].boxes[0].background)
     updateCurrent({words: lyrics, style: style, background:item.slides[index].boxes[0].background});
   else
     updateCurrent({words: lyrics, style: style});

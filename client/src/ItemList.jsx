@@ -89,13 +89,20 @@ export default class ItemList extends React.Component{
   for(var i = 0; i < itemList.length; ++i){
     list.push(itemList[i]);
   }
+
+  let width="10.4vw";
+  let height="5.85vw"
+
+  //.75vw -> fontSize, .5vw -> padding Top/Bot, .1vw -> titleBorder, .25vw -> border
+  let fullHeight = `calc(${height} + .75vw + .5vw + .1vw + .25vw)`
+
   let style;
   let itemStyle = {border:'0.25vw', borderColor: '#d9e3f4', borderStyle:'solid',
-      width:"13.5vw", height:"7.65vw", marginTop:"3%"}
+      width:width, height:fullHeight, marginTop:"3%"}
   let itemSelectedStyle = {border:'0.25vw', borderColor: '#4286f4', borderStyle:'solid',
-          width:"13.5vw", height:"7.65vw", marginTop:"3%"}
-  let itemDraggedStyle = {border:'0.25vw', borderColor: '#4286f4', borderStyle:'solid',
-          width:"13.5vw", height:"7.65vw", marginTop:"3%", opacity:'0.5'}
+          width:width, height:fullHeight, marginTop:"3%"}
+  let itemDraggedStyle = {border:'0.25vw', borderColor: '#ffdb3a', borderStyle:'solid',
+          width:width, height:fullHeight, marginTop:"3%", opacity:'0.5'}
   let SL = list.map((element, index) => {
 
     let selected = (index === itemIndex);
@@ -118,22 +125,24 @@ export default class ItemList extends React.Component{
         >
         {(selected && beingDragged) &&
           <ItemInList name={element.name} background={element.background} type={element.type}
-            nameColor= {element.nameColor} backgrounds={backgrounds} x={mouseX} y={mouseY} moving={true}
+            nameColor= {element.nameColor} backgrounds={backgrounds} x={mouseX} y={mouseY}
+            moving={true} width={width} height={height}
             />
         }
         {(!selected || !beingDragged) &&
           <ItemInList name={element.name} background={element.background} type={element.type}
             nameColor= {element.nameColor} backgrounds={backgrounds} moving={false}
+            width={width} height={height}
             />
         }
 
       </div>
         <div style={{padding:"3%"}}>
-          <img style={{display:'block', width:'1.5vw', height:'1.5vw'}}
+          <img style={{display:'block', width:'1.25vw', height:'1.25vw'}}
              onClick={() => (this.props.deleteItemFromList(index))}
              alt="delete" src={deleteX}
              />
-           <img style={{display:'block', paddingTop:"10%", width:'1.5vw', height:'1.5vw'}}
+           <img style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
             onClick={() => (this.editItem(element.name, element._id))}
             alt="edit" src={edit}
             />
@@ -146,15 +155,10 @@ export default class ItemList extends React.Component{
 
     return (
       <div>
-        <div style={{display: 'flex', fontSize: "calc(8px + 0.4vw)"}}>
-
-
-        </div>
-
         {nameOpen && <CreateName option="edit" name={name} id={id} db={db}
         close={this.close} updateItem={this.props.updateItem}
         />}
-        <div style={{ height:'92.5vh', overflowY: 'scroll'}} onMouseMove={this.updateMouse}
+        <div style={{ height:'92.5vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}
            onMouseUp={this.releaseElement} onMouseLeave={this.releaseElement}>{SL}</div>
 
       </div>
