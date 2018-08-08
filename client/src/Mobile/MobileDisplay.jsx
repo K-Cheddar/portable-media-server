@@ -20,7 +20,7 @@ export default class DisplayEditor extends Component{
 
     let words = slide.boxes[0].words
     let style = {
-      color: slide.boxes[0].fontColor,
+      fontColor: slide.boxes[0].fontColor,
       fontSize: slide.boxes[0].fontSize
     }
     // style.fontSize = slide ? item.slides[wordIndex].boxes[0].fontSize*2.25 + "vw" : '1vw';

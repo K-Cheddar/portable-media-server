@@ -67,7 +67,7 @@ export default class DisplayWindow extends React.Component{
     if(!presentation){
       fs = style.fontSize*fsDivider/140
     }
-    let strokeRadius = `calc(${fs*1.25}vw)`
+    let strokeRadius = `calc(${fs*5}vw)`
     let strokeColor = "#000"
 
     if(title.length > 25){
@@ -125,7 +125,7 @@ export default class DisplayWindow extends React.Component{
     let wordsStyle = {
       textAlign: 'center', background: 'transparent', border: 0, resize:'none',
       whiteSpace:'pre-wrap', color: color, fontSize: fontSize, fontFamily: "Verdana",
-      padding: extraPadding ? "12.5% 7.5%" : "5%", textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
+      padding: extraPadding ? "12.5% 5%" : "5%", textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
       width: '90%', height:'85%', position: 'absolute', zIndex: 2,
       WebkitTextStroke: `${strokeRadius} ${strokeColor}`
     }
