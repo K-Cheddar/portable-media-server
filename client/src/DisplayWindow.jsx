@@ -67,7 +67,7 @@ export default class DisplayWindow extends React.Component{
     if(!presentation){
       fs = style.fontSize*fsDivider/140
     }
-    let strokeRadius = `calc(${fs*5}vw)`
+    let strokeRadius = `calc(${fs*0.5}vw)`
     let strokeColor = "#000"
 
     if(title.length > 25){
