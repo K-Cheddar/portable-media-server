@@ -37,7 +37,7 @@ export default class FullView extends React.Component{
                   setSlideBackground={setSlideBackground} item={item} openUploader={openUploader}
                   />
                 <DisplayWindow backgrounds={backgrounds} words={currentInfo.words} style={currentInfo.style}
-                  background={currentInfo.background} width={"16vw"} height={"9vw"} title={"Presentation"}
+                  background={currentInfo.background} width={"16vw"} title={"Presentation"}
                   titleSize="1.25vw"
                   />
               </div>

@@ -177,19 +177,14 @@ class ItemSlides extends React.Component{
               onMouseOver={() => (that.setTarget(index*slidesPerRow+i))}
               >
               {(selected && beingDragged) &&
-                <SlideInList words={lyrics} background={item.slides[index*slidesPerRow+i].boxes[0].background}
-                  color={item.slides[index*slidesPerRow+i].boxes[0].fontColor}
-                  fontSize={item.slides[index*slidesPerRow+i].boxes[0].fontSize}
+                <SlideInList words={lyrics} style={item.slides[index*slidesPerRow+i].boxes[0]}
                   backgrounds={backgrounds} x={mouseX} y={mouseY} moving={true}
                   name={item.slides[index*slidesPerRow+i].type} width={width} height={height}
                   titleSize={titleSize}
                   />
               }
               {(!selected || !beingDragged) &&
-                <SlideInList words={lyrics} background={item.slides[index*slidesPerRow+i].boxes[0].background}
-                  color={item.slides[index*slidesPerRow+i].boxes[0].fontColor}
-                  fontSize={item.slides[index*slidesPerRow+i].boxes[0].fontSize}
-                  brightness={item.slides[index*slidesPerRow+i].boxes[0].brightness}
+                <SlideInList words={lyrics} style={item.slides[index*slidesPerRow+i].boxes[0]}
                   name={item.slides[index*slidesPerRow+i].type}  width={width} height={height}
                   backgrounds={backgrounds} titleSize={titleSize}
                   />

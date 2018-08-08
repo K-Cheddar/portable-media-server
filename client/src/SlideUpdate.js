@@ -36,9 +36,11 @@ export function setWordIndex(index, lyrics, item, wordIndex, updateState, update
   updateState({wordIndex: index, needsUpdate: false});
   let fontSize = item.slides[index].boxes[0].fontSize;
   let color = item.slides[index].boxes[0].fontColor;
+  let brightness = item.slides[index].boxes[0].brightness;
   let style = {
-    color: color,
-    fontSize: fontSize
+    fontColor: color,
+    fontSize: fontSize,
+    brightness: brightness
   }
   if(item.slides[index].boxes[0].background)
     updateCurrent({words: lyrics, style: style, background:item.slides[index].boxes[0].background});

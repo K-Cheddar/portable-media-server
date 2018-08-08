@@ -71,7 +71,7 @@ const initialState = {
     words:"",
     background:"",
     style:{
-      color:'',
+      fontColor:'',
       fontSize:''
     },
     time: -1,
@@ -363,7 +363,7 @@ class App extends Component {
      }
   }
 
-  updateCurrent = ({words = null,background = null,style = {},index = -1,} = {}) => {
+  updateCurrent = ({words = null,background = null,style = {},index = -1, displayImage=false} = {}) => {
 
     if(this.state.freeze)
       return;
@@ -372,20 +372,17 @@ class App extends Component {
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
 
-    if(slide && !words)
-      words = slide.boxes[0].words;
-    else if(!words)
+    if(slide && !displayImage){
+      if(!words)
+        words = slide.boxes[0].words;
+      if(!background)
+        background = slide.boxes[0].background;
+      if(!style)
+        style = slide.boxes[0];
+    }
+    else
       words = ""
 
-    if(slide && !background)
-      background = slide.boxes[0].background;
-    else if(!background)
-      background = ""
-
-    if(slide && !style)
-      style = slide.boxes[0];
-    else if(!style)
-      style = {}
 
     let date = new Date();
     let time = date.getTime();

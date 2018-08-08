@@ -117,8 +117,9 @@ export function updateItem(db, itemID, updateState, freeze, updateCurrent, setWo
   db.get(itemID).then(function (doc) {
     updateState({item: doc, needsUpdate: false});
     let style = {
-      color: doc.slides[0].boxes[0].fontColor,
+      fontColor: doc.slides[0].boxes[0].fontColor,
       fontSize: doc.slides[0].boxes[0].fontSize,
+      brightness: doc.slides[0].boxes[0].brightness,
     }
     setWordIndex(0)
     if(!freeze)

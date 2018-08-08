@@ -3,12 +3,12 @@ import { Link} from 'react-router-dom';
 import FormatEditor from './FormatEditor';
 import on from './assets/on.png';
 import off from './assets/off.png';
-// import new_button from './assets/new-button.png';
 import open from './assets/open.png';
 import Bible from './Bible'
 import CreateName from './CreateName';
 import ItemListEditor from './ItemListEditor';
-// import Slider from 'react-rangeslider'
+
+
 
 export default class NavBar extends Component {
 
@@ -19,10 +19,10 @@ export default class NavBar extends Component {
       nameOpen: false,
       type: "",
       menuMousedOver: false,
-      itemListsOpen: false,
-      brightness: 85
+      itemListsOpen: false
     }
   }
+
 
   openMenu = () => {
     this.setState({menuMousedOver: true})
@@ -76,16 +76,11 @@ export default class NavBar extends Component {
     window.open(url+'#presentation', "Presentation", "height=350,width=350,alwaysRaised");
   }
 
-  changeBrightness = (level) => {
-    this.setState({brightness: level})
-  }
-
   render(){
 
     let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFontSize,
-       updateFontColor, wordIndex, freeze, item, addItem, user} = this.props;
+       updateFontColor, wordIndex, freeze, item, addItem, user, updateBrightness} = this.props;
 
-    // let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen, brightness} = this.state;
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
 
     let buttonLoggedIn = {
@@ -139,8 +134,8 @@ export default class NavBar extends Component {
           </li>
           <li>
             <div style={{paddingTop:'1%', margin:'auto'}}>
-               <FormatEditor item={item} updateFontSize={updateFontSize}
-                 updateFontColor={updateFontColor} wordIndex={wordIndex}/>
+               <FormatEditor item={item} updateFontSize={updateFontSize} updateFontColor={updateFontColor}
+                 wordIndex={wordIndex} updateBrightness={updateBrightness}/>
             </div>
           </li>
           <li>
@@ -179,4 +174,3 @@ export default class NavBar extends Component {
 
 
 }
-// <li style={{width: '5vw', height: '1px'}}><Slider style={{width: '5vw', height: '1px'}} value={brightness} onChange={this.changeBrightness}/></li>

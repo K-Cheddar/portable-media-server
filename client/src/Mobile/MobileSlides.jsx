@@ -84,9 +84,8 @@ export default class MobileSlides extends React.Component{
         return(
           <div style={{display:'flex', width:slideWidth, userSelect:'none'}} key={i} id={"MSlide"+(index*slidesPerRow+i)}>
             <div onClick={() => (that.clickSlide(index*slidesPerRow+i))} style={style}>
-              <MobileSlideInList words={lyrics} color={item.slides[index*slidesPerRow+i].boxes[0].fontColor}
-                 backgrounds={backgrounds} fontSize={item.slides[index*slidesPerRow+i].boxes[0].fontSize}
-                 background={item.slides[index*slidesPerRow+i].boxes[0].background}
+              <MobileSlideInList words={lyrics} style={item.slides[index*slidesPerRow+i].boxes[0]}
+                 backgrounds={backgrounds}
                 name={item.slides[index*slidesPerRow+i].type} width={width} height={height} titleSize={titleSize}/>
 
             </div>

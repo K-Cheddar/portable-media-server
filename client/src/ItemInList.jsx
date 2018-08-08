@@ -19,7 +19,7 @@ export default class ItemInList extends React.Component{
     divStyle.top = (y) + 'px';
   }
 
-  let style = {fontSize: 4.5, color: nameColor}
+  let style = {fontSize: 4.5, fontColor: nameColor}
 
     return (
         <div style={divStyle}>

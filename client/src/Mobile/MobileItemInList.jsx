@@ -12,7 +12,7 @@ export default class MobileItemInList extends React.Component{
       words = ""
 
     let style ={
-      color: nameColor,
+      fontColor: nameColor,
       fontSize: 7
     }
 

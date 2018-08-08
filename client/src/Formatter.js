@@ -42,7 +42,7 @@ export function updateFontColor(c, item, itemList, itemIndex, allItems, wordInde
     if(!slide)
       return
 
-    item.slides[wordIndex].boxes[0].fontColor = color;
+    slide.boxes[0].fontColor = color;
 
     if(wordIndex === 0 && boxIndex === 0){
       //update color of item in current list
@@ -76,7 +76,13 @@ export function updateBrightness(level, item, wordIndex, boxIndex, updateState){
     if(!slide)
       return
 
-    item.slides[wordIndex].boxes[boxIndex].brightness = level;
+    slide.boxes[boxIndex].brightness = level;
+    let background = slide.boxes[boxIndex].background;
+
+    for(let i = 0; i < slides.length; ++i){
+      if(slides[i].boxes[boxIndex].background === background)
+        slides[i].boxes[boxIndex].brightness = level
+    }
 
     updateState({
       item: item,

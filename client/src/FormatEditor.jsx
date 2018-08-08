@@ -4,6 +4,9 @@ import fsUP from './assets/fontSizeUP.png';
 import fsDOWN from './assets/fontSizeDOWN.png';
 import cPicker from './assets/color-picker.png';
 import cPickerClose from './assets/color-picker-close.png';
+import brightness_img from './assets/brightness.png';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 class FormatEditor extends React.Component{
 
@@ -13,7 +16,8 @@ class FormatEditor extends React.Component{
       cPickerOpen: false,
       color: "#FFFFFF",
       fontSize: 5,
-      updating: false
+      updating: false,
+      brightness: 100
     }
 
     this.throttle = null
@@ -27,6 +31,10 @@ class FormatEditor extends React.Component{
     this.setState({
       cPickerOpen: false
     })
+  }
+
+  changeBrightness = (level) => {
+    this.setState({brightness: level})
   }
 
   colorChange = (event) => {
@@ -93,28 +101,35 @@ class FormatEditor extends React.Component{
 
     let{item, wordIndex} = this.props;
 
-    if((wordIndex !== prevProps.wordIndex) || (item.name !== prevProps.item.name)){
+    if((wordIndex !== prevProps.wordIndex) || (item._id !== prevProps.item._id)){
       let slides = item.slides || null;
       let slide = slides ? slides[wordIndex] : null;
-      this.setState({fontSize: slide ? item.slides[wordIndex].boxes[0].fontSize : 4})
-      if(prevProps.item._id !== item._id || wordIndex !== prevProps.wordIndex){
-        let stringToRGB = slide ? item.slides[wordIndex].boxes[0].fontColor.replace(/[^\d,]/g, '').split(',') : [1,2,3,4];
-        this.setState({
-          color: {
-            r: stringToRGB[0],
-            g: stringToRGB[1],
-            b: stringToRGB[2],
-            a: stringToRGB[3]
-          }
-        })
+      if(!slide)
+        return;
+      if(slide.boxes[0].brightness !== undefined)
+        this.setState({brightness: slide.boxes[0].brightness})
+      else{
+        this.setState({brightness: 100})
       }
+      this.setState({fontSize: slide.boxes[0].fontSize})
+      let stringToRGB = slide.boxes[0].fontColor.replace(/[^\d,]/g, '').split(',');
+      this.setState({
+        color: {
+          r: stringToRGB[0],
+          g: stringToRGB[1],
+          b: stringToRGB[2],
+          a: stringToRGB[3]
+        }
+      })
+
 
     }
   }
 
   render() {
 
-    let {cPickerOpen, fontSize} = this.state;
+    let {cPickerOpen, fontSize, brightness} = this.state;
+    let sliderStyle = {width: '5vw', margin: '.5vw 1vw'}
 
     return (
         <div >
@@ -138,6 +153,11 @@ class FormatEditor extends React.Component{
                 onClick={this.fontSizeDOWN}
                 alt="fsDOWN" src={fsDOWN}
             />
+          <img style={{marginLeft:'1vw', marginTop:'.25vw', width:'1.5vw', height:'1.5vw'}}
+                 alt="brightness" src={brightness_img}
+                />
+              <Slider style={sliderStyle} min={1} value={brightness} onChange={this.changeBrightness}
+                onAfterChange={() => this.props.updateBrightness(brightness)}/>
           </div>
         </div>
     )

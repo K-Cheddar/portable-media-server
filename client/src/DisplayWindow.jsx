@@ -49,16 +49,20 @@ export default class DisplayWindow extends React.Component{
 
   render() {
 
-    let {backgrounds, background, style, words, width, height, title,
-      titleSize, presentation, extraPadding, brightness} = this.props;
+    let {backgrounds, background, style, words, width, title,
+      titleSize, presentation, extraPadding} = this.props;
+
     let img = blank, asset;
     let isVideo = false;
 
-    let tWidth = parseInt(width.substring(0, width.length-2), 10)
+    let height = (parseFloat(width.substring(0, width.length-2),10)*.5625)+"vw"
+    if(presentation)
+      height = '100vh'
+    let tWidth = parseFloat(width.substring(0, width.length-2), 10)
     let fsDivider = tWidth/(42.5)
 
     let fontSize = style.fontSize*fsDivider + "vw";
-    let color = style.color
+    let color = style.fontColor
     let fs = style.fontSize*fsDivider/40
     if(!presentation){
       fs = style.fontSize*fsDivider/140
@@ -105,9 +109,9 @@ export default class DisplayWindow extends React.Component{
 
     let pictureContainerStyle = {width: width, height: height, position: 'relative'}
 
-    let level = "85%";
-    if(brightness)
-      level = brightness+"%"
+    let level = "100%";
+    if(style.brightness)
+      level = style.brightness+"%"
 
     let backgroundPictureStyle= { position:'absolute', zIndex:1, backgroundImage: 'url('+img+')',
       backgroundSize: '100% 100%', filter: `brightness(${level})`,
@@ -121,7 +125,7 @@ export default class DisplayWindow extends React.Component{
     let wordsStyle = {
       textAlign: 'center', background: 'transparent', border: 0, resize:'none',
       whiteSpace:'pre-wrap', color: color, fontSize: fontSize, fontFamily: "Verdana",
-      padding: extraPadding ? "12.5% 7.5%" : "5%", textShadow: `${SS} ${SS} ${SS} black`,
+      padding: extraPadding ? "12.5% 7.5%" : "5%", textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
       width: '90%', height:'85%', position: 'absolute', zIndex: 2,
       WebkitTextStroke: `${strokeRadius} ${strokeColor}`
     }

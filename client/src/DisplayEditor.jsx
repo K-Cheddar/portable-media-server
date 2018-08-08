@@ -95,7 +95,7 @@ class DisplayEditor extends React.Component{
        let strokeColor = "#000";
        let SS = `${fs*2}vw`
        style.WebkitTextStroke = `${strokeRadius} ${strokeColor}`;
-       style.textShadow = `${SS} ${SS} ${SS} black`;
+       style.textShadow = `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`;
       if(slide && item.slides[wordIndex].boxes[0].background)
         search = item.slides[wordIndex].boxes[0].background;
     }
