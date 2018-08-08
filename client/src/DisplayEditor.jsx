@@ -93,7 +93,7 @@ class DisplayEditor extends React.Component{
        let fs =  slide ? item.slides[wordIndex].boxes[0].fontSize/40 : 1;
        let strokeRadius = `calc(${fs*1.25}vw)`
        let strokeColor = "#000";
-       let SS = `${fs*2}vw`
+       let SS = `${fs*1}vw`
        style.WebkitTextStroke = `${strokeRadius} ${strokeColor}`;
        style.textShadow = `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`;
       if(slide && item.slides[wordIndex].boxes[0].background)
