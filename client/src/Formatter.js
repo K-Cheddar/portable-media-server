@@ -44,6 +44,13 @@ export function updateFontColor(c, item, itemList, itemIndex, allItems, wordInde
 
     slide.boxes[0].fontColor = color;
 
+    let background = slide.boxes[boxIndex].background;
+    for(let i = 0; i < slides.length; ++i){
+      if(slides[i].boxes[boxIndex].background === background)
+        slides[i].boxes[boxIndex].fontColor = color
+    }
+
+
     if(wordIndex === 0 && boxIndex === 0){
       //update color of item in current list
       itemList[itemIndex].nameColor = color
