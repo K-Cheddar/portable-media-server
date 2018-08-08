@@ -11,8 +11,8 @@ export default class MobileItemList extends React.Component{
     list.push(itemList[i]);
   }
 
-  let width = "24vh";
-  let height = "13.5vh";
+  let width = "36vw";
+  let height = "20.25vw";
   //.75vw -> fontSize, .1vw -> titleBorder, .25vw -> border
   let fullHeight = `calc(${height} + 3vw + .1vw + .75vw)`
 
@@ -34,9 +34,9 @@ export default class MobileItemList extends React.Component{
 })
     return (
       <div>
-        <div style={{ height:'75vh', width:'55vw', overflowY: 'scroll',
+        <div style={{ height:'75vh', width:'45vw', overflowY: 'scroll',
           overflowX: 'hidden', marginLeft:'2vw'}}>{SL}</div>
-        <button style={{marginTop:'2vh', marginBottom:'1vh', marginLeft:'33vw', width:'35%', height:'4.5vh',
+        <button style={{marginTop:'2vh', marginBottom:'1vh', marginLeft:'33vw', width:'30%', height:'4.5vh',
           fontSize:'calc(8px + 0.75vmax)'}} onClick={this.props.close}>Close</button>
       </div>
     )

@@ -53,7 +53,6 @@ export function updateFontColor(c, item, itemList, itemIndex, allItems, wordInde
         if(i === 0)
           {
             itemList[itemIndex].nameColor = color
-
             allItems[index].nameColor = color
           }
       }

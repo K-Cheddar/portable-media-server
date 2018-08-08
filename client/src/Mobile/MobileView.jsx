@@ -76,8 +76,8 @@ export default class MobileView extends Component{
         {this.state.itemSelectOpen &&
           <div style={{position:'fixed', top:0, left:0, height:'100vh',
              zIndex: 2, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
-            <div style={{position:'fixed', display:'flex', top:'2vmax', left:'10vw',
-               zIndex: 3, backgroundColor:'#d9e3f4', width:'80vw', maxWidth:'100%'}}>
+            <div style={{position:'fixed', display:'flex', top:'2vmax', left:'13vw',
+               zIndex: 3, backgroundColor:'#d9e3f4', width:'70vw', maxWidth:'100%'}}>
              <MobileListChanger selectedItemList={this.props.selectedItemList}
                selectItemList={this.props.selectItemList} itemLists={this.props.itemLists}/>
 

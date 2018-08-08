@@ -146,7 +146,7 @@ export default class DisplayWindow extends React.Component{
           <div id={id} style={wordsStyle}>{words}</div>
         </div>}
         {isVideo &&<div style={videoContainerStyle}>
-          <video muted loop autoPlay id="background-video-mini"
+          <video muted preload loop autoPlay id="background-video-mini"
             style={videoStyle}>
             <source src={asset.video.src} type="video/mp4"/>
             <source src={asset.video.src} type="video/ogg" />

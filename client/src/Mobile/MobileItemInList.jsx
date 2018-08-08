@@ -13,7 +13,7 @@ export default class MobileItemInList extends React.Component{
 
     let style ={
       fontColor: nameColor,
-      fontSize: 7
+      fontSize: 4.5
     }
 
 
