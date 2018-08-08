@@ -8,6 +8,7 @@ import open from './assets/open.png';
 import Bible from './Bible'
 import CreateName from './CreateName';
 import ItemListEditor from './ItemListEditor';
+// import Slider from 'react-rangeslider'
 
 export default class NavBar extends Component {
 
@@ -18,7 +19,8 @@ export default class NavBar extends Component {
       nameOpen: false,
       type: "",
       menuMousedOver: false,
-      itemListsOpen: false
+      itemListsOpen: false,
+      brightness: 85
     }
   }
 
@@ -74,11 +76,16 @@ export default class NavBar extends Component {
     window.open(url+'#presentation', "Presentation", "height=350,width=350,alwaysRaised");
   }
 
+  changeBrightness = (level) => {
+    this.setState({brightness: level})
+  }
+
   render(){
 
     let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFontSize,
        updateFontColor, wordIndex, freeze, item, addItem, user} = this.props;
 
+    // let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen, brightness} = this.state;
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
 
     let buttonLoggedIn = {
@@ -172,3 +179,4 @@ export default class NavBar extends Component {
 
 
 }
+// <li style={{width: '5vw', height: '1px'}}><Slider style={{width: '5vw', height: '1px'}} value={brightness} onChange={this.changeBrightness}/></li>

@@ -67,3 +67,20 @@ export function updateFontColor(c, item, itemList, itemIndex, allItems, wordInde
 
 
 }
+
+export function updateBrightness(level, item, wordIndex, boxIndex, updateState){
+
+    let slides = item.slides || null;
+    let slide = slides ? slides[wordIndex] : null;
+
+    if(!slide)
+      return
+
+    item.slides[wordIndex].boxes[boxIndex].brightness = level;
+
+    updateState({
+      item: item,
+      needsUpdate: true
+    });
+
+}

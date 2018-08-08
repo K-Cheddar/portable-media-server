@@ -189,6 +189,7 @@ class ItemSlides extends React.Component{
                 <SlideInList words={lyrics} background={item.slides[index*slidesPerRow+i].boxes[0].background}
                   color={item.slides[index*slidesPerRow+i].boxes[0].fontColor}
                   fontSize={item.slides[index*slidesPerRow+i].boxes[0].fontSize}
+                  brightness={item.slides[index*slidesPerRow+i].boxes[0].brightness}
                   name={item.slides[index*slidesPerRow+i].type}  width={width} height={height}
                   backgrounds={backgrounds} titleSize={titleSize}
                   />

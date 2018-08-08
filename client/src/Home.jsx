@@ -29,8 +29,12 @@ export default class Home extends Component {
 
     return(
       <div style={{height:'95vh'}}>
-        <nav style={{fontSize: "calc(14px + 0.35vmax)"}}>
+        <nav class="welcome" style={{fontSize: "calc(14px + 0.35vmax)"}}>
           <h1 style={{padding: '1%'}}>Welcome to Portable Media</h1>
+            <p>
+              This software is in Beta. Use Google Chrome for the best experience.
+              Other browsers are not currently supported and functionality may be limited.
+            </p>
           <ul style={{paddingLeft: '1%'}}>
            {/* Link components are used for linking to other views */}
             {!isMobile && <li><Link to="/fullview">Controller</Link></li>}

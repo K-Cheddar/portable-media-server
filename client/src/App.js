@@ -345,8 +345,8 @@ class App extends Component {
   }
 
   setSlideBackground = (background) => {
-    let {item, wordIndex} = this.state;
-    SlideUpdate.setSlideBackground(background, item, wordIndex, this.updateState)
+    let {item, wordIndex, allItems, itemList, itemIndex} = this.state;
+    SlideUpdate.setSlideBackground(background, item, wordIndex, itemIndex, allItems, itemList, this.updateState)
   }
 
   setWordIndex = (index) => {
@@ -409,6 +409,11 @@ class App extends Component {
   updateFontSize = (fontSize) => {
       let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = this.state;
       Formatter.updateFontSize(fontSize, item, itemList, itemIndex, allItems, wordIndex, boxIndex, this.updateState)
+  }
+
+  updateBrightness = (level) => {
+    let {item, wordIndex, boxIndex} = this.state;
+    Formatter.updateBrightness(level, item, wordIndex, boxIndex, this.updateState)
   }
 
   updateItem = (item) => {
@@ -510,7 +515,7 @@ class App extends Component {
         addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
         backgrounds={this.state.backgrounds} formatBible={Overflow.formatBible} db={this.state.db}
         test={this.test} user={user} newItemList={this.newItemList} logout={this.logout}
-        updateState={this.updateState} allItemLists={this.state.allItemLists}
+        updateState={this.updateState} allItemLists={this.state.allItemLists} updateBrightness={this.updateBrightness}
         updateFontSize={this.updateFontSize} updateFontColor={this.updateFontColor}
         />
       {!retrieved.finished && <Loading/>}

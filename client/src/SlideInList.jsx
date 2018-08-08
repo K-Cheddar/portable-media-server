@@ -6,7 +6,7 @@ export default class SlideInList extends React.Component{
 
   render(){
   let {words, backgrounds, background, color, fontSize, moving, x, y,
-    width, height, name, titleSize} = this.props;
+    width, height, name, titleSize, brightness} = this.props;
 
     let divStyle={width: width, height: height}
 
@@ -20,7 +20,7 @@ export default class SlideInList extends React.Component{
     return (
       <div style={divStyle}>
         <DisplayWindow words={words} style={style} background={background} backgrounds={backgrounds}
-          width={width} height={height} title={name} titleSize={titleSize}/>
+          width={width} height={height} title={name} titleSize={titleSize} brightness={brightness}/>
       </div>
     )
   }

@@ -1,7 +1,17 @@
-export function setSlideBackground(background, item, wordIndex, updateState){
+export function setSlideBackground(background, item, wordIndex, itemIndex, allItems, itemList, updateState){
+
   item.slides[wordIndex].boxes[0].background = background;
+  let index = allItems.findIndex(e => e.name === item.name)
+
+  if(wordIndex === 0){
+    itemList[itemIndex].background = background;
+    allItems[index].background = background;
+  }
+
   updateState({
     item: item,
+    allItems: allItems,
+    itemList: itemList,
     needsUpdate: true
   })
 }

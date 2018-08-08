@@ -50,7 +50,7 @@ export default class DisplayWindow extends React.Component{
   render() {
 
     let {backgrounds, background, style, words, width, height, title,
-      titleSize, presentation, extraPadding} = this.props;
+      titleSize, presentation, extraPadding, brightness} = this.props;
     let img = blank, asset;
     let isVideo = false;
 
@@ -105,8 +105,12 @@ export default class DisplayWindow extends React.Component{
 
     let pictureContainerStyle = {width: width, height: height, position: 'relative'}
 
+    let level = "85%";
+    if(brightness)
+      level = brightness+"%"
+
     let backgroundPictureStyle= { position:'absolute', zIndex:1, backgroundImage: 'url('+img+')',
-      backgroundSize: '100% 100%', filter: "brightness(85%)",
+      backgroundSize: '100% 100%', filter: `brightness(${level})`,
       width: width, height: height, maxHeight:'75vw',}
 
     let SS = `${fs*2}vw`

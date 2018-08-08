@@ -12,8 +12,10 @@ ul {
 
 
 .loader {
-    border: 1.5vw solid #f3f3f3; /* Light grey */
-    border-top: 1.5vw solid #3498db; /* Blue */
+    border-right: 1.5vw solid #39cc00; /* Green */
+    border-left: 1.5vw solid #39cc00; /* Green */
+    border-bottom: 1.5vw solid #a7bde2; /* Blue */
+    border-top: 1.5vw solid #a7bde2; /* Blue */
     border-radius: 50%;
     width: 4vw;
     height: 4vw;
