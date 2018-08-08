@@ -186,8 +186,8 @@ export default class Bible extends Component {
 
     return(
       <div  style={{position:'fixed', top:0, left:0, height:'100vh',
-        zIndex: 2, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
-        <div style={{position:'fixed', zIndex:3, right:'12.5%', top:'1%',
+        zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
+        <div style={{position:'fixed', zIndex:5, right:'12.5%', top:'1%',
           width:'75vw', height: '65vh', backgroundColor:"#d1d1d1", padding:'1%'}}>
           <div style={{display:'flex'} }>
             <div style={{display: 'flex', width:'50vw', height:'50vh',

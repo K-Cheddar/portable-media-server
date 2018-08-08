@@ -123,6 +123,13 @@ class App extends Component {
 
     this.init(database, true)
     // document.addEventListener('keydown', handleKeyDown)
+    let that = this;
+    setTimeout(function(){
+      let success = that.state.retrieved;
+      if(!success.finished){
+        window.location.reload(true)
+      }
+    }, 15000)
   }
 
   addItem = (item) => {
@@ -176,6 +183,14 @@ class App extends Component {
 
   deleteItemList = (id) =>{
     DBUpdater.deleteItemList(this.state.db, id)
+  }
+
+  duplicateItem = (id) => {
+    let that = this;
+    this.state.db.get(id).then(function(doc){
+      let itemObj = {"name": doc.name,"_id": doc._id,"background": doc.background,"nameColor": doc.slides[0].boxes[0].fontColor,"type": doc.type};
+      that.addItemToList(itemObj)
+    })
   }
 
   getAttempted = (type) => {
@@ -529,7 +544,7 @@ class App extends Component {
                   isLoggedIn={this.state.isLoggedIn} updateItem={this.updateItem}
                   addItem={this.addItem} itemList={this.state.itemList} item={this.state.item}
                   deleteItemFromList={this.deleteItemFromList} backgrounds={this.state.backgrounds}
-                  setItemBackground = {this.setItemBackground}
+                  setItemBackground = {this.setItemBackground} duplicateItem={this.duplicateItem}
                   allItems={allItems} deleteItem={this.deleteItem} insertWords={this.insertWords}
                   addItemToList={this.addItemToList} insertItemIntoList={this.insertItemIntoList}
                   currentInfo={currentInfo} formatSong={Overflow.formatSong} user={user}

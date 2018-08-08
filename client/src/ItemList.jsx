@@ -1,5 +1,6 @@
 import React from 'react';
 import deleteX from './assets/deleteX.png';
+import duplicate from './assets/duplicate.png';
 import edit from './assets/edit.png';
 import CreateName from './CreateName';
 import ItemInList from './ItemInList';
@@ -146,6 +147,10 @@ export default class ItemList extends React.Component{
             onClick={() => (this.editItem(element.name, element._id))}
             alt="edit" src={edit}
             />
+          <img style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
+             onClick={() => (this.props.duplicateItem(element._id))}
+             alt="duplicate" src={duplicate}
+             />
         </div>
     </div>
   )

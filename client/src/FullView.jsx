@@ -13,14 +13,15 @@ export default class FullView extends React.Component{
     let {wordIndex, setItemIndex, setWordIndex, insertItemIntoList, insertWords,
       addItem, itemList, deleteItemFromList, item, updateItem, backgrounds, itemIndex,
       setItemBackground, handleFileChange, allItems, deleteItem, addItemToList, user,
-      currentInfo, formatSong, setSlideBackground, openUploader, db, updateCurrent} = this.props;
+      currentInfo, formatSong, setSlideBackground, openUploader, db, updateCurrent,
+      duplicateItem} = this.props;
 
     return (
       <div style={{width:'99%', marginLeft:'1vw', position:'absolute'}}>
         <div style={{display:'flex', fontSize:'calc(10px + 1vw)'}}>
           <div style={{width:'14%', overflowX:'hidden'}}>
             <ItemList setItemIndex={setItemIndex} setWordIndex={setWordIndex}
-              addItem={addItem} itemList={itemList} db={db}
+              addItem={addItem} itemList={itemList} db={db} duplicateItem={duplicateItem}
               deleteItemFromList={deleteItemFromList} backgrounds={backgrounds}
               updateItem={updateItem} insertItemIntoList={insertItemIntoList} itemIndex={itemIndex}
               />

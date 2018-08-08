@@ -43,11 +43,20 @@ export function updateFontColor(c, item, itemList, itemIndex, allItems, wordInde
       return
 
     slide.boxes[0].fontColor = color;
+    let index = allItems.findIndex(e => e._id === item._id)
 
     let background = slide.boxes[boxIndex].background;
+
     for(let i = 0; i < slides.length; ++i){
-      if(slides[i].boxes[boxIndex].background === background)
-        slides[i].boxes[boxIndex].fontColor = color
+      if(slides[i].boxes[boxIndex].background === background){
+        slides[i].boxes[boxIndex].fontColor = color;
+        if(i === 0)
+          {
+            itemList[itemIndex].nameColor = color
+
+            allItems[index].nameColor = color
+          }
+      }
     }
 
 
@@ -55,7 +64,6 @@ export function updateFontColor(c, item, itemList, itemIndex, allItems, wordInde
       //update color of item in current list
       itemList[itemIndex].nameColor = color
       //update color of item in full list
-      let index = allItems.findIndex(e => e._id === item._id)
       allItems[index].nameColor = color
     }
 
