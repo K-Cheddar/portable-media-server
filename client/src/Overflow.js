@@ -212,7 +212,7 @@ function getNumLines(text, fontSize){
   let textSpan = document.createElement("textSpan");
   textSpan.innerHTML=text;
   textSpan.style.fontSize = fontSize;
-  textSpan.style.fontStyle = document.getElementById('displayEditor').style.fontStyle;
+  textSpan.style.fontStyle = document.getElementById('displayEditor') ? document.getElementById('displayEditor').style.fontStyle: 'normal';
   textSpan.style.whiteSpace = 'pre-wrap';
   textSpan.style.width = (width*0.85)+'vw'
   textSpan.style.position = 'fixed'
@@ -222,7 +222,7 @@ function getNumLines(text, fontSize){
   let singleSpan = document.createElement("singleSpan");
   singleSpan.innerHTML="Only Line";
   singleSpan.style.fontSize = fontSize;
-  singleSpan.style.fontStyle = document.getElementById('displayEditor').style.fontStyle;
+  singleSpan.style.fontStyle = document.getElementById('displayEditor') ? document.getElementById('displayEditor').style.fontStyle: 'normal';
   singleSpan.style.position = 'fixed'
 
   document.body.appendChild(singleSpan);

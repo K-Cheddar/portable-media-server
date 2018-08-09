@@ -114,9 +114,9 @@ class DisplayEditor extends React.Component{
       <div style={{width: '100%', height:'100%'}}>
         {!isVideo &&<div style={{backgroundImage: 'url('+background+')',
           width: "100%", height: "100%", backgroundSize: '100% 100%'}}>
-          {(background !== blank) &&
+          {(item.slides) &&
             <textarea id="displayEditor" style={style} value={text} onChange={this.handleTextChange}/>}
-          {(background === blank) && <div>
+          {(!item.slides) && <div>
             <div style={blankTextStyle}>No Item Selected</div>
            </div>}
       </div>}

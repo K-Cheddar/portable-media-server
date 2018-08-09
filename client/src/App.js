@@ -251,9 +251,7 @@ class App extends Component {
     let {retrieved} = this.state;
     retrieved[type] = true;
     //don't begin auto update until all values have been retrieved
-    console.log(retrieved);
     if(Object.keys(retrieved).length >= 5){
-      console.log("Hi");
         retrieved.finished = true;
         this.updateInterval = setInterval(this.update, 1000); //auto save to database every second if update has occurred
     }

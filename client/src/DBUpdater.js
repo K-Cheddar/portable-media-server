@@ -187,7 +187,6 @@ export function deleteItem(db, name, allItems, allItemLists, index, selectedItem
       doc.items = doc.items.filter(e => e.name !== name)
       if(selectedItemList.id === "Item List "+i){
         updateState({itemList: doc.items })
-        setItemIndex((doc.items.length > 0) ? index-1 : 0)
       }
       return db.put(doc);
     })
