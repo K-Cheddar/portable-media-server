@@ -107,13 +107,18 @@ class DisplayEditor extends React.Component{
             isVideo = true;
         }
     }
-
+    let blankTextStyle = {color: 'white', textAlign: 'center',
+    fontSize: '3vw', position: 'relative', paddingTop: '15%'}
 
     return (
       <div style={{width: '100%', height:'100%'}}>
         {!isVideo &&<div style={{backgroundImage: 'url('+background+')',
           width: "100%", height: "100%", backgroundSize: '100% 100%'}}>
-          <textarea id="displayEditor" style={style} value={text} onChange={this.handleTextChange}/>
+          {(background !== blank) &&
+            <textarea id="displayEditor" style={style} value={text} onChange={this.handleTextChange}/>}
+          {(background === blank) && <div>
+            <div style={blankTextStyle}>No Item Selected</div>
+           </div>}
       </div>}
       {isVideo &&<div style={{width:'100%', height:'100%',position:'relative'}}>
         <video loop autoPlay id="background-video"

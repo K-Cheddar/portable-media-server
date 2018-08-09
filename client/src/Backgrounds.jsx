@@ -22,6 +22,12 @@ export default class Backgrounds extends React.Component{
     this.setState({allOpen: true})
   }
 
+  addMedia = () =>  {
+    let {selectedBackground} = this.state;
+    if(selectedBackground)
+      this.props.addMedia(selectedBackground);
+  }
+
   componentDidMount = () => {
     let {backgrounds} = this.props
     this.setState({selectBackground: backgrounds[0]})
@@ -91,12 +97,14 @@ export default class Backgrounds extends React.Component{
         </div>
         <div style={{display:'flex', paddingTop: '1vh'}}>
           <button style={{width: '7vw', fontSize: "calc(7px + 0.35vw)"}} onClick={this.displayImage}>Display Image</button>
+          <button style={{marginLeft:'1%', width: '7vw',fontSize: "calc(7px + 0.35vw)"}} onClick={this.addMedia}>Add To List</button>
           <button style={{marginLeft:'1%', width: '9vw', fontSize: "calc(7px + 0.35vw)"}} onClick={this.setItemBackground}>Set Item Background</button>
           {item.type==='song' &&<button style={{marginLeft:'1%', width: '10vw',fontSize: "calc(7px + 0.35vw)"}} onClick={this.setSlideBackground}>Set Slide Background</button>}
         </div>
         <div style={{display:'flex', overflowX: 'scroll', width: '36vmax'}}>{BCKS}</div>
-        {allOpen  &&<AllBackgrounds setItemBackground={this.props.setItemBackground} updateCurrent={this.props.updateCurrent}
-          setSlideBackground={this.props.setSlideBackground} item={item} backgrounds={backgrounds}
+        {allOpen  &&<AllBackgrounds setItemBackground={this.props.setItemBackground}
+        updateCurrent={this.props.updateCurrent}setSlideBackground={this.props.setSlideBackground} item={item}
+        backgrounds={backgrounds} addMedia={this.props.addMedia}
           />}
       </div>
     )

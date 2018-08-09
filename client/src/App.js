@@ -139,12 +139,35 @@ class App extends Component {
 
   addItemToList = (item) => {
     let {selectedItemList, itemIndex} = this.state;
-    let itemObj = {"name": item.name,"_id": item._id,"background": item.background,"nameColor": item.nameColor,"type": item.type};
+    let itemObj = {"name": item.name,"_id": item._id,"background": item.background,
+        "nameColor": item.nameColor,"type": item.type};
     //put item in current item list
     DBUpdater.putInList(this.state.db, itemObj, selectedItemList, itemIndex, this.updateState)
     //select created item
     DBGetter.getItem(this.state.db, item._id, this.updateState, this.setItemIndex, itemIndex)
 
+  }
+
+  addMedia = (background) => {
+    let {db, itemIndex} = this.state;
+    let item = {
+        "_id": background, "name": "New Image",
+        "slides": [
+          {
+            "type": 'Name',
+            "boxes": [
+              {"background": background,
+               "fontSize": 4.5,
+               "fontColor": 'rgba(255, 255, 255, 1)',
+               "words": " ",
+              }
+            ]
+          }
+        ],
+        "formattedLyrics": [], "songOrder": [], "type": "image",
+        "background": background
+      }
+      DBUpdater.addItem(db, item, itemIndex, this.updateState, this.setItemIndex, this.addItemToList)
   }
 
   DBReplicate = (db, remoteDB, localDB) => {
@@ -547,7 +570,7 @@ class App extends Component {
                   setItemBackground = {this.setItemBackground} duplicateItem={this.duplicateItem}
                   allItems={allItems} deleteItem={this.deleteItem} insertWords={this.insertWords}
                   addItemToList={this.addItemToList} insertItemIntoList={this.insertItemIntoList}
-                  currentInfo={currentInfo} formatSong={Overflow.formatSong} user={user}
+                  currentInfo={currentInfo} formatSong={Overflow.formatSong} user={user} addMedia={this.addMedia}
                   openUploader={this.openUploader} db={this.state.db} updateCurrent={this.updateCurrent}
                 />}/>
               <Route  path="/mobile" render={(props) =>

@@ -157,15 +157,17 @@ export default class ItemList extends React.Component{
 })
 
 
+  let noItemStyle = { height:'20vh', overflowY: 'hidden', overflowX: 'hidden', fontSize: 'calc(5px + 1.5vw)',
+    color: 'white', textAlign: 'center', marginTop: '5vh'}
 
     return (
       <div>
         {nameOpen && <CreateName option="edit" name={name} id={id} db={db}
         close={this.close} updateItem={this.props.updateItem}
         />}
-        <div style={{ height:'92.5vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}
-           onMouseUp={this.releaseElement} onMouseLeave={this.releaseElement}>{SL}</div>
-
+        {itemList.length > 0 && <div style={{ height:'92.5vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}
+           onMouseUp={this.releaseElement} onMouseLeave={this.releaseElement}>{SL}</div>}
+        {itemList.length === 0 && <div style={noItemStyle}> Nothing Added Yet</div>}
       </div>
     )
   }
