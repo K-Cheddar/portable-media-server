@@ -16,6 +16,7 @@ export function init(db, updateState, getSuccess, getAttempted){
   db.get('ItemLists').then(function (doc) {
     if(doc.itemLists[0]){
       db.get(doc.itemLists[0].id).then(function(doc2){
+        getSuccess('Item Lists')
         updateState({itemList: doc2.items, needsUpdate: false}) //actual list of items
       })
       updateState({
@@ -24,8 +25,11 @@ export function init(db, updateState, getSuccess, getAttempted){
         needsUpdate: false
       })
     }
+    else {
+      getSuccess('Item Lists')
+    }
 
-    getSuccess('Item Lists')
+
   }).catch(function(){
     console.log('itemLists not loaded');
   }).then(function(){

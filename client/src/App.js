@@ -101,6 +101,7 @@ class App extends Component {
 
   componentDidMount(){
 
+    window.reactLoaded = true;
     //grab current info for persistent login
     let database = 'demo'
     localStorage.setItem('presentation', 'null');
@@ -219,23 +220,25 @@ class App extends Component {
   getAttempted = (type) => {
     let {attempted, retrieved, remoteDB, db} = this.state;
     attempted[type] = true;
-    if(Object.keys(attempted).length >= 4){
-        if(!retrieved.finished){
-          if(navigator.onLine){
-            let that = this;
-            setTimeout(function(){
-              let obj = Object.assign({}, initialState);
-              this.setState(obj)
-              this.setState({retrieved: {}, attempted:{}})
-              let localDB = "portable-media"
-              that.DBReplicate(db, remoteDB, localDB)
-              },6000)
+    if(Object.keys(attempted).length >= 5){
+      if(!retrieved.finished){
+        if(navigator.onLine){
+          let that = this;
+          setTimeout(function(){
+            if(retrieved.finished)
+              return
+            let obj = Object.assign({}, initialState);
+            that.setState(obj)
+            that.setState({retrieved: {}, attempted:{}})
+            let localDB = "portable-media"
+            that.DBReplicate(db, remoteDB, localDB)
+          },10000)
 
-          }
-          else{
-            alert("Please reconnect to the internet to continue")
-          }
         }
+        else{
+          alert("Please reconnect to the internet to continue")
+        }
+      }
     }
     this.setState({attempted: attempted})
   }
@@ -248,7 +251,9 @@ class App extends Component {
     let {retrieved} = this.state;
     retrieved[type] = true;
     //don't begin auto update until all values have been retrieved
-    if(Object.keys(retrieved).length >= 4){
+    console.log(retrieved);
+    if(Object.keys(retrieved).length >= 5){
+      console.log("Hi");
         retrieved.finished = true;
         this.updateInterval = setInterval(this.update, 1000); //auto save to database every second if update has occurred
     }
