@@ -180,7 +180,6 @@ export function deleteItem(db, name, allItems, allItemLists, index, selectedItem
     return db.put(doc);
   })
 
-  updateState({item: {}})
   //delete item from each list
   for(let i = 1; i <= allItemLists.length; ++i){
     db.get("Item List "+i).then(function(doc){

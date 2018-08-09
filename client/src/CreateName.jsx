@@ -1,4 +1,5 @@
 import React from 'react';
+import {HotKeys} from 'react-hotkeys';
 
 export default class CreateName extends React.Component{
 
@@ -9,11 +10,22 @@ export default class CreateName extends React.Component{
       name: "",
       message: "",
     }
+
+    this.handlers = {
+      'close': this.close
+    }
   }
 
   componentDidMount(){
     this.setState({name: this.props.name})
-    document.getElementById("nameChange").focus();
+    let textbox = document.getElementById("nameChange");
+    textbox.focus();
+    setTimeout(function(){textbox.select()},10)
+
+  }
+
+  close = () => {
+    this.props.close()
   }
 
   nameAvailable = () => {
@@ -41,23 +53,16 @@ export default class CreateName extends React.Component{
     if(option === 'create'){
       this.nameAvailable();
     }
-    // this.props.submitName(this.state.name)
   }
 
   addItem = (name) =>{
 
-    let {type} = this.props;
-
-    let firstSlide = " ";
-    // let {backgrounds} = this.props;
-    // let background = "";
-    //
-    // if (backgrounds[0])
-    //   background = backgrounds[0].name
+    let {type, background} = this.props;
+    let image = background ? background : '';
+    let firstSlide = ' '
 
     if(type === 'song')
       firstSlide = name;
-
 
     let item = {
         "_id": name,
@@ -66,7 +71,7 @@ export default class CreateName extends React.Component{
           {
             "type": 'Name',
             "boxes": [
-              {"background": "",
+              {"background": image,
                "fontSize": 4.5,
                "fontColor": 'rgba(255, 255, 255, 1)',
                "words": firstSlide,
@@ -76,9 +81,9 @@ export default class CreateName extends React.Component{
         ],
         "formattedLyrics": [],
         "songOrder": [],
-        "type": type
+        "type": type,
+        "background": image
       }
-
       this.props.addItem(item);
     }
 
@@ -101,7 +106,7 @@ export default class CreateName extends React.Component{
 
     let style={
       position:'absolute',
-      zIndex:5,
+      zIndex:6,
       left:'35%',
       top:'45%',
       backgroundColor: '#EEE',
@@ -112,8 +117,9 @@ export default class CreateName extends React.Component{
     }
 
       return (
+        <HotKeys handlers={this.handlers}>
         <div style={{position:'fixed', top:0, left:0, height:'100vh',
-          zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
+          zIndex: 5, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
           <div style={style}>
           {(message.length > 0) && <div>{message}</div>}
           <form onSubmit={this.submitName}>
@@ -128,7 +134,7 @@ export default class CreateName extends React.Component{
           </form>
           </div>
         </div>
-
+      </HotKeys>
       )
   }
 }

@@ -30,9 +30,9 @@ export function setWordIndex(index, lyrics, item, wordIndex, updateState, update
   var mElement = document.getElementById("MSlide"+scrollTo);
   var element = document.getElementById("Slide"+index);
   if(mElement)
-    mElement.scrollIntoView({behavior: "smooth", block: "nearest", inline:'nearest'});
+    mElement.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
   if(element)
-    element.scrollIntoView({behavior: "smooth", block: "nearest", inline:'nearest'});
+    element.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
   updateState({wordIndex: index, needsUpdate: false});
   let fontSize = item.slides[index].boxes[0].fontSize;
   let color = item.slides[index].boxes[0].fontColor;

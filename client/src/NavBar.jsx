@@ -83,8 +83,8 @@ export default class NavBar extends Component {
 
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
 
-    let buttonLoggedIn = {
-       fontSize: "calc(5px + 0.35vw)", margin:'0.25%', width:'6vw'
+    let buttonStyle = {
+       fontSize: "calc(5px + 0.35vw)", margin:'.25vw', width:'6vw'
     }
 
     let menuItem = {
@@ -122,15 +122,8 @@ export default class NavBar extends Component {
               />
           </li>
           <li style={{display:'flex', margin:'auto', marginLeft:'3vw'}}>
-            <div style={{width: '30%', margin:'auto'}}>
-              <button style={buttonLoggedIn} onClick={this.openBible}>Add Bible</button>
-            </div>
-            <div style={{width: '30%', margin:'auto'}}>
-              <button style={buttonLoggedIn} onClick={this.openImage}>Add Media</button>
-            </div>
-            <div style={{width: '30%', margin:'auto'}}>
-              <button style={buttonLoggedIn} onClick={this.openSong}>Add Song</button>
-            </div>
+            <button style={buttonStyle} onClick={this.openSong}>Add Song</button>
+            <button style={buttonStyle} onClick={this.openBible}>Add Bible</button>
           </li>
           <li>
             <div style={{paddingTop:'1%', margin:'auto'}}>
@@ -141,7 +134,7 @@ export default class NavBar extends Component {
           <li>
             {freeze && <div style={{display:'flex', height:'1.5vw', paddingTop:'1%', margin:'auto'}}>
              <div>
-               <button style={buttonLoggedIn} onClick={toggleFreeze}>Unfreeze</button>
+               <button style={buttonStyle} onClick={toggleFreeze}>Unfreeze</button>
              </div>
               <img style={{paddingLeft:'5%', width:'2.75vw', height:'1.25vw'}}
                  alt="off" src={off}
@@ -150,7 +143,7 @@ export default class NavBar extends Component {
             }
             {!freeze && <div style={{display:'flex', height:'1.5vw', paddingTop:'1%', margin:'auto'}}>
             <div>
-              <button style={buttonLoggedIn} onClick={toggleFreeze}>Freeze</button>
+              <button style={buttonStyle} onClick={toggleFreeze}>Freeze</button>
             </div>
               <img style={{paddingLeft:'5%', width:'2.75vw', height:'1.25vw'}}
                  alt="on" src={on}
@@ -162,7 +155,7 @@ export default class NavBar extends Component {
         </ul>
         {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={this.props.formatBible}/>}
         {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={this.props.db}
-        close={this.closeName} addItem={this.props.addItem} backgrounds={this.props.backgrounds}
+        close={this.closeName} addItem={this.props.addItem}
         />}
         {itemListsOpen && <ItemListEditor updateState={this.props.updateState} close={this.closeItemLists}
           itemLists={this.props.itemLists} allItemLists={this.props.allItemLists} deleteItemList={this.props.deleteItemList}
@@ -174,3 +167,8 @@ export default class NavBar extends Component {
 
 
 }
+//
+// <div style={{width: '30%', margin:'auto'}}>
+//   <button style={buttonStyle} onClick={this.openImage}>Add Media</button>
+// </div>
+//

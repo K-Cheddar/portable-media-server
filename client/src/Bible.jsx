@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import kjv from './assets/kjv';
+import {HotKeys} from 'react-hotkeys';
 
 export default class Bible extends Component {
 
@@ -16,9 +17,18 @@ export default class Bible extends Component {
       verseEndSearch: '',
       selectedVerses: []
     }
+    this.handlers = {
+      'close': this.close
+    }
 
   }
-
+  componentDidMount(){
+    let bibleWindow = document.getElementById("bibleWindow");
+    bibleWindow.focus();
+  }
+  close = () => {
+    this.props.close()
+  }
   updateBook = (e) => {
     this.setState({bookSearch: e.target.value})
   }
@@ -185,47 +195,48 @@ export default class Bible extends Component {
     }
 
     return(
-      <div  style={{position:'fixed', top:0, left:0, height:'100vh',
-        zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
-        <div style={{position:'fixed', zIndex:5, right:'12.5%', top:'1%',
-          width:'75vw', height: '65vh', backgroundColor:"#d1d1d1", padding:'1%'}}>
-          <div style={{display:'flex'} }>
-            <div style={{display: 'flex', width:'50vw', height:'50vh',
-              fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
-              <div style={{display: 'block', width:'10vw', margin:'0.5vw'}}>
-                <div >Book</div>
-                <input style={{width:'98%'}} type='text' value={bookSearch} onChange={this.updateBook}/>
-                <div style={{overflowY: 'scroll', height: '90%'}}>{books}</div>
+      <HotKeys handlers={this.handlers}>
+        <div tabindex="-1" id='bibleWindow' style={{position:'fixed', top:0, left:0, height:'100vh',
+          zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
+          <div style={{position:'fixed', zIndex:5, right:'12.5%', top:'1%',
+            width:'75vw', height: '65vh', backgroundColor:"#d1d1d1", padding:'1%'}}>
+            <div style={{display:'flex'} }>
+              <div style={{display: 'flex', width:'50vw', height:'50vh',
+                fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
+                <div style={{display: 'block', width:'10vw', margin:'0.5vw'}}>
+                  <div >Book</div>
+                  <input style={{width:'98%'}} type='text' value={bookSearch} onChange={this.updateBook}/>
+                  <div style={{overflowY: 'scroll', height: '90%'}}>{books}</div>
+                </div>
+                <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
+                  <div>Chapter</div>
+                  <input style={{width:'98%'}} type='text' value={chapterSearch} onChange={this.updateChapter}/>
+                  <div style={{overflowY: 'scroll', height: '90%'}}>{chapters}</div>
+                </div>
+                <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
+                  <div>Start Verse</div>
+                  <input style={{width:'98%'}} type='text' value={verseStartSearch} onChange={this.updateStartVerse}/>
+                  <div style={{overflowY: 'scroll', height: '90%'}}>{versesStart}</div>
+                </div>
+                <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
+                  <div>End Verse</div>
+                  <input style={{width:'98%'}} type='text' value={verseEndSearch} onChange={this.updateEndVerse}/>
+                  <div style={{overflowY: 'scroll', height: '90%'}}>{versesEnd}</div>
+                </div>
               </div>
-              <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
-                <div>Chapter</div>
-                <input style={{width:'98%'}} type='text' value={chapterSearch} onChange={this.updateChapter}/>
-                <div style={{overflowY: 'scroll', height: '90%'}}>{chapters}</div>
-              </div>
-              <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
-                <div>Start Verse</div>
-                <input style={{width:'98%'}} type='text' value={verseStartSearch} onChange={this.updateStartVerse}/>
-                <div style={{overflowY: 'scroll', height: '90%'}}>{versesStart}</div>
-              </div>
-              <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
-                <div>End Verse</div>
-                <input style={{width:'98%'}} type='text' value={verseEndSearch} onChange={this.updateEndVerse}/>
-                <div style={{overflowY: 'scroll', height: '90%'}}>{versesEnd}</div>
+              <div>
+                {(endVerse !== startVerse) && <div>Selected Verse: {allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}-{endVerse+1}</div>}
+                {(endVerse === startVerse) && <div>Selected Verse: {allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}</div>}
+                <div style={{overflowY: 'scroll', height: '40vh', width: '40vw'}}>{displayText}</div>
               </div>
             </div>
-            <div>
-              {(endVerse !== startVerse) && <div>Selected Verse: {allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}-{endVerse+1}</div>}
-              {(endVerse === startVerse) && <div>Selected Verse: {allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}</div>}
-              <div style={{overflowY: 'scroll', height: '40vh', width: '40vw'}}>{displayText}</div>
+            <div style={{display:'flex', position:'absolute', right:'0.5vw', bottom:'0.5vh'}}>
+              <button style={buttonStyle} onClick={this.props.close}>Close</button>
+              <button style={buttonStyle} onClick={this.createVersesItem}>Add Verses</button>
             </div>
-          </div>
-          <div style={{display:'flex', position:'absolute', right:'0.5vw', bottom:'0.5vh'}}>
-            <button style={buttonStyle} onClick={this.props.close}>Close</button>
-            <button style={buttonStyle} onClick={this.createVersesItem}>Add Verses</button>
           </div>
         </div>
-      </div>
-
+      </HotKeys>
     )
 
 

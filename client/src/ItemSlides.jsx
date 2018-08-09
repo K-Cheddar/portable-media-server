@@ -3,6 +3,7 @@ import SlideInList from './SlideInList';
 import LyricsBox from './LyricsBox';
 import zoomIn from './assets/zoomIn.png'
 import zoomOut from './assets/zoomOut.png'
+import {HotKeys} from 'react-hotkeys';
 
 class ItemSlides extends React.Component{
 
@@ -18,6 +19,10 @@ class ItemSlides extends React.Component{
       slidesPerRow: 4
     }
 
+    this.handlers = {
+      'nextSlide': this.nextSlide,
+      'prevSlide': this.prevSlide
+    }
     this.checkHeld = null;
   }
 
@@ -105,6 +110,23 @@ class ItemSlides extends React.Component{
     let {slidesPerRow} = this.state;
     if(slidesPerRow > 2)
       this.setState({slidesPerRow: slidesPerRow-1})
+  }
+
+  nextSlide = () => {
+    let {item, wordIndex} = this.props;
+    if(!item.slides)
+      return;
+    let lastSlide = item.slides.length-1;
+    if(wordIndex < lastSlide)
+      this.props.setWordIndex(wordIndex+1)
+  }
+
+  prevSlide = () => {
+    let {item, wordIndex} = this.props;
+    if(!item.slides)
+      return;
+    if(wordIndex > 0)
+      this.props.setWordIndex(wordIndex-1)
   }
 
   render() {
@@ -202,6 +224,7 @@ class ItemSlides extends React.Component{
     let buttonLoggedIn = {fontSize: "calc(7px + 0.5vw)", width:'20%'}
 
     return (
+      <HotKeys handlers={this.handlers}>
         <div>
           <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)",}}>
             <div style={{fontSize: 'calc(10px + 1vw)', width: '60%'}}> {name} </div>
@@ -222,6 +245,7 @@ class ItemSlides extends React.Component{
         {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item}
         updateItem={this.props.updateItem} formatSong={this.props.formatSong}/>}
       </div>
+    </HotKeys>
     )
   }
 

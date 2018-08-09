@@ -26,8 +26,11 @@ export function setItemBackground(background, item, itemIndex, itemList, allItem
 
 export function setItemIndex(index, updateState){
   var mElement = document.getElementById("MItem"+index);
+  var element = document.getElementById("Item"+index);
   if(mElement)
-    mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'});
+    mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'})
+  if(element)
+    element.scrollIntoView({behavior: "instant", block: "nearest", inline: "nearest"});
   updateState({itemIndex: index, needsUpdate: false})
 
 }

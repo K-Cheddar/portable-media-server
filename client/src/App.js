@@ -17,6 +17,7 @@ import MobileView from './Mobile/MobileView'
 import NavBar from './NavBar'
 import Loading from './Loading'
 import cloudinary from 'cloudinary-core';
+import {HotKeys} from 'react-hotkeys';
 
 PouchDB.plugin(require('pouchdb-upsert'));
 
@@ -54,6 +55,18 @@ var cloud = new cloudinary.Cloudinary({cloud_name: "portable-media", api_key:pro
 //
 // });
 // }
+const prev = ['left', 'up', 'shift+space'];
+const next = ['right', 'down', 'space']
+const close = 'esc'
+const map = {
+  // 'nextSlide': 'command+left',
+  // 'deleteNode': ['del', 'backspace']
+  'nextSlide' : prev,
+  'prevSlide' : next,
+  'nextItem': prev,
+  'prevItem': next,
+  'close': close,
+};
 
 const initialState = {
   isLoggedIn: false,
@@ -199,7 +212,7 @@ class App extends Component {
     let {itemList, selectedItemList, itemIndex} = this.state;
     if(index === itemIndex)
       this.setState({item: {},wordIndex: 0})
-    this.setItemIndex((itemIndex !== 0) ? itemIndex-1 : 0);
+    // this.setItemIndex((itemIndex !== 0) ? itemIndex-1 : 0);
     itemList.splice(index, 1);
     DBUpdater.deleteItemFromList(this.state.db, selectedItemList, itemList, this.updateState)
 
@@ -547,56 +560,58 @@ class App extends Component {
     }
 
     return (
-      <div id="fullApp" style={style}>
-        <NavBar selectedItemList={this.state.selectedItemList} selectItemList={this.selectItemList}
-        itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze} deleteItemList={this.deleteItemList}
-        addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
-        backgrounds={this.state.backgrounds} formatBible={Overflow.formatBible} db={this.state.db}
-        test={this.test} user={user} newItemList={this.newItemList} logout={this.logout}
-        updateState={this.updateState} allItemLists={this.state.allItemLists} updateBrightness={this.updateBrightness}
-        updateFontSize={this.updateFontSize} updateFontColor={this.updateFontColor}
-        />
-      {!retrieved.finished && <Loading retrieved={retrieved}/>}
-        <div>
-            {/* Route components are rendered if the path prop matches the current URL */}
-            <Switch>
-              <Route exact={true} path="/" render={(props) =>
-                <Home {...props} isLoggedIn={isLoggedIn} logout={this.logout}
-              />}/>
-              <Route  path="/fullview" render={(props) =>
-                <FullView {...props}
-                  wordIndex={wordIndex} itemIndex={itemIndex} setSlideBackground={this.setSlideBackground}
-                  setItemIndex={this.setItemIndex} setWordIndex={this.setWordIndex}
-                  isLoggedIn={this.state.isLoggedIn} updateItem={this.updateItem}
-                  addItem={this.addItem} itemList={this.state.itemList} item={this.state.item}
-                  deleteItemFromList={this.deleteItemFromList} backgrounds={this.state.backgrounds}
-                  setItemBackground = {this.setItemBackground} duplicateItem={this.duplicateItem}
-                  allItems={allItems} deleteItem={this.deleteItem} insertWords={this.insertWords}
-                  addItemToList={this.addItemToList} insertItemIntoList={this.insertItemIntoList}
-                  currentInfo={currentInfo} formatSong={Overflow.formatSong} user={user} addMedia={this.addMedia}
-                  openUploader={this.openUploader} db={this.state.db} updateCurrent={this.updateCurrent}
+      <HotKeys keyMap={map}>
+        <div id="fullApp" style={style}>
+          <NavBar selectedItemList={this.state.selectedItemList} selectItemList={this.selectItemList}
+          itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze} deleteItemList={this.deleteItemList}
+          addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
+          backgrounds={this.state.backgrounds} formatBible={Overflow.formatBible} db={this.state.db}
+          test={this.test} user={user} newItemList={this.newItemList} logout={this.logout}
+          updateState={this.updateState} allItemLists={this.state.allItemLists} updateBrightness={this.updateBrightness}
+          updateFontSize={this.updateFontSize} updateFontColor={this.updateFontColor}
+          />
+        {!retrieved.finished && <Loading retrieved={retrieved}/>}
+          <div>
+              {/* Route components are rendered if the path prop matches the current URL */}
+              <Switch>
+                <Route exact={true} path="/" render={(props) =>
+                  <Home {...props} isLoggedIn={isLoggedIn} logout={this.logout}
                 />}/>
-              <Route  path="/mobile" render={(props) =>
-                <MobileView {...props}
-                  wordIndex={wordIndex} itemIndex={itemIndex}
-                  setItemIndex={this.setItemIndex} setWordIndex={this.setWordIndex}
-                  isLoggedIn={this.state.isLoggedIn} updateItem={this.updateItem}
-                  itemList={this.state.itemList} item={this.state.item}
-                  backgrounds={this.state.backgrounds} allItems={allItems}
-                  itemLists={this.state.itemLists} selectedItemList={this.state.selectedItemList}
-                  selectItemList={this.selectItemList} toggleFreeze={this.toggleFreeze} freeze={freeze}
-                />}/>
-              <Route path="/login" render={(props) =>
-                  <Login {...props} login={this.login}
+                <Route  path="/fullview" render={(props) =>
+                  <FullView {...props}
+                    wordIndex={wordIndex} itemIndex={itemIndex} setSlideBackground={this.setSlideBackground}
+                    setItemIndex={this.setItemIndex} setWordIndex={this.setWordIndex}
+                    isLoggedIn={this.state.isLoggedIn} updateItem={this.updateItem}
+                    addItem={this.addItem} itemList={this.state.itemList} item={this.state.item}
+                    deleteItemFromList={this.deleteItemFromList} backgrounds={this.state.backgrounds}
+                    setItemBackground = {this.setItemBackground} duplicateItem={this.duplicateItem}
+                    allItems={allItems} deleteItem={this.deleteItem} insertWords={this.insertWords}
+                    addItemToList={this.addItemToList} insertItemIntoList={this.insertItemIntoList}
+                    currentInfo={currentInfo} formatSong={Overflow.formatSong} user={user} addMedia={this.addMedia}
+                    openUploader={this.openUploader} db={this.state.db} updateCurrent={this.updateCurrent}
                   />}/>
-              <Route path="/presentation" render={(props) =>
-                  <Presentation {...props}  words={currentInfo.words} style={currentInfo.style}
-                    background={currentInfo.background} backgrounds={this.state.backgrounds}
-                    time={currentInfo.time}
+                <Route  path="/mobile" render={(props) =>
+                  <MobileView {...props}
+                    wordIndex={wordIndex} itemIndex={itemIndex}
+                    setItemIndex={this.setItemIndex} setWordIndex={this.setWordIndex}
+                    isLoggedIn={this.state.isLoggedIn} updateItem={this.updateItem}
+                    itemList={this.state.itemList} item={this.state.item}
+                    backgrounds={this.state.backgrounds} allItems={allItems}
+                    itemLists={this.state.itemLists} selectedItemList={this.state.selectedItemList}
+                    selectItemList={this.selectItemList} toggleFreeze={this.toggleFreeze} freeze={freeze}
                   />}/>
-            </Switch>
+                <Route path="/login" render={(props) =>
+                    <Login {...props} login={this.login}
+                    />}/>
+                <Route path="/presentation" render={(props) =>
+                    <Presentation {...props}  words={currentInfo.words} style={currentInfo.style}
+                      background={currentInfo.background} backgrounds={this.state.backgrounds}
+                      time={currentInfo.time}
+                    />}/>
+              </Switch>
+          </div>
         </div>
-      </div>
+      </HotKeys>
     )
   }
 }

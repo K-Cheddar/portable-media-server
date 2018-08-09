@@ -137,7 +137,7 @@ export default class DisplayWindow extends React.Component{
     let id = `background-text-${title}-${words}`
 
     return (
-      <div>
+      <div style={{position: 'relative', zIndex: 1}}>
         {!(title === '') && <div style={titleStyle}>
             {title}
         </div>}

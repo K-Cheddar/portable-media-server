@@ -4,6 +4,7 @@ import duplicate from './assets/duplicate.png';
 import edit from './assets/edit.png';
 import CreateName from './CreateName';
 import ItemInList from './ItemInList';
+import {HotKeys} from 'react-hotkeys';
 
 export default class ItemList extends React.Component{
 
@@ -23,6 +24,10 @@ export default class ItemList extends React.Component{
         mouseDown: false
       }
 
+      this.handlers = {
+        'nextItem': this.nextItem,
+        'prevItem': this.prevItem
+      }
       this.checkHeld = null;
     }
 
@@ -80,6 +85,23 @@ export default class ItemList extends React.Component{
   close = () => {
       this.setState({nameOpen: false})
     }
+
+  nextItem = () => {
+    let {itemList, itemIndex} = this.props;
+    if(!itemList.length || itemList.length === 0)
+      return;
+    let lastItem = itemList.length-1;
+    if(itemIndex < lastItem)
+      this.props.setItemIndex(itemIndex+1)
+  }
+
+  prevItem = () => {
+    let {itemList, itemIndex} = this.props;
+    if(!itemList.length || itemList.length === 0)
+      return;
+    if(itemIndex > 0)
+      this.props.setItemIndex(itemIndex-1)
+  }
 
 
   render(){
@@ -161,14 +183,16 @@ export default class ItemList extends React.Component{
     color: 'white', textAlign: 'center', marginTop: '5vh'}
 
     return (
-      <div>
-        {nameOpen && <CreateName option="edit" name={name} id={id} db={db}
-        close={this.close} updateItem={this.props.updateItem}
-        />}
-        {itemList.length > 0 && <div style={{ height:'92.5vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}
-           onMouseUp={this.releaseElement} onMouseLeave={this.releaseElement}>{SL}</div>}
-        {itemList.length === 0 && <div style={noItemStyle}> Nothing Added Yet</div>}
-      </div>
+      <HotKeys handlers={this.handlers}>
+        <div>
+          {nameOpen && <CreateName option="edit" name={name} id={id} db={db}
+          close={this.close} updateItem={this.props.updateItem}
+          />}
+          {itemList.length > 0 && <div style={{ height:'92.5vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}
+             onMouseUp={this.releaseElement} onMouseLeave={this.releaseElement}>{SL}</div>}
+          {itemList.length === 0 && <div style={noItemStyle}> Nothing Added Yet</div>}
+        </div>
+      </HotKeys>
     )
   }
 

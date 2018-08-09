@@ -14,7 +14,7 @@ export default class FullView extends React.Component{
       addItem, itemList, deleteItemFromList, item, updateItem, backgrounds, itemIndex,
       setItemBackground, handleFileChange, allItems, deleteItem, addItemToList, user,
       currentInfo, formatSong, setSlideBackground, openUploader, db, updateCurrent,
-      duplicateItem, addMedia} = this.props;
+      duplicateItem} = this.props;
 
     return (
       <div style={{width:'99%', marginLeft:'1vw', position:'absolute'}}>
@@ -32,10 +32,10 @@ export default class FullView extends React.Component{
                 <DisplayEditor wordIndex={wordIndex} backgrounds={backgrounds}
                   item={item} updateItem={updateItem}/>
               </div>
-              <div style={{marginLeft:'1vw'}}>
-                <Backgrounds backgrounds={backgrounds} handleFileChange={handleFileChange} addMedia={addMedia}
+              <div style={{marginLeft:'1vw', position: 'relative'}}>
+                <Backgrounds backgrounds={backgrounds} handleFileChange={handleFileChange} addItem={addItem}
                   setItemBackground={setItemBackground} user={user} updateCurrent={updateCurrent}
-                  setSlideBackground={setSlideBackground} item={item} openUploader={openUploader}
+                  setSlideBackground={setSlideBackground} item={item} openUploader={openUploader} db={db}
                   />
                 <DisplayWindow backgrounds={backgrounds} words={currentInfo.words} style={currentInfo.style}
                   background={currentInfo.background} width={"16vw"} title={"Presentation"}
