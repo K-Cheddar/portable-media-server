@@ -558,7 +558,7 @@ class App extends Component {
         updateState={this.updateState} allItemLists={this.state.allItemLists} updateBrightness={this.updateBrightness}
         updateFontSize={this.updateFontSize} updateFontColor={this.updateFontColor}
         />
-      {!retrieved.finished && <Loading/>}
+      {!retrieved.finished && <Loading retrieved={retrieved}/>}
         <div>
             {/* Route components are rendered if the path prop matches the current URL */}
             <Switch>
