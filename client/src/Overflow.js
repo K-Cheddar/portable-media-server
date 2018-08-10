@@ -71,6 +71,8 @@ export function formatBible(item, mode, verses){
 function formatBibleVerses(verses, fontSize, background, fontColor, mode){
 
     let maxLines = getNumLines("verses", fontSize).maxLines;
+    if(maxLines >= 7)
+      maxLines--;
     let formattedVerses = [];
     let slide = ""
     for(let i = 0; i < verses.length; ++i){

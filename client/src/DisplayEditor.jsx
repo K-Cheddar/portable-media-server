@@ -84,7 +84,7 @@ class DisplayEditor extends React.Component{
     let style = {
       textAlign: 'center',  background: 'transparent',        border: 'none',
       outline: 'none',      resize:'none',                    whiteSpace:'pre-wrap',
-      height: '85%',        width: '90%',                     fontFamily: "Verdana",
+      height: '85%',        width: '91%',                     fontFamily: "Verdana",
       padding: '5%',        overflow: 'hidden',               position:'absolute',
       zIndex:2,             color: 'rgba(255, 255, 255, 1)',  fontSize: '1vw',
       textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
@@ -113,8 +113,10 @@ class DisplayEditor extends React.Component{
       backgroundPictureStyle.filter = `brightness(${level})`
     }
 
-    let blankTextStyle = {position:'absolute', zIndex:2, color: 'white', textAlign: 'center',
-    fontSize: '3vw', position: 'relative', paddingTop: '15%'}
+    let blankTextStyle = {
+      position:'relative',    zIndex:2,     color: 'white',     textAlign: 'center',
+      fontSize: '3vw',        paddingTop: '15%'}
+
 
     return (
       <div style={{width: '100%', height:'100%'}}>

@@ -61,10 +61,10 @@ const close = 'esc'
 const map = {
   // 'nextSlide': 'command+left',
   // 'deleteNode': ['del', 'backspace']
-  'nextSlide' : prev,
-  'prevSlide' : next,
-  'nextItem': prev,
-  'prevItem': next,
+  'nextSlide' : next,
+  'prevSlide' : prev,
+  'nextItem': next,
+  'prevItem': prev,
   'close': close,
 };
 

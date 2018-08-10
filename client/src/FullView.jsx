@@ -28,7 +28,7 @@ export default class FullView extends React.Component{
           </div>
           <div style={{width:'82.5%', height:"50%"}}>
             <div style={{display:'flex'}}>
-              <div style={{width:'42.5vw', height:'23.9vw', marginLeft:'0.5vw'}}>
+              <div style={{width:'42.5vw', height:'23.9vw', marginLeft:'1vw'}}>
                 <DisplayEditor wordIndex={wordIndex} backgrounds={backgrounds}
                   item={item} updateItem={updateItem}/>
               </div>
@@ -44,7 +44,7 @@ export default class FullView extends React.Component{
               </div>
             </div>
             <div style={{display: 'flex', height:'48%', fontSize:'calc(10px + 1vw)'}}>
-                <div style={{width:'56%', marginLeft:'0.5vw'}}>
+                <div style={{width:'43vw', marginLeft:'0.5vw'}}>
                   <ItemSlides setWordIndex={setWordIndex} wordIndex={wordIndex}
                     item={item} updateItem={updateItem}
                     backgrounds={backgrounds} insertWords={insertWords} formatSong={formatSong}

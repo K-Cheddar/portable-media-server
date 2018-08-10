@@ -59,7 +59,7 @@ export default class DisplayWindow extends React.Component{
     if(presentation)
       height = '100vh'
     let tWidth = parseFloat(width.substring(0, width.length-2), 10)
-    let fsDivider = tWidth/(42.5)
+    let fsDivider = tWidth/(42)
 
     let fontSize = style.fontSize*fsDivider + "vw";
     let color = style.fontColor

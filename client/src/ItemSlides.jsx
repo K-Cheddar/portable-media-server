@@ -162,7 +162,7 @@ class ItemSlides extends React.Component{
 
     let style;
 
-    let widthNumber = 40/slidesPerRow
+    let widthNumber = 37/slidesPerRow
     let width = widthNumber + "vw"
     let height = (widthNumber*.5625) + "vw"
     let titleSize = .5+ 1.25/slidesPerRow + "vw"
@@ -227,19 +227,19 @@ class ItemSlides extends React.Component{
       <HotKeys handlers={this.handlers}>
         <div>
           <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)",}}>
-            <div style={{fontSize: 'calc(10px + 1vw)', width: '60%'}}> {name} </div>
+            <div style={{fontSize: 'calc(10px + 1vw)', width: '60%', paddingLeft:'0.5vw'}}> {name} </div>
             {(type==='song') && <button style={buttonLoggedIn} onClick={this.openLBox}>Arrange Lyrics</button>}
-            {(type==='bible') && <div style={{ width: '20%'}} ></div>}
-            {(type!=='image') && <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+            {(type!=='song') && <div style={{ width: '20%'}} ></div>}
+            <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
                 onClick={this.decreaseRows}
                 alt="zoomIn" src={zoomIn}
-               />}
-             {(type!=='image') && <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+               />
+            <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
                  onClick={this.increaseRows}
                  alt="zoomOut" src={zoomOut}
-                />}
+                />
           </div>
-        <div style={{ overflowY: 'scroll', height: "40vh", width:"45vw"}}
+        <div style={{ overflowY: 'scroll', height: "40vh", width:"42vw"}}
           onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
           onMouseLeave={this.releaseElement}>{ROWtest}</div>
         {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item}
