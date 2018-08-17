@@ -218,6 +218,30 @@ export function newList(db, newList){
   })
 }
 
+export function duplicateList(db, id, allItemLists, itemLists, updateState){
+    let newID = allItemLists[allItemLists.length-1].id;
+    let newNumber = parseInt(newID.slice(-1), 10) + 1;
+    newID = "Item List " + newNumber;
+    let name = allItemLists[allItemLists.findIndex(e => e.id === id)].name;
+    name+=' Copy';
+    db.get(id).then(function(doc){
+      let newListFull = {
+        id: newID,
+        name: name,
+        items: doc.items
+      }
+      let newList = {
+        "_id": newID,
+        items: doc.items
+      }
+      db.put(newList)
+      allItemLists.push(newListFull);
+      itemLists.push(newListFull);
+      updateState({allItemLists: allItemLists, itemLists: itemLists})
+    })
+
+}
+
 export function deleteItemList(db, id){
   db.get(id).then(function(doc){
       return db.remove(doc);

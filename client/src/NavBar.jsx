@@ -159,7 +159,7 @@ export default class NavBar extends Component {
         />}
         {itemListsOpen && <ItemListEditor updateState={this.props.updateState} close={this.closeItemLists}
           itemLists={this.props.itemLists} allItemLists={this.props.allItemLists} deleteItemList={this.props.deleteItemList}
-          newItemList={this.props.newItemList} selectItemList={this.props.selectItemList}
+          newItemList={this.props.newItemList} selectItemList={this.props.selectItemList} duplicateList={this.props.duplicateList}
         />}
       </div>
     )

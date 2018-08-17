@@ -4,6 +4,7 @@ import edit from './assets/edit.png';
 import add from './assets/addItem.png';
 import check from './assets/check.png';
 import cancel from './assets/cancel.png';
+import duplicate from './assets/duplicate.png';
 import DeleteConfirmation from './DeleteConfirmation'
 
 export default class ItemListEditor extends Component{
@@ -80,6 +81,8 @@ export default class ItemListEditor extends Component{
     let {deleteIndex} = this.state;
     if(type==='one'){
       let index = itemLists.findIndex(e => e.name === name)
+      if(index === -1)
+        return
       itemLists.splice(index, 1);
       this.props.updateState({itemLists: itemLists})
     }
@@ -87,8 +90,10 @@ export default class ItemListEditor extends Component{
       let name = allItemLists[deleteIndex].name
       let index = itemLists.findIndex(e => e.name === name)
       this.props.deleteItemList(allItemLists[deleteIndex].id)
-      itemLists.splice(index, 1);
       allItemLists.splice(deleteIndex, 1);
+      if(index !== -1){
+        itemLists.splice(index, 1);
+      }
       this.props.updateState({
         itemLists: itemLists,
         allItemLists: allItemLists
@@ -177,6 +182,10 @@ export default class ItemListEditor extends Component{
           {!selected && <img style={buttonStyle}
            onClick={() => (this.deleteList('one', item.name))}
            alt="delete" src={deleteX}
+           />}
+          {!selected && <img style={buttonStyle}
+            onClick={() => (this.props.duplicateList(item.id))}
+            alt="duplicate" src={duplicate}
            />}
            {selected && <img style={buttonStyle}
             onClick={() => (this.confirm(item.name))}

@@ -345,6 +345,11 @@ class App extends Component {
 
   }
 
+  duplicateList = (id) => {
+    let {allItemLists, itemLists} = this.state;
+    DBUpdater.duplicateList(this.state.db, id, allItemLists, itemLists, this.updateState);
+  }
+
   newItemList = (newList) => {
     DBUpdater.newList(this.state.db, newList)
   }
@@ -568,7 +573,7 @@ class App extends Component {
           backgrounds={this.state.backgrounds} formatBible={Overflow.formatBible} db={this.state.db}
           test={this.test} user={user} newItemList={this.newItemList} logout={this.logout}
           updateState={this.updateState} allItemLists={this.state.allItemLists} updateBrightness={this.updateBrightness}
-          updateFontSize={this.updateFontSize} updateFontColor={this.updateFontColor}
+          updateFontSize={this.updateFontSize} updateFontColor={this.updateFontColor} duplicateList={this.duplicateList}
           />
         {!retrieved.finished && <Loading retrieved={retrieved}/>}
           <div>
