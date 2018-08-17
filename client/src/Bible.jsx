@@ -87,6 +87,18 @@ export default class Bible extends Component {
              fontSize: 4.5,
              fontColor: 'rgba(255, 255, 255, 1)',
              words: name,
+             brightness: 100
+            }
+          ]
+        },
+        {
+          type: 'bible',
+          boxes: [
+            {background: '',
+             fontSize: 2.5,
+             fontColor: 'rgba(255, 255, 255, 1)',
+             words: '',
+             brightness: 100
             }
           ]
         }

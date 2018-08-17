@@ -28,8 +28,9 @@ export default class SongSection extends Component{
                 : { border:'0.25vmax', borderColor: '#d1d1d1', borderStyle:'solid',
                width:"15vw", height:"28vh"}}
               >
-              <textarea style={{fontSize:'calc(7.5px + 0.5vmax)', margin:'1%', width:"96%", height:"96%", resize:'none',}} value={item.words}
-                 onChange={changeSectionText}/>
+              <textarea style={{fontSize:'calc(7.5px + 0.5vmax)', margin:'1%',
+                width:"96%", height:"96%", resize:'none'}} value={item.words}
+                 onChange={changeSectionText} id={item.name}/>
             </div>
           </div>
         </div>

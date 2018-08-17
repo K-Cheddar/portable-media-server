@@ -248,7 +248,7 @@ class App extends Component {
           },10000)
 
         }
-        else{
+        else if(navigator){
           alert("Please reconnect to the internet to continue")
         }
       }

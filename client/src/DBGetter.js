@@ -84,6 +84,10 @@ export function changes(db, updateState, getTime, getSelectedList, cloud, getSuc
       if(getTime() < change.doc.info.time)
         updateState({currentInfo: change.doc.info, needsUpdate: false})
     }
+  }).on('error', function(){
+    setTimeout(function(){
+      changes(db, updateState, getTime, getSelectedList, cloud, getSuccess, getAttempted, remoteDB)
+    },2500)
   })
 }
 

@@ -98,7 +98,7 @@ export default class LyricsBox extends Component{
   }
 
   createSections(lyrics){
-    let formattedLyrics = [];
+    let {formattedLyrics} = this.state;
     let lines = lyrics.split("\n\n");
     for(let i = 0; i < lines.length; ++i){
       formattedLyrics.push({
@@ -132,7 +132,6 @@ export default class LyricsBox extends Component{
       words: ""
     })
     this.updateSections(formattedLyrics)
-   // this.setState({formattedLyrics: formattedLyrics})
   }
 
   addSection = () => {
@@ -143,88 +142,37 @@ export default class LyricsBox extends Component{
 
   updateSections = (formattedLyrics) => {
     let sections = [];
-    let {songOrder, sectionsPresent, sectionIndex} = this.state;
+    let {songOrder, sectionsPresent} = this.state;
     let indexesChanged = [];
-    let v = 1;
-    let c = 1;
-    let b = 1;
-    let i = 1;
-    let e = 1;
-    let name;
+    let sectionCounter = {}
 
-    for (let t = 0; t < formattedLyrics.length; ++t){
-      switch(formattedLyrics[t].type){
-        case "Verse": {
-          name = "Verse " + v;
-          ++v;
-          break;
-        }
-        case "Chorus": {
-          name = "Chorus " + c;
-          ++c;
-          break;
-        }
-        case "Bridge": {
-          name = "Bridge " + b;
-          ++b;
-          break;
-        }
-        case "Intro": {
-          name = "Intro " + i;
-          ++i;
-          break;
-        }
-        case "Ending": {
-          name = "Ending " + e;
-          ++e;
-          break;
-        }
-        default:{
-          name = formattedLyrics[t].type;
-        }
+    for(let i = 0; i < formattedLyrics.length; ++i){
+      if(formattedLyrics[i].type in sectionCounter){
+        sectionCounter[formattedLyrics[i].type]++;
+        sectionCounter[formattedLyrics[i].type+'_counter']++;
       }
-      formattedLyrics[t].name = name;
+      else{
+        sectionCounter[formattedLyrics[i].type] = 1;
+        sectionCounter[formattedLyrics[i].type+'_counter'] = 0;
+      }
+
     }
 
 
     for (let t = 0; t < formattedLyrics.length; ++t){
-      switch(formattedLyrics[t].type){
-        case "Verse": {
-          if(v === 2){
-            formattedLyrics[t].name = formattedLyrics[t].type
-          }
-          break;
-        }
-        case "Chorus": {
-          if(c === 2){
-            formattedLyrics[t].name = formattedLyrics[t].type
-          }
-          break;
-        }
-        case "Bridge": {
-          if(b === 2){
-            formattedLyrics[t].name = formattedLyrics[t].type
-          }
-          break;
-        }
-        case "Intro": {
-          if(i === 2){
-            formattedLyrics[t].name = formattedLyrics[t].type
-          }
-          break;
-        }
-        case "Ending": {
-          if(e === 2){
-            formattedLyrics[t].name = formattedLyrics[t].type
-          }
-          break;
-        }
-        default:{
-          name = formattedLyrics[t].name;
-        }
+      let type = formattedLyrics[t].type;
+      let max = sectionCounter[formattedLyrics[t].type];
+      let counter = sectionCounter[formattedLyrics[t].type+'_counter'];
+      let name;
+      if(max === 1)
+        name = type;
+      else{
+        name = type + ' ' + (max-counter);
+        sectionCounter[formattedLyrics[t].type+'_counter']--;
       }
+      formattedLyrics[t].name = name;
+      sections.push(name);
 
-      sections.push(formattedLyrics[t].name);
     }
 
     for (let i = 0; i < sectionsPresent.length; ++i){
@@ -246,13 +194,12 @@ export default class LyricsBox extends Component{
       songOrder = sections;
     }
 
-    let secName = sections[sectionIndex];
+    let secName = sections[sections.length-1];
 
     Sort.sortNamesInList(formattedLyrics)
     Sort.sortList(sections);
 
     let newIndex = sections.findIndex(e => e === secName)
-    console.log(newIndex);
 
     this.setState({
       formattedLyrics: formattedLyrics,
@@ -261,6 +208,11 @@ export default class LyricsBox extends Component{
       newType: sections[0],
       sectionIndex: newIndex
     })
+
+    setTimeout(function(){
+      let id = formattedLyrics[newIndex].name
+      document.getElementById(id).focus();
+    },100)
 
   }
 
@@ -298,12 +250,12 @@ export default class LyricsBox extends Component{
   changeSectionType = (e) => {
     let {formattedLyrics, sectionIndex} = this.state;
     formattedLyrics[sectionIndex].type = e.target.value;
+    formattedLyrics.push(formattedLyrics.splice(sectionIndex, 1)[0]);
     this.updateSections(formattedLyrics);
   }
 
   changeNewType = (newType) => {
     this.setState({newType: newType});
-    console.log(newType);
   }
 
   insertSongIntoOrder = (targetIndex) => {

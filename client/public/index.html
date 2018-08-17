@@ -32,14 +32,18 @@
     window.onload = function(){
       loaded = true;
     }
-    let windowLoader = setInterval(function(){
-      if(loaded && !window.reactLoaded){
-          window.location.reload(true);
-      }
-      else if (loaded && window.reactLoaded){
-          clearInterval(windowLoader);
-      }
-    }, 500)
+    // let windowLoader = setInterval(function(){
+    //   if(loaded && !window.reactLoaded){
+    //     setTimeout(function(){
+    //       if(!window.reactLoaded)
+    //         window.location.reload(true);
+    //     },1000)
+    //
+    //   }
+    //   else if (loaded && window.reactLoaded){
+    //       clearInterval(windowLoader);
+    //   }
+    // }, 500)
     </script>
 
     <title>Portable Media</title>

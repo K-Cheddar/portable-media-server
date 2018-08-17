@@ -75,6 +75,7 @@ export default class CreateName extends React.Component{
                "fontSize": 4.5,
                "fontColor": 'rgba(255, 255, 255, 1)',
                "words": firstSlide,
+               "brightness": 100
               }
             ]
           }

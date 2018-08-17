@@ -9,6 +9,7 @@ export function formatSong(item){
     if(item.slides[i]){
       slides[i].boxes[0].background = item.slides[i].boxes[0].background
       slides[i].boxes[0].fontColor = item.slides[i].boxes[0].fontColor
+      slides[i].boxes[0].brightness = item.slides[i].boxes[0].brightness
     }
     else{
       slides[i].boxes[0].background = item.slides[0].boxes[0].background
@@ -46,7 +47,6 @@ export function formatSong(item){
 // }
 
 export function formatBible(item, mode, verses){
-  let initFontSize = 2.5
   let slides = [
             {
               type: 'Bible',
@@ -54,21 +54,27 @@ export function formatBible(item, mode, verses){
                 {background: item.slides[0].boxes[0].background,
                  fontSize: item.slides[0].boxes[0].fontSize,
                  fontColor: item.slides[0].boxes[0].fontColor,
+                 brightness: item.slides[0].boxes[0].brightness,
                  words: item.name,
                 }
               ]
             }
           ]
   if(verses)
-    slides.push(...formatBibleVerses(verses, initFontSize, item.slides[0].boxes[0].background, item.slides[0].boxes[0].fontColor, mode));
+    slides.push(...formatBibleVerses(verses, item, mode));
   else
-    slides.push(...formatBibleVerses(item.slides.slice(1).map(a => a.boxes[0].words), item.slides[1].boxes[0].fontSize, item.slides[0].boxes[0].background, item.slides[0].boxes[0].fontColor, mode));
+    slides.push(...formatBibleVerses(item.slides.slice(1).map(a => a.boxes[0].words), item, mode));
 
   item.slides = slides;
   return item;
 }
 
-function formatBibleVerses(verses, fontSize, background, fontColor, mode){
+function formatBibleVerses(verses, item, mode){
+
+    let fontColor = item.slides[1].boxes[0].fontColor;
+    let fontSize = item.slides[1].boxes[0].fontSize;
+    let background = item.slides[1].boxes[0].background;
+    let brightness = item.slides[1].boxes[0].brightness;
 
     let maxLines = getNumLines("verses", fontSize).maxLines;
     if(maxLines >= 7)
@@ -99,6 +105,7 @@ function formatBibleVerses(verses, fontSize, background, fontColor, mode){
                              fontSize: fontSize,
                              fontColor: fontColor,
                              words: slide,
+                             brightness: brightness
                             }
                           ]
                         })
@@ -115,6 +122,7 @@ function formatBibleVerses(verses, fontSize, background, fontColor, mode){
                        fontSize: fontSize,
                        fontColor: fontColor,
                        words: slide,
+                       brightness: brightness
                       }
                     ]
                   });

@@ -1,5 +1,7 @@
 import React from 'react';
 import blank from './assets/blank.png';
+// import AnimateOnChange from 'react-animate-on-change'
+// import FadeProps from 'fade-props';
 
 export default class DisplayWindow extends React.Component{
 
@@ -11,6 +13,7 @@ export default class DisplayWindow extends React.Component{
 
   componentDidUpdate(prevProps){
     let {background} = this.props;
+        console.log("counter");
 
     if(background !== prevProps.background ){
       let video = document.getElementById('background-video-mini');
@@ -44,6 +47,8 @@ export default class DisplayWindow extends React.Component{
       }
       box.innerHTML = newText;
     }
+
+
 
   }
 
@@ -135,10 +140,10 @@ export default class DisplayWindow extends React.Component{
     let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
 
     let id = `background-text-${title}-${words}`
-
+    // console.log("counter");
     return (
-      <div style={{position: 'relative', zIndex: 1}}>
-        {!(title === '') && <div style={titleStyle}>
+      <div className='displayWindow'>
+        {(title !== '') && <div style={titleStyle}>
             {title}
         </div>}
         {!isVideo && <div style={pictureContainerStyle}>
