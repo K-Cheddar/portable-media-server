@@ -29,7 +29,7 @@ export default class Home extends Component {
 
     return(
       <div style={{height:'95vh'}}>
-        <nav class="welcome" style={{fontSize: "calc(14px + 0.35vmax)"}}>
+        <nav className="welcome" style={{fontSize: "calc(14px + 0.35vmax)"}}>
           <h1 style={{padding: '1%'}}>Welcome to Portable Media</h1>
             <p>
               This software is in Beta. Use Google Chrome for the best experience.

@@ -156,7 +156,10 @@ export function retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
 export function getItem(db, id, updateState, setItemIndex, itemIndex){
   db.get(id).then(function(doc){
     updateState({item: doc, needsUpdate: false})
-    setItemIndex(itemIndex+1)
+    if(itemIndex < 0)
+      setItemIndex(0)
+    else
+      setItemIndex(itemIndex+1)
   }).catch(function(){
     console.log('getItem not loaded');
   });

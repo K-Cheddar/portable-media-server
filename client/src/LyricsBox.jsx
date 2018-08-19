@@ -116,7 +116,6 @@ export default class LyricsBox extends Component{
     let {songOrder, formattedLyrics} = this.state;
     let {item} = this.props;
 
-    console.log(this.props);
     item.songOrder = songOrder;
     item.formattedLyrics = formattedLyrics;
     item = this.props.formatSong(item);

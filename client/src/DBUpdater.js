@@ -137,7 +137,6 @@ export function putInList(db, itemObj, selectedItemList, itemIndex, updateState)
 
 export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemToList){
   db.get(item._id).then(function(doc){
-    console.log(item._id);
     let itemObj = {
       "name": doc.slides[0].boxes[0].words,
       "_id": doc._id,
@@ -163,12 +162,15 @@ export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemT
       });
       db.put(item).then(function(){
         updateState({item: item});
-        setItemIndex(itemIndex +1)
+        if(itemIndex < 0)
+          setItemIndex(0)
+        else
+          setItemIndex(itemIndex +1)
       });
   })
 }
 
-export function deleteItem(db, name, allItems, allItemLists, index, selectedItemList, setItemIndex, updateState){
+export function deleteItem(db, name, allItems, allItemLists, index, selectedItemList, updateState){
 
   //delete item
   db.get(allItems[index]._id).then(function (doc) {
@@ -182,10 +184,10 @@ export function deleteItem(db, name, allItems, allItemLists, index, selectedItem
   })
 
   //delete item from each list
-  for(let i = 1; i <= allItemLists.length; ++i){
-    db.get("Item List "+i).then(function(doc){
+  for(let i = 0; i < allItemLists.length; ++i){
+    db.get(allItemLists[i].id).then(function(doc){
       doc.items = doc.items.filter(e => e.name !== name)
-      if(selectedItemList.id === "Item List "+i){
+      if(selectedItemList.id === allItemLists[i].id){
         updateState({itemList: doc.items })
       }
       return db.put(doc);

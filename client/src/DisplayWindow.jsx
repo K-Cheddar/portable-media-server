@@ -13,7 +13,7 @@ export default class DisplayWindow extends React.Component{
 
   componentDidUpdate(prevProps){
     let {background} = this.props;
-        console.log("counter");
+        // console.log("counter");
 
     if(background !== prevProps.background ){
       let video = document.getElementById('background-video-mini');

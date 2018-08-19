@@ -200,12 +200,12 @@ class App extends Component {
   }
 
   deleteItem = (name) => {
-    let {allItems, item, selectedItemList, itemIndex, allItemLists} = this.state;
-    if(name === item.name)
-      this.setState({item:{}, wordIndex: 0})
-    this.setItemIndex((itemIndex !== 0) ? itemIndex-1 : 0);
+    let {allItems, item, selectedItemList, itemIndex, allItemLists, itemList} = this.state;
+    if(name === item.name){
+      this.setState({item:{}, wordIndex: 0, itemIndex: -1})
+    }
     let index = allItems.findIndex(e => e.name === name)
-    DBUpdater.deleteItem(this.state.db, name, allItems, allItemLists, index, selectedItemList, this.setItemIndex, this.updateState)
+    DBUpdater.deleteItem(this.state.db, name, allItems, allItemLists, index, selectedItemList, this.updateState)
   }
 
   deleteItemFromList = (index) => {
