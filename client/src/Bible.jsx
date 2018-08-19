@@ -208,7 +208,7 @@ export default class Bible extends Component {
 
     return(
       <HotKeys handlers={this.handlers}>
-        <div tabindex="-1" id='bibleWindow' style={{position:'fixed', top:0, left:0, height:'100vh',
+        <div tabIndex="-1" id='bibleWindow' style={{position:'fixed', top:0, left:0, height:'100vh',
           zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
           <div style={{position:'fixed', zIndex:5, right:'12.5%', top:'1%',
             width:'75vw', height: '65vh', backgroundColor:"#d1d1d1", padding:'1%'}}>

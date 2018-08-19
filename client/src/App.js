@@ -230,6 +230,11 @@ class App extends Component {
     })
   }
 
+  duplicateList = (id) => {
+    let {allItemLists, itemLists} = this.state;
+    DBUpdater.duplicateList(this.state.db, id, allItemLists, itemLists, this.updateState);
+  }
+
   getAttempted = (type) => {
     let {attempted, retrieved, remoteDB, db} = this.state;
     attempted[type] = true;
@@ -343,11 +348,6 @@ class App extends Component {
     this.setState({retrieved: {}, attempted:{}})
     this.init(database)
 
-  }
-
-  duplicateList = (id) => {
-    let {allItemLists, itemLists} = this.state;
-    DBUpdater.duplicateList(this.state.db, id, allItemLists, itemLists, this.updateState);
   }
 
   newItemList = (newList) => {

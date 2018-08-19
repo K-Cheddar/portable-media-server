@@ -137,11 +137,12 @@ export function putInList(db, itemObj, selectedItemList, itemIndex, updateState)
 
 export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemToList){
   db.get(item._id).then(function(doc){
+    console.log(item._id);
     let itemObj = {
-      "name": doc.name,
+      "name": doc.slides[0].boxes[0].words,
       "_id": doc._id,
-      "background": doc.background,
-      "nameColor": doc.style.color,
+      "background": doc.slides[0].boxes[0].background,
+      "nameColor": doc.slides[0].boxes[0].fontColor,
       "type": doc.type
     }
     addItemToList(itemObj);

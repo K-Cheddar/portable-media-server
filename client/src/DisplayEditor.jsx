@@ -85,7 +85,7 @@ class DisplayEditor extends React.Component{
       textAlign: 'center',  background: 'transparent',        border: 'none',
       outline: 'none',      resize:'none',                    whiteSpace:'pre-wrap',
       height: '85%',        width: '91%',                     fontFamily: "Verdana",
-      padding: '5%',        overflow: 'hidden',               position:'absolute',
+      padding: '5% 4%',        overflow: 'hidden',               position:'absolute',
       zIndex:2,             color: 'rgba(255, 255, 255, 1)',  fontSize: '1vw',
       textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
       WebkitTextStroke: `${strokeRadius} ${strokeColor}`

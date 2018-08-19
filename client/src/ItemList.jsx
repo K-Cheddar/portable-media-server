@@ -183,16 +183,16 @@ export default class ItemList extends React.Component{
     color: 'white', textAlign: 'center', marginTop: '5vh'}
 
     return (
-      <HotKeys handlers={this.handlers}>
-        <div>
-          {nameOpen && <CreateName option="edit" name={name} id={id} db={db}
-          close={this.close} updateItem={this.props.updateItem}
-          />}
-          {itemList.length > 0 && <div style={{ height:'92.5vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}
-             onMouseUp={this.releaseElement} onMouseLeave={this.releaseElement}>{SL}</div>}
-          {itemList.length === 0 && <div style={noItemStyle}> Nothing Added Yet</div>}
-        </div>
-      </HotKeys>
+      <div>
+        {nameOpen && <CreateName option="edit" name={name} id={id} db={db}
+        close={this.close} updateItem={this.props.updateItem}
+        />}
+        <HotKeys handlers={this.handlers}>
+        {itemList.length > 0 && <div style={{ height:'92.5vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}
+           onMouseUp={this.releaseElement} onMouseLeave={this.releaseElement}>{SL}</div>}
+        {itemList.length === 0 && <div style={noItemStyle}> Nothing Added Yet</div>}
+        </HotKeys>
+      </div>
     )
   }
 
