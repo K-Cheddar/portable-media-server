@@ -120,7 +120,7 @@ export default class DisplayWindow extends React.Component{
 
     let backgroundPictureStyle= { position:'absolute', zIndex:1, backgroundImage: 'url('+img+')',
       backgroundSize: '100% 100%', filter: `brightness(${level})`,
-      width: width, height: height, maxHeight:'75vw',}
+      width: width, height: height, maxHeight:'80vw',}
 
     let SS = `${fs*2}vw`
     if(!presentation){
