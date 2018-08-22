@@ -1,7 +1,7 @@
 import React from 'react';
+import DisplayWords from './Display_Words'
+import DisplayBackground from './Display_Background'
 import blank from './assets/blank.png';
-// import AnimateOnChange from 'react-animate-on-change'
-// import FadeProps from 'fade-props';
 
 export default class DisplayWindow extends React.Component{
 
@@ -13,7 +13,6 @@ export default class DisplayWindow extends React.Component{
 
   componentDidUpdate(prevProps){
     let {background} = this.props;
-        // console.log("counter");
 
     if(background !== prevProps.background ){
       let video = document.getElementById('background-video-mini');
@@ -47,37 +46,24 @@ export default class DisplayWindow extends React.Component{
       }
       box.innerHTML = newText;
     }
-
-
-
   }
 
   render() {
-
     let {backgrounds, background, style, words, width, title,
       titleSize, presentation, extraPadding} = this.props;
 
     let img = blank, asset;
     let isVideo = false;
 
-    let height = (parseFloat(width.substring(0, width.length-2),10)*.5625)+"vw"
+    let height = (parseFloat(width.substring(0, width.length-2),10)*.5625)+"vw";
     if(presentation)
-      height = '100vh'
-    let tWidth = parseFloat(width.substring(0, width.length-2), 10)
-    let fsDivider = tWidth/(42)
-
-    let fontSize = style.fontSize*fsDivider + "vw";
-    let color = style.fontColor
-    let fs = style.fontSize*fsDivider/40
-    if(!presentation){
-      fs = style.fontSize*fsDivider/140
-    }
-    let strokeRadius = `calc(${fs*0.5}vw)`
-    let strokeColor = "#000"
+      height = '100vh';
+    let tWidth = parseFloat(width.substring(0, width.length-2), 10);
+    let fsDivider = tWidth/(42);
 
     if(title.length > 25){
-      title = title.substring(0, 26)
-      title+="..."
+      title = title.substring(0, 26);
+      title+="...";
     }
 
     let colorCodes = {
@@ -104,6 +90,11 @@ export default class DisplayWindow extends React.Component{
       titleStyle.color = '#FFF'
     }
 
+    let containerStyle = {width:width, height:height, position:'relative'}
+
+    let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
+
+    let id = `background-text-${title}-${words}`;
 
     if(backgrounds.some(e => e.name === background)){
       asset = backgrounds.find(e => e.name === background);
@@ -112,52 +103,27 @@ export default class DisplayWindow extends React.Component{
         isVideo = true;
     }
 
-    let pictureContainerStyle = {width: width, height: height, position: 'relative'}
-
-    let level = "100%";
-    if(style.brightness)
-      level = style.brightness+"%"
-
-    let backgroundPictureStyle= { position:'absolute', zIndex:1, backgroundImage: 'url('+img+')',
-      backgroundSize: '100% 100%', filter: `brightness(${level})`,
-      width: width, height: height, maxHeight:'80vw',}
-
-    let SS = `${fs*2}vw`
-    if(!presentation){
-      SS = `${fs*12}vw`
-    }
-
-    let wordsStyle = {
-      textAlign: 'center', background: 'transparent', border: 0, resize:'none',
-      whiteSpace:'pre-wrap', color: color, fontSize: fontSize, fontFamily: "Verdana",
-      padding: extraPadding ? "12.5% 5%" : "5%", textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
-      width: '90%', height:'85%', position: 'absolute', zIndex: 2,
-      WebkitTextStroke: `${strokeRadius} ${strokeColor}`
-    }
-
-    let videoContainerStyle = {width:width, height:height, position:'relative'}
-
-    let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
-
-    let id = `background-text-${title}-${words}`
-    // console.log("counter");
     return (
-      <div className='displayWindow'>
+      <div>
         {(title !== '') && <div style={titleStyle}>
             {title}
         </div>}
-        {!isVideo && <div style={pictureContainerStyle}>
-          <div style={backgroundPictureStyle}></div>
-          <div id={id} style={wordsStyle}>{words}</div>
-        </div>}
-        {isVideo &&<div style={videoContainerStyle}>
-          <video muted preload="true" loop autoPlay id="background-video-mini"
-            style={videoStyle}>
-            <source src={asset.video.src} type="video/mp4"/>
-            <source src={asset.video.src} type="video/ogg" />
-          </video>
-          <div style={wordsStyle}>{words}</div>
-        </div>}
+          <div style={containerStyle}>
+            {!isVideo &&
+              <DisplayBackground img={img} brightness={style.brightness}
+                width={width} height={height} title={title}>
+              </DisplayBackground>
+            }
+            {isVideo && <video muted preload="true" loop autoPlay id="background-video-mini"
+              style={videoStyle}>
+              <source src={asset.video.src} type="video/mp4"/>
+              <source src={asset.video.src} type="video/ogg" />
+            </video>}
+            <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
+              fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding}
+              title={title}>
+            </DisplayWords>
+          </div>
       </div>
     )
   }

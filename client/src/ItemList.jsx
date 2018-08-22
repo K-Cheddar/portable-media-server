@@ -16,8 +16,6 @@ export default class ItemList extends React.Component{
         name: "",
         id:"",
         index: 0,
-        isSong: false,
-        isImage: false,
         mouseX: 0,
         mouseY: 0,
         indexBeingDragged:-1,
@@ -31,13 +29,48 @@ export default class ItemList extends React.Component{
       this.checkHeld = null;
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+      let {itemList, db, backgrounds, itemIndex} = this.props;
+      let {nameOpen, name, id, index, mouseX, mouseY, indexBeingDragged, mouseDown} = this.state;
+
+      if(itemList !== nextProps.itemList)
+        return true;
+      if(db !== nextProps.db)
+        return true;
+      if(backgrounds !== nextProps.backgrounds)
+        return true;
+      if(itemIndex !== nextProps.itemIndex)
+        return true;
+      if(nameOpen !== nextState.nameOpen)
+        return true;
+      if(name !== nextState.name)
+        return true;
+      if(id !== nextState.id)
+        return true;
+      if(index !== nextState.index)
+        return true;
+      if(mouseX !== nextState.mouseX)
+        return true;
+      if(mouseY !== nextState.mouseY)
+        return true;
+      if(indexBeingDragged !== nextState.indexBeingDragged)
+        return true;
+      if(mouseDown !== nextState.mouseDown)
+        return true;
+      return false;
+    }
+
   updateMouse = (e) => {
 
+    if(!this.state.mouseDown)
+      return;
     this.setState({
       mouseX: e.clientX,
       mouseY: e.clientY
     })
   }
+
+
 
   setElement = (index) => {
 
@@ -53,7 +86,7 @@ export default class ItemList extends React.Component{
         this.setState({indexBeingDragged: index})
       }
 
-    }.bind(this), 350);
+    }.bind(this), 250);
 
   }
 
@@ -66,6 +99,8 @@ export default class ItemList extends React.Component{
   }
 
   releaseElement = () => {
+    if(!this.state.mouseDown)
+      return;
     clearTimeout(this.checkHeld)
     this.setState({
       indexBeingDragged: -1,

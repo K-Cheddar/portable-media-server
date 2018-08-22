@@ -31,33 +31,41 @@ div[tabindex="-1"]:focus {
     outline: 0;
 }
 
-.displayWindow {
-  position: relative;
-  z-index: 1;
+.display {
+  will-change: opacity;
 }
 
-.displayWindow--fade {
-  animation: displayWindow-keyframes--fade .8s ease-out;
+.wordsFade {
+  opacity: 0;
+  -webkit-transition: opacity 3s ease-in-out;
+  -moz-transition: opacity 3s ease-in-out;
+  -ms-transition: opacity 3s ease-in-out;
+  -o-transition: opacity 3s ease-in-out;
+  opacity: 1;
 }
 
-@@keyframes displayWindow-keyframes--fade {
-  0%,
-to {
-  transform: rotate(0)
+/* .Background {
+
 }
-10% {
-  transform: scale(1.1)
+.Background--fadein {
+  animation: Background-keyframes--fadein .35s ease-in;
 }
-20% {
-  transform: rotate(4deg) translateY(-12px)
+@keyframes Background-keyframes--fadein {
+  from {opacity: 0.25}
+  to {opacity: 1}
 }
-40% {
-  transform: rotate(2deg) translateY(0)
+@keyframes Background-keyframes--fadeout {
+  from {opacity: 1}
+  to {opacity: 0}
 }
-60% {
-  transform: rotate(-2deg) translateY(-8px)
+
+.Words {
+
 }
-80% {
-  transform: rotate(-1deg) translateY(0)
+.Words--fadein {
+  animation: Words-keyframes--fadein .5s ease-in;
 }
-}
+@keyframes Words-keyframes--fadein {
+  from {opacity: 0.25}
+  to {opacity: 1}
+} */

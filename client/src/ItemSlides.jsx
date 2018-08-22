@@ -27,7 +27,8 @@ class ItemSlides extends React.Component{
   }
 
   updateMouse = (e) => {
-
+    if(!this.state.mouseDown)
+      return;
     this.setState({
       mouseX: e.clientX,
       mouseY: e.clientY
@@ -61,6 +62,8 @@ class ItemSlides extends React.Component{
   }
 
   releaseElement = () => {
+    if(!this.state.mouseDown)
+      return;
     clearTimeout(this.checkHeld)
     this.setState({
       indexBeingDragged: -1,

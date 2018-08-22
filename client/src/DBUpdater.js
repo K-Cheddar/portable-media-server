@@ -113,17 +113,10 @@ export function updateCurrent(db, words, background, style, time){
   db.upsert('currentInfo', updateValues);
 }
 
-export function updateItem(db, itemID, updateState, freeze, updateCurrent, setWordIndex){
+export function updateItem(db, itemID, updateState, setWordIndex){
   db.get(itemID).then(function (doc) {
     updateState({item: doc, needsUpdate: false});
-    let style = {
-      fontColor: doc.slides[0].boxes[0].fontColor,
-      fontSize: doc.slides[0].boxes[0].fontSize,
-      brightness: doc.slides[0].boxes[0].brightness,
-    }
     setWordIndex(0)
-    if(!freeze)
-      updateCurrent({words: doc.slides[0].boxes[0].words, background: doc.background, style: style, index: 0});
   })
 }
 

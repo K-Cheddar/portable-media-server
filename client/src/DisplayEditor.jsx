@@ -91,6 +91,9 @@ class DisplayEditor extends React.Component{
       WebkitTextStroke: `${strokeRadius} ${strokeColor}`
     }
 
+    if(box)
+      search = box.background;
+
     if(backgrounds){
       if(backgrounds.some(e => e.name === search)){
           asset = backgrounds.find(e => e.name === search);
@@ -108,7 +111,6 @@ class DisplayEditor extends React.Component{
       words = box.words;
       style.color = box.fontColor;
       style.fontSize = box.fontSize+"vw";
-      search = box.background;
       let level = box.brightness ? box.brightness+"%" : '100%'
       backgroundPictureStyle.filter = `brightness(${level})`
     }

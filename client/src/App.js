@@ -200,7 +200,7 @@ class App extends Component {
   }
 
   deleteItem = (name) => {
-    let {allItems, item, selectedItemList, itemIndex, allItemLists, itemList} = this.state;
+    let {allItems, item, selectedItemList, allItemLists} = this.state;
     if(name === item.name){
       this.setState({item:{}, wordIndex: 0, itemIndex: -1})
     }
@@ -395,11 +395,11 @@ class App extends Component {
   }
 
   setItemIndex = (index) => {
-    let {itemList, freeze, db} = this.state;
+    let {itemList, db} = this.state;
     ItemUpdate.setItemIndex(index, this.updateState)
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
-      DBUpdater.updateItem(db, itemID, this.updateState, freeze, this.updateCurrent, this.setWordIndex)
+      DBUpdater.updateItem(db, itemID, this.updateState, this.setWordIndex)
     }
   }
 
