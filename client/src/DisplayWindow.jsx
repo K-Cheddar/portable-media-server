@@ -59,7 +59,7 @@ export default class DisplayWindow extends React.Component{
     if(presentation)
       height = '100vh';
     let tWidth = parseFloat(width.substring(0, width.length-2), 10);
-    let fsDivider = tWidth/(42);
+    let fsDivider = tWidth/(43);
 
     if(title.length > 25){
       title = title.substring(0, 26);

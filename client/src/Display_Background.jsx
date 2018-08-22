@@ -13,7 +13,7 @@ export default class Display_Background extends Component {
 
   shouldComponentUpdate(nextProps, nextState){
     let {title} = this.props;
-    if(title === 'Presentation'){
+    if(title === 'Presentation' || title === ''){
       if(this.props.img !== nextProps.img){
         let {img, brightness, width, height} = nextProps;
         this.setState({
@@ -25,7 +25,8 @@ export default class Display_Background extends Component {
   }
 
   componentDidUpdate(prevProps){
-    if(this.props.title === 'Presentation'){
+    let {title} = this.props;
+    if(title === 'Presentation' || title === ''){
       if(prevProps.img !== this.props.img){
         setTimeout(function(){
           this.setState({backgroundUpdaterIndex: 1})
@@ -52,11 +53,13 @@ export default class Display_Background extends Component {
     let {img, brightness, width, height, title} = this.props;
     let {prevBackground, backgroundUpdaterIndex, prevBackgroundStyle} = this.state;
 
-    let backgroundStyle = this.computeBackgroundStyle(img, brightness, width, height)
+    let backgroundStyle = this.computeBackgroundStyle(img, brightness, width, height);
+
+    let animate = (title === 'Presentation' || title === '')
 
     return(
       <div>
-        {title=== 'Presentation' &&
+        {animate &&
           <Transition from={{ opacity: 0 }} enter={{ opacity: 1 }} leave={{ opacity: 0 }}>
             {backgroundUpdaterIndex
               ? styles => <div style={{...styles, ...prevBackgroundStyle}}></div>
@@ -64,7 +67,7 @@ export default class Display_Background extends Component {
             }
           </Transition>
         }
-        {title !== 'Presentation' &&
+        {!animate &&
           <div style={backgroundStyle}></div>
         }
       </div>

@@ -14,7 +14,7 @@ export default class Display_Words extends Component {
 
   shouldComponentUpdate(nextProps, nextState){
     let {words, title} = this.props;
-    if(title === 'Presentation'){
+    if(title === 'Presentation' || title === ''){
       if(words !== nextProps.words){
         let {fontSize, presentation, fsDivider, fontColor, extraPadding} = nextProps;
         this.setState({
@@ -27,7 +27,8 @@ export default class Display_Words extends Component {
   }
 
   componentDidUpdate(prevProps){
-    if(this.props.title === 'Presentation'){
+      let {title} = this.props;
+    if(title === 'Presentation' || title === ''){
       if(prevProps.words !== this.props.words){
         setTimeout(function(){
           this.setState({wordUpdaterIndex: 1})
@@ -69,9 +70,11 @@ export default class Display_Words extends Component {
 
     let wordsStyle = this.computeWordsStyle(fontSize, fsDivider, fontColor, extraPadding, presentation)
 
+    let animate = (title === 'Presentation' || title === '')
+
     return(
       <div>
-        {title=== 'Presentation' &&
+        {animate &&
           <Transition from={{ opacity: 0 }} enter={{ opacity: 1 }} leave={{ opacity: 0 }}>
             {wordUpdaterIndex
               ? styles => <div style={{...styles, ...prevWordsStyle}}>{prevWords}</div>
@@ -79,7 +82,7 @@ export default class Display_Words extends Component {
             }
           </Transition>
         }
-        {title !== 'Presentation' &&
+        {!animate &&
           <div id={id} style={wordsStyle}>{words}</div>
         }
       </div>

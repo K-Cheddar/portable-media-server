@@ -77,7 +77,7 @@ function formatBibleVerses(verses, item, mode){
     let brightness = item.slides[1].boxes[0].brightness;
 
     let maxLines = getNumLines("verses", fontSize).maxLines;
-    if(maxLines >= 7)
+    if(maxLines > 5)
       maxLines--;
     let formattedVerses = [];
     let slide = ""
@@ -153,9 +153,7 @@ export function formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSiz
     let fLyrics = [];
     let obj = getNumLines(lyrics, fontSize);
     let maxLines = obj.maxLines;
-    // if(!maxLines)
-    //   return
-    if(maxLines >= 7)
+    if(maxLines > 5)
       maxLines--;
 
     let lines = lyrics.split("\n");
@@ -208,11 +206,11 @@ export function formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSiz
 function getNumLines(text, fontSize){
   fontSize = fontSize + "vw"
   // let height = document.getElementById('displayEditor').style.height;
-  let height = 23.9*.825
+  let height = 23.9*.85;
   // height = height.slice(0, height.length-1);
   // height = parseFloat(height);
   // let width = document.getElementById('displayEditor').style.width;
-  let width = 42.5*.9
+  let width = 42.5*.89;
   // width = width.slice(0, width.length-1);
   // width = parseFloat(width);
   // let windowHeight = window.innerHeight;
@@ -224,8 +222,9 @@ function getNumLines(text, fontSize){
   textSpan.style.fontSize = fontSize;
   textSpan.style.fontStyle = document.getElementById('displayEditor') ? document.getElementById('displayEditor').style.fontStyle: 'normal';
   textSpan.style.whiteSpace = 'pre-wrap';
-  textSpan.style.width = (width*0.85)+'vw'
+  textSpan.style.width = (width)+'vw'
   textSpan.style.position = 'fixed'
+  textSpan.style.zIndex = 10;
   document.body.appendChild(textSpan);
   let textSpanHeight = textSpan.offsetHeight;
 
@@ -234,13 +233,14 @@ function getNumLines(text, fontSize){
   singleSpan.style.fontSize = fontSize;
   singleSpan.style.fontStyle = document.getElementById('displayEditor') ? document.getElementById('displayEditor').style.fontStyle: 'normal';
   singleSpan.style.position = 'fixed'
+  // singleSpan.style.zIndex = 10;
 
   document.body.appendChild(singleSpan);
   let singleSpanHeight = singleSpan.offsetHeight
 
   let lines = Math.floor(textSpanHeight/singleSpanHeight)
   let maxLines = Math.floor(h/singleSpanHeight)
-
+  //
   document.body.removeChild(textSpan);
   document.body.removeChild(singleSpan);
   let obj = {lines: lines, maxLines: maxLines}
