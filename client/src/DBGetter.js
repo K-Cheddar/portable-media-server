@@ -74,7 +74,7 @@ export function changes(db, updateState, getTime, getSelectedList, cloud, getSuc
     }
 
   })
-  remoteDB.changes({
+  let dbchanges = remoteDB.changes({
     since: 'now',
     live: true,
     include_docs: true,
@@ -85,7 +85,7 @@ export function changes(db, updateState, getTime, getSelectedList, cloud, getSuc
         updateState({currentInfo: change.doc.info, needsUpdate: false})
     }
   }).on('error', function(){
-    remoteDB.changes.cancel()
+  dbchanges.cancel()
     setTimeout(function(){
       changes(db, updateState, getTime, getSelectedList, cloud, getSuccess, getAttempted, remoteDB)
     },2500)
