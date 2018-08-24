@@ -12,8 +12,8 @@ export default class Display_Background extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState){
-    let {title} = this.props;
-    if(title === 'Presentation' || title === ''){
+    let {title, presentation} = this.props;
+    if(title === 'Presentation' || presentation){
       if(this.props.img !== nextProps.img){
         let {img, brightness, width, height} = nextProps;
         this.setState({
@@ -25,8 +25,8 @@ export default class Display_Background extends Component {
   }
 
   componentDidUpdate(prevProps){
-    let {title} = this.props;
-    if(title === 'Presentation' || title === ''){
+    let {title, presentation} = this.props;
+    if(title === 'Presentation' || presentation){
       if(prevProps.img !== this.props.img){
         setTimeout(function(){
           this.setState({backgroundUpdaterIndex: 1})
@@ -50,12 +50,12 @@ export default class Display_Background extends Component {
   }
 
   render(){
-    let {img, brightness, width, height, title} = this.props;
+    let {img, brightness, width, height, title, presentation} = this.props;
     let {prevBackground, backgroundUpdaterIndex, prevBackgroundStyle} = this.state;
 
     let backgroundStyle = this.computeBackgroundStyle(img, brightness, width, height);
 
-    let animate = (title === 'Presentation' || title === '')
+    let animate = (title === 'Presentation' || presentation)
 
     return(
       <div>

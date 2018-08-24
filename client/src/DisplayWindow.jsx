@@ -76,11 +76,9 @@ export default class DisplayWindow extends React.Component{
     if(backgrounds.some(e => e.name === background)){
       asset = backgrounds.find(e => e.name === background);
       img = asset.image.src;
-      if(asset.type === 'video')
+      if(asset.type === 'video' && (title === 'Presentation' || presentation))
         isVideo = true;
     }
-
-    console.log('render');
 
     return (
       <div>
@@ -89,7 +87,7 @@ export default class DisplayWindow extends React.Component{
         </div>}
           <div style={containerStyle}>
             {!isVideo &&
-              <DisplayBackground img={img} brightness={style.brightness}
+              <DisplayBackground img={img} brightness={style.brightness} presentation={presentation}
                 width={width} height={height} title={title}>
               </DisplayBackground>
             }
