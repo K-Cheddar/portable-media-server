@@ -77,6 +77,8 @@ export default class DisplayWindow extends React.Component{
         isVideo = true;
     }
 
+    console.log('render');
+
     return (
       <div>
         {(title !== '') && <div style={titleStyle}>

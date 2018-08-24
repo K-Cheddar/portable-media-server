@@ -188,11 +188,12 @@ export function deleteItem(db, name, allItems, allItemLists, index, selectedItem
   }
 }
 
-export function deleteItemFromList(db, selectedItemList, itemList, updateState){
+export function deleteItemFromList(db, selectedItemList, index, itemList, updateState){
 
   db.get(selectedItemList.id).then(function (doc) {
+    itemList.splice(index, 1);
     doc.items = itemList;
-    updateState({itemList: doc.items})
+    updateState({itemList: itemList})
     return db.put(doc);
   })
 }

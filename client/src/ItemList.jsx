@@ -29,36 +29,36 @@ export default class ItemList extends React.Component{
       this.checkHeld = null;
     }
 
-    shouldComponentUpdate(nextProps, nextState){
-      let {itemList, db, backgrounds, itemIndex} = this.props;
-      let {nameOpen, name, id, index, mouseX, mouseY, indexBeingDragged, mouseDown} = this.state;
-
-      if(itemList !== nextProps.itemList)
-        return true;
-      if(db !== nextProps.db)
-        return true;
-      if(backgrounds !== nextProps.backgrounds)
-        return true;
-      if(itemIndex !== nextProps.itemIndex)
-        return true;
-      if(nameOpen !== nextState.nameOpen)
-        return true;
-      if(name !== nextState.name)
-        return true;
-      if(id !== nextState.id)
-        return true;
-      if(index !== nextState.index)
-        return true;
-      if(mouseX !== nextState.mouseX)
-        return true;
-      if(mouseY !== nextState.mouseY)
-        return true;
-      if(indexBeingDragged !== nextState.indexBeingDragged)
-        return true;
-      if(mouseDown !== nextState.mouseDown)
-        return true;
-      return false;
-    }
+    // shouldComponentUpdate(nextProps, nextState){
+    //   let {itemList, db, backgrounds, itemIndex} = this.props;
+    //   let {nameOpen, name, id, index, mouseX, mouseY, indexBeingDragged, mouseDown} = this.state;
+    //
+    //   if(JSON.stringify(itemList) !== JSON.stringify(nextProps.itemList))
+    //     return true;
+    //   if(db !== nextProps.db)
+    //     return true;
+    //   if(backgrounds !== nextProps.backgrounds)
+    //     return true;
+    //   if(itemIndex !== nextProps.itemIndex)
+    //     return true;
+    //   if(nameOpen !== nextState.nameOpen)
+    //     return true;
+    //   if(name !== nextState.name)
+    //     return true;
+    //   if(id !== nextState.id)
+    //     return true;
+    //   if(index !== nextState.index)
+    //     return true;
+    //   if(mouseX !== nextState.mouseX)
+    //     return true;
+    //   if(mouseY !== nextState.mouseY)
+    //     return true;
+    //   if(indexBeingDragged !== nextState.indexBeingDragged)
+    //     return true;
+    //   if(mouseDown !== nextState.mouseDown)
+    //     return true;
+    //   return false;
+    // }
 
   updateMouse = (e) => {
 

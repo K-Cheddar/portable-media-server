@@ -212,10 +212,8 @@ class App extends Component {
     let {itemList, selectedItemList, itemIndex} = this.state;
     if(index === itemIndex)
       this.setState({item: {},wordIndex: 0})
-    // this.setItemIndex((itemIndex !== 0) ? itemIndex-1 : 0);
-    itemList.splice(index, 1);
-    DBUpdater.deleteItemFromList(this.state.db, selectedItemList, itemList, this.updateState)
 
+    DBUpdater.deleteItemFromList(this.state.db, selectedItemList, index, itemList, this.updateState)
   }
 
   deleteItemList = (id) =>{
