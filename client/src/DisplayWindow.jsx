@@ -12,13 +12,13 @@ export default class DisplayWindow extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    let {background} = this.props;
+    let {background, presentation} = this.props;
 
     if(background !== prevProps.background ){
       let video = document.getElementById('background-video-mini');
       if(video){
         video.loop = true;
-        if(this.props.title === '')
+        if(presentation)
           video.muted = false
       }
     }
@@ -76,7 +76,7 @@ export default class DisplayWindow extends React.Component{
     if(backgrounds.some(e => e.name === background)){
       asset = backgrounds.find(e => e.name === background);
       img = asset.image.src;
-      if(asset.type === 'video' && (title === 'Presentation' || presentation))
+      if(asset.type === 'video' && (title === 'Presentation' || title===''))
         isVideo = true;
     }
 

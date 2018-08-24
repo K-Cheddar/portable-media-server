@@ -64,11 +64,11 @@ export default class MobileView extends Component{
         <div style={{display:'block', fontSize:'calc(10px + 1vmax)'}}>
           <div style={{width:'100vw', height: '56.25vw'}}>
             <MobileDisplay wordIndex={wordIndex} backgrounds={backgrounds}
-              isLoggedIn={isLoggedIn} item={item} updateItem={updateItem}/>
+              item={item} updateItem={updateItem}/>
           </div>
           <div style={{paddingTop:'1.5%', maxWidth:'100%'}}>
             <MobileSlides setWordIndex={setWordIndex} wordIndex={wordIndex}
-              isLoggedIn={isLoggedIn} item={item} updateItem={updateItem}
+              item={item} updateItem={updateItem}
               backgrounds={backgrounds} swapWords={swapWords}
               />
           </div>
@@ -82,7 +82,7 @@ export default class MobileView extends Component{
                selectItemList={this.props.selectItemList} itemLists={this.props.itemLists}/>
 
               <MobileItemList setItemIndex={setItemIndex} setWordIndex={setWordIndex}
-                isLoggedIn={isLoggedIn} addItem={addItem} itemList={itemList}
+                addItem={addItem} itemList={itemList}
                 deleteItemFromList={deleteItemFromList} backgrounds={backgrounds}
                 updateItem={updateItem} swapItemInList={swapItemInList}
                 itemIndex={itemIndex} close={this.closeItemSelect}
