@@ -19,7 +19,7 @@ export default class DisplayWindow extends React.Component{
       if(video){
         video.loop = true;
         if(this.props.title === '')
-          video.mute = false;
+          video.muted = false
       }
     }
 
