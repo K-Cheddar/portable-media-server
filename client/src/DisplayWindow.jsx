@@ -16,8 +16,11 @@ export default class DisplayWindow extends React.Component{
 
     if(background !== prevProps.background ){
       let video = document.getElementById('background-video-mini');
-      if(video)
+      if(video){
         video.loop = true;
+        if(this.props.title === '')
+          video.mute = false;
+      }
     }
 
   }
