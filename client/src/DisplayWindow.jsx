@@ -19,33 +19,7 @@ export default class DisplayWindow extends React.Component{
       if(video)
         video.loop = true;
     }
-    let box = document.getElementById(`background-text-${this.props.title}-${this.props.words}`);
 
-    if(box){
-      let text = box.innerHTML;
-      let newText = "";
-      for (let i = 0; i < text.length; ++i){
-        if(text[i-1] === '{' && text[i+1] === '}'){
-          newText += text.charAt(i).fontcolor("#C462FF")
-          i+=1;
-        }
-        else if(text[i-1] === '{' && text[i+2] === '}'){
-          newText += text.charAt(i).fontcolor("#C462FF")
-          newText += text.charAt(i+1).fontcolor("#C462FF")
-          i+=2;
-        }
-        else if(text[i-1] === '{' && text[i+3] === '}'){
-          newText += text.charAt(i).fontcolor("#C462FF")
-          newText += text.charAt(i+1).fontcolor("#C462FF")
-          newText += text.charAt(i+2).fontcolor("#C462FF")
-          i+=3;
-        }
-        else if(text[i]!== '{'){
-          newText+=text[i]
-        }
-      }
-      box.innerHTML = newText;
-    }
   }
 
   render() {

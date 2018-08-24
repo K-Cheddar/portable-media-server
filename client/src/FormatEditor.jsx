@@ -49,18 +49,17 @@ class FormatEditor extends React.Component{
     else if(fontSize < 0.25){
       fontSize = 0.25
     }
+    this.setState({fontSize: fontSize})
     this.props.updateFontSize(fontSize)
   }
 
   fontSizeUP = () => {
     let {fontSize} = this.state;
-    this.setState({fontSize: fontSize+0.25})
     this.updateFont(fontSize+0.25)
   }
 
   fontSizeDOWN = () => {
     let {fontSize} = this.state;
-    this.setState({fontSize: fontSize-0.25})
     this.updateFont(fontSize-0.25)
   }
 
@@ -90,7 +89,7 @@ class FormatEditor extends React.Component{
       this.updateFont(val)
     }
 
-    this.setState({fontSize: val, updating: true})
+    this.setState({updating: true})
     // Helper.debounce(() => (that.updateFont(val)),1000);
     // Helper.throttle(function(){alert("hi")}, 1000)
   }

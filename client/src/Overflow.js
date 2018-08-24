@@ -206,7 +206,7 @@ export function formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSiz
 function getNumLines(text, fontSize){
   fontSize = fontSize + "vw"
   // let height = document.getElementById('displayEditor').style.height;
-  let height = 23.9*.85;
+  let height = 23.9*.82;
   // height = height.slice(0, height.length-1);
   // height = parseFloat(height);
   // let width = document.getElementById('displayEditor').style.width;

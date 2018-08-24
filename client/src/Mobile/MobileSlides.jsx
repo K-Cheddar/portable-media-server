@@ -99,7 +99,7 @@ export default class MobileSlides extends React.Component{
 
     return (
       <div>
-      <div style={{ overflowY:'scroll', width: '100vw', height: "35vh"}}>{slides}</div>
+      <div style={{ overflowY:'scroll', width: '100vw', height: "32vh"}}>{slides}</div>
       {words.length > 1 &&<div style={{ display:'flex', paddingTop:'1.5%'}}>
         <button style={{width:'50vw', height:'20vh', backgroundColor:'#d9e3f4', userSelect:'none'}}>
           <img style={{width:'45vw', height:'15vh', marginRight:'2vw'}}

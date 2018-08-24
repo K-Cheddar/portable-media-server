@@ -35,6 +35,60 @@ export default class Display_Words extends Component {
         }.bind(this),10)
       }
     }
+    let box = document.getElementById(`background-text-${this.props.title}-${this.props.words}`);
+    let box_prev = document.getElementById(`background-text-${this.props.title}-${this.props.words}-prev`);
+
+    if(box){
+      let text = box.innerHTML;
+      let newText = "";
+      for (let i = 0; i < text.length; ++i){
+        if(text[i-1] === '{' && text[i+1] === '}'){
+          newText += text.charAt(i).fontcolor("#C462FF")
+          i+=1;
+        }
+        else if(text[i-1] === '{' && text[i+2] === '}'){
+          newText += text.charAt(i).fontcolor("#C462FF")
+          newText += text.charAt(i+1).fontcolor("#C462FF")
+          i+=2;
+        }
+        else if(text[i-1] === '{' && text[i+3] === '}'){
+          newText += text.charAt(i).fontcolor("#C462FF")
+          newText += text.charAt(i+1).fontcolor("#C462FF")
+          newText += text.charAt(i+2).fontcolor("#C462FF")
+          i+=3;
+        }
+        else if(text[i]!== '{'){
+          newText+=text[i]
+        }
+      }
+      box.innerHTML = newText;
+    }
+
+    if(box_prev){
+      let text = box_prev.innerHTML;
+      let newText = "";
+      for (let i = 0; i < text.length; ++i){
+        if(text[i-1] === '{' && text[i+1] === '}'){
+          newText += text.charAt(i).fontcolor("#C462FF")
+          i+=1;
+        }
+        else if(text[i-1] === '{' && text[i+2] === '}'){
+          newText += text.charAt(i).fontcolor("#C462FF")
+          newText += text.charAt(i+1).fontcolor("#C462FF")
+          i+=2;
+        }
+        else if(text[i-1] === '{' && text[i+3] === '}'){
+          newText += text.charAt(i).fontcolor("#C462FF")
+          newText += text.charAt(i+1).fontcolor("#C462FF")
+          newText += text.charAt(i+2).fontcolor("#C462FF")
+          i+=3;
+        }
+        else if(text[i]!== '{'){
+          newText+=text[i]
+        }
+      }
+      box_prev.innerHTML = newText;
+    }
   }
 
   computeWordsStyle = (fontSize, fsDivider, fontColor, extraPadding, presentation) => {
@@ -77,8 +131,8 @@ export default class Display_Words extends Component {
         {animate &&
           <Transition from={{ opacity: 0 }} enter={{ opacity: 1 }} leave={{ opacity: 0 }}>
             {wordUpdaterIndex
-              ? styles => <div style={{...styles, ...prevWordsStyle}}>{prevWords}</div>
-              : styles => <div style={{...styles, ...wordsStyle}}>{words}</div>
+              ? styles => <div id={id+'-prev'} style={{...styles, ...prevWordsStyle}}>{prevWords}</div>
+              : styles => <div id={id} style={{...styles, ...wordsStyle}}>{words}</div>
             }
           </Transition>
         }
