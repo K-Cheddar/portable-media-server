@@ -77,8 +77,8 @@ function formatBibleVerses(verses, item, mode){
     let brightness = item.slides[1].boxes[0].brightness;
 
     let maxLines = getNumLines("verses", fontSize).maxLines;
-    if(maxLines > 5)
-      maxLines--;
+    // if(maxLines > 5)
+    //   maxLines--;
     let formattedVerses = [];
     let slide = ""
     for(let i = 0; i < verses.length; ++i){
@@ -153,8 +153,8 @@ export function formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSiz
     let fLyrics = [];
     let obj = getNumLines(lyrics, fontSize);
     let maxLines = obj.maxLines;
-    if(maxLines > 5)
-      maxLines--;
+    // if(maxLines > 5)
+    //   maxLines--;
 
     let lines = lyrics.split("\n");
     for(let i = 0; i < lines.length; ++i){
@@ -206,7 +206,7 @@ export function formatLyrics(name, songOrder, formattedLyrics, fontSize, nameSiz
 function getNumLines(text, fontSize){
   fontSize = fontSize + "vw"
   // let height = document.getElementById('displayEditor').style.height;
-  let height = 23.9*.82;
+  let height = 23.9*.7;
   // height = height.slice(0, height.length-1);
   // height = parseFloat(height);
   // let width = document.getElementById('displayEditor').style.width;
