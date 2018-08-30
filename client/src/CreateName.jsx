@@ -1,5 +1,6 @@
 import React from 'react';
 import {HotKeys} from 'react-hotkeys';
+import * as Helper from './Helper'
 
 export default class CreateName extends React.Component{
 
@@ -67,19 +68,7 @@ export default class CreateName extends React.Component{
     let item = {
         "_id": name,
         "name": name,
-        "slides": [
-          {
-            "type": 'Name',
-            "boxes": [
-              {"background": image,
-               "fontSize": 4.5,
-               "fontColor": 'rgba(255, 255, 255, 1)',
-               "words": firstSlide,
-               "brightness": 100
-              }
-            ]
-          }
-        ],
+        "slides": [Helper.newSlide({type: "Title", fontSize: 4.5, words: firstSlide})],
         "formattedLyrics": [],
         "songOrder": [],
         "type": type,

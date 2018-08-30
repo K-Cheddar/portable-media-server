@@ -174,7 +174,7 @@ export default class DisplayWindow extends React.Component{
     if(backgrounds.some(e => e.name === background)){
       asset = backgrounds.find(e => e.name === background);
       img = asset.image.src;
-      if(asset.type === 'video' && (title === 'Presentation' || title===''))
+      if(asset.type === 'video' && (title === 'Presentation' || presentation || editor))
         isVideo = true;
     }
 

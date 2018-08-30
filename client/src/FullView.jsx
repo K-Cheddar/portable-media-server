@@ -51,7 +51,7 @@ export default class FullView extends React.Component{
                     />
                 </div>
                 <div style={{width:'40%', marginLeft:'0.5vw'}}>
-                  <AllItems allItems={allItems}
+                  <AllItems allItems={allItems} backgrounds={backgrounds}
                     deleteItem={deleteItem} addItemToList={addItemToList}
                     />
                 </div>

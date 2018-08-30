@@ -60,7 +60,7 @@ class DisplayEditor extends React.Component{
           item.formattedLyrics[index].words = newWords
       }
     }
-    else if(item.type === 'song' && wordIndex===0 && slide){
+    else if(item.type === 'song'&& slide){
       if(words.length > 0)
         item.slides[wordIndex].boxes[0].words = words
     }

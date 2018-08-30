@@ -1,3 +1,5 @@
+import * as Helper from './Helper'
+
 export function formatSong(item){
 
   let slides = formatLyrics(item);
@@ -26,77 +28,11 @@ export function formatSong(item){
   return item;
 }
 
-// export function formatVerse(verse, fontSize, background, color){
-//   return formatBibleVerses(verse, fontSize, background, color);
-// }
-
-export function formatBible(item, mode, verses){
-  let box = item.slides[0].boxes[0]
-  let slides = [newSlide({type: 'Bible', box: box, words: item.name})];
-  if(verses)
-    slides.push(...formatBibleVerses(verses, item, mode));
-  else
-    slides.push(...formatBibleVerses(item.slides.slice(1).map(a => a.boxes[0].words), item, mode));
-
-  item.slides = slides;
-  return item;
-}
-
-function formatBibleVerses(verses, item, mode){
-
-  let lastSlide = item.slides.length-1;
-  let lastBox = item.slides[lastSlide].boxes[0];
-  let currentBox = item.slides[1].boxes[0]
-  let obj = getMaxLines(currentBox.fontSize, currentBox.height);
-  let maxLines = obj.maxLines;
-  let lineHeight = obj.lineHeight;
-  let formattedVerses = [];
-  let slide = ""
-
-  for(let i = 0; i < verses.length; ++i){
-    let words;
-    if(mode === 'create'){
-       words = verses[i].text.split(" ");
-       if(slide[slide.length-1] === ' ')
-        slide = slide.substring(0, slide.length-1)
-       slide += "{" + verses[i].verse + "}";
-    }
-    if(mode === 'edit')
-      words = verses[i].split(" ")
-
-    for (let j = 0; j < words.length; j++) {
-
-      let update = slide + words[j]
-      if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
-        slide = update + " ";
-      else{
-        slide = slide.replace(/\s+/g,' ').trim();
-        formattedVerses.push(newSlide({type: 'Bible', box: currentBox, words: slide}))
-        slide = words[j] +" ";
-
-        if(item.slides[formattedVerses.length+1])
-          currentBox = item.slides[formattedVerses.length+1].boxes[0]
-        else
-          currentBox = lastBox;
-
-        obj = getMaxLines(currentBox.fontSize, currentBox.height);
-        maxLines = obj.maxLines;
-        lineHeight = obj.lineHeight;
-      }
-    }
-
-  }
-  slide = slide.replace(/\s+/g,' ').trim();
-  formattedVerses.push(newSlide({type: 'Bible', box: currentBox, words: slide}));
-  formattedVerses.push(newSlide({type: 'blank', box: currentBox, words: ' '}))
-  return formattedVerses;
-}
-
 export function formatLyrics(item){
   let box = item.slides[0].boxes[0];
   let lastSlide = item.slides.length-1;
   let lastBox = item.slides[lastSlide].boxes[0];
-  let slides = [newSlide({type: 'Name', box: box, words: item.name})];
+  let slides = [Helper.newSlide({type: 'Name', box: box, words: box.words})];
   let songOrder = item.songOrder;
   let formattedLyrics = item.formattedLyrics;
   let fontSize = item.slides[1] ? item.slides[1].boxes[0].fontSize : 2.5;
@@ -142,13 +78,81 @@ export function formatLyrics(item){
       i+=counter-1;
       if(slide === "")
         slide = " ";
-      fLyrics.push(newSlide({type: type, box: currentBox, words: slide, fontSize: fontSize, slideIndex: fLyrics.length}))
+      fLyrics.push(Helper.newSlide({type: type, box: currentBox, words: slide, fontSize: fontSize, slideIndex: fLyrics.length}))
     }
     return fLyrics;
   }
-  slides.push(newSlide({type: 'blank', box: lastBox, words: ' '}))
+  slides.push(Helper.newSlide({type: 'blank', box: lastBox, words: ' '}))
   return slides;
 }
+
+// export function formatVerse(verse, fontSize, background, color){
+//   return formatBibleVerses(verse, fontSize, background, color);
+// }
+
+export function formatBible(item, mode, verses){
+  let box = item.slides[0].boxes[0]
+  let slides = [Helper.newSlide({type: 'Bible', box: box, words: box.words})];
+  if(verses)
+    slides.push(...formatBibleVerses(verses, item, mode));
+  else
+    slides.push(...formatBibleVerses(item.slides.slice(1).map(a => a.boxes[0].words), item, mode));
+
+  item.slides = slides;
+  return item;
+}
+
+function formatBibleVerses(verses, item, mode){
+
+  let lastSlide = item.slides.length-1;
+  let lastBox = item.slides[lastSlide].boxes[0];
+  let currentBox = item.slides[1].boxes[0]
+  let obj = getMaxLines(currentBox.fontSize, currentBox.height);
+  let maxLines = obj.maxLines;
+  let lineHeight = obj.lineHeight;
+  let formattedVerses = [];
+  let slide = ""
+
+  for(let i = 0; i < verses.length; ++i){
+    let words;
+    if(mode === 'create'){
+       words = verses[i].text.split(" ");
+       if(slide[slide.length-1] === ' ')
+        slide = slide.substring(0, slide.length-1)
+       slide += "{" + verses[i].verse + "}";
+    }
+    if(mode === 'edit')
+      words = verses[i].split(" ")
+
+    for (let j = 0; j < words.length; j++) {
+
+      let update = slide + words[j]
+      if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
+        slide = update + " ";
+      else{
+        slide = slide.replace(/\s+/g,' ').trim();
+        formattedVerses.push(Helper.newSlide({type: 'Bible', box: currentBox, words: slide}))
+        slide = words[j] +" ";
+
+        if(item.slides[formattedVerses.length+1])
+          currentBox = item.slides[formattedVerses.length+1].boxes[0]
+        else
+          currentBox = lastBox;
+
+        obj = getMaxLines(currentBox.fontSize, currentBox.height);
+        maxLines = obj.maxLines;
+        lineHeight = obj.lineHeight;
+      }
+    }
+
+  }
+  slide = slide.replace(/\s+/g,' ').trim();
+  formattedVerses.push(Helper.newSlide({type: 'Bible', box: currentBox, words: slide}));
+  formattedVerses.push(Helper.newSlide({type: 'blank', box: currentBox, words: ' '}))
+  return formattedVerses;
+}
+
+
 
 function getMaxLines(fontSize, height){
   fontSize = fontSize + "vw"
@@ -199,33 +203,4 @@ function getNumLines(text, fontSize, lineHeight, width){
 
   let lines = Math.floor(textSpanHeight/lineHeight)
   return lines;
-}
-
-function newSlide (props) {
-  let {type, box, words, slideIndex, fontSize} = props;
-  let obj = {
-    type: type,
-    boxes: [
-      {background: box.background,
-       fontSize: box.fontSize,
-       fontColor: box.fontColor,
-       words: words,
-       brightness: box.brightness,
-       height: box.height,
-       width: box.width,
-       x: box.x,
-       y: box.y,
-      }
-    ]
-  }
-
-  if(slideIndex >= 0){
-    obj.boxes[0].slideIndex = slideIndex
-  }
-  if(fontSize){
-    obj.boxes[0].fontSize = fontSize
-  }
-
-  return obj;
-
 }

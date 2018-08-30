@@ -18,6 +18,7 @@ import NavBar from './NavBar'
 import Loading from './Loading'
 import cloudinary from 'cloudinary-core';
 import {HotKeys} from 'react-hotkeys';
+import * as Helper from './Helper'
 
 PouchDB.plugin(require('pouchdb-upsert'));
 
@@ -147,41 +148,27 @@ class App extends Component {
   }
 
   addItem = (item) => {
-    let {itemIndex} = this.state;
-    DBUpdater.addItem(this.state.db, item, itemIndex, this.updateState, this.setItemIndex, this.addItemToList)
+    DBUpdater.addItem({parent: this, item: item})
   }
 
   addItemToList = (item) => {
-    let {selectedItemList, itemIndex} = this.state;
     let itemObj = {"name": item.name,"_id": item._id,"background": item.background,
         "nameColor": item.nameColor,"type": item.type};
     //put item in current item list
-    DBUpdater.putInList(this.state.db, itemObj, selectedItemList, itemIndex, this.updateState)
+    DBUpdater.putInList({parent: this, itemObj: itemObj})
     //select created item
-    DBGetter.getItem(this.state.db, item._id, this.updateState, this.setItemIndex, itemIndex)
+    DBGetter.getItem({parent: this, id: item._id})
 
   }
 
   addMedia = (background) => {
-    let {db, itemIndex} = this.state;
     let item = {
         "_id": background, "name": "New Image",
-        "slides": [
-          {
-            "type": 'Name',
-            "boxes": [
-              {"background": background,
-               "fontSize": 4.5,
-               "fontColor": 'rgba(255, 255, 255, 1)',
-               "words": " ",
-              }
-            ]
-          }
-        ],
+        "slides": [Helper.newSlide({type: 'Image', background: background, fontSize: 4.5})],
         "formattedLyrics": [], "songOrder": [], "type": "image",
         "background": background
       }
-      DBUpdater.addItem(db, item, itemIndex, this.updateState, this.setItemIndex, this.addItemToList)
+      DBUpdater.addItem({parent: this, item: item})
   }
 
   DBReplicate = (db, remoteDB, localDB) => {
@@ -190,9 +177,9 @@ class App extends Component {
     that.setState({db: db, remoteDB: remoteDB})
     remoteDB.replicate.to(localDB).on('complete', function(info){
       DBSetup(db);
-      DBGetter.init(db, that.updateState, that.getSuccess, that.getAttempted);
-      DBGetter.retrieveImages(db, that.updateState, cloud, that.getSuccess, that.getAttempted)
-      DBGetter.changes(db, that.updateState, that.getTime, that.getSelectedList, cloud, that.getSuccess, that.getAttempted, remoteDB)
+      DBGetter.init({parent: that, db: db});
+      DBGetter.retrieveImages({parent: that, db: db, cloud: cloud})
+      DBGetter.changes({parent: that, db: db, cloud: cloud, remoteDB: remoteDB})
       if(that.state.user !== 'Demo'){
           that.sync = db.sync(remoteDB, opts)
       }
@@ -200,24 +187,23 @@ class App extends Component {
   }
 
   deleteItem = (name) => {
-    let {allItems, item, selectedItemList, allItemLists} = this.state;
+    let {allItems, item} = this.state;
     if(name === item.name){
       this.setState({item:{}, wordIndex: 0, itemIndex: -1})
     }
     let index = allItems.findIndex(e => e.name === name)
-    DBUpdater.deleteItem(this.state.db, name, allItems, allItemLists, index, selectedItemList, this.updateState)
+    DBUpdater.deleteItem({parent: this, name: name, index: index})
   }
 
   deleteItemFromList = (index) => {
-    let {itemList, selectedItemList, itemIndex} = this.state;
+    let {itemIndex} = this.state;
     if(index === itemIndex)
       this.setState({item: {},wordIndex: 0})
-
-    DBUpdater.deleteItemFromList(this.state.db, selectedItemList, index, itemList, this.updateState)
+    DBUpdater.deleteItemFromList({parent: this, index: index})
   }
 
   deleteItemList = (id) =>{
-    DBUpdater.deleteItemList(this.state.db, id)
+    DBUpdater.deleteItemList({db: this.state.db, id: id})
   }
 
   duplicateItem = (id) => {
@@ -229,8 +215,7 @@ class App extends Component {
   }
 
   duplicateList = (id) => {
-    let {allItemLists, itemLists} = this.state;
-    DBUpdater.duplicateList(this.state.db, id, allItemLists, itemLists, this.updateState);
+    DBUpdater.duplicateList({parent: this, id: id});
   }
 
   getAttempted = (type) => {
@@ -259,8 +244,12 @@ class App extends Component {
     this.setState({attempted: attempted})
   }
 
-  getSelectedList = () => {
-    return this.state.selectedItemList
+  getSelectedListId = () => {
+    return this.state.selectedItemList.id
+  }
+
+  getItemId = () => {
+    return this.state.item._id
   }
 
   getSuccess = (type) => {
@@ -348,7 +337,7 @@ class App extends Component {
   }
 
   newItemList = (newList) => {
-    DBUpdater.newList(this.state.db, newList)
+    DBUpdater.newList({db: this.state.db, newList: newList})
   }
 
   openUploader = () => {
@@ -371,7 +360,7 @@ class App extends Component {
            uploads.push(obj);
          }
 
-        DBUpdater.updateImages(that.state.db, uploads);
+        DBUpdater.updateImages({db: that.state.db, uploads: uploads});
         setTimeout(function(){
           DBGetter.retrieveImages(that.state.db, that.updateState, cloud, that.getSuccess, that.getAttempted)
         },1000)
@@ -380,14 +369,14 @@ class App extends Component {
   }
 
   setItemBackground = (background) => {
-    ItemUpdate.setItemBackground({backbground: background, state: this.state, updateState: this.updateState})
+    ItemUpdate.setItemBackground({background: background, state: this.state, updateState: this.updateState})
   }
 
   selectItemList = (name) => {
     let {itemLists} = this.state;
     let id = itemLists.find(e => e.name === name).id;
     this.setState({selectedItemList: {id: id, name: name}})
-    DBGetter.selectItemList(this.state.db, id, this.updateState)
+    DBGetter.selectItemList({db: this.state.db, id: id, updateState: this.updateState})
   }
 
   setItemIndex = (index) => {
@@ -395,7 +384,7 @@ class App extends Component {
     ItemUpdate.setItemIndex({index: index, updateState: this.updateState})
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
-      DBUpdater.updateItem(db, itemID, this.updateState, this.setWordIndex)
+      DBUpdater.updateItem({db: db, itemID: itemID, parent: this})
     }
   }
 
@@ -408,9 +397,9 @@ class App extends Component {
   }
 
   update = () => {
-     let {item, needsUpdate, selectedItemList, allItems, itemList, itemLists, allItemLists, db} = this.state;
+     let {needsUpdate, db} = this.state;
      if(needsUpdate && db.get){
-        DBUpdater.update(db, item, selectedItemList, itemList, allItems, itemLists, allItemLists, this.updateState);
+        DBUpdater.update({parent: this});
          this.setState({needsUpdate: false});
      }
   }
@@ -420,7 +409,7 @@ class App extends Component {
     if(this.state.freeze)
       return;
 
-    let {item, wordIndex} = this.state;
+    let {item, wordIndex, remoteDB} = this.state;
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
 
@@ -446,7 +435,7 @@ class App extends Component {
     }
 
     this.setState({currentInfo: obj})
-    DBUpdater.updateCurrent(this.state.remoteDB, words, background, style, time-1);
+    DBUpdater.updateCurrent({db: remoteDB, obj: obj});
     localStorage.setItem('presentation', JSON.stringify(obj));
   }
 

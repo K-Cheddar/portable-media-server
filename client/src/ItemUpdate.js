@@ -8,7 +8,6 @@ export function setItemBackground(props){
     return;
 
   let index = allItems.findIndex(e => e.name === item.name)
-
   //set all slides to match item background
   for (var i = 0; i < item.slides.length; i++) {
     item.slides[i].boxes[0].background = background;
@@ -32,7 +31,7 @@ export function setItemIndex(props){
 }
 
 export function updateItem(props){
-  let {itemList, itemIndex, allItems, wordIndex} = props.state;
+  let {itemList, itemIndex, allItems} = props.state;
   let {updateState, item} = props;
 
   itemList[itemIndex].name = item.name;

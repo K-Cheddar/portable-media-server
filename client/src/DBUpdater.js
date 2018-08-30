@@ -2,12 +2,11 @@ import * as Sort from './Sort'
 
 let updaterInterval = null;
 
-// let previousItems = {};
-export function update(db, item, selectedItemList, itemList, allItems, itemLists, allItemLists, updateState){
+export function update(props){
+  let {updateState} = props.parent;
+  let {db, item, selectedItemList, itemList, allItems, itemLists, allItemLists} = props.parent.state;
+
   console.log("Update Called");
-  // if(JSON.stringify(previousItems.item) !== JSON.stringify(item)){
-  //   console.log("Updating item");
-  //   previousItems.item = item;
     db.get(item._id).then(function (doc) {
       doc.name = item.name;
       doc.background = item.background;
@@ -15,14 +14,9 @@ export function update(db, item, selectedItemList, itemList, allItems, itemLists
       doc.formattedLyrics = item.formattedLyrics;
       doc.songOrder = item.songOrder;
      return db.put(doc);
-   }).catch(function(err){
+   }).catch(function(){
      console.log('update item not working');
    });
-  // }
-
-  // if(JSON.stringify(previousItems.selectedItemList) !== JSON.stringify(selectedItemList)){
-  //   console.log("Updating selectedItemList");
-  //   previousItems.selectedItemList = selectedItemList;
     db.get(selectedItemList.id).then(function (doc) {
       for(let i = 0; i <doc.items.length; ++i){
         let val = itemList.find(e => e.id === doc.items[i].id)
@@ -36,12 +30,7 @@ export function update(db, item, selectedItemList, itemList, allItems, itemLists
     }).catch(function(){
       console.log('update selectedItemList not working');
     });
-  // }
 
-
- // if(JSON.stringify(previousItems.allItemLists) !== JSON.stringify(allItemLists)){
- //   console.log("Updating allItemLists");
- //   previousItems.allItemLists = allItemLists;
    db.get('allItemLists').then(function (doc) {
        doc.itemLists = allItemLists;
        if(doc.itemLists.length === 0){
@@ -53,12 +42,7 @@ export function update(db, item, selectedItemList, itemList, allItems, itemLists
    }).catch(function(){
      console.log('update all itemLists not working');
    });
- // }
 
-
- // if(JSON.stringify(previousItems.itemLists) !== JSON.stringify(itemLists)){
- //   console.log("Updating itemLists");
- //   previousItems.itemLists = itemLists;
    db.get('ItemLists').then(function (doc) {
       if(doc.itemLists.length === 1 && itemLists.length===1){
         let obj = doc.itemLists[0]
@@ -72,16 +56,10 @@ export function update(db, item, selectedItemList, itemList, allItems, itemLists
         updateState({selectedItemList: {}, itemList: [], item:{}, needsUpdate: false})
        doc.itemLists = itemLists;
        db.put(doc);
-   }).catch(function(err){
+   }).catch(function(){
      console.log('update itemLists not working');
-     console.log(err);
    });
- // }
 
-
- // if(JSON.stringify(previousItems.allItems) !== JSON.stringify(allItems)){
- //   console.log("Updating allItems");
- //   previousItems.allItems = allItems;
    db.get('allItems').then(function (doc) {
      for(let i = 0; i <doc.items.length; ++i){
        let val = allItems.find(e => e.id === doc.items[i].id)
@@ -92,15 +70,17 @@ export function update(db, item, selectedItemList, itemList, allItems, itemLists
           updateState({allItems: allItems})
        doc.items = allItems;
        db.put(doc);
-   }).catch(function(err){
+   }).catch(function(){
      console.log('update all items (update) not working');
-     console.log(err);
    });
- // }
+
 
 }
 
-export function updateCurrent(db, words, background, style, time){
+export function updateCurrent(props){
+  let {db} = props;
+  let {words, background, style, time} = props.obj;
+  time-=1;
   function updateValues(doc) {
     doc.info.words = words;
     doc.info.background = background;
@@ -113,14 +93,19 @@ export function updateCurrent(db, words, background, style, time){
   db.upsert('currentInfo', updateValues);
 }
 
-export function updateItem(db, itemID, updateState, setWordIndex){
+export function updateItem(props){
+  let {db, itemID} = props;
+  let {updateState, setWordIndex} = props.parent;
   db.get(itemID).then(function (doc) {
     updateState({item: doc, needsUpdate: false});
     setWordIndex(0)
   })
 }
 
-export function putInList(db, itemObj, selectedItemList, itemIndex, updateState){
+export function putInList(props){
+  let {itemObj} = props;
+  let {updateState} = props.parent;
+  let {db, selectedItemList, itemIndex} = props.parent.state;
   db.get(selectedItemList.id).then(function (doc) {
     doc.items.splice(itemIndex+1, 0, itemObj);
     updateState({itemList: doc.items});
@@ -128,7 +113,11 @@ export function putInList(db, itemObj, selectedItemList, itemIndex, updateState)
   })
 }
 
-export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemToList){
+export function addItem(props){
+  let {item} = props;
+  let {updateState, setItemIndex, addItemToList} = props.parent;
+  let {db, itemIndex} = props.parent.state;
+
   db.get(item._id).then(function(doc){
     let itemObj = {
       "name": doc.slides[0].boxes[0].words,
@@ -163,8 +152,10 @@ export function addItem(db, item, itemIndex, updateState, setItemIndex, addItemT
   })
 }
 
-export function deleteItem(db, name, allItems, allItemLists, index, selectedItemList, updateState){
-
+export function deleteItem(props){
+  let {name, index} = props;
+  let {updateState} = props.parent;
+  let {db, allItems, allItemLists, selectedItemList} = props.parent.state;
   //delete item
   db.get(allItems[index]._id).then(function (doc) {
       return db.remove(doc);
@@ -188,7 +179,10 @@ export function deleteItem(db, name, allItems, allItemLists, index, selectedItem
   }
 }
 
-export function deleteItemFromList(db, selectedItemList, index, itemList, updateState){
+export function deleteItemFromList(props){
+  let {index} = props;
+  let {updateState} = props.parent;
+  let {db, selectedItemList, itemList} = props.parent.state;
 
   db.get(selectedItemList.id).then(function (doc) {
     itemList.splice(index, 1);
@@ -198,14 +192,16 @@ export function deleteItemFromList(db, selectedItemList, index, itemList, update
   })
 }
 
-export function updateImages(db, uploads){
+export function updateImages(props){
+  let {db, uploads} = props;
   db.get('images').then(function(doc){
     doc.backgrounds = doc.backgrounds.concat(uploads);
     return db.put(doc);
   })
 }
 
-export function newList(db, newList){
+export function newList(props){
+  let {db, newList} = props;
   db.get(newList.id).catch(function (err) {
     var SL = {
     "_id": newList.id,
@@ -215,7 +211,11 @@ export function newList(db, newList){
   })
 }
 
-export function duplicateList(db, id, allItemLists, itemLists, updateState){
+export function duplicateList(props){
+    let {id} = props;
+    let {updateState} = props.parent;
+    let {db, allItemLists, itemLists} = props.parent.state;
+
     let newID = allItemLists[allItemLists.length-1].id;
     let newNumber = parseInt(newID.slice(-1), 10) + 1;
     newID = "Item List " + newNumber;
@@ -239,7 +239,8 @@ export function duplicateList(db, id, allItemLists, itemLists, updateState){
 
 }
 
-export function deleteItemList(db, id){
+export function deleteItemList(props){
+  let {db, id} = props;
   db.get(id).then(function(doc){
       return db.remove(doc);
   })

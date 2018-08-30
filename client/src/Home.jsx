@@ -37,7 +37,7 @@ export default class Home extends Component {
               <p>
                 This software is in Beta. Use Google Chrome for the best experience.
                 Other browsers are not currently supported and functionality may be limited.
-                If videos are choppy or don't play, <a target="_blank" href="https://www.technize.net/google-chrome-disable-hardware-acceleration/"> disable hardware acceleration</a>
+                If videos are choppy or don't play, <a target="_blank" rel="noopener noreferrer" href="https://www.technize.net/google-chrome-disable-hardware-acceleration/"> disable hardware acceleration</a>
               </p>
             </p>
           <ul style={{paddingLeft: '1%'}}>

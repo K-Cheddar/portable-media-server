@@ -1,11 +1,8 @@
 
-export function init(db, updateState, getSuccess, getAttempted){
+export function init(props){
+  let {db} = props;
+  let {updateState, getSuccess, getAttempted} = props.parent;
   db.get('currentInfo').then(function(doc){
-    // let obj = {
-    //   background: doc.info.background,
-    //   words: ' ',
-    //   style: doc.info.style
-    // }
     updateState({currentInfo: doc.info, needsUpdate: false})
     getSuccess('currentInfo')
   }).catch(function(){
@@ -56,7 +53,9 @@ export function init(db, updateState, getSuccess, getAttempted){
   });
 }
 
-export function changes(db, updateState, getTime, getSelectedList, cloud, getSuccess, getAttempted, remoteDB){
+export function changes(props){
+  let {db, cloud, remoteDB} = props;
+  let {updateState, getTime, getSelectedListId, getSuccess, getAttempted, getItemId} = props.parent;
   db.changes({
     since: 'now',
     live: true,
@@ -66,11 +65,20 @@ export function changes(db, updateState, getTime, getSelectedList, cloud, getSuc
     if(change.id === 'images'){
       retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
     }
+    if(change.id === 'allItemLists'){
+      updateState({allItemLists: change.doc.itemLists, needsUpdate: false})
+    }
+    if(change.id === 'ItemLists'){
+      updateState({itemLists: change.doc.itemLists, needsUpdate: false})
+    }
     if(change.id === 'allItems'){
       updateState({allItems: change.doc.items, needsUpdate: false})
     }
-    if(change.id === getSelectedList()){
+    if(change.id === getSelectedListId()){
       updateState({itemList: change.doc.items, needsUpdate: false})
+    }
+    if(change.id === getItemId()){
+      updateState({item: change.doc, needsUpdate: false})
     }
 
   })
@@ -87,12 +95,14 @@ export function changes(db, updateState, getTime, getSelectedList, cloud, getSuc
   }).on('error', function(){
   dbchanges.cancel()
     setTimeout(function(){
-      changes(db, updateState, getTime, getSelectedList, cloud, getSuccess, getAttempted, remoteDB)
+      changes(props)
     },2500)
   })
 }
 
-export function retrieveImages(db, updateState, cloud, getSuccess, getAttempted){
+export function retrieveImages(props){
+  let {db, cloud} = props;
+  let {updateState, getSuccess, getAttempted} = props.parent;
   let backgrounds = []
   db.get('images').then(function(doc){
     for (let i = 0; i < doc.backgrounds.length; i++) {
@@ -154,7 +164,10 @@ export function retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
   });
 }
 
-export function getItem(db, id, updateState, setItemIndex, itemIndex){
+export function getItem(props){
+  let {id} = props;
+  let {updateState, setItemIndex} = props.parent;
+  let {db, itemIndex} = props.parent.state;
   db.get(id).then(function(doc){
     updateState({item: doc, needsUpdate: false})
     if(itemIndex < 0)
@@ -166,7 +179,8 @@ export function getItem(db, id, updateState, setItemIndex, itemIndex){
   });
 }
 
-export function selectItemList(db, id, updateState){
+export function selectItemList(props){
+  let {db, id, updateState} = props;
   db.get(id).then(function(doc){
     updateState({itemList: doc.items, needsUpdate: false})
   }).catch(function(){

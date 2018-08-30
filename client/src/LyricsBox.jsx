@@ -240,7 +240,6 @@ export default class LyricsBox extends Component{
     let {formattedLyrics, sectionIndex} = this.state;
     let name = e.target.value;
     let type = name.replace(/\s\d+$/, "");
-    // let index = formattedLyrics.findIndex(e => e.name === name);
     formattedLyrics[sectionIndex].type = type;
     let element = formattedLyrics[sectionIndex];
     formattedLyrics.splice(sectionIndex, 1);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import kjv from './assets/kjv';
 import {HotKeys} from 'react-hotkeys';
+import * as Helper from './Helper'
 
 export default class Bible extends Component {
 
@@ -80,28 +81,8 @@ export default class Bible extends Component {
       "name": name,
       "background": "",
       "slides": [
-        {
-          type: 'Name',
-          boxes: [
-            {background: '',
-             fontSize: 4.5,
-             fontColor: 'rgba(255, 255, 255, 1)',
-             words: name,
-             brightness: 100
-            }
-          ]
-        },
-        {
-          type: 'bible',
-          boxes: [
-            {background: '',
-             fontSize: 2.5,
-             fontColor: 'rgba(255, 255, 255, 1)',
-             words: '',
-             brightness: 100
-            }
-          ]
-        }
+        Helper.newSlide({type: "Title", fontSize: 4.5, words: name}),
+        Helper.newSlide({type: "Verse", fontSize: 2.5, words: ''})
       ],
       "type": "bible"
     };

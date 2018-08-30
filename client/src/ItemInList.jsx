@@ -15,8 +15,9 @@ export default class ItemInList extends React.Component{
   let divStyle={width: width, height: height}
 
   if(moving){
-    divStyle.left = (x)  + 'px';
-    divStyle.top = (y) + 'px';
+    divStyle.left = `calc(${x}px - 5vw)`;
+    divStyle.top = `calc(${y}px - 10vh)`;
+    divStyle.position = 'absolute';
   }
 
   let style = {fontSize: 4.5, fontColor: nameColor}
@@ -24,7 +25,7 @@ export default class ItemInList extends React.Component{
     return (
         <div style={divStyle}>
           <DisplayWindow words={words} style={style} background={background} backgrounds={backgrounds}
-            width={width} height={height} title={name} titleSize={".75vw"}/>
+            width={width} title={name} titleSize={".75vw"}/>
         </div>
     )
   }

@@ -9,12 +9,7 @@ export function setSlideBackground(props){
     allItems[index].background = background;
   }
 
-  updateState({
-    item: item,
-    allItems: allItems,
-    itemList: itemList,
-    needsUpdate: true
-  })
+  updateState({ item: item, allItems: allItems, itemList: itemList, })
 }
 
 export function setWordIndex(props){
@@ -40,24 +35,17 @@ export function setWordIndex(props){
     element.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
   updateState({wordIndex: index, needsUpdate: false});
   let box = item.slides[index].boxes[0];
-  let fontSize = box.fontSize;
-  let color = box.fontColor;
-  let brightness = box.brightness;
-  let width = box.width;
-  let height = box.height;
-  let x = box.x;
-  let y = box.y
   let style = {
-    fontColor: color,
-    fontSize: fontSize,
-    brightness: brightness,
-    width: width,
-    height: height,
-    x: x,
-    y: y,
+    fontColor: box.fontColor,
+    fontSize: box.fontSize,
+    brightness: box.brightness,
+    width: box.width,
+    height: box.height,
+    x: box.x,
+    y: box.y,
   }
-  if(item.slides[index].boxes[0].background)
-    updateCurrent({words: lyrics, style: style, background:item.slides[index].boxes[0].background});
+  if(box.background)
+    updateCurrent({words: lyrics, style: style, background: box.background});
   else
     updateCurrent({words: lyrics, style: style});
 }

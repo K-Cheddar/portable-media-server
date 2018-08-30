@@ -1,7 +1,8 @@
 import React from 'react';
 import deleteX from './assets/deleteX.png';
 import add from './assets/addItem.png';
-import DeleteConfirmation from './DeleteConfirmation'
+import DeleteConfirmation from './DeleteConfirmation';
+import DisplayWindow from './DisplayWindow';
 
 export default class AllItems extends React.Component{
 
@@ -36,7 +37,7 @@ export default class AllItems extends React.Component{
   }
 
   render(){
-  let {allItems} = this.props;
+  let {allItems, backgrounds} = this.props;
   let {text, deleteOverlay, name} = this.state;
 
   let filteredList = [];
@@ -47,26 +48,29 @@ export default class AllItems extends React.Component{
     filteredList = allItems.slice(0);
   }
 
+  let width = '3.5vw';
+
   let SL = filteredList.map((element, index) => {
-  return(
-    <div style={{display:'flex', padding:'1%'}} key={index}>
-      <div style={{width:'75%', fontSize:'1.15vw'}}>{element.name}</div>
-        <div style={{width:'25%'}}>
+    let imageStyle = {fontSize: 4.5, fontColor: element.nameColor}
+    return(
+      <div style={{display:'flex', padding:'1%'}} key={index}>
+        <div style={{width:'75%', fontSize:'1.15vw'}}>{element.name}</div>
+        <DisplayWindow words={''} style={imageStyle} background={element.background} backgrounds={backgrounds}
+          width={width} title={''} titleSize={''}/>
+        <div style={{width:'15%', marginLeft: '1.5vw'}}>
           <img className='imgButton' style={{width:'1.5vw', height:'1.5vw'}}
              onClick={() => (this.props.addItemToList(element))}
              alt="add" src={add}
             />
-          <img className='imgButton' style={{paddingLeft:'5%', width:'1.5vw', height:'1.5vw'}}
+          <img className='imgButton' style={{marginLeft:'1vw', width:'1.5vw', height:'1.5vw'}}
              onClick={ () => (this.openConfirmation(element.name))}
              alt="delete" src={deleteX}
             />
         </div>
-    </div>
-  )
-
-})
+      </div>
+    )
+  })
     return (
-
       <div>
         <div>All Items</div>
         <input type='text' value={this.state.text} onChange={this.updateText}

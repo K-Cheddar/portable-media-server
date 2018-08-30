@@ -16,7 +16,7 @@ export default class SongSection extends Component{
 
    let allSections = sectionTypes.concat(sectionsPresent);
    allSections = allSections.filter(function(item, pos) {
-    return allSections.indexOf(item) == pos;
+    return allSections.indexOf(item) === pos;
     })
 
     return(

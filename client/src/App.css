@@ -32,11 +32,13 @@ div[tabindex="-1"]:focus {
 }
 
 .imgButton{
-  outline: 0.1vw lightgrey solid;
+  outline: 0.1vw rgba(160, 160, 160, 0.1) solid;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .imgButton:hover{
   opacity: 0.9;
-  outline: 0.1vw black solid;
+  outline: 0.1vw rgba(50, 50, 50, 0.6) solid;
+  background-color: rgba(160, 160, 160, 0.5);
   transition: outline 0.25s ease-in-out;
 }
