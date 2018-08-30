@@ -183,12 +183,13 @@ export default class LyricsBox extends Component{
       songOrder = sections;
     }
 
-    let secName = oldName
+    let secName = sections[sections.length-1];
+    if(oldName){
+      secName = oldName;
     let typeFromName = oldName.replace(/\s\d+$/, "");
     if(oldName === typeFromName)
       secName = oldName + ' ' + sectionCounter[typeFromName]
-
-    console.log(secName);
+    }
 
     Sort.sortNamesInList(formattedLyrics)
     Sort.sortList(sections);
@@ -239,10 +240,11 @@ export default class LyricsBox extends Component{
     let {formattedLyrics, sectionIndex} = this.state;
     let name = e.target.value;
     let type = name.replace(/\s\d+$/, "");
-    let index = formattedLyrics.findIndex(e => e.name === name);
+    // let index = formattedLyrics.findIndex(e => e.name === name);
     formattedLyrics[sectionIndex].type = type;
     let element = formattedLyrics[sectionIndex];
     formattedLyrics.splice(sectionIndex, 1);
+    let index = formattedLyrics.findIndex(e => e.name === name);
     formattedLyrics.splice(index, 0, element);
     this.updateSections(formattedLyrics, name);
   }
