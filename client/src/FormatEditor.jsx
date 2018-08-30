@@ -133,10 +133,10 @@ class FormatEditor extends React.Component{
     return (
         <div >
         <div style={{display:'flex'}}>
-            <img style={!cPickerOpen ? {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw',} : {display:'none'}}
+            <img className='imgButton' style={!cPickerOpen ? {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw',} : {display:'none'}}
               alt="cPicker" src={cPicker}
               onClick={this.openColors}/>
-            <img style={!cPickerOpen ? {display:'none'} : {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw'} }
+            <img className='imgButton' style={!cPickerOpen ? {display:'none'} : {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw'} }
               alt="cPickerClose" src={cPickerClose}
               onClick={this.closeColors}/>
             <div style={cPickerOpen ? {position:'fixed', zIndex:2, top: '5vh', backgroundColor:'#EEE', padding:'5px'} : {display: 'none'}}>
@@ -144,11 +144,11 @@ class FormatEditor extends React.Component{
             </div>
            <input style={{width: '1.25vw', height: '1.25vw',marginRight:'1vw', fontSize:"calc(7px + 0.25vw)"}}
              value={String(fontSize*4)} onChange={this.fontSizeChange}/>
-           <img style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
+           <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
               onClick={this.fontSizeUP}
               alt="fsUP" src={fsUP}
             />
-          <img style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
+          <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
                 onClick={this.fontSizeDOWN}
                 alt="fsDOWN" src={fsDOWN}
             />

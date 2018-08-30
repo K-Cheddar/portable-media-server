@@ -52,11 +52,11 @@ export default class AllItems extends React.Component{
     <div style={{display:'flex', padding:'1%'}} key={index}>
       <div style={{width:'75%', fontSize:'1.15vw'}}>{element.name}</div>
         <div style={{width:'25%'}}>
-          <img style={{width:'1.5vw', height:'1.5vw'}}
+          <img className='imgButton' style={{width:'1.5vw', height:'1.5vw'}}
              onClick={() => (this.props.addItemToList(element))}
              alt="add" src={add}
             />
-          <img style={{paddingLeft:'5%', width:'1.5vw', height:'1.5vw'}}
+          <img className='imgButton' style={{paddingLeft:'5%', width:'1.5vw', height:'1.5vw'}}
              onClick={ () => (this.openConfirmation(element.name))}
              alt="delete" src={deleteX}
             />

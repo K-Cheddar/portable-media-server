@@ -51,7 +51,6 @@ export function setWordIndex(index, lyrics, item, wordIndex, updateState, update
     x: x,
     y: y,
   }
-  console.log(style);
   if(item.slides[index].boxes[0].background)
     updateCurrent({words: lyrics, style: style, background:item.slides[index].boxes[0].background});
   else

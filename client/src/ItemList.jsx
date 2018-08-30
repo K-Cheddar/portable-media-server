@@ -164,15 +164,15 @@ export default class ItemList extends React.Component{
 
       </div>
         <div style={{padding:"3%"}}>
-          <img style={{display:'block', width:'1.25vw', height:'1.25vw'}}
+          <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw'}}
              onClick={() => (this.props.deleteItemFromList(index))}
              alt="delete" src={deleteX}
              />
-           <img style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
+           <img className='imgButton' style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
             onClick={() => (this.editItem(element.name, element._id))}
             alt="edit" src={edit}
             />
-          <img style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
+          <img className='imgButton' style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
              onClick={() => (this.props.duplicateItem(element._id))}
              alt="duplicate" src={duplicate}
              />

@@ -117,22 +117,22 @@ export default class Display_Words extends Component {
       SS = `${fs*4}vw`;
 
     let {position} = this.props;
-    let width = '91%';
-    let height = '93%';
+    let width = '90%';
+    let height = '86%';
     let marginT_B = 3.5;
     let marginL_R = 4.5;
     let top = 0;
     let left = 0;
 
     if(nextPosition && nextPosition.width){
-      width = .91*nextPosition.width + '%';
-      height = .93*nextPosition.height + '%';
+      width = .9*nextPosition.width + '%';
+      height = .86*nextPosition.height + '%';
       top = Math.max((nextPosition.y - (marginT_B/2)),0) + '%';
       left = Math.max((nextPosition.x - (marginL_R/2)),0) + '%';
     }
     else if(!this.props.editor && position.width){
-      width = .91*position.width + '%';
-      height = .93*position.height + '%';
+      width = .9*position.width + '%';
+      height = .86*position.height + '%';
       top = Math.max((position.y - (marginT_B/2)),0)+ '%';
       left = Math.max((position.x - (marginL_R/2)),0)+ '%';
     }

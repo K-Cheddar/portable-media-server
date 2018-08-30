@@ -2,6 +2,8 @@ import React from 'react';
 import DisplayWords from './Display_Words'
 import DisplayBackground from './Display_Background'
 import blank from './assets/blank.png';
+import lock from './assets/lock.png';
+import unlock from './assets/unlock.png';
 import {Rnd} from 'react-rnd';
 
 export default class DisplayWindow extends React.Component{
@@ -14,7 +16,8 @@ export default class DisplayWindow extends React.Component{
       box_x: 0,
       box_y: 0,
       maxHeight: '100%',
-      maxWidth:'100%'
+      maxWidth:'100%',
+      lockBox: true,
     }
   }
 
@@ -67,8 +70,7 @@ export default class DisplayWindow extends React.Component{
 
   componentDidUpdate(prevProps){
     let {background, presentation} = this.props;
-    if((JSON.stringify(this.props.style) !== JSON.stringify(prevProps.style))
-    || (this.props.words !== prevProps.words))
+    if((this.props.style !== prevProps.style) || (this.props.words !== prevProps.words))
       this.updatePosition();
     if(background !== prevProps.background ){
       let video = document.getElementById('background-video-mini');
@@ -113,11 +115,15 @@ export default class DisplayWindow extends React.Component{
     this.props.handleBoxChange(x, y, width, height);
   }
 
+  toggleDragLock = () => {
+    this.setState({lockBox: !this.state.lockBox})
+  }
+
   render() {
     let {backgrounds, background, style, words, width, title,
       titleSize, presentation, extraPadding, editor} = this.props;
 
-    let {box_x, box_y, boxWidth, boxHeight, maxWidth, maxHeight} = this.state;
+    let {box_x, box_y, boxWidth, boxHeight, maxWidth, maxHeight, lockBox} = this.state;
 
     let img = blank, asset;
     let isVideo = false;
@@ -161,6 +167,9 @@ export default class DisplayWindow extends React.Component{
 
     let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
 
+    let lockStyle = {width:'1.25vw', height:'1.25vw',
+      top:'-0.5vw', left:'-0.5vw', position: 'absolute', zIndex: 2}
+
     let id = `background-text-${title}-${words}`;
 
     if(backgrounds.some(e => e.name === background)){
@@ -186,18 +195,30 @@ export default class DisplayWindow extends React.Component{
               <source src={asset.video.src} type="video/mp4"/>
               <source src={asset.video.src} type="video/ogg" />
             </video>}
-            {editor && <Rnd size={{width: boxWidth, height: boxHeight}}
+            {editor &&
+              <Rnd size={{width: boxWidth, height: boxHeight}}
               position={{x: box_x, y: box_y}}
               onDragStop={(e, position) => {this.onBoxDragStop(position) }}
               onResize={(e, direction, ref, delta, position) =>
                 {this.onBoxResize(e, direction, ref, delta, position)}}
               onResizeStop={(e, direction, ref, delta, position) =>
                 {this.onBoxResizeStop(e, direction, ref, delta, position)}}
-              enableUserSelectHack={false} maxWidth={maxWidth} maxHeight={maxHeight}
+              enableUserSelectHack={!lockBox} maxWidth={maxWidth} maxHeight={maxHeight}
               minWidth={'35%'} minHeight={'35%'} bounds={'parent'}
               style={{zIndex: 2, outline: '0.15vw solid #FFF'}}
-              disableDragging={false}
+              disableDragging={lockBox}
+              enableResizing={{ top:!lockBox, right:!lockBox, bottom:!lockBox,
+                left:!lockBox, topRight:!lockBox, bottomRight:!lockBox,
+                bottomLeft:!lockBox, topLeft:!lockBox }}
               >
+              {(lockBox && editor) && <img style={lockStyle}
+                 alt="lock" src={lock}
+                onClick={this.toggleDragLock}
+                />}
+              {(!lockBox && editor) && <img style={lockStyle}
+                 alt="unlock" src={unlock}
+                onClick={this.toggleDragLock}
+                />}
               <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
                 fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding} position={style}
                 title={title} editor={editor} handleTextChange={this.props.handleTextChange}>

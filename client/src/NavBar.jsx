@@ -87,12 +87,12 @@ export default class NavBar extends Component {
 
   textboxLowerThird = () => {
     let {applyAll} = this.state;
-    this.props.updateBoxPosition({x: 0, y: 63.5, width: 100, height: 37.5, applyAll: applyAll})
+    this.props.updateBoxPosition({x: 0, y: 62, width: 100, height: 37.5, applyAll: applyAll})
   }
 
   textboxMidThird = () => {
     let {applyAll} = this.state;
-    this.props.updateBoxPosition({x: 0, y: 33.5, width: 100, height: 37.5, applyAll: applyAll})
+    this.props.updateBoxPosition({x: 0, y: 31.5, width: 100, height: 37.5, applyAll: applyAll})
   }
 
   textboxUpperThird = () => {
@@ -165,7 +165,7 @@ export default class NavBar extends Component {
             </div>
           </li>
           <li style={{paddingLeft: '0'}}>
-            <img style={{width:'1.5vw', height:'1.5vw'}}
+            <img className='imgButton' style={{width:'1.5vw', height:'1.5vw'}}
                alt="open" src={open}
               onClick={this.openItemLists}
               />
@@ -174,36 +174,36 @@ export default class NavBar extends Component {
             <button style={buttonStyle} onClick={this.openSong}>Add Song</button>
             <button style={buttonStyle} onClick={this.openBible}>Add Bible</button>
           </li>
-          <li>
+          <li style={{borderLeft: '0.25vw solid black'}}>
             <div style={{paddingTop:'1%', margin:'auto'}}>
                <FormatEditor item={item} updateFontSize={updateFontSize} updateFontColor={updateFontColor}
                  wordIndex={wordIndex} updateBrightness={updateBrightness}/>
             </div>
           </li>
-          <li style={{display:'flex'}}>
+          <li style={{display:'flex', borderLeft: '0.25vw solid black', borderRight: '0.25vw solid black'}}>
               <div style={{width:'11vw'}}>
                 <div style={{display:'flex'}}>
-                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                  <img className='imgButton' style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
                      alt="textbox_full" src={textbox_full} onClick={this.textboxFull}
                     />
-                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                  <img className='imgButton' style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
                      alt="textbox_leftHalf" src={textbox_leftHalf} onClick={this.textboxLeftHalf}
                     />
-                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                  <img className='imgButton' style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
                      alt="textbox_rightHalf" src={textbox_rightHalf} onClick={this.textboxRightHalf}
                     />
-                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                  <img className='imgButton' style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
                      alt="textbox_match" src={textbox_match} onClick={this.textboxMatch}
                     />
                 </div>
                 <div style={{display:'flex'}}>
-                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                  <img className='imgButton' style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
                      alt="textbox_lowerThird" src={textbox_lowerThird} onClick={this.textboxLowerThird}
                     />
-                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                  <img className='imgButton' style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
                      alt="textbox_midThird" src={textbox_midThird} onClick={this.textboxMidThird}
                     />
-                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                  <img className='imgButton' style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
                      alt="textbox_upperThird" src={textbox_upperThird} onClick={this.textboxUpperThird}
                     />
                 </div>

@@ -1,18 +1,6 @@
 export function formatSong(item){
 
   let slides = formatLyrics(item);
-  // for (let i = 0; i < slides.length; i++) {
-  //   if(item.slides[i]){
-  //     slides[i].boxes[0].background = item.slides[i].boxes[0].background
-  //     slides[i].boxes[0].fontColor = item.slides[i].boxes[0].fontColor
-  //     slides[i].boxes[0].brightness = item.slides[i].boxes[0].brightness
-  //   }
-  //   else{
-  //     slides[i].boxes[0].background = item.slides[0].boxes[0].background
-  //     slides[i].boxes[0].fontColor = 'rgba(255, 255, 255, 1)'
-  //   }
-  //
-  // }
   item.slides = slides;
   for(let i = 0; i < item.formattedLyrics.length; ++i){
     let type = item.formattedLyrics[i].name
@@ -153,7 +141,7 @@ export function formatLyrics(item){
       i+=counter-1;
       if(slide === "")
         slide = " ";
-      fLyrics.push(newSlide(type, currentBox, slide, {fontSize: currentBox.fontSize, slideIndex: fLyrics.length}))
+      fLyrics.push(newSlide(type, currentBox, slide, {fontSize: fontSize, slideIndex: fLyrics.length}))
     }
     return fLyrics;
   }
@@ -166,11 +154,11 @@ function getMaxLines(fontSize, height){
   let windowWidth = window.innerWidth;
 
   if(!height)
-    height = 93
+    height = 86
   else
-    height*=.93;
+    height*=.86;
   height /= 100; // % -> decimal
-  height = height*windowWidth*.239*.965; //Height of Display Editor = 23.9vw, 3.5% padding
+  height = height*windowWidth*.239 //Height of Display Editor = 23.9vw
 
   let singleSpan = document.createElement("singleSpan");
   singleSpan.innerHTML="Only Line";
@@ -182,7 +170,6 @@ function getMaxLines(fontSize, height){
   document.body.removeChild(singleSpan);
 
   let maxLines = Math.floor(height/lineHeight)
-  console.log("MAX:", maxLines, "Height:", height);
   let obj = {maxLines: maxLines, lineHeight: lineHeight}
   return obj;
 }
@@ -191,11 +178,11 @@ function getNumLines(text, fontSize, lineHeight, width){
   fontSize = fontSize + "vw"
   let windowWidth = window.innerWidth;
   if(!width)
-    width = 91
+    width = 90
   else
-    width*=.91
+    width*=.90
   width /= 100;
-  width= width*windowWidth*.425 //Width of Display Editor = 42.5vw, 4.5% padding
+  width= width*windowWidth*.425 //Width of Display Editor = 42.5vw
 
   let textSpan = document.createElement("textSpan");
   textSpan.innerHTML=text;

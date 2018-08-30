@@ -175,23 +175,23 @@ export default class ItemListEditor extends Component{
             <input style={{width: '100%'}} onChange={this.editName} value={name}/>
             </form>
           }
-          {!selected && <img style={buttonStyle}
+          {!selected && <img className='imgButton' style={buttonStyle}
            onClick={() => (this.edit(index, item.name))}
            alt="edit" src={edit}
            />}
-          {!selected && <img style={buttonStyle}
+          {!selected && <img className='imgButton' style={buttonStyle}
            onClick={() => (this.deleteList('one', item.name))}
            alt="delete" src={deleteX}
            />}
-          {!selected && <img style={buttonStyle}
+          {!selected && <img className='imgButton' style={buttonStyle}
             onClick={() => (this.props.duplicateList(item.id))}
             alt="duplicate" src={duplicate}
            />}
-           {selected && <img style={buttonStyle}
+           {selected && <img className='imgButton' style={buttonStyle}
             onClick={() => (this.confirm(item.name))}
             alt="check" src={check}
             />}
-           {selected && <img style={buttonStyle}
+           {selected && <img className='imgButton' style={buttonStyle}
             onClick={() => (this.cancel(item.name))}
             alt="cancel" src={cancel}
             />}
@@ -203,11 +203,11 @@ export default class ItemListEditor extends Component{
       return(
         <div style={{display:'flex'}} key={item.name}>
           <div style={{width: '80%'}}>{item.name}</div>
-          <img style={buttonStyle}
+          <img className='imgButton' style={buttonStyle}
            onClick={() => (this.addToList(item.name))}
            alt="add" src={add}
            />
-         <img style={buttonStyle}
+         <img className='imgButton' style={buttonStyle}
              onClick={() => (this.openConfirmation(item.name))}
              alt="delete" src={deleteX}
              />
