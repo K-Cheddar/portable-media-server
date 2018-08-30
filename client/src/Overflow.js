@@ -32,7 +32,7 @@ export function formatSong(item){
 
 export function formatBible(item, mode, verses){
   let box = item.slides[0].boxes[0]
-  let slides = [newSlide('Bible', box, item.name)];
+  let slides = [newSlide({type: 'Bible', box: box, words: item.name})];
   if(verses)
     slides.push(...formatBibleVerses(verses, item, mode));
   else
@@ -71,7 +71,7 @@ function formatBibleVerses(verses, item, mode){
         slide = update + " ";
       else{
         slide = slide.replace(/\s+/g,' ').trim();
-        formattedVerses.push(newSlide('Bible', currentBox, slide))
+        formattedVerses.push(newSlide({type: 'Bible', box: currentBox, words: slide}))
         slide = words[j] +" ";
 
         if(item.slides[formattedVerses.length+1])
@@ -87,7 +87,8 @@ function formatBibleVerses(verses, item, mode){
 
   }
   slide = slide.replace(/\s+/g,' ').trim();
-  formattedVerses.push(newSlide('Bible', currentBox, slide));
+  formattedVerses.push(newSlide({type: 'Bible', box: currentBox, words: slide}));
+  formattedVerses.push(newSlide({type: 'blank', box: currentBox, words: ' '}))
   return formattedVerses;
 }
 
@@ -95,7 +96,7 @@ export function formatLyrics(item){
   let box = item.slides[0].boxes[0];
   let lastSlide = item.slides.length-1;
   let lastBox = item.slides[lastSlide].boxes[0];
-  let slides = [newSlide('Name', box, item.name)];
+  let slides = [newSlide({type: 'Name', box: box, words: item.name})];
   let songOrder = item.songOrder;
   let formattedLyrics = item.formattedLyrics;
   let fontSize = item.slides[1] ? item.slides[1].boxes[0].fontSize : 2.5;
@@ -141,11 +142,11 @@ export function formatLyrics(item){
       i+=counter-1;
       if(slide === "")
         slide = " ";
-      fLyrics.push(newSlide(type, currentBox, slide, {fontSize: fontSize, slideIndex: fLyrics.length}))
+      fLyrics.push(newSlide({type: type, box: currentBox, words: slide, fontSize: fontSize, slideIndex: fLyrics.length}))
     }
     return fLyrics;
   }
-  slides.push(newSlide('blank', lastBox, ' '))
+  slides.push(newSlide({type: 'blank', box: lastBox, words: ' '}))
   return slides;
 }
 
@@ -200,15 +201,15 @@ function getNumLines(text, fontSize, lineHeight, width){
   return lines;
 }
 
-function newSlide (type, box, newWords, extras){
-
+function newSlide (props) {
+  let {type, box, words, slideIndex, fontSize} = props;
   let obj = {
     type: type,
     boxes: [
       {background: box.background,
        fontSize: box.fontSize,
        fontColor: box.fontColor,
-       words: newWords,
+       words: words,
        brightness: box.brightness,
        height: box.height,
        width: box.width,
@@ -217,14 +218,12 @@ function newSlide (type, box, newWords, extras){
       }
     ]
   }
-  if(!extras)
-    return obj
 
-  if(extras.slideIndex >= 0){
-    obj.boxes[0].slideIndex = extras.slideIndex
+  if(slideIndex >= 0){
+    obj.boxes[0].slideIndex = slideIndex
   }
-  if(extras.fontSize){
-    obj.boxes[0].fontSize = extras.fontSize
+  if(fontSize){
+    obj.boxes[0].fontSize = fontSize
   }
 
   return obj;

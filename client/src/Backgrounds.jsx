@@ -130,12 +130,12 @@ export default class Backgrounds extends React.Component{
           <div>Backgrounds</div>
           {(user!=='Demo') && <button style={{fontSize: "calc(5px + 0.35vw)", marginLeft: '1vw'}} onClick={openUploader}>Upload Backgrounds</button>}
             {!allOpen && <img className='imgButton'
-              style={{display:'block', width:'1.5vmax', height:'1.5vmax', paddingLeft:"2%"}}
+              style={{display:'block', width:'1.5vmax', height:'1.5vmax', marginLeft:"2%"}}
                onClick={this.open}
                alt="open-all" src={open_all}
               />}
             {allOpen && <img className='imgButton'
-              style={{display:'block', width:'1.5vmax', height:'1.5vmax', paddingLeft:"2%"}}
+              style={{display:'block', width:'1.5vmax', height:'1.5vmax', marginLeft:"2%"}}
                onClick={this.close}
                alt="collapse" src={collapse}
               />}

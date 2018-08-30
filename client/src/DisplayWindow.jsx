@@ -22,6 +22,7 @@ export default class DisplayWindow extends React.Component{
   }
 
   componentDidMount(){
+    window.addEventListener("resize", this.updatePosition);
     let video = document.getElementById('background-video-mini');
     if(video)
       video.loop = true;
@@ -31,8 +32,6 @@ export default class DisplayWindow extends React.Component{
   updatePosition = () => {
     if(!this.props.editor)
       return;
-
-    console.log(this.props.title);
 
     let maxW = this.props.width;
     maxW = parseFloat(maxW.substring(0, maxW.length-2),10);

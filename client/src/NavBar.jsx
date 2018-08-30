@@ -67,37 +67,37 @@ export default class NavBar extends Component {
 
   textboxFull = () => {
     let {applyAll} = this.state;
-    this.props.updateBoxPosition({x: 0, y: 0, width: 100, height: 100, applyAll: applyAll})
+    this.props.parent.updateBoxPosition({x: 0, y: 0, width: 100, height: 100, applyAll: applyAll})
   }
 
   textboxLeftHalf = () => {
     let {applyAll} = this.state;
-    this.props.updateBoxPosition({x: 0, y: 0, width: 54.5, height: 100, applyAll: applyAll})
+    this.props.parent.updateBoxPosition({x: 0, y: 0, width: 54.5, height: 100, applyAll: applyAll})
   }
 
   textboxRightHalf = () => {
     let {applyAll} = this.state;
-    this.props.updateBoxPosition({x: 45.5, y: 0, width: 54.5, height: 100, applyAll: applyAll})
+    this.props.parent.updateBoxPosition({x: 45.5, y: 0, width: 54.5, height: 100, applyAll: applyAll})
   }
 
   textboxMatch = () => {
     let {applyAll} = this.state;
-    this.props.updateBoxPosition({applyAll: applyAll, match:true})
+    this.props.parent.updateBoxPosition({applyAll: applyAll, match:true})
   }
 
   textboxLowerThird = () => {
     let {applyAll} = this.state;
-    this.props.updateBoxPosition({x: 0, y: 62, width: 100, height: 37.5, applyAll: applyAll})
+    this.props.parent.updateBoxPosition({x: 0, y: 62, width: 100, height: 37.5, applyAll: applyAll})
   }
 
   textboxMidThird = () => {
     let {applyAll} = this.state;
-    this.props.updateBoxPosition({x: 0, y: 31.5, width: 100, height: 37.5, applyAll: applyAll})
+    this.props.parent.updateBoxPosition({x: 0, y: 31.5, width: 100, height: 37.5, applyAll: applyAll})
   }
 
   textboxUpperThird = () => {
     let {applyAll} = this.state;
-    this.props.updateBoxPosition({x: 0, y: 0, width: 100, height: 37.5, applyAll: applyAll})
+    this.props.parent.updateBoxPosition({x: 0, y: 0, width: 100, height: 37.5, applyAll: applyAll})
   }
 
   applyAll = () => {
@@ -110,7 +110,7 @@ export default class NavBar extends Component {
 
   logout = () => {
     this.setState({menuMousedOver: false})
-    this.props.logout();
+    this.props.parent.logout();
   }
 
   closeBible = () => {
@@ -127,9 +127,10 @@ export default class NavBar extends Component {
 
   render(){
 
-    let {selectedItemList, selectItemList, itemLists, toggleFreeze, updateFontSize,
-       updateFontColor, wordIndex, freeze, item, addItem, user, updateBrightness} = this.props;
-
+    let {formatBible} = this.props;
+    let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
+       updateBrightness, updateState, deleteItemList, newItemList, duplicateList} = this.props.parent;
+    let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db, allItemLists} = this.props.parent.state;
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
 
     let buttonStyle = {
@@ -150,8 +151,8 @@ export default class NavBar extends Component {
               <div style={menuMousedOver ? {backgroundColor:'#fff', position:'absolute', width:'7vw'} : {display:'none'}}>
                 <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
                 <button style={menuItem}><Link to="/">Home</Link></button>
-                {!this.props.isLoggedIn && <button style={menuItem}><Link to="/login">Login</Link></button>}
-                {this.props.isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
+                {!isLoggedIn && <button style={menuItem}><Link to="/login">Login</Link></button>}
+                {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
               </div>
           </li>
           <li>
@@ -241,13 +242,13 @@ export default class NavBar extends Component {
           </li>
           <li style={{fontSize: "calc(12px + 0.5vw)"}}>Logged In As: {user}</li>
         </ul>
-        {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={this.props.formatBible}/>}
-        {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={this.props.db}
-        close={this.closeName} addItem={this.props.addItem}
+        {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={formatBible}/>}
+        {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={db}
+        close={this.closeName} addItem={addItem}
         />}
-        {itemListsOpen && <ItemListEditor updateState={this.props.updateState} close={this.closeItemLists}
-          itemLists={this.props.itemLists} allItemLists={this.props.allItemLists} deleteItemList={this.props.deleteItemList}
-          newItemList={this.props.newItemList} selectItemList={this.props.selectItemList} duplicateList={this.props.duplicateList}
+        {itemListsOpen && <ItemListEditor updateState={updateState} close={this.closeItemLists}
+          itemLists={itemLists} allItemLists={allItemLists} deleteItemList={deleteItemList}
+          newItemList={newItemList} selectItemList={selectItemList} duplicateList={duplicateList}
         />}
       </div>
     )

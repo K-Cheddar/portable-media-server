@@ -1,5 +1,6 @@
-export function setSlideBackground(background, item, wordIndex, itemIndex, allItems, itemList, updateState){
-
+export function setSlideBackground(props){
+  let {item, wordIndex, allItems, itemList, itemIndex} = props.state;
+  let {background, updateState} = props;
   item.slides[wordIndex].boxes[0].background = background;
   let index = allItems.findIndex(e => e.name === item.name)
 
@@ -16,7 +17,11 @@ export function setSlideBackground(background, item, wordIndex, itemIndex, allIt
   })
 }
 
-export function setWordIndex(index, lyrics, item, wordIndex, updateState, updateCurrent){
+export function setWordIndex(props){
+  let {index, updateState, updateCurrent} = props;
+  let {item, wordIndex} = props.state;
+  let lyrics = item.slides[index].boxes[0].words;
+
   let scrollTo = index;
   if(!item.slides)
     return;

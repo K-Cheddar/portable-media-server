@@ -1,7 +1,9 @@
 import * as Sort from './Sort'
 import * as Overflow from './Overflow'
 
-export function setItemBackground(background, item, itemIndex, itemList, allItems, updateState){
+export function setItemBackground(props){
+  let {item, itemIndex, itemList, allItems} = props.state;
+  let {background, updateState} = props;
   if(!item.slides)
     return;
 
@@ -14,17 +16,12 @@ export function setItemBackground(background, item, itemIndex, itemList, allItem
   //update Item background in all places
   itemList[itemIndex].background = background;
   allItems[index].background = background;
-  item.background = background;
 
-  updateState({
-    item: item,
-    needsUpdate: true,
-    itemList: itemList,
-    allItems: allItems
-  })
+  updateState({item: item, itemList: itemList, allItems: allItems})
 }
 
-export function setItemIndex(index, updateState){
+export function setItemIndex(props){
+  let {index, updateState} = props;
   var mElement = document.getElementById("MItem"+index);
   var element = document.getElementById("Item"+index);
   if(mElement)
@@ -32,32 +29,31 @@ export function setItemIndex(index, updateState){
   if(element)
     element.scrollIntoView({behavior: "instant", block: "nearest", inline: "nearest"});
   updateState({itemIndex: index, needsUpdate: false})
-
 }
 
-export function updateItem(item, itemList, itemIndex, allItems, wordIndex, updateState){
+export function updateItem(props){
+  let {itemList, itemIndex, allItems, wordIndex} = props.state;
+  let {updateState, item} = props;
+
   itemList[itemIndex].name = item.name;
   allItems = Sort.sortNamesInList(allItems)
   let index = allItems.findIndex(e => e._id === item._id)
   allItems[index].name = item.name;
 
-  if(item.type === 'song' && wordIndex !== 0)
+  if(item.type === 'song')
     item = Overflow.formatSong(item)
-  if(item.type === 'bible' && wordIndex !== 0)
+  if(item.type === 'bible')
     item = Overflow.formatBible(item, 'edit')
 
-  updateState({
-    item: item,
-    itemList: itemList,
-    allItems: allItems,
-    needsUpdate: true
-  });
+  updateState({item: item, itemList: itemList, allItems: allItems});
 }
 
-export function insertWords(targetIndex, item, wordIndex, setWordIndex, updateState){
+export function insertWords(props){
+  let {item, wordIndex} = props.state;
+  let {targetIndex, setWordIndex, updateState} = props;
   let words = item.slides[wordIndex].boxes[0].words;
   item.slides.splice(wordIndex, 1);
   item.slides.splice(targetIndex, 0, words);
-  updateState({item: item, needsUpdate: true});
+  updateState({item: item});
   setWordIndex(targetIndex);
 }

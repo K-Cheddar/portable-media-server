@@ -1,12 +1,23 @@
 import React, {Component} from 'react'
 import deleteX from './assets/deleteX.png';
+import * as Sort from './Sort'
 
 export default class SongSection extends Component{
 
   render(){
 
     let {setSectionIndex, item, changeSectionType, sectionTypes, deleteSection, changeSectionText,
-          i, index, sectionIndex} = this.props;
+          i, index, sectionIndex, sectionsPresent} = this.props;
+
+   sectionsPresent = sectionsPresent.filter(e => e !== item.name)
+
+   Sort.sortList(sectionTypes);
+   Sort.sortList(sectionsPresent);
+
+   let allSections = sectionTypes.concat(sectionsPresent);
+   allSections = allSections.filter(function(item, pos) {
+    return allSections.indexOf(item) == pos;
+    })
 
     return(
       <div style={{width:'33%', display:'flex', marginRight:'0.5vmax'}} key={i}
@@ -14,7 +25,7 @@ export default class SongSection extends Component{
         <div>
           <div style={{display:'flex', fontSize:'calc(7.5px + 0.75vmax)', margin:'2%'}}>
             <select value={item.type} onChange={changeSectionType}>
-              {sectionTypes.map((element, index) =>
+              {allSections.map((element, index) =>
                 <option key={index}> {element} </option>
               )}
             </select>

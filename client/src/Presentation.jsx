@@ -60,7 +60,8 @@ class Presentation extends React.Component{
 
 
   render() {
-    let {backgrounds, background, words, style, time} = this.props;
+    let {backgrounds} = this.props;
+    let {background, words, style, time} = this.props.currentInfo
     let {pBackground, pWords, pStyle, pTime, width, height} = this.state;
 
     if(pTime >= time){

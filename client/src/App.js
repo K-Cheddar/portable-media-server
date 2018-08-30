@@ -303,8 +303,7 @@ class App extends Component {
   }
 
   insertWords = (targetIndex) => {
-    let {item, wordIndex} = this.state;
-    ItemUpdate.insertWords(targetIndex, item, wordIndex, this.setWordIndex, this.updateState)
+    ItemUpdate.insertWords({targetIndex: targetIndex, state: this.state, setWordIndex: this.setWordIndex, updateState: this.updateState})
   }
 
   login = (database, user, upload_preset) => {
@@ -381,8 +380,7 @@ class App extends Component {
   }
 
   setItemBackground = (background) => {
-    let {item, itemIndex, itemList, allItems} = this.state;
-    ItemUpdate.setItemBackground(background, item, itemIndex, itemList, allItems, this.updateState)
+    ItemUpdate.setItemBackground({backbground: background, state: this.state, updateState: this.updateState})
   }
 
   selectItemList = (name) => {
@@ -394,7 +392,7 @@ class App extends Component {
 
   setItemIndex = (index) => {
     let {itemList, db} = this.state;
-    ItemUpdate.setItemIndex(index, this.updateState)
+    ItemUpdate.setItemIndex({index: index, updateState: this.updateState})
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
       DBUpdater.updateItem(db, itemID, this.updateState, this.setWordIndex)
@@ -402,14 +400,11 @@ class App extends Component {
   }
 
   setSlideBackground = (background) => {
-    let {item, wordIndex, allItems, itemList, itemIndex} = this.state;
-    SlideUpdate.setSlideBackground(background, item, wordIndex, itemIndex, allItems, itemList, this.updateState)
+    SlideUpdate.setSlideBackground({background: background, state: this.state, updateState: this.updateState})
   }
 
   setWordIndex = (index) => {
-    let {item, wordIndex} = this.state;
-    let lyrics = item.slides[index].boxes[0].words;
-    SlideUpdate.setWordIndex(index, lyrics, item, wordIndex, this.updateState, this.updateCurrent)
+    SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent})
   }
 
   update = () => {
@@ -456,55 +451,23 @@ class App extends Component {
   }
 
   updateFontColor = (fontColor) => {
-      let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = this.state;
-      Formatter.updateFontColor(fontColor, item, itemList, itemIndex, allItems, wordIndex, boxIndex, this.updateState)
+    Formatter.updateFontColor({fontColor: fontColor, state:this.state, updateState: this.updateState})
   }
 
   updateFontSize = (fontSize) => {
-      let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = this.state;
-      Formatter.updateFontSize(fontSize, item, itemList, itemIndex, allItems, wordIndex, boxIndex, this.updateState)
+    Formatter.updateFontSize({fontSize: fontSize, state:this.state, updateState: this.updateState})
   }
 
   updateBoxPosition = (position) => {
-      let {item, wordIndex, boxIndex} = this.state;
-      let {x, y, width, height, applyAll, match} = position;
-
-    if(match){
-      let box = item.slides[wordIndex].boxes[0];
-      x = box.x;
-      y = box.y;
-      width = box.width;
-      height = box.height;
-    }
-
-    if (!applyAll){
-      let box = item.slides[wordIndex].boxes[0];
-      box.x = x;
-      box.y = y;
-      box.width = width;
-      box.height = height;
-    }
-    else{
-      for(let i = 1; i < item.slides.length; ++i){
-        let box = item.slides[i].boxes[0];
-        box.x = x;
-        box.y = y;
-        box.width = width;
-        box.height = height;
-      }
-    }
-
-    this.updateItem(item);
+    Formatter.updateBoxPosition({state: this.state, position: position, updateItem: this.updateItem})
   }
 
   updateBrightness = (level) => {
-    let {item, wordIndex, boxIndex} = this.state;
-    Formatter.updateBrightness(level, item, wordIndex, boxIndex, this.updateState)
+    Formatter.updateBrightness({state: this.state, level: level, updateState: this.updateState})
   }
 
   updateItem = (item) => {
-      let {itemList, itemIndex, allItems, wordIndex} = this.state;
-      ItemUpdate.updateItem(item, itemList, itemIndex, allItems, wordIndex, this.updateState)
+      ItemUpdate.updateItem({state: this.state, item: item, updateState: this.updateState})
   }
 
   updateState = (obj) => {
@@ -546,8 +509,6 @@ class App extends Component {
 
   // DBUpdater.updateALL(this.state.db);
   // window.open()
-
-
   }
 
   toggleFreeze = () => {
@@ -556,56 +517,21 @@ class App extends Component {
 
   render() {
 
-    let {wordIndex, itemIndex, currentInfo, isLoggedIn, item, allItems, freeze, user, retrieved} = this.state;
-    let style;
-    let siteStyle = {
-      backgroundColor: '#d9e3f4',
-      height:'100vh',
-      width: '100vw',
-      overflow: 'hidden',
-      zIndex: 1,
-      position: 'fixed'
+    let {backgrounds, currentInfo, isLoggedIn, retrieved} = this.state;
+
+    let style = { height:'100vh',   width: '100vw',   overflow: 'hidden',
+                  zIndex: 1,        position: 'fixed'
     }
-    let presentationStyle = {
-      backgroundColor: '#000',
-      height:'100vh',
-      zIndex: 1,
-      position: 'fixed'
-    }
-    let mobileStyle = {
-      backgroundColor: '#d9e3f4',
-      height:'100vh',
-      overflowY: 'hidden',
-      zIndex: 1,
-      position: 'fixed'
-    }
-    switch(window.location.hash){
-      case '#/presentation':{
-        style = presentationStyle;
-        break;
-      }
-      case '#/mobile':{
-        style = mobileStyle;
-        break;
-      }
-      default :{
-        style = siteStyle;
-        break;
-      }
-    }
+
+    if(window.location.hash === '#/presentation')
+      style.backgroundColor = '#000'
+    else
+      style.backgroundColor = '#d9e3f4'
 
     return (
       <HotKeys keyMap={map}>
         <div id="fullApp" style={style}>
-          <NavBar selectedItemList={this.state.selectedItemList} selectItemList={this.selectItemList}
-          itemLists={this.state.itemLists} toggleFreeze={this.toggleFreeze} deleteItemList={this.deleteItemList}
-          addItem={this.addItem} isLoggedIn={isLoggedIn} wordIndex={wordIndex} freeze={freeze} item={item}
-          backgrounds={this.state.backgrounds} formatBible={Overflow.formatBible} db={this.state.db}
-          test={this.test} user={user} newItemList={this.newItemList} logout={this.logout}
-          updateState={this.updateState} allItemLists={this.state.allItemLists} updateBrightness={this.updateBrightness}
-          updateFontSize={this.updateFontSize} updateFontColor={this.updateFontColor} duplicateList={this.duplicateList}
-          updateBoxPosition={this.updateBoxPosition}
-          />
+          <NavBar parent={this} formatBible={Overflow.formatBible}/>
         {!retrieved.finished && <Loading retrieved={retrieved}/>}
           <div>
               {/* Route components are rendered if the path prop matches the current URL */}
@@ -614,35 +540,17 @@ class App extends Component {
                   <Home {...props} isLoggedIn={isLoggedIn} logout={this.logout}
                 />}/>
                 <Route  path="/fullview" render={(props) =>
-                  <FullView {...props}
-                    wordIndex={wordIndex} itemIndex={itemIndex} setSlideBackground={this.setSlideBackground}
-                    setItemIndex={this.setItemIndex} setWordIndex={this.setWordIndex}
-                    isLoggedIn={this.state.isLoggedIn} updateItem={this.updateItem}
-                    addItem={this.addItem} itemList={this.state.itemList} item={this.state.item}
-                    deleteItemFromList={this.deleteItemFromList} backgrounds={this.state.backgrounds}
-                    setItemBackground = {this.setItemBackground} duplicateItem={this.duplicateItem}
-                    allItems={allItems} deleteItem={this.deleteItem} insertWords={this.insertWords}
-                    addItemToList={this.addItemToList} insertItemIntoList={this.insertItemIntoList}
-                    currentInfo={currentInfo} formatSong={Overflow.formatSong} user={user} addMedia={this.addMedia}
-                    openUploader={this.openUploader} db={this.state.db} updateCurrent={this.updateCurrent}
+                  <FullView {...props} parent={this} formatSong={Overflow.formatSong}
                   />}/>
                 <Route  path="/mobile" render={(props) =>
-                  <MobileView {...props}
-                    wordIndex={wordIndex} itemIndex={itemIndex}
-                    setItemIndex={this.setItemIndex} setWordIndex={this.setWordIndex}
-                    isLoggedIn={this.state.isLoggedIn} updateItem={this.updateItem}
-                    itemList={this.state.itemList} item={this.state.item}
-                    backgrounds={this.state.backgrounds} allItems={allItems}
-                    itemLists={this.state.itemLists} selectedItemList={this.state.selectedItemList}
-                    selectItemList={this.selectItemList} toggleFreeze={this.toggleFreeze} freeze={freeze}
+                  <MobileView {...props} parent={this}
                   />}/>
                 <Route path="/login" render={(props) =>
                     <Login {...props} login={this.login}
                     />}/>
                 <Route path="/presentation" render={(props) =>
-                    <Presentation {...props}  words={currentInfo.words} style={currentInfo.style}
-                      background={currentInfo.background} backgrounds={this.state.backgrounds}
-                      time={currentInfo.time}
+                    <Presentation {...props} currentInfo={currentInfo}
+                      backgrounds={backgrounds}
                     />}/>
               </Switch>
           </div>

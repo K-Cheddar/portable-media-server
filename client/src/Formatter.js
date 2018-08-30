@@ -1,6 +1,9 @@
 import * as Overflow from './Overflow';
 
-export function updateFontSize(fontSize, item, itemList, itemIndex, allItems, wordIndex, boxIndex, updateState){
+export function updateFontSize(props){
+
+    let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = props.state;
+    let {fontSize, updateState} = props;
 
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
@@ -33,7 +36,11 @@ export function updateFontSize(fontSize, item, itemList, itemIndex, allItems, wo
 
 }
 
-export function updateFontColor(c, item, itemList, itemIndex, allItems, wordIndex, boxIndex, updateState){
+export function updateFontColor(props){
+
+    let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = props.state;
+    let {updateState} = props;
+    let c = props.fontColor;
 
     let color = 'rgba('+c.r+' , ' +c.g+' , '+c.b+' , '+c.a+')';;
     let slides = item.slides || null;
@@ -82,8 +89,9 @@ export function updateFontColor(c, item, itemList, itemIndex, allItems, wordInde
 
 }
 
-export function updateBrightness(level, item, wordIndex, boxIndex, updateState){
-
+export function updateBrightness(props){
+    let {item, wordIndex, boxIndex} = props.state;
+    let {level, updateState} = props;
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
 
@@ -103,4 +111,35 @@ export function updateBrightness(level, item, wordIndex, boxIndex, updateState){
       needsUpdate: true
     });
 
+}
+
+export function updateBoxPosition(props){
+  let {item, wordIndex, boxIndex} = props.state;
+  let {x, y, width, height, applyAll, match} = props.position;
+  if(match){
+    let box = item.slides[wordIndex].boxes[0];
+    x = box.x;
+    y = box.y;
+    width = box.width;
+    height = box.height;
+  }
+
+  if (!applyAll){
+    let box = item.slides[wordIndex].boxes[0];
+    box.x = x;
+    box.y = y;
+    box.width = width;
+    box.height = height;
+  }
+  else{
+    for(let i = 1; i < item.slides.length; ++i){
+      let box = item.slides[i].boxes[0];
+      box.x = x;
+      box.y = y;
+      box.width = width;
+      box.height = height;
+    }
+  }
+
+  props.updateItem(item);
 }

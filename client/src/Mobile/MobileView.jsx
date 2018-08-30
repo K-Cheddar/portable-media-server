@@ -25,9 +25,8 @@ export default class MobileView extends Component{
 
   render() {
 
-    let {wordIndex, setItemIndex, setWordIndex, swapItemInList, swapWords,
-      addItem, itemList, deleteItemFromList, item, updateItem, backgrounds, itemIndex,
-      toggleFreeze, freeze } = this.props;
+    let {setItemIndex, setWordIndex, updateItem, toggleFreeze, selectItemList} = this.props.parent;
+    let {wordIndex, itemList, item, backgrounds, itemIndex, freeze, itemLists, selectedItemList} = this.props.state;
 
     let buttonLoggedIn = {margin:'0.5%', width:'60%', minWidth:'18vw'}
 
@@ -69,7 +68,7 @@ export default class MobileView extends Component{
           <div style={{paddingTop:'1.5%', maxWidth:'100%'}}>
             <MobileSlides setWordIndex={setWordIndex} wordIndex={wordIndex}
               item={item} updateItem={updateItem}
-              backgrounds={backgrounds} swapWords={swapWords}
+              backgrounds={backgrounds}
               />
           </div>
         </div>
@@ -78,14 +77,12 @@ export default class MobileView extends Component{
              zIndex: 2, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
             <div style={{position:'fixed', display:'flex', top:'2vmax', left:'13vw',
                zIndex: 3, backgroundColor:'#d9e3f4', width:'70vw', maxWidth:'100%'}}>
-             <MobileListChanger selectedItemList={this.props.selectedItemList}
-               selectItemList={this.props.selectItemList} itemLists={this.props.itemLists}/>
+             <MobileListChanger selectedItemList={selectedItemList}
+               selectItemList={selectItemList} itemLists={itemLists}/>
 
               <MobileItemList setItemIndex={setItemIndex} setWordIndex={setWordIndex}
-                addItem={addItem} itemList={itemList}
-                deleteItemFromList={deleteItemFromList} backgrounds={backgrounds}
-                updateItem={updateItem} swapItemInList={swapItemInList}
-                itemIndex={itemIndex} close={this.closeItemSelect}
+                itemList={itemList} backgrounds={backgrounds} updateItem={updateItem}
+                 itemIndex={itemIndex} close={this.closeItemSelect}
                 />
             </div>
         </div>}
