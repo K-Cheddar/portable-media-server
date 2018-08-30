@@ -26,7 +26,7 @@ export default class MobileView extends Component{
   render() {
 
     let {setItemIndex, setWordIndex, updateItem, toggleFreeze, selectItemList} = this.props.parent;
-    let {wordIndex, itemList, item, backgrounds, itemIndex, freeze, itemLists, selectedItemList} = this.props.state;
+    let {wordIndex, itemList, item, backgrounds, itemIndex, freeze, itemLists, selectedItemList} = this.props.parent.state;
 
     let buttonLoggedIn = {margin:'0.5%', width:'60%', minWidth:'18vw'}
 
