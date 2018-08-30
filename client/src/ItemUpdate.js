@@ -43,6 +43,8 @@ export function updateItem(item, itemList, itemIndex, allItems, wordIndex, updat
 
   if(item.type === 'song' && wordIndex !== 0)
     item = Overflow.formatSong(item)
+  if(item.type === 'bible' && wordIndex !== 0)
+    item = Overflow.formatBible(item, 'edit')
 
   updateState({
     item: item,

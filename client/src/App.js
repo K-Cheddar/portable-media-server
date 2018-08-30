@@ -465,6 +465,38 @@ class App extends Component {
       Formatter.updateFontSize(fontSize, item, itemList, itemIndex, allItems, wordIndex, boxIndex, this.updateState)
   }
 
+  updateBoxPosition = (position) => {
+      let {item, wordIndex, boxIndex} = this.state;
+      let {x, y, width, height, applyAll, match} = position;
+
+    if(match){
+      let box = item.slides[wordIndex].boxes[0];
+      x = box.x;
+      y = box.y;
+      width = box.width;
+      height = box.height;
+    }
+
+    if (!applyAll){
+      let box = item.slides[wordIndex].boxes[0];
+      box.x = x;
+      box.y = y;
+      box.width = width;
+      box.height = height;
+    }
+    else{
+      for(let i = 1; i < item.slides.length; ++i){
+        let box = item.slides[i].boxes[0];
+        box.x = x;
+        box.y = y;
+        box.width = width;
+        box.height = height;
+      }
+    }
+
+    this.updateItem(item);
+  }
+
   updateBrightness = (level) => {
     let {item, wordIndex, boxIndex} = this.state;
     Formatter.updateBrightness(level, item, wordIndex, boxIndex, this.updateState)
@@ -473,7 +505,7 @@ class App extends Component {
   updateItem = (item) => {
       let {itemList, itemIndex, allItems, wordIndex} = this.state;
       ItemUpdate.updateItem(item, itemList, itemIndex, allItems, wordIndex, this.updateState)
-    }
+  }
 
   updateState = (obj) => {
 
@@ -572,6 +604,7 @@ class App extends Component {
           test={this.test} user={user} newItemList={this.newItemList} logout={this.logout}
           updateState={this.updateState} allItemLists={this.state.allItemLists} updateBrightness={this.updateBrightness}
           updateFontSize={this.updateFontSize} updateFontColor={this.updateFontColor} duplicateList={this.duplicateList}
+          updateBoxPosition={this.updateBoxPosition}
           />
         {!retrieved.finished && <Loading retrieved={retrieved}/>}
           <div>

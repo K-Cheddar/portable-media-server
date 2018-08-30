@@ -28,9 +28,9 @@ export default class FullView extends React.Component{
           </div>
           <div style={{width:'82.5%', height:"50%"}}>
             <div style={{display:'flex'}}>
-              <div style={{width:'42.5vw', height:'23.9vw', marginLeft:'1vw'}}>
+              <div style={{width:'42.5vw', height:'23.9vw', marginLeft:'0.7vw'}}>
                 <DisplayEditor wordIndex={wordIndex} backgrounds={backgrounds}
-                  item={item} updateItem={updateItem}/>
+                  item={item} updateItem={updateItem} width={'42.5vw'} height={'23.9vw'}/>
               </div>
               <div style={{marginLeft:'1vw', position: 'relative'}}>
                 <Backgrounds backgrounds={backgrounds} handleFileChange={handleFileChange} addItem={addItem}
@@ -57,7 +57,6 @@ export default class FullView extends React.Component{
                 </div>
             </div>
           </div>
-
         </div>
       </div>
     )

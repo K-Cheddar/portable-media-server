@@ -51,7 +51,7 @@ export default class Display_Background extends Component {
 
   render(){
     let {img, brightness, width, height, title, presentation} = this.props;
-    let {prevBackground, backgroundUpdaterIndex, prevBackgroundStyle} = this.state;
+    let {backgroundUpdaterIndex, prevBackgroundStyle} = this.state;
 
     let backgroundStyle = this.computeBackgroundStyle(img, brightness, width, height);
 

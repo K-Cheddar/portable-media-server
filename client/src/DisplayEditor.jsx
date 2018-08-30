@@ -1,5 +1,5 @@
 import React from 'react';
-import blank from './assets/blank.png';
+import DisplayWindow from './DisplayWindow';
 
 class DisplayEditor extends React.Component{
 
@@ -7,6 +7,7 @@ class DisplayEditor extends React.Component{
     let video = document.getElementById('background-video');
     if(video)
       video.loop = true;
+
   }
 
   componentDidUpdate(prevProps){
@@ -16,6 +17,16 @@ class DisplayEditor extends React.Component{
       if(video)
         video.loop = true;
     }
+  }
+
+  handleBoxChange = (x, y, width, height) => {
+    let{wordIndex, item} = this.props;
+    let box = item.slides[wordIndex].boxes[0];
+    box.x = x;
+    box.y = y;
+    box.width = width;
+    box.height = height;
+    this.props.updateItem(item);
   }
 
   handleTextChange = (event) => {
@@ -63,83 +74,33 @@ class DisplayEditor extends React.Component{
     }
 
   render() {
-    let {wordIndex, item, backgrounds} = this.props;
+    let {wordIndex, item, backgrounds, width, height} = this.props;
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
     let box = slide ? slide.boxes[0] : null;
-    let words = "", background = blank, asset;
-    let search = item.background;
-    let isVideo = false;
 
-    let pictureContainerStyle = {
-      width: '100%',    height: '100%',     position: 'relative'
-    }
+    let blankStyle = {width: width, height: height, background: 'black'}
+    let blankTextStyle = {color: 'white', textAlign: 'center',
+    fontSize: '4vw', paddingTop: '15%'}
 
+    if(!box)
+      return (<div style={blankStyle}><div style={blankTextStyle}>No Item Selected</div></div>)
 
-     let fsAdjust =  box ? slide.boxes[0].fontSize/40 : 1;
-     let strokeRadius = `calc(${fsAdjust*1.25}vw)`
-     let strokeColor = "#000";
-     let SS = `${fsAdjust*1}vw`
-
-    let style = {
-      textAlign: 'center',  background: 'transparent',        border: 'none',
-      outline: 'none',      resize:'none',                    whiteSpace:'pre-wrap',
-      height: '85%',        width: '91%',                     fontFamily: "Verdana",
-      padding: '5% 4%',        overflow: 'hidden',               position:'absolute',
-      zIndex:2,             color: 'rgba(255, 255, 255, 1)',  fontSize: '1vw',
-      textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
-      WebkitTextStroke: `${strokeRadius} ${strokeColor}`
-    }
-
-    if(box)
-      search = box.background;
-
-    if(backgrounds){
-      if(backgrounds.some(e => e.name === search)){
-          asset = backgrounds.find(e => e.name === search);
-          background = asset.image.src;
-          if(asset.type === 'video')
-            isVideo = true;
-        }
-    }
-
-    let backgroundPictureStyle = {
-      position:'absolute',    zIndex:1,       backgroundImage: 'url('+background+')',
-      width: "100%",          height: "100%", backgroundSize: '100% 100%'}
-
-    if(box){
-      words = box.words;
-      style.color = box.fontColor;
-      style.fontSize = box.fontSize+"vw";
-      let level = box.brightness ? box.brightness+"%" : '100%'
-      backgroundPictureStyle.filter = `brightness(${level})`
-    }
-
-    let blankTextStyle = {
-      position:'relative',    zIndex:2,     color: 'white',     textAlign: 'center',
-      fontSize: '3vw',        paddingTop: '15%'}
-
+    let words = box.words;
+    let background = box.background;
+    // let style = {
+    //   fontColor: box.fontColor,
+    //   fontSize: box.fontSize,
+    //   brightness: box.brightness ? box.brightness+"%" : '100%',
+    //
+    // }
 
     return (
-      <div style={{width: '100%', height:'100%'}}>
-      {!isVideo && <div style={pictureContainerStyle}>
-        <div style={backgroundPictureStyle}></div>
-          {(item.slides) &&
-            <textarea id="displayEditor" style={style} value={words} onChange={this.handleTextChange}/>}
-          {(!item.slides) && <div>
-            <div style={blankTextStyle}>No Item Selected</div>
-           </div>}
-      </div>}
-      {isVideo &&<div style={{width:'100%', height:'100%',position:'relative'}}>
-        <video loop autoPlay id="background-video"
-          style={{width:'100%', position:'absolute', zIndex:'-1', top:'1%'}} >
-          <source src={asset.video.src} type="video/mp4"/>
-          <source src={asset.video.src} type="video/ogg" />
-        </video>
-        <div>
-          <textarea id="displayEditor" style={style} value={words} onChange={this.handleTextChange}/>
-          </div>
-      </div>}
+      <div style={{width: width, height: height, position: 'relative'}}>
+        <DisplayWindow words={words} style={box} background={background} backgrounds={backgrounds}
+          width={width} height={height} title={''} editor={true} handleTextChange={this.handleTextChange}
+          handleBoxChange={this.handleBoxChange}>
+        </DisplayWindow>
       </div>
     )
   }

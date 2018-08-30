@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import DisplayWindow from '../DisplayWindow';
+import DisplayEditor from '../DisplayEditor';
 
-export default class DisplayEditor extends Component{
+export default class MobileDisplay extends Component{
 
   render() {
 
-    let {wordIndex, item, backgrounds} = this.props;
+    let {wordIndex, item, backgrounds, updateItem} = this.props;
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
     let width = "100vw";
@@ -18,18 +18,9 @@ export default class DisplayEditor extends Component{
     if(!slide)
       return (<div style={blankStyle}><div style={blankTextStyle}>No Item Selected</div></div>)
 
-    let words = slide.boxes[0].words
-    let style = {
-      fontColor: slide.boxes[0].fontColor,
-      fontSize: slide.boxes[0].fontSize
-    }
-    // style.fontSize = slide ? item.slides[wordIndex].boxes[0].fontSize*2.25 + "vw" : '1vw';
-    let background = slide.boxes[0].background
-
     return (
-      <DisplayWindow words={words} style={style} background={background} backgrounds={backgrounds}
-        width={width} height={height} title={''} titleSize={''}/>
-
+      <DisplayEditor wordIndex={wordIndex} backgrounds={backgrounds}
+        item={item} updateItem={updateItem} width={width} height={height}/>
     )
   }
 

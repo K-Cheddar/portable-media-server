@@ -25,7 +25,7 @@ export default class MobileView extends Component{
 
   render() {
 
-    let {wordIndex, setItemIndex, setWordIndex, isLoggedIn, swapItemInList, swapWords,
+    let {wordIndex, setItemIndex, setWordIndex, swapItemInList, swapWords,
       addItem, itemList, deleteItemFromList, item, updateItem, backgrounds, itemIndex,
       toggleFreeze, freeze } = this.props;
 

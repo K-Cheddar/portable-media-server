@@ -8,7 +8,13 @@ import Bible from './Bible'
 import CreateName from './CreateName';
 import ItemListEditor from './ItemListEditor';
 
-
+import textbox_full from './assets/textbox_full.png';
+import textbox_leftHalf from './assets/textbox_leftHalf.png';
+import textbox_lowerThird from './assets/textbox_lowerThird.png';
+import textbox_match from './assets/textbox_match.png';
+import textbox_midThird from './assets/textbox_midThird.png';
+import textbox_rightHalf from './assets/textbox_rightHalf.png';
+import textbox_upperThird from './assets/textbox_upperThird.png';
 
 export default class NavBar extends Component {
 
@@ -19,10 +25,10 @@ export default class NavBar extends Component {
       nameOpen: false,
       type: "",
       menuMousedOver: false,
-      itemListsOpen: false
+      itemListsOpen: false,
+      applyAll: false,
     }
   }
-
 
   openMenu = () => {
     this.setState({menuMousedOver: true})
@@ -59,6 +65,49 @@ export default class NavBar extends Component {
     })
   }
 
+  textboxFull = () => {
+    let {applyAll} = this.state;
+    this.props.updateBoxPosition({x: 0, y: 0, width: 100, height: 100, applyAll: applyAll})
+  }
+
+  textboxLeftHalf = () => {
+    let {applyAll} = this.state;
+    this.props.updateBoxPosition({x: 0, y: 0, width: 54.5, height: 100, applyAll: applyAll})
+  }
+
+  textboxRightHalf = () => {
+    let {applyAll} = this.state;
+    this.props.updateBoxPosition({x: 45.5, y: 0, width: 54.5, height: 100, applyAll: applyAll})
+  }
+
+  textboxMatch = () => {
+    let {applyAll} = this.state;
+    this.props.updateBoxPosition({applyAll: applyAll, match:true})
+  }
+
+  textboxLowerThird = () => {
+    let {applyAll} = this.state;
+    this.props.updateBoxPosition({x: 0, y: 63.5, width: 100, height: 37.5, applyAll: applyAll})
+  }
+
+  textboxMidThird = () => {
+    let {applyAll} = this.state;
+    this.props.updateBoxPosition({x: 0, y: 33.5, width: 100, height: 37.5, applyAll: applyAll})
+  }
+
+  textboxUpperThird = () => {
+    let {applyAll} = this.state;
+    this.props.updateBoxPosition({x: 0, y: 0, width: 100, height: 37.5, applyAll: applyAll})
+  }
+
+  applyAll = () => {
+    this.setState({applyAll: true})
+  }
+
+  applySelected = () => {
+    this.setState({applyAll: false})
+  }
+
   logout = () => {
     this.setState({menuMousedOver: false})
     this.props.logout();
@@ -93,7 +142,7 @@ export default class NavBar extends Component {
     }
 
     return(
-      <div style={window.location.hash==="#/fullview" ? {display: 'flex', width:'100vw', height: '3vw'} : {display:'none'}} >
+      <div style={window.location.hash==="#/fullview" ? {display: 'flex', width:'100vw', height: '8vh'} : {display:'none'}} >
         <ul style={{display:'flex', zIndex: 3}}>
           {/*<li><button onClick={this.props.test}>UPDATE ALL</button></li>*/}
           <li onMouseEnter={this.openMenu} onMouseLeave={this.closeMenu}>
@@ -121,7 +170,7 @@ export default class NavBar extends Component {
               onClick={this.openItemLists}
               />
           </li>
-          <li style={{display:'flex', margin:'auto', marginLeft:'3vw'}}>
+          <li style={{display:'flex', margin:'auto'}}>
             <button style={buttonStyle} onClick={this.openSong}>Add Song</button>
             <button style={buttonStyle} onClick={this.openBible}>Add Bible</button>
           </li>
@@ -130,6 +179,45 @@ export default class NavBar extends Component {
                <FormatEditor item={item} updateFontSize={updateFontSize} updateFontColor={updateFontColor}
                  wordIndex={wordIndex} updateBrightness={updateBrightness}/>
             </div>
+          </li>
+          <li style={{display:'flex'}}>
+              <div style={{width:'11vw'}}>
+                <div style={{display:'flex'}}>
+                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                     alt="textbox_full" src={textbox_full} onClick={this.textboxFull}
+                    />
+                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                     alt="textbox_leftHalf" src={textbox_leftHalf} onClick={this.textboxLeftHalf}
+                    />
+                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                     alt="textbox_rightHalf" src={textbox_rightHalf} onClick={this.textboxRightHalf}
+                    />
+                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                     alt="textbox_match" src={textbox_match} onClick={this.textboxMatch}
+                    />
+                </div>
+                <div style={{display:'flex'}}>
+                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                     alt="textbox_lowerThird" src={textbox_lowerThird} onClick={this.textboxLowerThird}
+                    />
+                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                     alt="textbox_midThird" src={textbox_midThird} onClick={this.textboxMidThird}
+                    />
+                  <img style={{ margin:'1%', width:'2.5vw', height:'1.41vw'}}
+                     alt="textbox_upperThird" src={textbox_upperThird} onClick={this.textboxUpperThird}
+                    />
+                </div>
+              </div>
+              <div style={{width:'8vw'}}>
+                <div style={{fontSize: "calc(5px + 0.35vw)", marginBottom: '3%'}} onClick={this.applyAll}>
+                  <input type="checkbox" readOnly checked={this.state.applyAll}/>
+                  Apply To All
+                </div>
+                <div style={{fontSize: "calc(5px + 0.35vw)"}} onClick={this.applySelected}>
+                  <input type="checkbox" readOnly checked={!this.state.applyAll}/>
+                  Apply Selected
+                </div>
+              </div>
           </li>
           <li>
             {freeze && <div style={{display:'flex', height:'1.5vw', paddingTop:'1%', margin:'auto'}}>
@@ -167,8 +255,3 @@ export default class NavBar extends Component {
 
 
 }
-//
-// <div style={{width: '30%', margin:'auto'}}>
-//   <button style={buttonStyle} onClick={this.openImage}>Add Media</button>
-// </div>
-//
