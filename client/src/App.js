@@ -188,7 +188,27 @@ class App extends Component {
          path: '/peerjs'
        });
        peer.on('open', function(id) {
-          connectPeer();
+         console.log("Peer Sender Ready");
+         let obj = {user: user};
+         fetch('api/getReceiverId', {
+            method: 'post',
+            body: JSON.stringify(obj),
+            headers: {
+             'Accept': 'application/json',
+             'Content-Type': 'application/json'
+             },
+         }).then(function(response){
+           return response.json();
+         }).then(function(res){
+           if(res.serverID === undefined){
+             alert("No Receiver Is Established");
+             return;
+           }
+           conn = peer.connect(res.serverID);
+           conn.on('open', function(){
+               that.setState({isSender: true})
+           })
+         })
        })
     }
     else{
