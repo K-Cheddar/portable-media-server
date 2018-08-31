@@ -33,22 +33,19 @@ export default class ItemListEditor extends Component{
     this.setState({ilsSearch: event.target.value})
   }
 
-  confirm = (itemName) => {
+  confirm = (id) => {
     let {name} = this.state;
     let {itemLists, allItemLists} = this.props;
-    let index = itemLists.findIndex(e => e.name === itemName)
-    let indexAll = allItemLists.findIndex(e => e.name === itemName)
+    let index = itemLists.findIndex(e => e.id === id)
+    let indexAll = allItemLists.findIndex(e => e.id === id)
     itemLists[index].name = name;
     allItemLists[indexAll].name = name;
-    this.props.updateState({
-      itemLists: itemLists,
-      allItemLists: allItemLists
-    })
+    this.props.updateState({ itemLists: itemLists, allItemLists: allItemLists })
     this.setState({selectedIndex: -1, name: ''})
   }
 
-  openConfirmation = (name) => {
-    let index = this.props.allItemLists.findIndex(e => e.name === name)
+  openConfirmation = (name, id) => {
+    let index = this.props.allItemLists.findIndex(e => e.id === id)
     this.setState({
       deleteOverlay: true,
       name: name,
@@ -76,20 +73,20 @@ export default class ItemListEditor extends Component{
     })
   }
 
-  deleteList = (type, name) => {
+  deleteList = (type, id) => {
     let {itemLists, allItemLists} = this.props;
     let {deleteIndex} = this.state;
     if(type==='one'){
-      let index = itemLists.findIndex(e => e.name === name)
+      let index = itemLists.findIndex(e => e.id === id)
       if(index === -1)
         return
       itemLists.splice(index, 1);
       this.props.updateState({itemLists: itemLists})
     }
     if(type==='all'){
-      let name = allItemLists[deleteIndex].name
-      let index = itemLists.findIndex(e => e.name === name)
-      this.props.deleteItemList(allItemLists[deleteIndex].id)
+      let id = allItemLists[deleteIndex].id
+      let index = itemLists.findIndex(e => e.id === id)
+      this.props.deleteItemList(id)
       allItemLists.splice(deleteIndex, 1);
       if(index !== -1){
         itemLists.splice(index, 1);
@@ -180,7 +177,7 @@ export default class ItemListEditor extends Component{
            alt="edit" src={edit}
            />}
           {!selected && <img className='imgButton' style={buttonStyle}
-           onClick={() => (this.deleteList('one', item.name))}
+           onClick={() => (this.deleteList('one', item.id))}
            alt="delete" src={deleteX}
            />}
           {!selected && <img className='imgButton' style={buttonStyle}
@@ -188,11 +185,11 @@ export default class ItemListEditor extends Component{
             alt="duplicate" src={duplicate}
            />}
            {selected && <img className='imgButton' style={buttonStyle}
-            onClick={() => (this.confirm(item.name))}
+            onClick={() => (this.confirm(item.id))}
             alt="check" src={check}
             />}
            {selected && <img className='imgButton' style={buttonStyle}
-            onClick={() => (this.cancel(item.name))}
+            onClick={() => (this.cancel())}
             alt="cancel" src={cancel}
             />}
         </div>
@@ -208,7 +205,7 @@ export default class ItemListEditor extends Component{
            alt="add" src={add}
            />
          <img className='imgButton' style={buttonStyle}
-             onClick={() => (this.openConfirmation(item.name))}
+             onClick={() => (this.openConfirmation(item.name, item.id))}
              alt="delete" src={deleteX}
              />
         </div>

@@ -55,7 +55,7 @@ export function init(props){
 
 export function changes(props){
   let {db, cloud, remoteDB} = props;
-  let {updateState, getTime, getSelectedListId, getSuccess, getAttempted, getItemId} = props.parent;
+  let {updateState, getTime, getSelectedListId, getSuccess, getAttempted} = props.parent;
   db.changes({
     since: 'now',
     live: true,

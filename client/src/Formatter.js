@@ -2,7 +2,7 @@ import * as Overflow from './Overflow';
 
 export function updateFontSize(props){
 
-    let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = props.state;
+    let {item, wordIndex, boxIndex} = props.state;
     let {fontSize, updateState} = props;
 
     let slides = item.slides || null;
@@ -14,9 +14,9 @@ export function updateFontSize(props){
     if(boxIndex === 0){
       if(wordIndex !== 0)
         for(let i = 1; i < item.slides.length; ++i)
-            item.slides[i].boxes[0].fontSize = fontSize;
+            item.slides[i].boxes[boxIndex].fontSize = fontSize;
       else
-        item.slides[0].boxes[0].fontSize = fontSize;
+        item.slides[0].boxes[boxIndex].fontSize = fontSize;
     }
 
     if(item.type === 'bible' && wordIndex !== 0)
@@ -117,7 +117,7 @@ export function updateBoxPosition(props){
   let {item, wordIndex, boxIndex} = props.state;
   let {x, y, width, height, applyAll, match} = props.position;
   if(match){
-    let box = item.slides[wordIndex].boxes[0];
+    let box = item.slides[wordIndex].boxes[boxIndex];
     x = box.x;
     y = box.y;
     width = box.width;
@@ -125,7 +125,7 @@ export function updateBoxPosition(props){
   }
 
   if (!applyAll){
-    let box = item.slides[wordIndex].boxes[0];
+    let box = item.slides[wordIndex].boxes[boxIndex];
     box.x = x;
     box.y = y;
     box.width = width;
@@ -133,7 +133,7 @@ export function updateBoxPosition(props){
   }
   else{
     for(let i = 1; i < item.slides.length; ++i){
-      let box = item.slides[i].boxes[0];
+      let box = item.slides[i].boxes[boxIndex];
       box.x = x;
       box.y = y;
       box.width = width;

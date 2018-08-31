@@ -242,7 +242,7 @@ class ItemSlides extends React.Component{
                  alt="zoomOut" src={zoomOut}
                 />
           </div>
-        <div style={{ overflowY: 'scroll', height: "37vh", width:"42vw"}}
+        <div style={{ overflowX: 'hidden', height: "37vh", width:"42vw"}}
           onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
           onMouseLeave={this.releaseElement}>{ROWtest}</div>
         {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item}

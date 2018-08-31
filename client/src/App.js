@@ -18,12 +18,15 @@ import NavBar from './NavBar'
 import Loading from './Loading'
 import cloudinary from 'cloudinary-core';
 import {HotKeys} from 'react-hotkeys';
-import * as Helper from './Helper'
+import * as Helper from './Helper';
+import Peer from 'peerjs'
 
 PouchDB.plugin(require('pouchdb-upsert'));
 
 var cloud = new cloudinary.Cloudinary({cloud_name: "portable-media", api_key:process.env.REACT_APP_CLOUDINARY_KEY, api_secret:process.env.REACT_APP_CLOUDINARY_SECRET, secure: true});
 
+var peer;
+var conn;
 // let requestedBytes = 1024*1024*10; // 10MB
 //  window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
 //
@@ -97,7 +100,10 @@ const initialState = {
   user: "Demo",
   upload_preset:"bpqu4ma5",
   retrieved:{},
-  attempted:{}
+  attempted:{},
+  peerID: '',
+  isReciever: false,
+  isSender: false,
 }
 
 /* App component */
@@ -170,6 +176,55 @@ class App extends Component {
       }
       DBUpdater.addItem({parent: this, item: item})
   }
+
+  connectToReceiver = () => {
+    let {user, peerID} = this.state;
+    let that = this;
+
+    if(!peerID){
+      fetch('api/getPort')
+      .then(function(response){
+        return response.json();
+      })
+      .then(function(res){
+        peer = new Peer({
+         host: window.location.hostname,
+         port: res.port,
+         path: '/peerjs'
+       });
+       peer.on('open', function(id) {
+          connectPeer();
+       })
+      })
+    }
+    else{
+      connectPeer();
+    }
+
+    function connectPeer(){
+      let obj = {user: user};
+      fetch('api/getReceiverId', {
+         method: 'post',
+         body: JSON.stringify(obj),
+         headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+          },
+      }).then(function(response){
+        return response.json();
+      }).then(function(res){
+        if(res.serverID === undefined){
+          alert("No Receiver Is Established");
+          return;
+        }
+        conn = peer.connect(res.serverID);
+        conn.on('open', function(){
+            that.setState({isSender: true})
+        })
+      })
+    }
+  }
+
 
   DBReplicate = (db, remoteDB, localDB) => {
     let that = this;
@@ -388,12 +443,73 @@ class App extends Component {
     }
   }
 
+  setAsReceiver = () => {
+    let {user, peerID} = this.state;
+    let that = this;
+
+    if(!peerID){
+      fetch('api/getPort')
+      .then(function(response){
+        return response.json();
+      })
+      .then(function(res){
+        peer = new Peer({
+         host: window.location.hostname,
+         port: res.port,
+         path: '/peerjs'
+       });
+       peer.on('open', function(id) {
+          that.setState({peerID: id, isReciever: true})
+          let obj = {user: user, id: id};
+          fetch('api/setAsReceiver', {
+             method: 'post',
+             body: JSON.stringify(obj),
+             headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+              },
+          })
+       })
+       peer.on('connection', function (serverConn){
+         conn = serverConn;
+         conn.on('data', function(data){
+           that.setState({currentInfo: data.obj})
+         })
+       })
+      })
+    }
+    else{
+      becomeReceiver();
+    }
+
+    function becomeReceiver(){
+      let obj = {user: user, id: peerID};
+      that.setState({isReciever: true})
+      fetch('api/setAsReceiver', {
+         method: 'post',
+         body: JSON.stringify(obj),
+         headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+          },
+      })
+      peer.on('connection', function (serverConn){
+        conn = serverConn;
+        conn.on('data', function(data){
+          that.setState({currentInfo: data.obj})
+        })
+      })
+    }
+
+
+  }
+
   setSlideBackground = (background) => {
     SlideUpdate.setSlideBackground({background: background, state: this.state, updateState: this.updateState})
   }
 
   setWordIndex = (index) => {
-    SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent})
+    SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent, conn: conn})
   }
 
   update = () => {
@@ -424,7 +540,6 @@ class App extends Component {
     else
       words = ""
 
-
     let date = new Date();
     let time = date.getTime();
     let obj = {
@@ -433,7 +548,8 @@ class App extends Component {
       style: style,
       time: time
     }
-
+    if(conn)
+      conn.send({obj})
     this.setState({currentInfo: obj})
     DBUpdater.updateCurrent({db: remoteDB, obj: obj});
     localStorage.setItem('presentation', JSON.stringify(obj));

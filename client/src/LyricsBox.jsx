@@ -142,7 +142,7 @@ export default class LyricsBox extends Component{
   updateSections = (formattedLyrics, oldName) => {
     let sections = [];
     let sectionUpdates = {};
-    let {songOrder, sectionsPresent} = this.state;
+    let {songOrder} = this.state;
     let sectionCounter = {}
 
     for(let i = 0; i < formattedLyrics.length; ++i){

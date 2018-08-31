@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import FormatEditor from './FormatEditor';
 import on from './assets/on.png';
 import off from './assets/off.png';
@@ -7,6 +7,9 @@ import open from './assets/open.png';
 import Bible from './Bible'
 import CreateName from './CreateName';
 import ItemListEditor from './ItemListEditor';
+
+import connected from './assets/connected.png';
+import disconnected from './assets/disconnected.png';
 
 import textbox_full from './assets/textbox_full.png';
 import textbox_leftHalf from './assets/textbox_leftHalf.png';
@@ -129,8 +132,10 @@ export default class NavBar extends Component {
 
     let {formatBible} = this.props;
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
-       updateBrightness, updateState, deleteItemList, newItemList, duplicateList} = this.props.parent;
-    let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db, allItemLists} = this.props.parent.state;
+       updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
+       setAsReceiver, connectToReceiver} = this.props.parent;
+    let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
+      allItemLists, isReciever, isSender} = this.props.parent.state;
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
 
     let buttonStyle = {
@@ -139,19 +144,21 @@ export default class NavBar extends Component {
 
     let menuItem = {
       display:'inline-block', width:'90%', padding: '2.5%', backgroundColor:'#fff', margin: '5%',
-      cursor: 'pointer'
+      cursor: 'pointer', fontSize: "calc(5px + 0.35vw)"
     }
 
     return(
       <div style={window.location.hash==="#/fullview" ? {display: 'flex', width:'100vw', height: '8vh'} : {display:'none'}} >
         <ul style={{display:'flex', zIndex: 3}}>
           {/*<li><button onClick={this.props.test}>UPDATE ALL</button></li>*/}
-          <li onMouseEnter={this.openMenu} onMouseLeave={this.closeMenu}>
+          <li style={{height: '2.5vh'}} onClick={this.openMenu} onMouseEnter={this.openMenu} onMouseLeave={this.closeMenu}>
             <button style={{fontFamily: 'Arial', backgroundColor:'#fff',fontSize: "calc(10px + 0.35vmax)"}}>Menu</button>
               <div style={menuMousedOver ? {backgroundColor:'#fff', position:'absolute', width:'7vw'} : {display:'none'}}>
                 <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
-                <button style={menuItem}><Link to="/">Home</Link></button>
-                {!isLoggedIn && <button style={menuItem}><Link to="/login">Login</Link></button>}
+                <Link to="/"><button style={menuItem}>Home</button></Link>
+                <button style={menuItem} onClick={setAsReceiver}> Become Receiver </button>
+                <button style={menuItem} onClick={connectToReceiver}> Connect To Receiver </button>
+                {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                 {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
               </div>
           </li>
@@ -220,12 +227,12 @@ export default class NavBar extends Component {
                 </div>
               </div>
           </li>
-          <li>
-            {freeze && <div style={{display:'flex', height:'1.5vw', paddingTop:'1%', margin:'auto'}}>
+          <li style={{borderRight: '0.25vw solid black', width: '9.5vw'}}>
+            {freeze && <div style={{display:'flex'}}>
              <div>
                <button style={buttonStyle} onClick={toggleFreeze}>Unfreeze</button>
              </div>
-              <img style={{paddingLeft:'5%', width:'2.75vw', height:'1.25vw'}}
+              <img style={{paddingTop:'0.35vh', width:'2.75vw', height:'1.25vw'}}
                  alt="off" src={off}
                 />
               </div>
@@ -240,7 +247,29 @@ export default class NavBar extends Component {
               </div>
             }
           </li>
-          <li style={{fontSize: "calc(12px + 0.5vw)"}}>Logged In As: {user}</li>
+          <li >
+            <div style={{fontSize: "calc(10px + 0.4vw)", fontWeight: 'bold'}}>Logged In As: {user}</div>
+            {(isReciever || isSender) &&<div>
+              <div style={{display:'flex', marginTop: '0.65vh'}}>
+                <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}}>Direct Receiving:</div>
+                {isReciever && <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
+                   alt="connected" src={connected}
+                  />}
+                {!isReciever && <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
+                   alt="disconnected" src={disconnected}
+                  />}
+                </div>
+              <div style={{display:'flex'}}>
+                <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}} >Direct Sending:</div>
+                {isSender && <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
+                   alt="connected" src={connected}
+                  />}
+                {!isSender && <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
+                   alt="disconnected" src={disconnected}
+                  />}
+              </div>
+            </div>}
+          </li>
         </ul>
         {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={formatBible}/>}
         {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={db}
