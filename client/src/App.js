@@ -181,62 +181,37 @@ class App extends Component {
     let {user, peerID} = this.state;
     let that = this;
 
-    if(!peerID){
-      peer = new Peer({
-         host: window.location.hostname,
-         port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
-         path: '/peerjs'
-       });
-       peer.on('open', function(id) {
-         console.log("Peer Sender Ready");
-         let obj = {user: user};
-         fetch('api/getReceiverId', {
-            method: 'post',
-            body: JSON.stringify(obj),
-            headers: {
-             'Accept': 'application/json',
-             'Content-Type': 'application/json'
-             },
-         }).then(function(response){
-           return response.json();
-         }).then(function(res){
-           if(res.serverID === undefined){
-             alert("No Receiver Is Established");
-             return;
-           }
-           conn = peer.connect(res.serverID);
-           conn.on('open', function(){
-               that.setState({isSender: true})
-           })
+    peer = new Peer({
+       host: window.location.hostname,
+       port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
+       path: '/peerjs'
+     });
+     peer.on('open', function(id) {
+       console.log("Peer Sender Ready");
+       let obj = {user: user};
+       fetch('api/getReceiverId', {
+          method: 'post',
+          body: JSON.stringify(obj),
+          headers: {
+           'Accept': 'application/json',
+           'Content-Type': 'application/json'
+           },
+       }).then(function(response){
+         return response.json();
+       }).then(function(res){
+         if(res.serverID === undefined){
+           alert("No Receiver Is Established");
+           return;
+         }
+         console.log(res.serverID);
+         conn = peer.connect(res.serverID);
+         console.log(conn);
+         conn.on('open', function(){
+             that.setState({isSender: true, isReciever: false})
          })
        })
-    }
-    else{
-      connectPeer();
-    }
+     })
 
-    function connectPeer(){
-      let obj = {user: user};
-      fetch('api/getReceiverId', {
-         method: 'post',
-         body: JSON.stringify(obj),
-         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-          },
-      }).then(function(response){
-        return response.json();
-      }).then(function(res){
-        if(res.serverID === undefined){
-          alert("No Receiver Is Established");
-          return;
-        }
-        conn = peer.connect(res.serverID);
-        conn.on('open', function(){
-            that.setState({isSender: true})
-        })
-      })
-    }
   }
 
   DBReplicate = (db, remoteDB, localDB) => {
@@ -460,55 +435,30 @@ class App extends Component {
     let {user, peerID} = this.state;
     let that = this;
 
-    if(!peerID){
-      peer = new Peer({
-         host: window.location.hostname,
-         port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
-         path: '/peerjs'
-       });
-       peer.on('open', function(id) {
-         console.log('peer is open');
-          that.setState({peerID: id, isReciever: true})
-          let obj = {user: user, id: id};
-          fetch('api/setAsReceiver', {
-             method: 'post',
-             body: JSON.stringify(obj),
-             headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-              },
-          })
-       })
-       peer.on('connection', function (serverConn){
-         conn = serverConn;
-         conn.on('data', function(data){
-           that.setState({currentInfo: data.obj})
-         })
-       })
-    }
-    else{
-      becomeReceiver();
-    }
-
-    function becomeReceiver(){
-      let obj = {user: user, id: peerID};
-      that.setState({isReciever: true})
-      fetch('api/setAsReceiver', {
-         method: 'post',
-         body: JSON.stringify(obj),
-         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-          },
-      })
-      peer.on('connection', function (serverConn){
-        conn = serverConn;
-        conn.on('data', function(data){
-          that.setState({currentInfo: data.obj})
+    peer = new Peer({
+       host: window.location.hostname,
+       port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
+       path: '/peerjs'
+     });
+     peer.on('open', function(id) {
+       console.log('peer is open');
+        that.setState({peerID: id, isReciever: true, isSender: false})
+        let obj = {user: user, id: id};
+        fetch('api/setAsReceiver', {
+           method: 'post',
+           body: JSON.stringify(obj),
+           headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
         })
-      })
-    }
-
+     })
+     peer.on('connection', function (serverConn){
+       conn = serverConn;
+       conn.on('data', function(data){
+         that.setState({currentInfo: data.obj})
+       })
+     })
 
   }
 
