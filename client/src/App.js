@@ -182,20 +182,14 @@ class App extends Component {
     let that = this;
 
     if(!peerID){
-      fetch('api/getPort')
-      .then(function(response){
-        return response.json();
-      })
-      .then(function(res){
-        peer = new Peer({
+      peer = new Peer({
          host: window.location.hostname,
-         port: 80,
+         port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
          path: '/peerjs'
        });
        peer.on('open', function(id) {
           connectPeer();
        })
-      })
     }
     else{
       connectPeer();
@@ -447,18 +441,11 @@ class App extends Component {
     let that = this;
 
     if(!peerID){
-      fetch('api/getPort')
-      .then(function(response){
-        return response.json();
-      })
-      .then(function(res){
-        console.log(res);
-        peer = new Peer({
+      peer = new Peer({
          host: window.location.hostname,
-         port: 80,
+         port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
          path: '/peerjs'
        });
-       console.log(peer);
        peer.on('open', function(id) {
          console.log('peer is open');
           that.setState({peerID: id, isReciever: true})
@@ -478,7 +465,6 @@ class App extends Component {
            that.setState({currentInfo: data.obj})
          })
        })
-      })
     }
     else{
       becomeReceiver();

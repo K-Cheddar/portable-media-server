@@ -15,10 +15,6 @@ app.get('/api/hello', (req, res) => {
   res.send({ express: 'Hello From Express' });
 });
 
-app.get('/api/getPort', (req, res) => {
-  res.send({ port: port });
-});
-
 app.post('/api/getReceiverId', (req, res) => {
   let obj = req.body;
   let user = obj.user;
