@@ -189,7 +189,7 @@ class App extends Component {
       .then(function(res){
         peer = new Peer({
          host: window.location.hostname,
-         port: res.port,
+         port: 80,
          path: '/peerjs'
        });
        peer.on('open', function(id) {
@@ -455,7 +455,7 @@ class App extends Component {
         console.log(res);
         peer = new Peer({
          host: window.location.hostname,
-         port: res.port,
+         port: 80,
          path: '/peerjs'
        });
        console.log(peer);
