@@ -225,7 +225,6 @@ class App extends Component {
     }
   }
 
-
   DBReplicate = (db, remoteDB, localDB) => {
     let that = this;
     let opts = {live: true, retry: true}
@@ -453,6 +452,7 @@ class App extends Component {
         return response.json();
       })
       .then(function(res){
+        console.log(res);
         peer = new Peer({
          host: window.location.hostname,
          port: res.port,
