@@ -459,6 +459,7 @@ class App extends Component {
          path: '/peerjs'
        });
        peer.on('open', function(id) {
+         console.log('peer is open');
           that.setState({peerID: id, isReciever: true})
           let obj = {user: user, id: id};
           fetch('api/setAsReceiver', {
