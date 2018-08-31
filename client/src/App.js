@@ -458,6 +458,7 @@ class App extends Component {
          port: res.port,
          path: '/peerjs'
        });
+       console.log(peer);
        peer.on('open', function(id) {
          console.log('peer is open');
           that.setState({peerID: id, isReciever: true})
