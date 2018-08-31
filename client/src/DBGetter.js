@@ -77,9 +77,9 @@ export function changes(props){
     if(change.id === getSelectedListId()){
       updateState({itemList: change.doc.items, needsUpdate: false})
     }
-    if(change.id === getItemId()){
-      updateState({item: change.doc, needsUpdate: false})
-    }
+    // if(change.id === getItemId()){
+    //   updateState({item: change.doc, needsUpdate: false})
+    // }
 
   })
   let dbchanges = remoteDB.changes({
