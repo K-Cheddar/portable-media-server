@@ -25,8 +25,6 @@ export function init(props){
     else {
       getSuccess('Item Lists')
     }
-
-
   }).catch(function(){
     console.log('itemLists not loaded');
   }).then(function(){
@@ -55,7 +53,7 @@ export function init(props){
 
 export function changes(props){
   let {db, cloud, remoteDB} = props;
-  let {updateState, getTime, getSelectedListId, getSuccess, getAttempted} = props.parent;
+  let {updateState, getTime, getSelectedListId} = props.parent;
   db.changes({
     since: 'now',
     live: true,

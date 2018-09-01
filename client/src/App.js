@@ -178,7 +178,7 @@ class App extends Component {
   }
 
   connectToReceiver = () => {
-    let {user, peerID} = this.state;
+    let {user} = this.state;
     let that = this;
 
     peer = new Peer({
@@ -402,7 +402,6 @@ class App extends Component {
            console.log(result);
            uploads.push(obj);
          }
-
         DBUpdater.updateImages({db: that.state.db, uploads: uploads});
         setTimeout(function(){
           DBGetter.retrieveImages({parent: that, db: that.state.db, cloud: cloud})
@@ -432,7 +431,7 @@ class App extends Component {
   }
 
   setAsReceiver = () => {
-    let {user, peerID} = this.state;
+    let {user} = this.state;
     let that = this;
 
     peer = new Peer({
