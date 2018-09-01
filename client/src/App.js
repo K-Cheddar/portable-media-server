@@ -405,7 +405,6 @@ class App extends Component {
 
         DBUpdater.updateImages({db: that.state.db, uploads: uploads});
         setTimeout(function(){
-          DBGetter.retrieveImages(that.state.db, that.updateState, cloud, that.getSuccess, that.getAttempted)
           DBGetter.retrieveImages({parent: that, db: that.state.db, cloud: cloud})
         },1000)
        });

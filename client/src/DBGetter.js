@@ -63,7 +63,7 @@ export function changes(props){
     timeout: false
   }).on('change', function(change) {
     if(change.id === 'images'){
-      retrieveImages(db, updateState, cloud, getSuccess, getAttempted)
+      retrieveImages({parent: props.parent, db: that.state.db, cloud: cloud})
     }
     if(change.id === 'allItemLists'){
       updateState({allItemLists: change.doc.itemLists, needsUpdate: false})
