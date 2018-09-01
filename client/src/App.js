@@ -246,7 +246,7 @@ class App extends Component {
   }
 
   deleteItemList = (id) =>{
-    DBUpdater.deleteItemList({db: this.state.db, id: id})
+    DBUpdater.deleteItemList({db: this.state.db, id: id, selectItemList: this.selectItemList, itemLists: this.state.itemLists})
   }
 
   duplicateItem = (id) => {
@@ -406,6 +406,7 @@ class App extends Component {
         DBUpdater.updateImages({db: that.state.db, uploads: uploads});
         setTimeout(function(){
           DBGetter.retrieveImages(that.state.db, that.updateState, cloud, that.getSuccess, that.getAttempted)
+          DBGetter.retrieveImages({parent: that, db: that.state.db, cloud: cloud})
         },1000)
        });
 

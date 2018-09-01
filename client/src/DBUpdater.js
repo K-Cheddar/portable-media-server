@@ -240,9 +240,13 @@ export function duplicateList(props){
 }
 
 export function deleteItemList(props){
-  let {db, id} = props;
+  let {db, id, selectItemList, itemLists} = props;
   db.get(id).then(function(doc){
       return db.remove(doc);
+  }).then(function(){
+    if(itemLists.length > 0){
+      selectItemList(itemLists[0].name)
+    }
   })
 }
 
