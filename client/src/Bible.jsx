@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import kjv from './assets/kjv';
 import {HotKeys} from 'react-hotkeys';
-import * as Helper from './Helper'
+import * as Helper from './Helper';
+import playVerse from './assets/playVerse.png';
 
 export default class Bible extends Component {
 
@@ -29,6 +30,29 @@ export default class Bible extends Component {
   }
   close = () => {
     this.props.close()
+  }
+  displayVerse = (index) => {
+    let {currentBook, currentChapter, startVerse} = this.state;
+    let verseNum = startVerse + index;
+    let verse = [kjv.books[currentBook].chapters[currentChapter].verses[verseNum]]
+
+    let name = kjv.books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
+
+    let item = {
+      "_id": name,
+      "name": name,
+      "slides": [
+        Helper.newSlide({type: "Title", fontSize: 4.5, words: name}),
+        Helper.newSlide({type: "Verse" + verseNum, fontSize: 2.5, words: ''})
+      ],
+      "type": "bible"
+    };
+
+    item = this.props.formatBible(item, 'fit', verse);
+
+    let box = item.slides[1].boxes[0];
+    let words = box.words;
+    this.props.updateCurrent({words: words, style: box, background: box.background, displayDirect: true});
   }
   updateBook = (e) => {
     this.setState({bookSearch: e.target.value})
@@ -79,7 +103,6 @@ export default class Bible extends Component {
     let item = {
       "_id": name,
       "name": name,
-      "background": "",
       "slides": [
         Helper.newSlide({type: "Title", fontSize: 4.5, words: name}),
         Helper.newSlide({type: "Verse", fontSize: 2.5, words: ''})
@@ -126,7 +149,12 @@ export default class Bible extends Component {
     let text = allVerses.filter(e => (e.verse.verse >= startVerse+1 && e.verse.verse <= endVerse+1));
     let displayText = text.map((element, index) => {
       return(
-        <div style={{padding: '0.5vmax'}} key={index}>{element.verse.verse} {element.verse.text}</div>
+        <div style={{margin: '0.5vmax', display: 'flex'}} key={index}>
+          <img className='imgButton' style={{display:'block', width:'1.5vw', height:'1.5vw'}}
+             onClick={ () => (this.displayVerse(index))} alt="playVerse" src={playVerse}
+            />
+          <div>{element.verse.verse} {element.verse.text}</div>
+        </div>
       )
     })
 
@@ -192,9 +220,9 @@ export default class Bible extends Component {
         <div tabIndex="-1" id='bibleWindow' style={{position:'fixed', top:0, left:0, height:'100vh',
           zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
           <div style={{position:'fixed', zIndex:5, right:'12.5%', top:'1%',
-            width:'75vw', height: '65vh', backgroundColor:"#d1d1d1", padding:'1%'}}>
+            width:'75vw', height: '75vh', backgroundColor:"#d1d1d1", padding:'1%'}}>
             <div style={{display:'flex'} }>
-              <div style={{display: 'flex', width:'50vw', height:'50vh',
+              <div style={{display: 'flex', width:'50vw', height:'70vh',
                 fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
                 <div style={{display: 'block', width:'10vw', margin:'0.5vw'}}>
                   <div >Book</div>
@@ -220,7 +248,7 @@ export default class Bible extends Component {
               <div>
                 {(endVerse !== startVerse) && <div>Selected Verse: {allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}-{endVerse+1}</div>}
                 {(endVerse === startVerse) && <div>Selected Verse: {allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}</div>}
-                <div style={{overflowY: 'scroll', height: '40vh', width: '40vw'}}>{displayText}</div>
+                <div style={{overflowY: 'scroll', height: '40vh', width: '40vw', backgroundColor:'#a3a3a3' }}>{displayText}</div>
               </div>
             </div>
             <div style={{display:'flex', position:'absolute', right:'0.5vw', bottom:'0.5vh'}}>

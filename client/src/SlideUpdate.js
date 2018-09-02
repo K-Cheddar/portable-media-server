@@ -1,5 +1,5 @@
 export function setSlideBackground(props){
-  let {item, wordIndex, allItems, itemList, itemIndex} = props.state;
+  let {item, wordIndex, allItems, itemList, itemIndex, needsUpdate} = props.state;
   let {background, updateState} = props;
   item.slides[wordIndex].boxes[0].background = background;
   let index = allItems.findIndex(e => e.name === item.name)
@@ -8,8 +8,10 @@ export function setSlideBackground(props){
     itemList[itemIndex].background = background;
     allItems[index].background = background;
   }
-
-  updateState({ item: item, allItems: allItems, itemList: itemList, })
+  needsUpdate.updateItem = true;
+  needsUpdate.updateAllItems = true;
+  needsUpdate.updateItemList = true;
+  updateState({ item: item, allItems: allItems, itemList: itemList, needsUpdate: needsUpdate})
 }
 
 export function setWordIndex(props){
@@ -33,7 +35,7 @@ export function setWordIndex(props){
     mElement.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
   if(element)
     element.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
-  updateState({wordIndex: index, needsUpdate: false});
+  updateState({wordIndex: index});
   let box = item.slides[index].boxes[0];
   let style = {
     fontColor: box.fontColor,

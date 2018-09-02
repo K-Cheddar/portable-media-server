@@ -90,7 +90,7 @@ export function formatLyrics(item){
 //   return formatBibleVerses(verse, fontSize, background, color);
 // }
 
-export function formatBible(item, mode, verses){
+export function formatBible(item, mode, verses, fit){
   let box = item.slides[0].boxes[0]
   let slides = [Helper.newSlide({type: 'Bible', box: box, words: box.words})];
   if(verses)
@@ -104,51 +104,100 @@ export function formatBible(item, mode, verses){
 
 function formatBibleVerses(verses, item, mode){
 
-  let lastSlide = item.slides.length-1;
-  let lastBox = item.slides[lastSlide].boxes[0];
-  let currentBox = item.slides[1].boxes[0]
+  let currentSlide = item.slides[1];
+  let currentBox = currentSlide.boxes[0]
   let obj = getMaxLines(currentBox.fontSize, currentBox.height);
   let maxLines = obj.maxLines;
   let lineHeight = obj.lineHeight;
   let formattedVerses = [];
-  let slide = ""
+  let slide = "";
+  let type = item.slides[1].type;
+  let fitProcessing = true;
 
-  for(let i = 0; i < verses.length; ++i){
-    let words;
-    if(mode === 'create'){
+  if (mode === 'create'){
+    for(let i = 0; i < verses.length; ++i){
+      let words;
        words = verses[i].text.split(" ");
        if(slide[slide.length-1] === ' ')
         slide = slide.substring(0, slide.length-1)
        slide += "{" + verses[i].verse + "}";
+
+       for (let j = 0; j < words.length; j++) {
+         let update = slide + words[j]
+         if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
+           slide = update + " ";
+         else{
+           slide = slide.replace(/\s+/g,' ').trim();
+           formattedVerses.push(Helper.newSlide({type: 'Verse '+(verses[i].verse), box: currentBox, words: slide}))
+           slide = words[j] +" ";
+         }
+       }
+       formattedVerses.push(Helper.newSlide({type: 'Verse '+(verses[i].verse), box: currentBox, words: slide}))
+       slide = " ";
     }
-    if(mode === 'edit')
-      words = verses[i].split(" ")
+  }
 
-    for (let j = 0; j < words.length; j++) {
+  if (mode === 'fit'){
+    while(fitProcessing){
+      verseLoop: for(let i = 0; i < verses.length; ++i){
+        let words = verses[i].text.split(" ");
+         if(slide[slide.length-1] === ' ')
+          slide = slide.substring(0, slide.length-1)
+         slide += "{" + verses[i].verse + "}";
 
-      let update = slide + words[j]
-      if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
-        slide = update + " ";
-      else{
-        slide = slide.replace(/\s+/g,' ').trim();
-        formattedVerses.push(Helper.newSlide({type: 'Bible', box: currentBox, words: slide}))
-        slide = words[j] +" ";
-
-        if(item.slides[formattedVerses.length+1])
-          currentBox = item.slides[formattedVerses.length+1].boxes[0]
-        else
-          currentBox = lastBox;
-
-        obj = getMaxLines(currentBox.fontSize, currentBox.height);
-        maxLines = obj.maxLines;
-        lineHeight = obj.lineHeight;
+         for (let j = 0; j < words.length; j++) {
+           let update = slide + words[j]
+           if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
+             slide = update + " ";
+           else{
+             currentBox.fontSize = currentBox.fontSize - 0.15;
+             obj = getMaxLines(currentBox.fontSize, currentBox.height);
+             maxLines = obj.maxLines;
+             lineHeight = obj.lineHeight;
+             formattedVerses = [];
+             slide = "";
+             break verseLoop;
+           }
+         }
+         formattedVerses.push(Helper.newSlide({type: 'Verse '+(verses[i].verse), box: currentBox, words: slide}))
+         fitProcessing = false;
       }
     }
 
   }
-  slide = slide.replace(/\s+/g,' ').trim();
-  formattedVerses.push(Helper.newSlide({type: 'Bible', box: currentBox, words: slide}));
-  formattedVerses.push(Helper.newSlide({type: 'blank', box: currentBox, words: ' '}))
+
+  if(mode === 'edit'){
+    for (let i = 1; i < item.slides.length; ++i){
+      currentSlide = item.slides[i];
+      currentBox = currentSlide.boxes[0];
+      let words = currentBox.words.split(" ");;
+      if(type !== currentSlide.type){
+        slide = slide.replace(/\s+/g,' ').trim();
+        formattedVerses.push(Helper.newSlide({type: type, box: currentBox, words: slide}))
+        slide = "";
+      }
+      type = currentSlide.type;
+      obj = getMaxLines(currentBox.fontSize, currentBox.height);
+      maxLines = obj.maxLines;
+      lineHeight = obj.lineHeight;
+
+      for (let j = 0; j < words.length; j++) {
+          let update = slide + words[j]
+        if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
+          slide = update + " ";
+        else{
+          slide = slide.replace(/\s+/g,' ').trim();
+          formattedVerses.push(Helper.newSlide({type: type, box: currentBox, words: slide}))
+          slide = words[j] +" ";
+          }
+      }
+
+    }
+    slide = slide.replace(/\s+/g,' ').trim();
+    formattedVerses.push(Helper.newSlide({type: 'Bible', box: currentBox, words: slide}));
+  }
+
+  formattedVerses.push(Helper.newSlide({type: 'blank', box: currentBox, words: ' '}));
   return formattedVerses;
 }
 

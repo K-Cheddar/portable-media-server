@@ -2,79 +2,92 @@ import * as Sort from './Sort'
 
 let updaterInterval = null;
 
-export function update(props){
-  let {updateState} = props.parent;
-  let {db, item, selectedItemList, itemList, allItems, itemLists, allItemLists} = props.parent.state;
-
-  console.log("Update Called");
-    db.get(item._id).then(function (doc) {
-      doc.name = item.name;
-      doc.background = item.background;
-      doc.slides = item.slides;
-      doc.formattedLyrics = item.formattedLyrics;
-      doc.songOrder = item.songOrder;
-     return db.put(doc);
+export function updateItem(props){
+  console.log("Updating Item");
+  let {db, item} = props;
+  db.get(item._id).then(function (doc) {
+    doc.name = item.name;
+    doc.background = item.background;
+    doc.slides = item.slides;
+    doc.formattedLyrics = item.formattedLyrics;
+    doc.songOrder = item.songOrder;
+    return db.put(doc);
    }).catch(function(){
      console.log('update item not working');
    });
-    db.get(selectedItemList.id).then(function (doc) {
-      for(let i = 0; i <doc.items.length; ++i){
-        let val = itemList.find(e => e.id === doc.items[i].id)
-        if(!val)
-         itemList.push(doc.items[i])
-      }
-      doc.items = itemList
-      if(doc.items.length !== itemList.length)
-       updateState({itemList: itemList, needsUpdate: false})
-      db.put(doc)
-    }).catch(function(){
-      console.log('update selectedItemList not working');
-    });
+}
 
-   db.get('allItemLists').then(function (doc) {
-       doc.itemLists = allItemLists;
-       if(doc.itemLists.length === 0){
-         let obj = {id: "Item List 1", name: "Item List 1"};
-         doc.itemLists.push(obj)
-         newList(obj)
-       }
-       db.put(doc);
-   }).catch(function(){
-     console.log('update all itemLists not working');
-   });
-
-   db.get('ItemLists').then(function (doc) {
-      if(doc.itemLists.length === 1 && itemLists.length===1){
-        let obj = doc.itemLists[0]
-        db.get(obj.id).then(function(doc2){
-            updateState({selectedItemList: obj, itemList: doc2.items, needsUpdate: false})
-        })
-
-      }
-      let val = itemLists.find(e => e.id === selectedItemList.id)
+export function updateItemList(props){
+  let {db, selectedItemList, itemList, updateState} = props;
+  console.log("Updating ItemList");
+  db.get(selectedItemList.id).then(function (doc) {
+    for(let i = 0; i <doc.items.length; ++i){
+      let val = itemList.find(e => e.id === doc.items[i].id)
       if(!val)
-        updateState({selectedItemList: {}, itemList: [], item:{}, needsUpdate: false})
-       doc.itemLists = itemLists;
-       db.put(doc);
-   }).catch(function(){
-     console.log('update itemLists not working');
-   });
+       itemList.push(doc.items[i])
+    }
+    doc.items = itemList
+    if(doc.items.length !== itemList.length)
+     updateState({itemList: itemList})
+    db.put(doc)
+  }).catch(function(){
+    console.log('update selectedItemList not working');
+  });
+}
 
-   db.get('allItems').then(function (doc) {
-     for(let i = 0; i <doc.items.length; ++i){
-       let val = allItems.find(e => e.id === doc.items[i].id)
-       if(!val)
-        allItems.push(doc.items[i])
+export function updateItemLists(props){
+  let {db, selectedItemList, itemLists, updateState} = props;
+  console.log("Updating Item Lists");
+  db.get('ItemLists').then(function (doc) {
+     if(doc.itemLists.length === 1 && itemLists.length===1){
+       let obj = doc.itemLists[0]
+       db.get(obj.id).then(function(doc2){
+           updateState({selectedItemList: obj, itemList: doc2.items})
+       })
+
      }
-       if(doc.items.length !== allItems.length)
-          updateState({allItems: allItems})
-       doc.items = allItems;
-       db.put(doc);
-   }).catch(function(){
-     console.log('update all items (update) not working');
-   });
+     let val = itemLists.find(e => e.id === selectedItemList.id)
+     if(!val)
+       updateState({selectedItemList: {}, itemList: [], item:{}})
+      doc.itemLists = itemLists;
+      db.put(doc);
+  }).catch(function(){
+    console.log('update itemLists not working');
+  });
+}
 
+export function updateAllItemLists(props){
+  let {db, allItemLists} = props;
+  console.log("Updating All Item Lists");
+  db.get('allItemLists').then(function (doc) {
+      doc.itemLists = allItemLists;
+      if(doc.itemLists.length === 0){
+        let obj = {id: "Item List 1", name: "Item List 1"};
+        doc.itemLists.push(obj)
+        newList(obj)
+      }
+      db.put(doc);
+  }).catch(function(){
+    console.log('update all itemLists not working');
+  });
+}
 
+export function updateAllItems(props){
+  let {db, allItems, updateState} = props;
+  console.log("Updating All Items");
+  db.get('allItems').then(function (doc) {
+    for(let i = 0; i <doc.items.length; ++i){
+      let val = allItems.find(e => e.id === doc.items[i].id)
+      if(!val)
+       allItems.push(doc.items[i])
+    }
+      if(doc.items.length !== allItems.length)
+         updateState({allItems: allItems})
+      doc.items = allItems;
+      db.put(doc);
+  }).catch(function(){
+    console.log('update all items (update) not working');
+  });
 }
 
 export function updateCurrent(props){
@@ -93,14 +106,6 @@ export function updateCurrent(props){
   db.upsert('currentInfo', updateValues);
 }
 
-export function updateItem(props){
-  let {db, itemID} = props;
-  let {updateState, setWordIndex} = props.parent;
-  db.get(itemID).then(function (doc) {
-    updateState({item: doc, needsUpdate: false});
-    setWordIndex(0)
-  })
-}
 
 export function putInList(props){
   let {itemObj} = props;

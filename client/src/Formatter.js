@@ -2,7 +2,7 @@ import * as Overflow from './Overflow';
 
 export function updateFontSize(props){
 
-    let {item, wordIndex, boxIndex} = props.state;
+    let {item, wordIndex, boxIndex, needsUpdate} = props.state;
     let {fontSize, updateState} = props;
 
     let slides = item.slides || null;
@@ -28,17 +28,14 @@ export function updateFontSize(props){
     if(wordIndex >= item.slides.length)
       wordIndex = item.slides.length-1
 
-    updateState({
-      item: item,
-      wordIndex: wordIndex,
-      needsUpdate: true
-    });
+    needsUpdate.updateItem = true;
+    updateState({item: item, wordIndex: wordIndex, needsUpdate: needsUpdate});
 
 }
 
 export function updateFontColor(props){
 
-    let {item, itemList, itemIndex, allItems, wordIndex, boxIndex} = props.state;
+    let {item, itemList, itemIndex, allItems, wordIndex, boxIndex, needsUpdate} = props.state;
     let {updateState} = props;
     let c = props.fontColor;
 
@@ -78,19 +75,16 @@ export function updateFontColor(props){
         item.slides[i].boxes[0].fontColor = color;
       }
     }
-
-    updateState({
-      item: item,
-      itemList: itemList,
-      allItems: allItems,
-      needsUpdate: true
-    });
+    needsUpdate.updateItem = true;
+    needsUpdate.updateItemList = true;
+    needsUpdate.allItems = true;
+    updateState({item: item, itemList: itemList, allItems: allItems, needsUpdate: needsUpdate});
 
 
 }
 
 export function updateBrightness(props){
-    let {item, wordIndex, boxIndex} = props.state;
+    let {item, wordIndex, boxIndex, needsUpdate} = props.state;
     let {level, updateState} = props;
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
@@ -106,10 +100,8 @@ export function updateBrightness(props){
         slides[i].boxes[boxIndex].brightness = level
     }
 
-    updateState({
-      item: item,
-      needsUpdate: true
-    });
+    needsUpdate.updateItem = true;
+    updateState({item: item,needsUpdate: needsUpdate});
 
 }
 

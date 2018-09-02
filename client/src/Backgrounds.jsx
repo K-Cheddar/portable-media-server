@@ -1,6 +1,6 @@
 import React from 'react';
-import open_all from './assets/open-all.png';
-import collapse from './assets/collapse.png';
+import expandDown from './assets/expandDown.png';
+import collapseUp from './assets/collapseUp.png';
 import CreateName from './CreateName';
 
 export default class Backgrounds extends React.Component{
@@ -38,7 +38,7 @@ export default class Backgrounds extends React.Component{
 
   displayImage = () =>{
     let {selectedBackground} = this.state;
-    this.props.updateCurrent({background: selectedBackground, displayImage: true})
+    this.props.updateCurrent({background: selectedBackground, displayDirect: true})
   }
 
   selectBackground = (index) => {
@@ -68,6 +68,7 @@ export default class Backgrounds extends React.Component{
     let fullArray = [];
     let that = this;
     let numCols = 6;
+    let width = '38vw';
 
     let itemStyle = {
         border:'0.25vw',   borderColor: '#d9e3f4',    borderStyle:'solid',
@@ -109,36 +110,27 @@ export default class Backgrounds extends React.Component{
           )
         })
         return (
-          <div style={{display:'flex', paddingBottom:'0.5vh'}} key={index}> {row}</div>
+          <div style={{display:'flex', paddingBottom:'0.5vh', paddingRight: '0.5vw'}} key={index}> {row}</div>
         );
 
     })
     }
 
     let backgroundsRowStyle = {
-      display:'flex',     overflowX: 'scroll',    width: '38vmax',
-      marginTop: '1vh',   border: '0.25vw solid #CCC',
+      display:'flex',     overflowX: 'scroll',    width: width,
+      marginTop: '1vh',   border: '0.25vw solid #CCC', position:'absolute'
     }
     let backgroundTableStyle = {
-        overflowY: 'scroll',    width: '38vmax',     height: '38vh',
-        background: '#d9e3f4',  marginTop: '1vh',   border: '0.25vw solid #CCC'
+        overflowY: 'scroll',    width,     height: '38vh',
+        background: '#d9e3f4',  marginTop: '1vh',   border: '0.25vw solid #CCC',
+        position:'absolute'
     }
 
     return (
-      <div style={{position: 'relative', height: '22vh', zIndex: 3, marginBottom:'1%'}}>
+      <div style={{position: 'relative', height: '22vh', width: width, zIndex: 3, marginBottom:'1%'}}>
           <div style={{display:'flex'}}>
           <div>Backgrounds</div>
           {(user!=='Demo') && <button style={{fontSize: "calc(5px + 0.35vw)", marginLeft: '1vw'}} onClick={openUploader}>Upload Backgrounds</button>}
-            {!allOpen && <img className='imgButton'
-              style={{display:'block', width:'1.5vmax', height:'1.5vmax', marginLeft:"2%"}}
-               onClick={this.open}
-               alt="open-all" src={open_all}
-              />}
-            {allOpen && <img className='imgButton'
-              style={{display:'block', width:'1.5vmax', height:'1.5vmax', marginLeft:"2%"}}
-               onClick={this.close}
-               alt="collapse" src={collapse}
-              />}
           </div>
           <div style={{display:'flex', paddingTop: '1vh'}}>
             <button style={{width: '7vw', fontSize: "calc(7px + 0.35vw)"}} onClick={this.displayImage}>Display Image</button>
@@ -146,8 +138,23 @@ export default class Backgrounds extends React.Component{
             {item.slides &&<button style={{marginLeft:'1%', width: '9vw', fontSize: "calc(7px + 0.35vw)"}} onClick={this.setItemBackground}>Set Item Background</button>}
             {item.type==='song' &&<button style={{marginLeft:'1%', width: '10vw',fontSize: "calc(7px + 0.35vw)"}} onClick={this.setSlideBackground}>Set Slide Background</button>}
           </div>
-          {!allOpen && <div style={backgroundsRowStyle}>{BCKS}</div>}
-          {allOpen && <div style={backgroundTableStyle}>{BCKS}</div>}
+          <div >
+            {!allOpen && <div style={backgroundsRowStyle}>
+            {BCKS}
+          </div>}
+            {allOpen && <div style={backgroundTableStyle}>{BCKS}</div>}
+            {!allOpen && <img className='imgButton'
+              style={{display:'block', width:'1vw', height:'1vw', marginLeft:"2%", position: 'absolute', right: '-1.5vw', bottom: '3vh'}}
+               onClick={this.open}
+               alt="expandDown" src={expandDown}
+              />}
+            {allOpen && <img className='imgButton'
+              style={{display:'block', width:'1vw', height:'1vw', marginLeft:"2%", position: 'absolute', right: '-1.5vw', bottom: "-25vh"}}
+               onClick={this.close}
+               alt="collapseUp" src={collapseUp}
+              />}
+          </div>
+
           {nameOpen && <CreateName option="create" name={selectedBackground} type={'image'} db={this.props.db}
           close={this.closeName} addItem={this.props.addItem} background={selectedBackground}
           />}

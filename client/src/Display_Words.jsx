@@ -45,22 +45,22 @@ export default class Display_Words extends Component {
       for (let i = 0; i < text.length; ++i){
         if(text[i-1] === '{' && text[i+1] === '}'){
           newText += ' ';
-          newText += text.charAt(i).fontcolor("#C462FF")
+          newText += text.charAt(i).fontcolor("#f6ff00")
           newText += ' ';
           i+=1;
         }
         else if(text[i-1] === '{' && text[i+2] === '}'){
           newText += ' ';
-          newText += text.charAt(i).fontcolor("#C462FF")
-          newText += text.charAt(i+1).fontcolor("#C462FF")
+          newText += text.charAt(i).fontcolor("#f6ff00")
+          newText += text.charAt(i+1).fontcolor("#f6ff00")
           newText += ' ';
           i+=2;
         }
         else if(text[i-1] === '{' && text[i+3] === '}'){
           newText += ' ';
-          newText += text.charAt(i).fontcolor("#C462FF")
-          newText += text.charAt(i+1).fontcolor("#C462FF")
-          newText += text.charAt(i+2).fontcolor("#C462FF")
+          newText += text.charAt(i).fontcolor("#f6ff00")
+          newText += text.charAt(i+1).fontcolor("#f6ff00")
+          newText += text.charAt(i+2).fontcolor("#f6ff00")
           newText += ' ';
           i+=3;
         }
@@ -77,22 +77,22 @@ export default class Display_Words extends Component {
       for (let i = 0; i < text.length; ++i){
         if(text[i-1] === '{' && text[i+1] === '}'){
           newText += ' ';
-          newText += text.charAt(i).fontcolor("#C462FF");
+          newText += text.charAt(i).fontcolor("#f6ff00");
           newText += ' ';
           i+=1;
         }
         else if(text[i-1] === '{' && text[i+2] === '}'){
           newText += ' ';
-          newText += text.charAt(i).fontcolor("#C462FF");
-          newText += text.charAt(i+1).fontcolor("#C462FF");
+          newText += text.charAt(i).fontcolor("#f6ff00");
+          newText += text.charAt(i+1).fontcolor("#f6ff00");
           newText += ' ';
           i+=2;
         }
         else if(text[i-1] === '{' && text[i+3] === '}'){
           newText += ' ';
-          newText += text.charAt(i).fontcolor("#C462FF");
-          newText += text.charAt(i+1).fontcolor("#C462FF");
-          newText += text.charAt(i+2).fontcolor("#C462FF");
+          newText += text.charAt(i).fontcolor("#f6ff00");
+          newText += text.charAt(i+1).fontcolor("#f6ff00");
+          newText += text.charAt(i+2).fontcolor("#f6ff00");
           newText += ' ';
           i+=3;
         }

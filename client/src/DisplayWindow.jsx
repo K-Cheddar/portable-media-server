@@ -68,14 +68,14 @@ export default class DisplayWindow extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    let {background, presentation} = this.props;
+    let {background, presentation, editor} = this.props;
     if((this.props.style !== prevProps.style) || (this.props.words !== prevProps.words))
       this.updatePosition();
     if(background !== prevProps.background ){
       let video = document.getElementById('background-video-mini');
       if(video){
         video.loop = true;
-        if(presentation)
+        if(presentation || editor)
           video.muted = false
       }
     }

@@ -2,7 +2,7 @@ import * as Sort from './Sort'
 import * as Overflow from './Overflow'
 
 export function setItemBackground(props){
-  let {item, itemIndex, itemList, allItems} = props.state;
+  let {item, itemIndex, itemList, allItems, needsUpdate} = props.state;
   let {background, updateState} = props;
   if(!item.slides)
     return;
@@ -16,7 +16,10 @@ export function setItemBackground(props){
   itemList[itemIndex].background = background;
   allItems[index].background = background;
 
-  updateState({item: item, itemList: itemList, allItems: allItems})
+  needsUpdate.updateItem = true;
+  needsUpdate.updateItemList = true;
+  needsUpdate.updateAllItems = true;
+  updateState({item: item, itemList: itemList, allItems: allItems, needsUpdate: needsUpdate})
 }
 
 export function setItemIndex(props){
@@ -27,32 +30,43 @@ export function setItemIndex(props){
     mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'})
   if(element)
     element.scrollIntoView({behavior: "instant", block: "nearest", inline: "nearest"});
-  updateState({itemIndex: index, needsUpdate: false})
+  updateState({itemIndex: index})
 }
 
 export function updateItem(props){
-  let {itemList, itemIndex, allItems} = props.state;
+  let {itemList, itemIndex, allItems, needsUpdate} = props.state;
   let {updateState, item} = props;
 
-  itemList[itemIndex].name = item.name;
+  let fontColor = item.slides[0].boxes[0].fontColor;
+  if(itemIndex !== -1 && itemList[itemIndex].nameColor !== fontColor){
+    itemList[itemIndex].nameColor = fontColor;
+    needsUpdate.updateItemList = true;
+    updateState({itemList: itemList})
+  }
   allItems = Sort.sortNamesInList(allItems)
   let index = allItems.findIndex(e => e._id === item._id)
-  allItems[index].name = item.name;
+  if(index !== -1 && allItems[index].nameColor !== fontColor){
+    allItems[index].nameColor = fontColor;
+    needsUpdate.updateAllItems = true;
+    updateState({allItems: allItems})
+  }
 
   if(item.type === 'song')
     item = Overflow.formatSong(item)
   if(item.type === 'bible')
     item = Overflow.formatBible(item, 'edit')
 
-  updateState({item: item, itemList: itemList, allItems: allItems});
+  needsUpdate.updateItem = true;
+  updateState({item: item, needsUpdate: needsUpdate})
 }
 
 export function insertWords(props){
-  let {item, wordIndex} = props.state;
+  let {item, wordIndex, needsUpdate} = props.state;
   let {targetIndex, setWordIndex, updateState} = props;
   let words = item.slides[wordIndex].boxes[0].words;
   item.slides.splice(wordIndex, 1);
   item.slides.splice(targetIndex, 0, words);
-  updateState({item: item});
+  needsUpdate.updateItem = true;
+  updateState({item: item, needsUpdate: needsUpdate});
   setWordIndex(targetIndex);
 }

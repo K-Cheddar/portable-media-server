@@ -14,7 +14,7 @@ export default class Display_Background extends Component {
   shouldComponentUpdate(nextProps, nextState){
     let {title, presentation} = this.props;
     if(title === 'Presentation' || presentation){
-      if(this.props.img !== nextProps.img){
+      if(this.props.img !== nextProps.img || this.props.brightness !== nextProps.brightness){
         let {img, brightness, width, height} = nextProps;
         this.setState({
           prevBackgroundStyle: this.computeBackgroundStyle(img, brightness, width, height),

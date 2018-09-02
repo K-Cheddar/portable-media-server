@@ -34,6 +34,7 @@ div[tabindex="-1"]:focus {
 .imgButton{
   outline: 0.1vw rgba(160, 160, 160, 0.1) solid;
   background-color: rgba(0, 0, 0, 0);
+  user-select: none;
 }
 
 .imgButton:hover{

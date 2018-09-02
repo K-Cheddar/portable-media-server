@@ -3,7 +3,7 @@ export function init(props){
   let {db} = props;
   let {updateState, getSuccess, getAttempted} = props.parent;
   db.get('currentInfo').then(function(doc){
-    updateState({currentInfo: doc.info, needsUpdate: false})
+    updateState({currentInfo: doc.info})
     getSuccess('currentInfo')
   }).catch(function(){
     console.log('currentInfo not loaded');
@@ -14,12 +14,11 @@ export function init(props){
     if(doc.itemLists[0]){
       db.get(doc.itemLists[0].id).then(function(doc2){
         getSuccess('Item Lists')
-        updateState({itemList: doc2.items, needsUpdate: false}) //actual list of items
+        updateState({itemList: doc2.items}) //actual list of items
       })
       updateState({
         itemLists: doc.itemLists,// list of item list names
         selectedItemList:{name: doc.itemLists[0].name, id: doc.itemLists[0].id}, //name of first item list
-        needsUpdate: false
       })
     }
     else {
@@ -33,7 +32,6 @@ export function init(props){
   db.get('allItemLists').then(function (doc) {
     updateState({
       allItemLists: doc.itemLists,// list of item list names
-      needsUpdate: false
     })
     getSuccess('All Item Lists')
   }).catch(function(){
@@ -42,7 +40,7 @@ export function init(props){
     getAttempted('All Item Lists')
   })
   db.get('allItems').then(function (doc) {
-    updateState({allItems: doc.items, needsUpdate: false})
+    updateState({allItems: doc.items})
     getSuccess('allItems')
   }).catch(function(){
     console.log('allItems not loaded');
@@ -53,7 +51,7 @@ export function init(props){
 
 export function changes(props){
   let {db, cloud, remoteDB} = props;
-  let {updateState, getTime, getSelectedListId} = props.parent;
+  let {updateState, getTime} = props.parent;
   db.changes({
     since: 'now',
     live: true,
@@ -63,20 +61,20 @@ export function changes(props){
     if(change.id === 'images'){
       retrieveImages({parent: props.parent, db: db, cloud: cloud})
     }
-    if(change.id === 'allItemLists'){
-      updateState({allItemLists: change.doc.itemLists, needsUpdate: false})
-    }
-    if(change.id === 'ItemLists'){
-      updateState({itemLists: change.doc.itemLists, needsUpdate: false})
-    }
+    // if(change.id === 'allItemLists'){
+    //   updateState({allItemLists: change.doc.itemLists})
+    // }
+    // if(change.id === 'ItemLists'){
+    //   updateState({itemLists: change.doc.itemLists})
+    // }
     if(change.id === 'allItems'){
-      updateState({allItems: change.doc.items, needsUpdate: false})
+      updateState({allItems: change.doc.items})
     }
-    if(change.id === getSelectedListId()){
-      updateState({itemList: change.doc.items, needsUpdate: false})
-    }
+    // if(change.id === getSelectedListId()){
+    //   updateState({itemList: change.doc.items})
+    // }
     // if(change.id === getItemId()){
-    //   updateState({item: change.doc, needsUpdate: false})
+    //   updateState({item: change.doc})
     // }
 
   })
@@ -88,7 +86,7 @@ export function changes(props){
   }).on('change', function(change) {
     if(change.id === "currentInfo"){
       if(getTime() < change.doc.info.time)
-        updateState({currentInfo: change.doc.info, needsUpdate: false})
+        updateState({currentInfo: change.doc.info})
     }
   }).on('error', function(){
   dbchanges.cancel()
@@ -154,7 +152,7 @@ export function retrieveImages(props){
       backgrounds.push(imgData);
     }
     getSuccess('images')
-    updateState({backgrounds: backgrounds, needsUpdate: false})
+    updateState({backgrounds: backgrounds})
   }).catch(function(){
     console.log('images not loaded');
   }).then(function(){
@@ -167,7 +165,7 @@ export function getItem(props){
   let {updateState, setItemIndex} = props.parent;
   let {db, itemIndex} = props.parent.state;
   db.get(id).then(function(doc){
-    updateState({item: doc, needsUpdate: false})
+    updateState({item: doc})
     if(itemIndex < 0)
       setItemIndex(0)
     else
@@ -180,8 +178,17 @@ export function getItem(props){
 export function selectItemList(props){
   let {db, id, updateState} = props;
   db.get(id).then(function(doc){
-    updateState({itemList: doc.items, needsUpdate: false})
+    updateState({itemList: doc.items})
   }).catch(function(){
     console.log('selectitemlist not loaded');
   });
+}
+
+export function updateItem(props){
+  let {db, itemID} = props;
+  let {updateState, setWordIndex} = props.parent;
+  db.get(itemID).then(function (doc) {
+    updateState({item: doc});
+    setWordIndex(0)
+  })
 }

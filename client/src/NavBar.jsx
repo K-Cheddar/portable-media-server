@@ -133,9 +133,9 @@ export default class NavBar extends Component {
     let {formatBible} = this.props;
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
-       setAsReceiver, connectToReceiver} = this.props.parent;
+       setAsReceiver, connectToReceiver, updateCurrent} = this.props.parent;
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
-      allItemLists, isReciever, isSender} = this.props.parent.state;
+      allItemLists, isReciever, isSender, needsUpdate} = this.props.parent.state;
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
 
     let buttonStyle = {
@@ -271,13 +271,15 @@ export default class NavBar extends Component {
             </div>}
           </li>
         </ul>
-        {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={formatBible}/>}
+        {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={formatBible}
+        updateCurrent={updateCurrent}/>}
         {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={db}
         close={this.closeName} addItem={addItem}
         />}
         {itemListsOpen && <ItemListEditor updateState={updateState} close={this.closeItemLists}
           itemLists={itemLists} allItemLists={allItemLists} deleteItemList={deleteItemList}
           newItemList={newItemList} selectItemList={selectItemList} duplicateList={duplicateList}
+          needsUpdate={needsUpdate}
         />}
       </div>
     )

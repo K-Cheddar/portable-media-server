@@ -83,7 +83,7 @@ const initialState = {
   allItemLists: [],
   backgrounds: [],
   selectedItemList: {},
-  needsUpdate: false,
+  needsUpdate: {},
   currentInfo : {
     words:"",
     background:"",
@@ -187,7 +187,7 @@ class App extends Component {
        path: '/peerjs'
      });
      peer.on('open', function(id) {
-       console.log("Peer Sender Ready");
+       // console.log("Peer Sender Ready");
        let obj = {user: user};
        fetch('api/getReceiverId', {
           method: 'post',
@@ -203,9 +203,9 @@ class App extends Component {
            alert("No Receiver Is Established");
            return;
          }
-         console.log(res.serverID);
+         // console.log(res.serverID);
          conn = peer.connect(res.serverID);
-         console.log(conn);
+         // console.log(conn);
          conn.on('open', function(){
              that.setState({isSender: true, isReciever: false})
          })
@@ -327,11 +327,12 @@ class App extends Component {
   }
 
   insertItemIntoList = (targetIndex) => {
-    let {itemList, itemIndex} = this.state;
+    let {itemList, itemIndex, needsUpdate} = this.state;
     let item = itemList[itemIndex];
     itemList.splice(itemIndex, 1);
     itemList.splice(targetIndex, 0, item);
-    this.setState({itemIndex: targetIndex, itemList: itemList, needsUpdate: true })
+    needsUpdate.updateItemList = true;
+    this.setState({itemIndex: targetIndex, itemList: itemList, needsUpdate: needsUpdate })
   }
 
   insertWords = (targetIndex) => {
@@ -426,7 +427,7 @@ class App extends Component {
     ItemUpdate.setItemIndex({index: index, updateState: this.updateState})
     if(itemList.length !== 0){
       let itemID = itemList[index] ? itemList[index]._id : 0;
-      DBUpdater.updateItem({db: db, itemID: itemID, parent: this})
+      DBGetter.updateItem({db: db, itemID: itemID, parent: this})
     }
   }
 
@@ -440,7 +441,7 @@ class App extends Component {
        path: '/peerjs'
      });
      peer.on('open', function(id) {
-       console.log('peer is open');
+       // console.log('peer is open');
         that.setState({peerID: id, isReciever: true, isSender: false})
         let obj = {user: user, id: id};
         fetch('api/setAsReceiver', {
@@ -470,29 +471,44 @@ class App extends Component {
   }
 
   update = () => {
-     let {needsUpdate, db} = this.state;
-     if(needsUpdate && db.get){
-        DBUpdater.update({parent: this});
-         this.setState({needsUpdate: false});
-     }
+    let {needsUpdate, db} = this.state;
+    if(!db.get)
+      return;
+    for(let property in needsUpdate){
+      if(needsUpdate[property]){
+        let func = DBUpdater[property];
+        func(this.state);
+        needsUpdate[property] = false;
+      }
+    }
   }
 
-  updateCurrent = ({words = null,background = null,style = {},index = -1, displayImage=false} = {}) => {
+  updateCurrent = ({words = null,background = null,style = {}, displayDirect=false} = {}) => {
 
     if(this.state.freeze)
       return;
+
+    console.log(words, background, style);
 
     let {item, wordIndex, remoteDB} = this.state;
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
 
-    if(slide && !displayImage){
+    if(slide && !displayDirect){
       if(!words)
         words = slide.boxes[0].words;
       if(!background)
         background = slide.boxes[0].background;
       if(!style)
         style = slide.boxes[0];
+    }
+    else if(displayDirect){
+      if(!words)
+        words = ' '
+      if(!background)
+        background = ' '
+      if(!style)
+        style = {}
     }
     else
       words = ""
@@ -545,7 +561,7 @@ class App extends Component {
       allItems: obj.allItems || this.state.allItems,
       backgrounds: obj.backgrounds || this.state.backgrounds,
       item: obj.item || this.state.item,
-      needsUpdate: (obj.needsUpdate === false) ? false : true,
+      needsUpdate: obj.needsUpdate || this.state.needsUpdate,
     })
   }
 
@@ -612,7 +628,7 @@ class App extends Component {
                     />}/>
                 <Route path="/presentation" render={(props) =>
                     <Presentation {...props} currentInfo={currentInfo}
-                      backgrounds={backgrounds}
+                      backgrounds={backgrounds} setAsReceiver={this.setAsReceiver}
                     />}/>
               </Switch>
           </div>

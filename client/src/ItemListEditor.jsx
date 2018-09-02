@@ -35,12 +35,14 @@ export default class ItemListEditor extends Component{
 
   confirm = (id) => {
     let {name} = this.state;
-    let {itemLists, allItemLists} = this.props;
+    let {itemLists, allItemLists, needsUpdate} = this.props;
     let index = itemLists.findIndex(e => e.id === id)
     let indexAll = allItemLists.findIndex(e => e.id === id)
     itemLists[index].name = name;
     allItemLists[indexAll].name = name;
-    this.props.updateState({ itemLists: itemLists, allItemLists: allItemLists })
+    needsUpdate.updateItemLists = true;
+    needsUpdate.updateAllItemLists = true;
+    this.props.updateState({ itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
     this.setState({selectedIndex: -1, name: ''})
   }
 
@@ -74,14 +76,15 @@ export default class ItemListEditor extends Component{
   }
 
   deleteList = (type, id) => {
-    let {itemLists, allItemLists} = this.props;
+    let {itemLists, allItemLists, needsUpdate} = this.props;
     let {deleteIndex} = this.state;
     if(type==='one'){
       let index = itemLists.findIndex(e => e.id === id)
       if(index === -1)
         return
       itemLists.splice(index, 1);
-      this.props.updateState({itemLists: itemLists})
+      needsUpdate.updateItemLists = true;
+      this.props.updateState({itemLists: itemLists, needsUpdate: needsUpdate})
     }
     if(type==='all'){
       let id = allItemLists[deleteIndex].id
@@ -91,33 +94,30 @@ export default class ItemListEditor extends Component{
       if(index !== -1){
         itemLists.splice(index, 1);
       }
-      this.props.updateState({
-        itemLists: itemLists,
-        allItemLists: allItemLists
-      })
+      needsUpdate.updateItemLists = true;
+      needsUpdate.updateAllItemLists = true;
+      this.props.updateState({itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
       this.setState({deleteOverlay: false})
     }
 
   }
 
   newItemList = () => {
-    let {itemLists, allItemLists} = this.props;
+    let {itemLists, allItemLists, needsUpdate} = this.props;
     let id = allItemLists[allItemLists.length-1].id;
     let newNumber = parseInt(id.slice(-1), 10) + 1;
     let name = "Item List " + newNumber
     let newList = {id: name, name: name}
     itemLists.push(newList);
     allItemLists.push(newList);
-    this.props.updateState({
-      itemLists: itemLists,
-      allItemLists: allItemLists
-    })
+    needsUpdate.updateItemLists = true;
+    needsUpdate.updateAllItemLists = true;
+    this.props.updateState({ itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
     this.props.newItemList(newList);
-    // DBUpdater.updateItemLists(this.state.db, itemLists, newList);
   }
 
   addToList = (name) => {
-    let {itemLists, allItemLists} = this.props;
+    let {itemLists, allItemLists, needsUpdate} = this.props;
     let index = allItemLists.findIndex(e => e.name === name)
     let val = itemLists.find(e => e.id === allItemLists[index].id)
     if(val){
@@ -134,6 +134,7 @@ export default class ItemListEditor extends Component{
       name: allItemLists[index].name
     }
     itemLists.push(obj)
+    needsUpdate.updateItemLists = true;
     this.props.updateState({itemLists: itemLists, selectedItemList: obj})
     this.props.selectItemList(name)
   }

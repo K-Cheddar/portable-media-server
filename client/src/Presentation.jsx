@@ -15,6 +15,29 @@ class Presentation extends React.Component{
     }
   }
 
+  componentDidMount(){
+    this.updateDimensions();
+    window.addEventListener("storage", this.updateStorage);
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
+
+  goFullScreen(){
+    let elem = document.getElementById("fullApp");
+    if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
+        if (elem.requestFullScreen) {
+            elem.requestFullScreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullScreen) {
+            elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+    }
+  }
+
+
   updateDimensions = () => {
     this.setState({
       width: window.innerWidth,
@@ -35,29 +58,6 @@ class Presentation extends React.Component{
       })
     }
   }
-
-  goFullScreen(){
-    let elem = document.getElementById("fullApp");
-    if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
-        if (elem.requestFullScreen) {
-            elem.requestFullScreen();
-        } else if (elem.mozRequestFullScreen) {
-            elem.mozRequestFullScreen();
-        } else if (elem.webkitRequestFullScreen) {
-            elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-        } else if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen();
-        }
-    }
-  }
-
-  componentDidMount(){
-    this.updateDimensions();
-    window.addEventListener("storage", this.updateStorage);
-    window.addEventListener("resize", this.updateDimensions);
-
-  }
-
 
   render() {
     let {backgrounds} = this.props;
