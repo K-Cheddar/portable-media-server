@@ -104,6 +104,7 @@ const initialState = {
   peerID: '',
   isReciever: false,
   isSender: false,
+  userSettings: {}
 }
 
 /* App component */
@@ -264,7 +265,7 @@ class App extends Component {
   getAttempted = (type) => {
     let {attempted, retrieved, remoteDB, db} = this.state;
     attempted[type] = true;
-    if(Object.keys(attempted).length >= 5){
+    if(Object.keys(attempted).length >= 6){
       if(!retrieved.finished){
         if(navigator.onLine){
           let that = this;
@@ -299,7 +300,7 @@ class App extends Component {
     let {retrieved} = this.state;
     retrieved[type] = true;
     //don't begin auto update until all values have been retrieved
-    if(Object.keys(retrieved).length >= 5){
+    if(Object.keys(retrieved).length >= 6){
         retrieved.finished = true;
         this.updateInterval = setInterval(this.update, 1000); //auto save to database every second if update has occurred
     }
@@ -548,6 +549,11 @@ class App extends Component {
       ItemUpdate.updateItem({state: this.state, item: item, updateState: this.updateState})
   }
 
+  updateUserSettings = (obj) => {
+    let userSetting = {type: obj.type, obj: obj.settings};
+    DBUpdater.updateUserSettings({state: this.state, userSetting: userSetting, updateState: this.updateState})
+  }
+
   updateState = (obj) => {
 
     this.setState({
@@ -562,6 +568,7 @@ class App extends Component {
       backgrounds: obj.backgrounds || this.state.backgrounds,
       item: obj.item || this.state.item,
       needsUpdate: obj.needsUpdate || this.state.needsUpdate,
+      userSettings: obj.userSettings || this.state.userSettings,
     })
   }
 

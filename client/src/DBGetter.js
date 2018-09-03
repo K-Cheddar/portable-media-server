@@ -47,6 +47,14 @@ export function init(props){
   }).then(function(){
     getAttempted('allItems')
   });
+  db.get('userSettings').then(function (doc) {
+    updateState({userSettings: doc.settings})
+    getSuccess('userSettings')
+  }).catch(function(){
+    console.log('user settings not loaded');
+  }).then(function(){
+    getAttempted('userSettings')
+  });
 }
 
 export function changes(props){

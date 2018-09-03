@@ -7,6 +7,8 @@ import open from './assets/open.png';
 import Bible from './Bible'
 import CreateName from './CreateName';
 import ItemListEditor from './ItemListEditor';
+import UserSettings from './UserSettings';
+
 
 import connected from './assets/connected.png';
 import disconnected from './assets/disconnected.png';
@@ -30,6 +32,7 @@ export default class NavBar extends Component {
       menuMousedOver: false,
       itemListsOpen: false,
       applyAll: false,
+      settingsOpen: false,
     }
   }
 
@@ -47,6 +50,14 @@ export default class NavBar extends Component {
 
   closeItemLists = () => {
     this.setState({itemListsOpen: false})
+  }
+
+  openSettings = () => {
+    this.setState({settingsOpen: true})
+  }
+
+  closeSettings = () => {
+    this.setState({settingsOpen: false})
   }
 
   openBible = () => {
@@ -133,10 +144,10 @@ export default class NavBar extends Component {
     let {formatBible} = this.props;
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
-       setAsReceiver, connectToReceiver, updateCurrent} = this.props.parent;
+       setAsReceiver, connectToReceiver, updateUserSettings} = this.props.parent;
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
-      allItemLists, isReciever, isSender, needsUpdate} = this.props.parent.state;
-    let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen} = this.state;
+      allItemLists, isReciever, isSender, needsUpdate, userSettings} = this.props.parent.state;
+    let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen, settingsOpen} = this.state;
 
     let buttonStyle = {
        fontSize: "calc(5px + 0.35vw)", margin:'.25vw', width:'6vw'
@@ -158,6 +169,7 @@ export default class NavBar extends Component {
                 <Link to="/"><button style={menuItem}>Home</button></Link>
                 <button style={menuItem} onClick={setAsReceiver}> Become Receiver </button>
                 <button style={menuItem} onClick={connectToReceiver}> Connect To Receiver </button>
+                <button style={menuItem} onClick={this.openSettings}> Open Settings </button>
                 {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                 {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
               </div>
@@ -237,11 +249,11 @@ export default class NavBar extends Component {
                 />
               </div>
             }
-            {!freeze && <div style={{display:'flex', height:'1.5vw', paddingTop:'1%', margin:'auto'}}>
+            {!freeze && <div style={{display:'flex'}}>
             <div>
               <button style={buttonStyle} onClick={toggleFreeze}>Freeze</button>
             </div>
-              <img style={{paddingLeft:'5%', width:'2.75vw', height:'1.25vw'}}
+              <img style={{paddingTop:'0.35vh', width:'2.75vw', height:'1.25vw'}}
                  alt="on" src={on}
                 />
               </div>
@@ -272,15 +284,17 @@ export default class NavBar extends Component {
           </li>
         </ul>
         {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={formatBible}
-        updateCurrent={updateCurrent}/>}
+        functions={this.props.parent} state={this.props.parent.state}/>}
         {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={db}
-        close={this.closeName} addItem={addItem}
+        close={this.closeName} addItem={addItem} userSettings={userSettings}
         />}
         {itemListsOpen && <ItemListEditor updateState={updateState} close={this.closeItemLists}
           itemLists={itemLists} allItemLists={allItemLists} deleteItemList={deleteItemList}
           newItemList={newItemList} selectItemList={selectItemList} duplicateList={duplicateList}
           needsUpdate={needsUpdate}
         />}
+        {settingsOpen && <UserSettings state={this.props.parent.state} close={this.closeSettings}
+        updateUserSettings={updateUserSettings}/>}
       </div>
     )
   }

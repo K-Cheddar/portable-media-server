@@ -148,15 +148,15 @@ class FormatEditor extends React.Component{
               onClick={this.fontSizeUP}
               alt="fsUP" src={fsUP}
             />
-          <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
+            <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
                 onClick={this.fontSizeDOWN}
                 alt="fsDOWN" src={fsDOWN}
             />
-          <img style={{marginLeft:'1vw', marginTop:'.25vw', width:'1.5vw', height:'1.5vw'}}
-                 alt="brightness" src={brightness_img}
+            <img style={{marginLeft:'1vw', marginTop:'.25vw', width:'1.5vw', height:'1.5vw'}}
+                alt="brightness" src={brightness_img}
                 />
-              <Slider style={sliderStyle} min={1} value={brightness} onChange={this.changeBrightness}
-                onAfterChange={() => this.props.updateBrightness(brightness)}/>
+            <Slider style={sliderStyle} min={1} value={brightness} onChange={this.changeBrightness}
+              onAfterChange={() => this.props.updateBrightness(brightness)}/>
           </div>
         </div>
     )

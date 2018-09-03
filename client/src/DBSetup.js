@@ -80,4 +80,12 @@ var listCount = 5;
       db.put(upload);
     })
 
+  db.get("userSettings").catch(function(doc){
+      let upload = {
+        _id: "userSettings",
+        settings: {}
+      }
+      db.put(upload);
+    })
+
 }

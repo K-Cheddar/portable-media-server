@@ -106,6 +106,17 @@ export function updateCurrent(props){
   db.upsert('currentInfo', updateValues);
 }
 
+export function updateUserSettings(props){
+  let {userSetting, updateState} = props;
+  let {db, userSettings} = props.state;
+  db.get('userSettings').then(function(doc){
+    doc.settings[userSetting.type] = userSetting.obj;
+    userSettings[userSetting.type] = userSetting.obj;
+    updateState({userSettings: userSettings});
+    db.put(doc);
+  })
+}
+
 
 export function putInList(props){
   let {itemObj} = props;

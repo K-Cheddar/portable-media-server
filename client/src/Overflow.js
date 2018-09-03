@@ -116,8 +116,7 @@ function formatBibleVerses(verses, item, mode){
 
   if (mode === 'create'){
     for(let i = 0; i < verses.length; ++i){
-      let words;
-       words = verses[i].text.split(" ");
+      let words = verses[i].text.split(" ");
        if(slide[slide.length-1] === ' ')
         slide = slide.substring(0, slide.length-1)
        slide += "{" + verses[i].verse + "}";

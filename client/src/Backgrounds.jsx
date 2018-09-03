@@ -121,7 +121,7 @@ export default class Backgrounds extends React.Component{
       marginTop: '1vh',   border: '0.25vw solid #CCC', position:'absolute'
     }
     let backgroundTableStyle = {
-        overflowY: 'scroll',    width,     height: '38vh',
+        overflowY: 'scroll',    width: width,     height: '38vh',
         background: '#d9e3f4',  marginTop: '1vh',   border: '0.25vw solid #CCC',
         position:'absolute'
     }

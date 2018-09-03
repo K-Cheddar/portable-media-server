@@ -4,7 +4,7 @@ export default class Loading extends Component {
 
   render(){
     let {retrieved} = this.props;
-    let percent = (Object.keys(retrieved).length/5).toFixed(2)*100;
+    let percent = (Object.keys(retrieved).length/6).toFixed(2)*100;
 
     return(
       <div style={{position:'fixed', top:0, left:0, height:'100vh',

@@ -27,6 +27,75 @@ export default class Display_Words extends Component {
     return true;
   }
 
+  componentDidMount(){
+    let box = document.getElementById(`background-text-${this.props.title}-${this.props.words}`);
+    let box_prev = document.getElementById(`background-text-${this.props.title}-${this.props.words}-prev`);
+
+    if(box){
+      let text = box.innerHTML;
+      let newText = "";
+      for (let i = 0; i < text.length; ++i){
+        if(text[i-1] === '{' && text[i+1] === '}'){
+          newText += ' ';
+          newText += text.charAt(i).fontcolor("#f6ff00")
+          newText += ' ';
+          i+=1;
+        }
+        else if(text[i-1] === '{' && text[i+2] === '}'){
+          newText += ' ';
+          newText += text.charAt(i).fontcolor("#f6ff00")
+          newText += text.charAt(i+1).fontcolor("#f6ff00")
+          newText += ' ';
+          i+=2;
+        }
+        else if(text[i-1] === '{' && text[i+3] === '}'){
+          newText += ' ';
+          newText += text.charAt(i).fontcolor("#f6ff00")
+          newText += text.charAt(i+1).fontcolor("#f6ff00")
+          newText += text.charAt(i+2).fontcolor("#f6ff00")
+          newText += ' ';
+          i+=3;
+        }
+        else if(text[i]!== '{'){
+          newText+= text[i]
+        }
+      }
+      box.innerHTML = newText;
+    }
+
+    if(box_prev){
+      let text = box_prev.innerHTML;
+      let newText = "";
+      for (let i = 0; i < text.length; ++i){
+        if(text[i-1] === '{' && text[i+1] === '}'){
+          newText += ' ';
+          newText += text.charAt(i).fontcolor("#f6ff00");
+          newText += ' ';
+          i+=1;
+        }
+        else if(text[i-1] === '{' && text[i+2] === '}'){
+          newText += ' ';
+          newText += text.charAt(i).fontcolor("#f6ff00");
+          newText += text.charAt(i+1).fontcolor("#f6ff00");
+          newText += ' ';
+          i+=2;
+        }
+        else if(text[i-1] === '{' && text[i+3] === '}'){
+          newText += ' ';
+          newText += text.charAt(i).fontcolor("#f6ff00");
+          newText += text.charAt(i+1).fontcolor("#f6ff00");
+          newText += text.charAt(i+2).fontcolor("#f6ff00");
+          newText += ' ';
+          i+=3;
+        }
+        else if(text[i]!== '{'){
+          newText+=text[i]
+        }
+      }
+      box_prev.innerHTML = newText;
+    }
+  }
+
   componentDidUpdate(prevProps){
       let {title, presentation} = this.props;
     if(title === 'Presentation' || presentation){
