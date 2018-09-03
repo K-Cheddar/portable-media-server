@@ -1,5 +1,5 @@
 export function newSlide (props) {
-  let {type, box, words, slideIndex, fontSize, background} = props;
+  let {type, box, words, slideIndex, fontSize, background, brightness} = props;
   if(!words)
     words = ''
   if(!box)
@@ -30,6 +30,9 @@ export function newSlide (props) {
   }
   if(background){
     obj.boxes[0].background = background
+  }
+  if(brightness){
+    obj.boxes[0].brightness = brightness
   }
 
   return obj;

@@ -60,17 +60,20 @@ export default class CreateName extends React.Component{
 
     let {type, background} = this.props;
     let image = background ? background : '';
-    let firstSlide = ' '
+    let firstSlide = ' ';
+    let brightness: 100;
 
     if(type === 'song'){
       firstSlide = name;
-      image = this.props.userSettings.defaultSongBackground.name
+      image = this.props.userSettings.defaultSongBackground.name;
+      brightness = this.props.userSettings.defaultSongBackground.brightness;
     }
 
     let item = {
         "_id": name,
         "name": name,
-        "slides": [Helper.newSlide({type: "Title", fontSize: 4.5, words: firstSlide, background: image})],
+        "slides": [Helper.newSlide({type: "Title", fontSize: 4.5, words: firstSlide,
+         background: image, brightness: brightness})],
         "formattedLyrics": [],
         "songOrder": [],
         "type": type,

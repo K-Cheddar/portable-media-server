@@ -58,13 +58,16 @@ export default class Bible extends Component {
     let verse = [kjv.books[currentBook].chapters[currentChapter].verses[verseNum]]
 
     let name = kjv.books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
-    let background = this.props.state.userSettings.defaultBibleBackground.name
+    let background = this.props.state.userSettings.defaultBibleBackground.name; brightness
+    let brightness = this.props.state.userSettings.defaultBibleBackground.brightness;
     let item = {
       "_id": name,
       "name": name,
       "slides": [
-        Helper.newSlide({type: "Title", fontSize: 4.5, words: name, background: background}),
-        Helper.newSlide({type: "Verse" + verseNum, fontSize: 2.5, words: '', background: background})
+        Helper.newSlide({type: "Title", fontSize: 4.5, words: name,
+          background: background, brightness: brightness}),
+        Helper.newSlide({type: "Verse" + verseNum, fontSize: 2.5, words: '',
+          background: background, brightness: brightness})
       ],
       "type": "bible"
     };
@@ -201,13 +204,16 @@ export default class Bible extends Component {
 
     let verseNum = (endVerse !== startVerse) ? (startVerse+1)+ "-" + (endVerse+1) : (startVerse+1)
     let name = kjv.books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
-    let background = this.props.state.userSettings.defaultBibleBackground.name
+    let background = this.props.state.userSettings.defaultBibleBackground.name;
+    let brightness = this.props.state.userSettings.defaultBibleBackground.brightness;
     let item = {
       "_id": name,
       "name": name,
       "slides": [
-        Helper.newSlide({type: "Title", fontSize: 4.5, words: name, background: background}),
-        Helper.newSlide({type: "Verse", fontSize: 2.5, words: '', background: background})
+        Helper.newSlide({type: "Title", fontSize: 4.5, words: name,
+          background: background, brightness: brightness}),
+        Helper.newSlide({type: "Verse", fontSize: 2.5, words: '',
+          background: background, brightness: brightness})
       ],
       "type": "bible",
       "background": background
