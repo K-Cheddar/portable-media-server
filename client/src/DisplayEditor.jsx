@@ -7,7 +7,6 @@ class DisplayEditor extends React.Component{
     let video = document.getElementById('background-video');
     if(video)
       video.loop = true;
-
   }
 
   componentDidUpdate(prevProps){
@@ -18,6 +17,7 @@ class DisplayEditor extends React.Component{
         video.loop = true;
     }
   }
+
 
   handleBoxChange = (x, y, width, height) => {
     let{wordIndex, item} = this.props;
@@ -30,7 +30,6 @@ class DisplayEditor extends React.Component{
   }
 
   handleTextChange = (event) => {
-
     event.preventDefault();
     let cursor = event.target.selectionStart
     let {wordIndex, item} = this.props;
@@ -71,7 +70,7 @@ class DisplayEditor extends React.Component{
       document.getElementById("displayEditor").selectionEnd = cursor;
       document.getElementById("displayEditor").scrollTop = 0;
     }, 10)
-    }
+  }
 
   render() {
     let {wordIndex, item, backgrounds, width, height} = this.props;
@@ -88,12 +87,6 @@ class DisplayEditor extends React.Component{
 
     let words = box.words;
     let background = box.background;
-    // let style = {
-    //   fontColor: box.fontColor,
-    //   fontSize: box.fontSize,
-    //   brightness: box.brightness ? box.brightness+"%" : '100%',
-    //
-    // }
 
     return (
       <div style={{width: width, height: height, position: 'relative'}}>

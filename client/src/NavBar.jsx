@@ -11,7 +11,7 @@ import UserSettings from './UserSettings';
 
 
 import connected from './assets/connected.png';
-import disconnected from './assets/disconnected.png';
+// import disconnected from './assets/disconnected.png';
 
 import textbox_full from './assets/textbox_full.png';
 import textbox_leftHalf from './assets/textbox_leftHalf.png';
@@ -261,25 +261,17 @@ export default class NavBar extends Component {
           </li>
           <li >
             <div style={{fontSize: "calc(10px + 0.4vw)", fontWeight: 'bold'}}>Logged In As: {user}</div>
-            {(isReciever || isSender) &&<div>
-              <div style={{display:'flex', marginTop: '0.65vh'}}>
-                <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}}>Direct Receiving:</div>
-                {isReciever && <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
-                   alt="connected" src={connected}
-                  />}
-                {!isReciever && <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
-                   alt="disconnected" src={disconnected}
-                  />}
-                </div>
-              <div style={{display:'flex'}}>
-                <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}} >Direct Sending:</div>
-                {isSender && <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
-                   alt="connected" src={connected}
-                  />}
-                {!isSender && <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
-                   alt="disconnected" src={disconnected}
-                  />}
-              </div>
+            {isReciever && <div style={{display:'flex', marginTop: '0.65vh'}}>
+              <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}}>Direct Receiving:</div>
+              <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
+                 alt="connected" src={connected}
+                />
+            </div>}
+            {isSender && <div style={{display:'flex'}}>
+              <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}} >Direct Sending:</div>
+              <img style={{ marginLeft:'0.5vw', width:'1.25vw', height:'.96vw'}}
+                 alt="connected" src={connected}
+                />
             </div>}
           </li>
         </ul>

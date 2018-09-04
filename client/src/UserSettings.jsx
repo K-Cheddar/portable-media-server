@@ -16,7 +16,7 @@ export default class UserSettings extends React.Component{
 
   componentDidMount(){
     let {userSettings} = this.props.state;
-    let brightness = userSettings.defaultBibleBackground.brightness;
+    let brightness = userSettings.defaultBibleBackground ? userSettings.defaultBibleBackground.brightness : 100;
     this.setState({brightness: brightness})
   }
 
@@ -135,7 +135,7 @@ export default class UserSettings extends React.Component{
               <div>
                 <div onClick={ () => (this.setState({
                     selectedSetting: 'defaultBibleBackground',
-                    brightness: userSettings.defaultBibleBackground.brightness
+                    brightness: userSettings.defaultBibleBackground ? userSettings.defaultBibleBackground.brightness : 100
                   }))}
                   style={selectedSetting === 'defaultBibleBackground' ? selectedSectionStyle : sectionStyle}>
                   <div style={{marginRight: '1vw', fontSize: "calc(10px + 0.5vw)"}}>Default Bible Background</div>
@@ -143,7 +143,7 @@ export default class UserSettings extends React.Component{
                 </div>
                 <div onClick={ () => (this.setState({
                     selectedSetting: 'defaultSongBackground',
-                    brightness: userSettings.defaultSongBackground.brightness
+                    brightness: userSettings.defaultSongBackground ? userSettings.defaultSongBackground.brightness : 100
                   }))}
                   style={selectedSetting === 'defaultSongBackground' ? selectedSectionStyle : sectionStyle}>
                   <div style={{marginRight: '1vw', fontSize: "calc(10px + 0.5vw)"}}>Default Song Background</div>

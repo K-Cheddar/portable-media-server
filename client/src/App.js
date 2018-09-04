@@ -484,6 +484,14 @@ class App extends Component {
     }
   }
 
+  updateBoxPosition = (position) => {
+    Formatter.updateBoxPosition({state: this.state, position: position, updateItem: this.updateItem})
+  }
+
+  updateBrightness = (level) => {
+    Formatter.updateBrightness({state: this.state, level: level, updateState: this.updateState})
+  }
+
   updateCurrent = ({words = null,background = null,style = {}, displayDirect=false} = {}) => {
 
     if(this.state.freeze)
@@ -537,14 +545,6 @@ class App extends Component {
     Formatter.updateFontSize({fontSize: fontSize, state:this.state, updateState: this.updateState})
   }
 
-  updateBoxPosition = (position) => {
-    Formatter.updateBoxPosition({state: this.state, position: position, updateItem: this.updateItem})
-  }
-
-  updateBrightness = (level) => {
-    Formatter.updateBrightness({state: this.state, level: level, updateState: this.updateState})
-  }
-
   updateItem = (item) => {
       ItemUpdate.updateItem({state: this.state, item: item, updateState: this.updateState})
   }
@@ -555,6 +555,8 @@ class App extends Component {
   }
 
   updateState = (obj) => {
+
+    // this.setState({obj.type: obj.data})
 
     this.setState({
       currentInfo: obj.currentInfo || this.state.currentInfo,
