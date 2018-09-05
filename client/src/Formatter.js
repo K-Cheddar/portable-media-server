@@ -108,6 +108,13 @@ export function updateBrightness(props){
 export function updateBoxPosition(props){
   let {item, wordIndex, boxIndex} = props.state;
   let {x, y, width, height, applyAll, match} = props.position;
+
+  let slides = item.slides || null;
+  let slide = slides ? slides[wordIndex] : null;
+
+  if(!slide)
+    return
+
   if(match){
     let box = item.slides[wordIndex].boxes[boxIndex];
     x = box.x;

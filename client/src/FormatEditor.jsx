@@ -15,7 +15,7 @@ class FormatEditor extends React.Component{
     this.state = {
       cPickerOpen: false,
       color: "#FFFFFF",
-      fontSize: 5,
+      fontSize: 2,
       updating: false,
       brightness: 100
     }
@@ -43,58 +43,55 @@ class FormatEditor extends React.Component{
   }
 
   updateFont = (fontSize) => {
-    if(fontSize > 7.5){
-      fontSize = 7.5
+    if(fontSize > 10){
+      fontSize = 10
     }
-    else if(fontSize < 0.25){
-      fontSize = 0.25
+    else if(fontSize < 0.1){
+      fontSize = 0.1
     }
-    this.setState({fontSize: fontSize})
+    console.log(fontSize);
+    fontSize = Math.round(fontSize*10)/10;
+    this.setState({fontSize: fontSize, updating: false})
     this.props.updateFontSize(fontSize)
   }
 
   fontSizeUP = () => {
     let {fontSize} = this.state;
-    this.updateFont(fontSize+0.25)
+    this.updateFont(fontSize+0.1)
   }
 
   fontSizeDOWN = () => {
     let {fontSize} = this.state;
-    this.updateFont(fontSize-0.25)
+    this.updateFont(fontSize-0.1)
   }
 
   fontSizeChange = (event) => {
     let val;
     let {updating} = this.state;
     let that = this;
-    if(event.target.value.length === 0)
-      val = 1;
-    else{
-      val = parseInt(event.target.value, 10);
-      val/=4;
+    if(event.target.value.length === 0){
+      this.setState({fontSize: ''})
+      return;
     }
+    val = parseInt(event.target.value, 10);
+    val/=10;
 
-    if(val > 7.5)
-      val = 7.5
+    if(val > 10)
+      val = 10
 
     clearTimeout(this.throttle)
     if(updating){
       this.throttle = setTimeout(function(){
         let fontSize = that.state.fontSize;
         that.updateFont(fontSize)
-        that.setState({updating: false})
       }, 100)
     }
     else{
+      this.setState({updating: true})
       this.updateFont(val)
     }
 
-    this.setState({updating: true})
-    // Helper.debounce(() => (that.updateFont(val)),1000);
-    // Helper.throttle(function(){alert("hi")}, 1000)
   }
-
-
 
   componentDidUpdate(prevProps, prevState){
 
@@ -120,9 +117,19 @@ class FormatEditor extends React.Component{
           a: stringToRGB[3]
         }
       })
-
-
     }
+
+    // let slides = item.slides || null;
+    // let slide = slides ? slides[wordIndex] : null;
+    // let box = slide ? slide.boxes[0] : null;
+    //
+    // let prevSlides = prevProps.item.slides || null;
+    // let prevSlide = prevSlides ? prevSlides[prevProps.wordIndex] : null;
+    // let prevBox = prevSlide ? prevSlide.boxes[0] : null;
+    //
+    // if(box && prevBox && box.fontSize !== prevBox.fontSize){
+    //   this.setState({fontSize: box.fontSize})
+    // }
   }
 
   render() {
@@ -131,33 +138,32 @@ class FormatEditor extends React.Component{
     let sliderStyle = {width: '5vw', margin: '.5vw 1vw'}
 
     return (
-        <div >
-        <div style={{display:'flex'}}>
-            <img className='imgButton' style={!cPickerOpen ? {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw',} : {display:'none'}}
-              alt="cPicker" src={cPicker}
-              onClick={this.openColors}/>
-            <img className='imgButton' style={!cPickerOpen ? {display:'none'} : {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw'} }
-              alt="cPickerClose" src={cPickerClose}
-              onClick={this.closeColors}/>
-            <div style={cPickerOpen ? {position:'fixed', zIndex:2, top: '5vh', backgroundColor:'#EEE', padding:'5px'} : {display: 'none'}}>
-                <ChromePicker color={this.state.color} onChange={this.colorChange}/>
-            </div>
-           <input style={{width: '1.25vw', height: '1.25vw',marginRight:'1vw', fontSize:"calc(7px + 0.25vw)"}}
-             value={String(fontSize*4)} onChange={this.fontSizeChange}/>
-           <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
-              onClick={this.fontSizeUP}
-              alt="fsUP" src={fsUP}
-            />
-            <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
-                onClick={this.fontSizeDOWN}
-                alt="fsDOWN" src={fsDOWN}
-            />
-            <img style={{marginLeft:'1vw', marginTop:'.25vw', width:'1.5vw', height:'1.5vw'}}
-                alt="brightness" src={brightness_img}
-                />
-            <Slider style={sliderStyle} min={1} value={brightness} onChange={this.changeBrightness}
-              onAfterChange={() => this.props.updateBrightness(brightness)}/>
+      <div style={{display:'flex'}}>
+          <img className='imgButton' style={!cPickerOpen ? {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw',} : {display:'none'}}
+            alt="cPicker" src={cPicker}
+            onClick={this.openColors}/>
+          <img className='imgButton' style={!cPickerOpen ? {display:'none'} : {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw'} }
+            alt="cPickerClose" src={cPickerClose}
+            onClick={this.closeColors}/>
+          <div style={cPickerOpen ? {position:'fixed', zIndex:2, top: '5vh', backgroundColor:'#EEE', padding:'5px'} : {display: 'none'}}>
+              <ChromePicker color={this.state.color} onChange={this.colorChange}/>
           </div>
+         <input style={{width: '1.25vw', height: '1.25vw', textAlign: 'center',
+           marginRight:'1vw', fontSize:"calc(7px + 0.25vw)"}}
+           value={String(fontSize*10)} onChange={this.fontSizeChange}/>
+         <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
+            onClick={this.fontSizeUP}
+            alt="fsUP" src={fsUP}
+          />
+          <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
+              onClick={this.fontSizeDOWN}
+              alt="fsDOWN" src={fsDOWN}
+          />
+          <img style={{marginTop:'.25vw', width:'1.5vw', height:'1.5vw'}}
+              alt="brightness" src={brightness_img}
+              />
+          <Slider style={sliderStyle} min={1} value={brightness} onChange={this.changeBrightness}
+            onAfterChange={() => this.props.updateBrightness(brightness)}/>
         </div>
     )
   }

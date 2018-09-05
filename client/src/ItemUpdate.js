@@ -34,19 +34,23 @@ export function setItemIndex(props){
 }
 
 export function updateItem(props){
-  let {itemList, itemIndex, allItems, needsUpdate} = props.state;
+  let {itemList, allItems, needsUpdate} = props.state;
   let {updateState, item} = props;
 
   let fontColor = item.slides[0].boxes[0].fontColor;
-  if(itemIndex !== -1 && itemList[itemIndex].nameColor !== fontColor){
+  let name = item.name
+  let itemIndex = itemList.findIndex(e => e._id === item._id)
+  if(itemIndex !== -1 && (itemList[itemIndex].nameColor !== fontColor || itemList[itemIndex].name !== name)){
     itemList[itemIndex].nameColor = fontColor;
+    itemList[itemIndex].name = name;
     needsUpdate.updateItemList = true;
     updateState({itemList: itemList})
   }
   allItems = Sort.sortNamesInList(allItems)
   let index = allItems.findIndex(e => e._id === item._id)
-  if(index !== -1 && allItems[index].nameColor !== fontColor){
+  if(index !== -1 && (allItems[index].nameColor !== fontColor || allItems[index].name !== name)){
     allItems[index].nameColor = fontColor;
+    allItems[index].name = name;
     needsUpdate.updateAllItems = true;
     updateState({allItems: allItems})
   }

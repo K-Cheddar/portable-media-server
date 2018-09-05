@@ -149,7 +149,7 @@ function formatBibleVerses(verses, item, mode){
            if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
              slide = update + " ";
            else{
-             currentBox.fontSize = currentBox.fontSize - 0.15;
+             currentBox.fontSize = currentBox.fontSize - 0.10;
              obj = getMaxLines(currentBox.fontSize, currentBox.height);
              maxLines = obj.maxLines;
              lineHeight = obj.lineHeight;

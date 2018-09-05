@@ -174,7 +174,7 @@ class ItemSlides extends React.Component{
     let slideWidth = 1/slidesPerRow*100 + '%'
 
 
-    let slideStyle = { border:'0.25vw', borderColor: '#d9e3f4', borderStyle:'solid',
+    let slideStyle = { border:'0.25vw', borderColor: '#383838', borderStyle:'solid',
       width:width, height:fullHeight};
     let slideSelectedStyle = {border:'0.25vw', borderColor: '#4286f4', borderStyle:'solid',
        width:width, height:fullHeight};
@@ -228,7 +228,7 @@ class ItemSlides extends React.Component{
 
     return (
       <HotKeys handlers={this.handlers}>
-        <div>
+        <div style={{color: 'white'}}>
           <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)",}}>
             <div style={{fontSize: 'calc(10px + 1vw)', width: '60%', paddingLeft:'0.5vw'}}> {name} </div>
             {(type==='song') && <button style={buttonLoggedIn} onClick={this.openLBox}>Arrange Lyrics</button>}
@@ -242,7 +242,7 @@ class ItemSlides extends React.Component{
                  alt="zoomOut" src={zoomOut}
                 />
           </div>
-        <div style={{ overflowX: 'hidden', height: "37vh", width:"42vw"}}
+        <div style={{ overflowX: 'hidden', height: "35vh", width:"42vw"}}
           onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
           onMouseLeave={this.releaseElement}>{ROWtest}</div>
         {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item}

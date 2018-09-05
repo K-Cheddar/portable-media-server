@@ -123,7 +123,7 @@ export default class ItemList extends React.Component{
   let fullHeight = `calc(${height} + .75vw + .5vw + .1vw + .25vw)`
 
   let style;
-  let itemStyle = {border:'0.25vw', borderColor: '#d9e3f4', borderStyle:'solid',
+  let itemStyle = {border:'0.25vw', borderColor: '#383838', borderStyle:'solid',
       width:width, height:fullHeight, marginTop:"3%"}
   let itemSelectedStyle = {border:'0.25vw', borderColor: '#4286f4', borderStyle:'solid',
           width:width, height:fullHeight, marginTop:"3%"}
@@ -191,7 +191,7 @@ export default class ItemList extends React.Component{
         close={this.close} updateItem={this.props.updateItem}
         />}
         <HotKeys handlers={this.handlers}>
-        {itemList.length > 0 && <div style={{ height:'91vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}
+        {itemList.length > 0 && <div style={{ height:'89vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}
            onMouseUp={this.releaseElement} onMouseLeave={this.releaseElement}>{SL}</div>}
         {itemList.length === 0 && <div style={noItemStyle}> Nothing Added Yet</div>}
         </HotKeys>

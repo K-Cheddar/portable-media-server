@@ -36,7 +36,7 @@ class DisplayEditor extends React.Component{
     let index = -1;
     let words = event.target.value;
 
-    if(item.type === 'bible' && wordIndex === 0){
+    if((item.type === 'bible' && wordIndex === 0) || item.type === 'image'){
       item.slides[wordIndex].boxes[0].words = words
     }
     let slides = item.slides || null;

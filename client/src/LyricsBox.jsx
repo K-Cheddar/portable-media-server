@@ -341,8 +341,8 @@ export default class LyricsBox extends Component{
     return(
       <div style={{position:'fixed', top:0, left:0, height:'100vh',
         zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
-        <div style={{position:'fixed', zIndex:5, right:'1%', top:'1%',
-          width:'95vw', height: '95vh', backgroundColor:"#d1d1d1", padding:'1%'}}>
+        <div style={{position:'fixed', zIndex:5, right:'1%', top:'1%', color:'black',
+          width:'95vw', height: '95vh', backgroundColor:"#c4c4c4", padding:'1%'}}>
           <div style={{display:'flex'}}>
               <div>
                 <textarea style={{width:'20vw', height:'85vh', whiteSpace:'pre-wrap', resize:'none',}}

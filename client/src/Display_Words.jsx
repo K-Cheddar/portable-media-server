@@ -240,7 +240,7 @@ export default class Display_Words extends Component {
         {(!animate && !editor) &&
           <div id={id} style={wordsStyle}>{words}</div>
         }
-        {editor && <textarea id="displayEditor" style={wordsStyle} value={words}
+        {editor && <textarea id={"displayEditor"} style={wordsStyle} value={words}
           onChange={this.props.handleTextChange}/>}
       </div>
     )

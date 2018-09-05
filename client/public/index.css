@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background: #d9e3f4
+  background: #383838;
 }
 
 h1 {
@@ -24,8 +24,8 @@ p {
 .welcome{
   width: 50vw;
   height: 96vh;
-  background: #a6aebc;
-  border: 1vw solid #a7bde2;
+  background: #c4c4c4;
+  border: 1vw solid #06d1d1;
   borderRadius: 1vw/2vw;
   margin: 0 auto;
 }

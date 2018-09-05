@@ -375,7 +375,7 @@ export default class Bible extends Component {
                 <div style={{overflowY: 'scroll', height: '40vh', width: '40vw', backgroundColor:'#a3a3a3', top: '1vh', position: 'relative'}}>{displayText}</div>
                 <div style={{position: 'relative', top: '2vh'}}>
                   <DisplayWindow backgrounds={backgrounds} words={currentInfo.words} style={currentInfo.style}
-                    background={currentInfo.background} width={"16vw"} title={"Presentation "}
+                    background={currentInfo.background} width={"16vw"} title={"Presentation"}
                     titleSize="1.25vw"
                     />
                 </div>

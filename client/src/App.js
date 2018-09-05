@@ -14,7 +14,7 @@ import * as SlideUpdate from './SlideUpdate';
 import * as ItemUpdate from './ItemUpdate';
 import Home from './Home';
 import MobileView from './Mobile/MobileView'
-import NavBar from './NavBar'
+import ToolBar from './ToolBar'
 import Loading from './Loading'
 import cloudinary from 'cloudinary-core';
 import {HotKeys} from 'react-hotkeys';
@@ -497,8 +497,6 @@ class App extends Component {
     if(this.state.freeze)
       return;
 
-    console.log(words, background, style);
-
     let {item, wordIndex, remoteDB} = this.state;
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
@@ -613,12 +611,12 @@ class App extends Component {
     if(window.location.hash === '#/presentation')
       style.backgroundColor = '#000'
     else
-      style.backgroundColor = '#d9e3f4'
+      style.backgroundColor = '#383838'
 
     return (
       <HotKeys keyMap={map}>
         <div id="fullApp" style={style}>
-          <NavBar parent={this} formatBible={Overflow.formatBible}/>
+          <ToolBar parent={this} formatBible={Overflow.formatBible}/>
         {!retrieved.finished && <Loading retrieved={retrieved}/>}
           <div>
               {/* Route components are rendered if the path prop matches the current URL */}

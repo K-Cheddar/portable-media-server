@@ -71,7 +71,7 @@ export default class Backgrounds extends React.Component{
     let width = '38vw';
 
     let itemStyle = {
-        border:'0.25vw',   borderColor: '#d9e3f4',    borderStyle:'solid',
+        border:'0.25vw',   borderColor: '#383838',    borderStyle:'solid',
         height: '3vmax',   width: '5.33vmax',         padding: '.1vmax'
       }
     let itemSelectedStyle = {
@@ -118,16 +118,16 @@ export default class Backgrounds extends React.Component{
 
     let backgroundsRowStyle = {
       display:'flex',     overflowX: 'scroll',    width: width,
-      marginTop: '1vh',   border: '0.25vw solid #CCC', position:'absolute'
+      marginTop: '1vh',   border: '0.25vw solid #c4c4c4', position:'absolute'
     }
     let backgroundTableStyle = {
         overflowY: 'scroll',    width: width,     height: '38vh',
-        background: '#d9e3f4',  marginTop: '1vh',   border: '0.25vw solid #CCC',
+        background: '#383838',  marginTop: '1vh',   border: '0.25vw solid #c4c4c4',
         position:'absolute'
     }
 
     return (
-      <div style={{position: 'relative', height: '22vh', width: width, zIndex: 3, marginBottom:'1%'}}>
+      <div style={{position: 'relative', height: '22vh', width: width, zIndex: 3, marginBottom:'1%', color: 'white'}}>
           <div style={{display:'flex'}}>
           <div>Backgrounds</div>
           {(user!=='Demo') && <button style={{fontSize: "calc(5px + 0.35vw)", marginLeft: '1vw'}} onClick={openUploader}>Upload Backgrounds</button>}
