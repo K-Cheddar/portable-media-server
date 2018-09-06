@@ -105,12 +105,17 @@ export default class CreateName extends React.Component{
       zIndex:6,
       left:'35%',
       top:'45%',
-      backgroundColor: '#EEE',
+      backgroundColor: '#383838',
       boxShadow: '0 5px 10px rgb(0, 0, 0)',
       border: '1px solid #CCC',
       borderRadius: 3,
-      padding: 10
+      padding: 10,
+      width: '20vw'
     }
+
+    let buttonStyle = {fontSize: "calc(7px + 0.4vw)", margin:"1vh 0.25vw", backgroundColor:'#383838',
+       border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
+       width: '9vw'}
 
       return (
         <HotKeys handlers={this.handlers}>
@@ -121,11 +126,11 @@ export default class CreateName extends React.Component{
           <form onSubmit={this.submitName}>
             <label>Item Name:</label>
               <input id="nameChange" type="text" value={this.state.name} onChange={this.nameChange}/>
-              <button type="submit">
-                Submit Name
-              </button>
-              <button onClick={this.props.close}>
+              <button style={buttonStyle} onClick={this.props.close}>
                 Cancel
+              </button>
+              <button style={buttonStyle} type="submit">
+                Submit Name
               </button>
           </form>
           </div>

@@ -476,7 +476,7 @@ class App extends Component {
     if(!db.get)
       return;
     for(let property in needsUpdate){
-      if(needsUpdate[property]){
+      if(needsUpdate[property] && needsUpdate.hasOwnProperty(property)){
         let func = DBUpdater[property];
         func(this.state);
         needsUpdate[property] = false;
