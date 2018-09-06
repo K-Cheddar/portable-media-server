@@ -28,25 +28,39 @@ export default class Home extends Component {
   render(){
 
     let {isMobile} = this.state;
+    let buttonStyle = {fontSize: "calc(14px + 0.5vmax)", margin:"1vw", backgroundColor:'#383838',
+       border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.5vw'}
 
     return(
       <div style={{height:'95vh'}}>
         <nav className="welcome" style={{fontSize: "calc(14px + 0.35vmax)"}}>
           <h1 style={{padding: '1%'}}>Welcome to Portable Media</h1>
-            <p>
+            <div className='disclaimer'>
               This software is in Beta. Use Google Chrome for the best experience.
-              Other browsers are not currently supported and functionality may be limited.
-              If videos are choppy or don't play, <a target="_blank" rel="noopener noreferrer" href="https://www.technize.net/google-chrome-disable-hardware-acceleration/"> disable hardware acceleration</a>
-            </p>
+            </div>
+            <div className='notesSection'>
+              <div className='notesHeader'>
+                Notes
+              </div>
+              <ul >
+                <li className='notes' >If videos are choppy or don't play,&nbsp;
+                  <a target="_blank" rel="noopener noreferrer"
+                    href="https://www.technize.net/google-chrome-disable-hardware-acceleration/">disable hardware acceleration</a>
+                </li>
+                <li className='notes'>
+                  'Direct Connect' works in Chrome and Firefox
+                </li>
+              </ul>
+            </div>
           <ul style={{paddingLeft: '1%'}}>
            {/* Link components are used for linking to other views */}
-            {!isMobile && <li><Link to="/fullview">Controller</Link></li>}
-            {isMobile &&<li><Link to="/mobile">Controller</Link></li>}
-            <li><Link onClick={this.props.setAsReceiver} to="/presentation">Presentation</Link></li>
+            {!isMobile && <li><Link to="/fullview"><button style={buttonStyle}>Controller</button></Link></li>}
+            {isMobile &&<li><Link to="/mobile"><button style={buttonStyle}>Controller</button></Link></li>}
+            <li><Link to="/presentation"><button style={buttonStyle} onClick={this.props.setAsReceiver}>Presentation</button></Link></li>
             {/*<li><button style={{fontSize: "calc(14px + 0.35vmax)"}} onClick={this.start}>Start Bible</button></li>*/}
             {/*<li><button style={{fontSize: "calc(14px + 0.35vmax)"}} onClick={this.test}>Test</button></li>*/}
             {!this.props.isLoggedIn && <li><Link to="/login"><button style={{fontSize: "calc(14px + 0.35vmax)"}}>Login</button></Link></li>}
-            {this.props.isLoggedIn && <li><button style={{fontSize: "calc(14px + 0.35vmax)"}} onClick={this.props.logout}>Logout</button></li>}
+            {this.props.isLoggedIn && <li><button style={buttonStyle} onClick={this.props.logout}>Logout</button></li>}
           </ul>
          </nav>
       </div>

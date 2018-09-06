@@ -13,13 +13,38 @@ h1 {
 h2 {
   font-size: calc(7px + 2vw);
   text-align: center;
+  font-style: italic;
 }
 
-p {
+.disclaimer {
   font-size: calc(5px + 1vw);
   text-align: center;
   font-style: italic;
 }
+
+.notesHeader {
+  font-size: calc(5px + 1vw);
+  text-align: center;
+  font-weight: bold;
+}
+
+.notesSection {
+  background-color: #f2f2f2;
+  border: 1vmax #f2f2f2 solid;
+  border-radius: 1vw;
+  width: 60%;
+  margin: 2vh auto;
+}
+
+.notes {
+  font-size: calc(5px + 0.5vw);
+  margin: 1vh auto auto;
+  width: 80%;
+  text-align: left;
+  list-style-type: circle;
+}
+
+
 
 .welcome{
   width: 50vw;
