@@ -66,9 +66,9 @@ export default class MobileSlides extends React.Component{
     let fullHeight = `calc(${height} + ${titleSize} + 1vw)`;
     let slideWidth = 1/slidesPerRow*100 + '%';
 
-    let slideStyle = { border:'1vw', borderColor: '#d9e3f4', borderStyle:'solid',
+    let slideStyle = { border:'1vw', borderColor: '#383838', borderStyle:'solid',
       width:width, height:fullHeight};
-    let slideSelectedStyle = {border:'1vw', borderColor: '#4286f4', borderStyle:'solid',
+    let slideSelectedStyle = {border:'1vw', borderColor: '#06d1d1', borderStyle:'solid',
        width:width, height:fullHeight};
 
     let slides = fullArray.map((element, index) => {
@@ -85,8 +85,8 @@ export default class MobileSlides extends React.Component{
           <div style={{display:'flex', width:slideWidth, userSelect:'none'}} key={i} id={"MSlide"+(index*slidesPerRow+i)}>
             <div onClick={() => (that.clickSlide(index*slidesPerRow+i))} style={style}>
               <MobileSlideInList words={lyrics} style={item.slides[index*slidesPerRow+i].boxes[0]}
-                 backgrounds={backgrounds}
-                name={item.slides[index*slidesPerRow+i].type} width={width} height={height} titleSize={titleSize}/>
+                 backgrounds={backgrounds} name={item.slides[index*slidesPerRow+i].type}
+                 width={width} height={height} titleSize={titleSize}/>
 
             </div>
           </div>
@@ -101,13 +101,13 @@ export default class MobileSlides extends React.Component{
       <div>
       <div style={{ overflowY:'scroll', width: '100vw', height: "32vh"}}>{slides}</div>
       {words.length > 1 &&<div style={{ display:'flex', paddingTop:'1.5%'}}>
-        <button style={{width:'50vw', height:'20vh', backgroundColor:'#d9e3f4', userSelect:'none'}}>
+        <button style={{width:'50vw', height:'20vh', backgroundColor:'#383838', userSelect:'none'}}>
           <img style={{width:'45vw', height:'15vh', marginRight:'2vw'}}
              onClick={() => (that.prevSlide(wordIndex))}
              alt="left" src={left}
             />
         </button>
-        <button style={{width:'50vw', height:'20vh', backgroundColor:'#d9e3f4'}}>
+        <button style={{width:'50vw', height:'20vh', backgroundColor:'#383838'}}>
           <img style={{width:'45vw', height:'15vh', marginRight:'2vw'}}
              onClick={() => (that.nextSlide(wordIndex))}
              alt="right" src={right}

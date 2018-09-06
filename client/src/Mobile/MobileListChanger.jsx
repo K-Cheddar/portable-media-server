@@ -5,16 +5,17 @@ export default class MobileListChanger extends React.Component{
   render(){
   let {itemLists, selectItemList, selectedItemList} = this.props;
 
+  let listNameStyle = {border:'0.75vmax', borderColor: '#c4c4c4', borderStyle:'solid',
+     width:"20vmax", height:"5vmax", marginTop:"3%", padding: '5%'};
+  let selectedStyle = Object.assign({}, listNameStyle);
+  selectedStyle.borderColor = '#06d1d1';
+
   let list = itemLists.map((ele, index) => {
   let element = ele.name
   return(
     <div style={{display:'flex'}} key={index} id={"MItem"+index}>
-      <div style={(selectedItemList.name === element) ? {border:'0.75vmax', borderColor: '#4286f4', borderStyle:'solid',
-         width:"20vmax", height:"5vmax", marginTop:"3%"}
-       : {border:'0.75vmax', borderColor: '#93bbf9', borderStyle:'solid',
-          width:"20vmax", height:"5vmax", marginTop:"3%"}}
-        onClick={() => (selectItemList(element))}
-        >
+      <div style={(selectedItemList.name === element) ?  selectedStyle : listNameStyle}
+        onClick={() => (selectItemList(element))}>
         {element}
       </div>
     </div>

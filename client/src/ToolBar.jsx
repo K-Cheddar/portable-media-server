@@ -100,10 +100,6 @@ export default class ToolBar extends Component {
       allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds} = this.props.parent.state;
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen, settingsOpen, mode} = this.state;
 
-    let buttonStyle = {
-       fontSize: "calc(5px + 0.35vw)", margin:'.25vw', width:'6vw', height: '2.5vh',
-    }
-
     let menuItem = {
       display:'inline-block', width:'90%', padding: '2.5%', backgroundColor:'#fff', margin: '5%',
       cursor: 'pointer', fontSize: "calc(5px + 0.35vw)"
@@ -117,7 +113,7 @@ export default class ToolBar extends Component {
       height: '3vh', margin: '0 0.5vw', border: '0.15vw solid #474747'
     }
     let modeButtonSelected = Object.assign({}, modeButton);
-    modeButtonSelected.border = '0.15vw solid #3dce00'
+    modeButtonSelected.border = '0.15vw solid #06d1d1'
 
     return(
       <div style={window.location.hash==="#/fullview" ?
@@ -130,7 +126,7 @@ export default class ToolBar extends Component {
           <li style={{width:'4vw'}}>
             <div className='toolbarSection' onMouseLeave={this.closeMenu}>
               <button onClick={this.openMenu} onMouseEnter={this.openMenu} style={menuButton}>Menu</button>
-                <div style={menuMousedOver ? {backgroundColor:'#fff', position:'absolute', width:'7vw'} : {display:'none'}}>
+                <div style={menuMousedOver ? {backgroundColor:'#fff', position:'absolute', width:'7vw', zIndex: 4} : {display:'none'}}>
                   <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
                   <Link to="/"><button style={menuItem}>Home</button></Link>
                   <button style={menuItem} onClick={setAsReceiver}> Become Receiver </button>
@@ -164,16 +160,18 @@ export default class ToolBar extends Component {
           </li>
           <li style={{width: '13vw'}}>
             {mode === 'edit' && <div className='toolbarSection' style={{display:'flex'}}>
-              <div className='imgButton' style={{fontSize: "calc(5px + 0.35vw)", height: '5vh', marginRight:'0.5vw'}}>
-                <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto', padding: '0.25vh 0.25vw'}}
-                   onClick={this.openBible}
+              <div onClick={this.openBible} className='imgButton'
+                 style={{fontSize: "calc(5px + 0.35vw)", height: '5vh', marginRight:'0.5vw'}}>
+                <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
                    alt="bibleIcon" src={bibleIcon}
                    />
                  <div>Open Bible</div>
               </div>
-              <div className='imgButton' style={{fontSize: "calc(5px + 0.35vw)", height: '5vh'}}>
-                <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto', padding: '0.25vh 0.25vw'}}
-                   onClick={this.openSong}
+              <div onClick={this.openSong} className='imgButton'
+                style={{fontSize: "calc(5px + 0.35vw)", height: '5vh'}}>
+                <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
                    alt="songIcon" src={songIcon}
                    />
                  <div>Add Song</div>

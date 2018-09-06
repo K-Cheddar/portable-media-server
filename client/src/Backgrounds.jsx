@@ -1,6 +1,7 @@
 import React from 'react';
 import expandDown from './assets/expandDown.png';
 import collapseUp from './assets/collapseUp.png';
+import upload from './assets/upload.png'
 import CreateName from './CreateName';
 
 export default class Backgrounds extends React.Component{
@@ -121,22 +122,31 @@ export default class Backgrounds extends React.Component{
       marginTop: '1vh',   border: '0.25vw solid #c4c4c4', position:'absolute'
     }
     let backgroundTableStyle = {
-        overflowY: 'scroll',    width: width,     height: '38vh',
+        overflowY: 'scroll',    width: width,     height: '36vh',
         background: '#383838',  marginTop: '1vh',   border: '0.25vw solid #c4c4c4',
         position:'absolute'
     }
 
+    let buttonStyle = {fontSize: "calc(7px + 0.4vw)", margin:"0.25vh 0.25vw", backgroundColor:'#383838',
+       border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
+       width: '9vw'}
+
+
     return (
       <div style={{position: 'relative', height: '22vh', width: width, zIndex: 3, marginBottom:'1%', color: 'white'}}>
           <div style={{display:'flex'}}>
-          <div>Backgrounds</div>
-          {(user!=='Demo') && <button style={{fontSize: "calc(5px + 0.35vw)", marginLeft: '1vw'}} onClick={openUploader}>Upload Backgrounds</button>}
+          <div style={{marginTop:'1vh'}}>Backgrounds</div>
+          {(user!=='Demo') &&
+            <img className='imgButton' style={{display:'block', margin: '1vh 1vw', width:'1.5vw', height:'1.5vw'}}
+               onClick={openUploader}
+               alt="upload" src={upload}
+               />}
           </div>
           <div style={{display:'flex', paddingTop: '1vh'}}>
-            <button style={{width: '7vw', fontSize: "calc(7px + 0.35vw)"}} onClick={this.displayImage}>Display Image</button>
-            <button style={{marginLeft:'1%', width: '7vw',fontSize: "calc(7px + 0.35vw)"}} onClick={this.openName}>Add To List</button>
-            {item.slides &&<button style={{marginLeft:'1%', width: '9vw', fontSize: "calc(7px + 0.35vw)"}} onClick={this.setItemBackground}>Set Item Background</button>}
-            {item.type==='song' &&<button style={{marginLeft:'1%', width: '10vw',fontSize: "calc(7px + 0.35vw)"}} onClick={this.setSlideBackground}>Set Slide Background</button>}
+            <button style={buttonStyle} onClick={this.displayImage}>Display Image</button>
+            <button style={buttonStyle} onClick={this.openName}>Add To List</button>
+            {item.slides &&<button style={buttonStyle} onClick={this.setItemBackground}>Set Item Background</button>}
+            {item.type==='song' &&<button style={buttonStyle} onClick={this.setSlideBackground}>Set Slide Background</button>}
           </div>
           <div >
             {!allOpen && <div style={backgroundsRowStyle}>
@@ -144,12 +154,14 @@ export default class Backgrounds extends React.Component{
           </div>}
             {allOpen && <div style={backgroundTableStyle}>{BCKS}</div>}
             {!allOpen && <img className='imgButton'
-              style={{display:'block', width:'1vw', height:'1vw', marginLeft:"2%", position: 'absolute', right: '-1.5vw', bottom: '3vh'}}
+              style={{display:'block', width:'1vw', height:'1vw', marginLeft:"2%",
+                position: 'absolute', right: '-2vw', bottom: '0vh'}}
                onClick={this.open}
                alt="expandDown" src={expandDown}
               />}
             {allOpen && <img className='imgButton'
-              style={{display:'block', width:'1vw', height:'1vw', marginLeft:"2%", position: 'absolute', right: '-1.5vw', bottom: "-25vh"}}
+              style={{display:'block', width:'1vw', height:'1vw', marginLeft:"2%",
+                position: 'absolute', right: '-2vw', bottom: "-25vh"}}
                onClick={this.close}
                alt="collapseUp" src={collapseUp}
               />}

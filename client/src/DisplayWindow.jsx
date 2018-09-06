@@ -149,15 +149,15 @@ export default class DisplayWindow extends React.Component{
       width: width, boxSizing:'border-box', color: 'black'
     }
 
-    if(title.match(/Verse\s\d*$/) ){
+    if(title.match(/Verse\s?\d*$/) ){
       titleStyle.background = colorCodes.Verse
       titleStyle.color = '#FFF'
     }
-    if(title.match(/Bridge\s\d*$/)){
+    if(title.match(/Bridge\s?\d*$/)){
       titleStyle.background = colorCodes.Bridge
       titleStyle.color = '#FFF'
     }
-    if(title.match(/Chorus\s\d*$/)){
+    if(title.match(/Chorus\s?\d*$/)){
       titleStyle.background = colorCodes.Chorus
       titleStyle.color = '#FFF'
     }

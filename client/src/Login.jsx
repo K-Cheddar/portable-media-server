@@ -65,23 +65,24 @@ export default class Login extends Component {
   render() {
 
     return (
-      <div>
-          <form onSubmit={this.login}>
-            <ul className="">
-              <li className="">
-                <label> Username: </label>
-                <input className="" type="text" value={this.state.username} onChange={this.usernameChange} />
+      <div style={{color:'black', backgroundColor:'#c4c4c4', width:'50vh', height: '25vh', margin: 'auto', marginTop: '32.5vh',
+        fontSize:'calc(12px + 1vh)'}}>
+          <form style={{width: '65%', margin: 'auto'}} onSubmit={this.login}>
+            <ul style={{width: ''}}>
+              <li style={{paddingTop: '2vh'}}>
+                <label > Username: </label>
+                <input type="text" value={this.state.username} onChange={this.usernameChange} />
               </li>
-              <li className="">
+              <li style={{paddingTop: '2vh'}}>
                 <label> Password:  </label>
-                <input className="" type="password" value={this.state.password} onChange={this.passwordChange} />
+                <input type="password" value={this.state.password} onChange={this.passwordChange} />
               </li>
-              <li >
-                <input className="" type="submit" value="Submit" />
+              <li style={{paddingTop: '2vh', height: '5vh', display: 'flex'}}>
+                <input style={{fontSize:'calc(12px + 1vh)'}} type="submit" value="Submit" />
+                  {this.state.wrongCred &&
+                    <p style={{color:'#f70000', width: '40vw'}}>The username and password combination do not match</p>
+                  }
               </li>
-              {this.state.wrongCred &&
-                <p style={{padding:'2vh', color:'#f70000'}}>The username and password combination do not match</p>
-              }
             </ul>
           </form>
       </div>

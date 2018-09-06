@@ -628,7 +628,7 @@ class App extends Component {
                   <FullView {...props} parent={this} formatSong={Overflow.formatSong}
                   />}/>
                 <Route  path="/mobile" render={(props) =>
-                  <MobileView {...props} parent={this}
+                  <MobileView {...props} parent={this} formatSong={Overflow.formatSong}
                   />}/>
                 <Route path="/login" render={(props) =>
                     <Login {...props} login={this.login}

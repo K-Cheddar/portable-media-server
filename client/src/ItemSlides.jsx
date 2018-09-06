@@ -176,7 +176,7 @@ class ItemSlides extends React.Component{
 
     let slideStyle = { border:'0.25vw', borderColor: '#383838', borderStyle:'solid',
       width:width, height:fullHeight};
-    let slideSelectedStyle = {border:'0.25vw', borderColor: '#4286f4', borderStyle:'solid',
+    let slideSelectedStyle = {border:'0.25vw', borderColor: '#06d1d1', borderStyle:'solid',
        width:width, height:fullHeight};
     let slideDraggedStyle = { border:'0.25vw', borderColor: '#ffdb3a', borderStyle:'solid',
       width:width, height:fullHeight, opacity:'0.5'};

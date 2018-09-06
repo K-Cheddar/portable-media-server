@@ -175,7 +175,7 @@ export default class LyricsBox extends Component{
 
     for (let i = 0; i < songOrder.length; ++i){
       let section = songOrder[i];
-      if(sectionUpdates[section].changed)
+      if(sectionUpdates[section] && sectionUpdates[section].changed)
         songOrder[i] = sectionUpdates[section].newName
     }
 
@@ -204,6 +204,8 @@ export default class LyricsBox extends Component{
       sectionIndex: newIndex
     })
     setTimeout(function(){
+      if(!formattedLyrics[newIndex])
+        return;
       let id = formattedLyrics[newIndex].name
       document.getElementById(id).focus();
     },100)
@@ -248,7 +250,8 @@ export default class LyricsBox extends Component{
     this.updateSections(formattedLyrics, name);
   }
 
-  changeNewType = (newType) => {
+  changeNewType = (e) => {
+    let newType = e.target.value;
     this.setState({newType: newType});
   }
 
@@ -314,6 +317,9 @@ export default class LyricsBox extends Component{
         top: (mouseY + 2) + 'px', border:'0.1vmax', borderColor: '#b7b7b7', borderStyle:'solid',
         textAlign: 'center'};
 
+    let buttonStyle = {fontSize: "calc(8px + 0.4vw)", margin:"1vw", backgroundColor:'#383838',
+       border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.5vw'}
+
     let SO = songOrder.map((element, index) => {
 
       let beingDragged = (indexBeingDragged === index)
@@ -341,39 +347,38 @@ export default class LyricsBox extends Component{
     return(
       <div style={{position:'fixed', top:0, left:0, height:'100vh',
         zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
-        <div style={{position:'fixed', zIndex:5, right:'1%', top:'1%', color:'black',
-          width:'95vw', height: '95vh', backgroundColor:"#c4c4c4", padding:'1%'}}>
+        <div style={{position:'fixed', zIndex:5, right:'1%', top:'1%', color:'white',
+          width:'95vw', height: '95vh', backgroundColor:"#383838", padding:'1%'}}>
           <div style={{display:'flex'}}>
               <div>
-                <textarea style={{width:'20vw', height:'85vh', whiteSpace:'pre-wrap', resize:'none',}}
+                <textarea style={{width:'20vw', height:'85vh', whiteSpace:'pre-wrap', resize:'none'}}
                 value={this.state.text} onChange={this.textChange}/>
-              <button style={{fontSize: "calc(8px + 0.4vmax)", marginLeft: "5vw"}} onClick={this.submitText}>Create Sections</button>
+              <button style={buttonStyle} onClick={this.submitText}>Create Sections</button>
               </div>
               <div >
-                <div style={{paddingLeft:'1vmax', overflowY: 'scroll', height: "85vh", width:"56vw"}}>
+                <div style={{paddingLeft:'1vmax', overflowX: 'hidden', height: "85vh", width:"56vw"}}>
                   {list}
                 </div>
-                <button style={{fontSize: "calc(8px + 0.4vmax)", marginLeft: "50vw"}}
+                <button style={buttonStyle}
                   onClick={this.newSection}>
                   New Section
                 </button>
               </div>
               <div >
-                <div style={{paddingLeft:'1vmax',overflowY: 'scroll', height: "85vh", width:"17vw"}}>
+                <div style={{paddingLeft:'1vmax', overflowX: 'hidden', height: "80vh", width:"17vw"}}>
                   <div style={{fontSize: "calc(10px + 0.5vmax)"}}>Song Order</div>
                   <div style={{fontSize: "calc(8px + 0.4vmax)"}}
                     onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
                     onMouseLeave={this.releaseElement}>{SO}</div>
                 </div>
-                <div style={{display:'flex'}}>
-                  <div style={{paddingLeft: "1vw", width:'5vw'}}>
-                    <select value={newType} onChange={(e) => (this.changeNewType(e.target.value))}>
-                      {sectionsPresent.map((element, index) =>
-                        <option key={index}> {element} </option>
-                      )}
-                    </select>
-                  </div>
-                  <button style={{fontSize: "calc(8px + 0.4vmax)", marginLeft: "5vw"}}
+                <div style={{display:'flex', height: '10vh'}}>
+                  <select style={buttonStyle}
+                    value={newType} onChange={(e) => (this.changeNewType(e))}>
+                    {sectionsPresent.map((element, index) =>
+                      <option key={index}> {element} </option>
+                    )}
+                  </select>
+                  <button style={buttonStyle}
                     onClick={this.addSection}>
                     Add Section
                   </button>
@@ -381,11 +386,11 @@ export default class LyricsBox extends Component{
               </div>
           </div>
           <div style={{position:"absolute", display: 'flex', right:"0", bottom:"0"}}>
-              <button style={{fontSize: "calc(8px + 0.4vmax)", margin:"1vw"}}
+              <button style={buttonStyle}
                 onClick={this.props.close}>
                 Cancel
               </button>
-              <button style={{fontSize: "calc(8px + 0.4vmax)", margin:"1vw"}}
+              <button style={buttonStyle}
                 onClick={this.autoFormatLyrics}>
                 Submit Changes
               </button>

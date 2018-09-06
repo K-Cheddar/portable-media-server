@@ -113,7 +113,6 @@ export default class UserSettings extends React.Component{
     let that = this;
     BCKS = fullArray.map((element, index) => {
       let row = element.map(function (pic, i){
-        let itemSelected = false //(index*numCols + i === selected);
         return(
           <div key={index*numCols+i}>
             <img className='imgButton' onClick={ () => (that.changeSetting(pic.name))}
@@ -160,7 +159,7 @@ export default class UserSettings extends React.Component{
                     brightness: userSettings.defaultScreenBackground ? userSettings.defaultScreenBackground.brightness : 100
                   }))}
                   style={selectedSetting === 'defaultScreenBackground' ? selectedSectionStyle : sectionStyle}>
-                  <div style={sectionWords}>Screen</div>
+                  <div style={sectionWords}>Default</div>
                   <div style={screenBackgroundStyle}></div>
                 </div>
                 <div onClick={ () => (this.setState({

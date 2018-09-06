@@ -49,7 +49,6 @@ class FormatEditor extends React.Component{
     else if(fontSize < 0.1){
       fontSize = 0.1
     }
-    console.log(fontSize);
     fontSize = Math.round(fontSize*10)/10;
     this.setState({fontSize: fontSize, updating: false})
     this.props.updateFontSize(fontSize)

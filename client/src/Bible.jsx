@@ -251,9 +251,9 @@ export default class Bible extends Component {
       )
     })
 
-    let style = {border:'0.1vmax', borderColor: '#d1d1d1', borderStyle:'solid'};
+    let style = {border:'0.1vmax', borderColor: '#383838', borderStyle:'solid'};
     let selectedStyle = Object.assign({}, style);
-        selectedStyle.borderColor = '#4286f4'
+        selectedStyle.borderColor = '#06d1d1'
 
     let books = filteredBooks.map((element, index) => {
       let tStyle = Object.assign({}, style);;
@@ -305,10 +305,13 @@ export default class Bible extends Component {
     })
 
     let buttonStyle = {
-       fontSize: "calc(8px + 0.6vw)", margin:'0.25%', width:'8vw'
+       fontSize: "calc(8px + 0.6vw)", margin:'0.25%', width:'8vw', backgroundColor:'#383838',
+          border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white',
     }
+
     let freezeButton = {
-      fontSize: "calc(5px + 0.35vw)", marginRight:'.25vw', width:'6vw'
+      fontSize: "calc(5px + 0.35vw)", marginRight:'.25vw', width:'6vw',backgroundColor:'#383838',
+         border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white',
     }
 
     return(
@@ -316,39 +319,41 @@ export default class Bible extends Component {
         <div tabIndex="-1" id='bibleWindow' style={{position:'fixed', top:0, left:0, height:'100vh',
           zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
           <div style={{position:'fixed', zIndex:5, right:'12.5%', top:'1%',
-            width:'75vw', height: '75vh', backgroundColor:"#d1d1d1", padding:'1%'}}>
+            width:'75vw', height: '75vh', backgroundColor:"#383838", padding:'1%', color: 'white'}}>
             <div style={{display:'flex'} }>
               <div style={{display: 'flex', width:'50vw', height:'70vh',
                 fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
                 <div style={{display: 'block', width:'10vw', margin:'0.5vw'}}>
                   <div >Book</div>
                   <input style={{width:'98%'}} type='text' value={bookSearch} onChange={this.updateBook}/>
-                  <div style={{overflowY: 'scroll', height: '90%'}}>{books}</div>
+                  <div style={{overflowX: 'hidden', height: '90%'}}>{books}</div>
                 </div>
                 <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
                   <div>Chapter</div>
                   <input style={{width:'98%'}} type='text' value={chapterSearch} onChange={this.updateChapter}/>
-                  <div style={{overflowY: 'scroll', height: '90%'}}>{chapters}</div>
+                  <div style={{overflowX: 'hidden', height: '90%'}}>{chapters}</div>
                 </div>
                 <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
                   <div>Start Verse</div>
                   <input style={{width:'98%'}} type='text' value={verseStartSearch} onChange={this.updateStartVerse}/>
-                  <div style={{overflowY: 'scroll', height: '90%'}}>{versesStart}</div>
+                  <div style={{overflowX: 'hidden', height: '90%'}}>{versesStart}</div>
                 </div>
                 <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
                   <div>End Verse</div>
                   <input style={{width:'98%'}} type='text' value={verseEndSearch} onChange={this.updateEndVerse}/>
-                  <div style={{overflowY: 'scroll', height: '90%'}}>{versesEnd}</div>
+                  <div style={{overflowX: 'hidden', height: '90%'}}>{versesEnd}</div>
                 </div>
               </div>
               <div>
                 <div style={{display: 'flex'}}>
-                  <div>
-                    {(endVerse !== startVerse) && <div>
-                      Selected Verse: {allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}-{endVerse+1}
+                  <div style={{color: 'yellow'}}>
+                    {(endVerse !== startVerse) && <div style={{display: 'flex'}}>
+                      <div style={{fontWeight: 'bold', marginRight: '0.5vw'}}>Selected Verses: </div>
+                      <div>{allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}-{endVerse+1}</div>
                     </div>}
-                    {(endVerse === startVerse) && <div>
-                      Selected Verse: {allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}
+                    {(endVerse === startVerse) && <div style={{display: 'flex'}}>
+                      <div style={{fontWeight: 'bold', marginRight: '0.5vw'}}>Selected Verse: </div>
+                      <div>{allBooks[currentBook].name} {currentChapter+1}:{startVerse+1}</div>
                     </div>}
                   </div>
                   <div style={{position: 'absolute', right: '0.5vw', width: '9.5vw'}}>
@@ -372,7 +377,8 @@ export default class Bible extends Component {
                     }
                   </div>
                 </div>
-                <div style={{overflowY: 'scroll', height: '40vh', width: '40vw', backgroundColor:'#a3a3a3', top: '1vh', position: 'relative'}}>{displayText}</div>
+                <div style={{overflowX: 'hidden', height: '40vh', width: '40vw', backgroundColor:'#5b5b5b',
+                   top: '1vh', position: 'relative'}}>{displayText}</div>
                 <div style={{position: 'relative', top: '2vh'}}>
                   <DisplayWindow backgrounds={backgrounds} words={currentInfo.words} style={currentInfo.style}
                     background={currentInfo.background} width={"16vw"} title={"Presentation"}

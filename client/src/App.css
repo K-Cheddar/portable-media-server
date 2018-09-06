@@ -5,6 +5,11 @@ ul {
   list-style-type: none;
 }
 
+button:hover {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
 .toolbarSection {
   padding: 0.5vh 0.5vw;
   border-left: 0.15vw solid #06d1d1;

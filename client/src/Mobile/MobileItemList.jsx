@@ -19,9 +19,9 @@ export default class MobileItemList extends React.Component{
   let SL = list.map((element, index) => {
   return(
     <div style={{display:'flex'}} key={index} id={"MItem"+index}>
-      <div style={(index === itemIndex) ? {border:'0.75vmax', borderColor: '#4286f4', borderStyle:'solid',
+      <div style={(index === itemIndex) ? {border:'0.75vmax', borderColor: '#06d1d1', borderStyle:'solid',
          width:width, height: fullHeight, marginTop:"3%"}
-       : {border:'0.75vmax', borderColor: '#d9e3f4', borderStyle:'solid',
+       : {border:'0.75vmax', borderColor: '#383838', borderStyle:'solid',
           width:width, height: fullHeight, marginTop:"3%"}}
         onClick={() => (this.props.setItemIndex(index))}
         >

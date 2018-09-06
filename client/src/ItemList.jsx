@@ -125,7 +125,7 @@ export default class ItemList extends React.Component{
   let style;
   let itemStyle = {border:'0.25vw', borderColor: '#383838', borderStyle:'solid',
       width:width, height:fullHeight, marginTop:"3%"}
-  let itemSelectedStyle = {border:'0.25vw', borderColor: '#4286f4', borderStyle:'solid',
+  let itemSelectedStyle = {border:'0.25vw', borderColor: '#06d1d1', borderStyle:'solid',
           width:width, height:fullHeight, marginTop:"3%"}
   let itemDraggedStyle = {border:'0.25vw', borderColor: '#ffdb3a', borderStyle:'solid',
           width:width, height:fullHeight, marginTop:"3%", opacity:'0.5'}
