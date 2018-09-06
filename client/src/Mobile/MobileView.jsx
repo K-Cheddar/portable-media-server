@@ -112,7 +112,6 @@ export default class MobileView extends Component{
              color: 'white'}}>
              <MobileListChanger selectedItemList={selectedItemList}
                selectItemList={selectItemList} itemLists={itemLists}/>
-
               <MobileItemList setItemIndex={setItemIndex} setWordIndex={setWordIndex}
                 itemList={itemList} backgrounds={backgrounds} updateItem={updateItem}
                  itemIndex={itemIndex} close={this.closeItemSelect}
@@ -122,7 +121,7 @@ export default class MobileView extends Component{
         {this.state.arrangeLyricsOpen &&
           <div style={{position:'fixed', top:0, left:0, height:'100vh',
              zIndex: 2, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
-            <div style={{position:'fixed', display:'flex', top:'2vmax', left:'13vw',
+            <div style={{position:'fixed', display:'flex', top:'1vh', left:'13vw',
                zIndex: 3, backgroundColor:'#383838', width:'80vw', color: 'white', height: '90vh'}}>
              <MobileArrangeLyrics item={item} close={this.closeArrangeLyrics}
                formatSong={this.props.formatSong} updateItem={updateItem}/>

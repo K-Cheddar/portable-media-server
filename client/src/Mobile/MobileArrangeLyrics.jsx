@@ -119,18 +119,18 @@ export default class MobileArrangeLyrics extends React.Component{
       songOrder = sections;
     }
 
-    let secName = sections[sections.length-1];
-    if(oldName){
-      secName = oldName;
-    let typeFromName = oldName.replace(/\s\d+$/, "");
-    if(oldName === typeFromName)
-      secName = oldName + ' ' + sectionCounter[typeFromName]
-    }
+    // let secName = sections[sections.length-1];
+    // if(oldName){
+    //   secName = oldName;
+    // let typeFromName = oldName.replace(/\s\d+$/, "");
+    // if(oldName === typeFromName)
+    //   secName = oldName + ' ' + sectionCounter[typeFromName]
+    // }
 
     Sort.sortNamesInList(formattedLyrics)
     Sort.sortList(sections);
 
-    let newIndex = sections.findIndex(e => e === secName);
+    // let newIndex = sections.findIndex(e => e === secName);
     // if(newIndex !== -1){
     //   this.setState({selectedIndex: newIndex})
     // }

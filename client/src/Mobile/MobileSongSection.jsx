@@ -7,8 +7,7 @@ export default class MobileSongSection extends Component{
   render(){
 
     let {item, sectionTypes, deleteSection, changeSectionText, i,
-       index, sectionIndex, sectionsPresent, setSectionIndex,
-       changeSectionType} = this.props;
+       index, sectionsPresent, changeSectionType} = this.props;
 
    sectionsPresent = sectionsPresent.filter(e => e !== item.name)
 

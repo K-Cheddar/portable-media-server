@@ -623,6 +623,7 @@ class App extends Component {
               <Switch>
                 <Route exact={true} path="/" render={(props) =>
                   <Home {...props} isLoggedIn={isLoggedIn} logout={this.logout}
+                    setAsReceiver={this.setAsReceiver}
                 />}/>
                 <Route  path="/fullview" render={(props) =>
                   <FullView {...props} parent={this} formatSong={Overflow.formatSong}
