@@ -13,7 +13,8 @@ export default class CreateName extends React.Component{
     }
 
     this.handlers = {
-      'close': this.close
+      'close': this.close,
+      'submit': this.submitName
     }
   }
 
@@ -113,6 +114,8 @@ export default class CreateName extends React.Component{
       width: '20vw'
     }
 
+    let messageStyle = {fontSize: "calc(5px + 0.3vw)", fontStyle: 'italic', color: 'yellow'}
+
     let buttonStyle = {fontSize: "calc(7px + 0.4vw)", margin:"1vh 0.25vw", backgroundColor:'#383838',
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
        width: '9vw'}
@@ -122,17 +125,19 @@ export default class CreateName extends React.Component{
         <div style={{position:'fixed', top:0, left:0, height:'100vh',
           zIndex: 5, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
           <div style={style}>
-          {(message.length > 0) && <div>{message}</div>}
-          <form onSubmit={this.submitName}>
-            <label>Item Name:</label>
+          {(message.length > 0) && <div style={messageStyle}>{message}</div>}
+          <div >
+            <div style={{display: 'flex'}}>
+              <div>Item Name: </div>
               <input id="nameChange" type="text" value={this.state.name} onChange={this.nameChange}/>
-              <button style={buttonStyle} onClick={this.props.close}>
-                Cancel
-              </button>
-              <button style={buttonStyle} type="submit">
-                Submit Name
-              </button>
-          </form>
+            </div>
+            <button style={buttonStyle} onClick={this.props.close}>
+              Cancel
+            </button>
+            <button onClick={this.submitName} style={buttonStyle}>
+              Submit Name
+            </button>
+          </div>
           </div>
         </div>
       </HotKeys>
