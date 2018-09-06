@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const cors = require('cors');
 const port = process.env.PORT || 5000;
 var bodyParser = require('body-parser');
 let srv = app.listen(port, () => console.log(`Listening on port ${port}`));
@@ -9,6 +10,16 @@ app.use('/peerjs', require('peer').ExpressPeerServer(srv, {
 }))
 app.use( bodyParser.json() );
 app.use(express.json());
+
+app.use(cors());
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", '*');
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+    next();
+});
+
 let currentInfo = {}
 // API calls
 app.get('/api/hello', (req, res) => {
