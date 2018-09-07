@@ -238,13 +238,13 @@ export default class ItemListEditor extends Component{
         zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
         <div style={style}>
           <div style={{display:'flex'}}>
-            <div style={{width:'21vw', height: '40vh', overflowY: 'scroll'}}>
+            <div style={{width:'21vw', height: '40vh', overflowX: 'hidden'}}>
               <div style={{fontSize:'1.5vw'}}>Loaded Item Lists</div>
               <input type='text' value={ilsSearch} onChange={this.updateIlsSearch}
                 style={{width:'95%', padding:'1%'}}/>
               <div style={{paddingTop: '5%', fontSize:'1.15vw'}}>{ils}</div>
             </div>
-            <div style={{width:'21vw', height: '40vh', overflowY: 'scroll', marginLeft:'1vw'}}>
+            <div style={{width:'21vw', height: '40vh', overflowX: 'hidden', marginLeft:'1vw'}}>
               <div style={{fontSize:'1.5vw'}}>All Item Lists</div>
               <input type='text' value={ailsSearch} onChange={this.updateAilsSearch}
                 style={{width:'95%', padding:'1%'}}/>
