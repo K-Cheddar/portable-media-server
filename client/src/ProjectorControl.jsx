@@ -33,6 +33,7 @@ export default class ProjectorControl extends Component {
 
     let buttonStyle = {
        fontSize: "calc(5px + 0.35vw)", margin:'.25vw', width:'6vw', height: '2.5vh',
+       border: '0.15vw solid #474747'
     }
 
     let blankBackgroundStyle = this.getBackgroundStyle('');

@@ -102,11 +102,11 @@ export default class ToolBar extends Component {
 
     let menuItem = {
       display:'inline-block', width:'90%', padding: '2.5%', backgroundColor:'#fff', margin: '5%',
-      cursor: 'pointer', fontSize: "calc(5px + 0.35vw)"
+      cursor: 'pointer', fontSize: "calc(5px + 0.35vw)", border: '0.15vw solid #474747'
     }
     let menuButton = {
-      width:'100%', padding: '5%', backgroundColor:'#fff', cursor: 'pointer',
-      fontSize: "calc(8px + 0.35vw)", height: '3vh'
+      width:'100%', padding: '5%', cursor: 'pointer',
+      fontSize: "calc(5px + 0.35vw)", height: '3vh', border: '0.15vw solid #474747'
     }
     let modeButton = {
       width:'6vw', cursor: 'pointer', fontSize: "calc(5px + 0.35vw)",
@@ -126,7 +126,7 @@ export default class ToolBar extends Component {
           <li style={{width:'4vw'}}>
             <div className='toolbarSection' onMouseLeave={this.closeMenu}>
               <button onClick={this.openMenu} onMouseEnter={this.openMenu} style={menuButton}>Menu</button>
-                <div style={menuMousedOver ? {backgroundColor:'#fff', position:'absolute', width:'7vw', zIndex: 4} : {display:'none'}}>
+                <div style={menuMousedOver ? {backgroundColor:'#c4c4c4', position:'absolute', width:'9vw', zIndex: 4} : {display:'none'}}>
                   <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
                   <Link to="/"><button style={menuItem}>Home</button></Link>
                   <button style={menuItem} onClick={setAsReceiver}> Become Receiver </button>
@@ -211,9 +211,9 @@ export default class ToolBar extends Component {
                     />
                 </div>}
               </div>
-              <div style={{display:'flex', backgroundColor: '#bababa', padding: '0.5vw', height: '2vh'}}>
+              <div style={{display:'flex', backgroundColor: '#383838', color:'white', padding: '0.5vw', height: '2vh'}}>
                 <div style={{fontSize: "calc(8px + 0.35vw)", fontWeight: 'bold'}}>User:</div>
-                <div style={{fontSize: "calc(8px + 0.25vw)",marginLeft: '0.25vw'}}>{user}</div>
+                <div style={{fontSize: "calc(8px + 0.25vw)", color:'#06d1d1', marginLeft: '0.25vw'}}>{user}</div>
               </div>
             </div>
           </li>
