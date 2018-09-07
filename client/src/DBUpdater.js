@@ -240,8 +240,7 @@ export function duplicateList(props){
     db.get(id).then(function(doc){
       let newListFull = {
         id: newID,
-        name: name,
-        items: doc.items
+        name: name
       }
       let newList = {
         "_id": newID,
@@ -250,7 +249,8 @@ export function duplicateList(props){
       db.put(newList)
       allItemLists.push(newListFull);
       itemLists.push(newListFull);
-      updateState({allItemLists: allItemLists, itemLists: itemLists})
+      updateState({allItemLists: allItemLists, itemLists: itemLists, itemList: doc.items,
+        selectedItemList:{name: name, id: id}})
     })
 
 }

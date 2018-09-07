@@ -210,7 +210,6 @@ class App extends Component {
          }
          // console.log(res.serverID);
          conn = peer.connect(res.serverID);
-         // console.log(conn);
          conn.on('open', function(){
              that.setState({isSender: true, isReciever: false})
          })

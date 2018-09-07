@@ -75,7 +75,7 @@ export default class AllItems extends React.Component{
         <div>All Items</div>
         <input type='text' value={this.state.text} onChange={this.updateText}
           style={{width:'70%', padding:'1%'}}/>
-        <div style={{overflowY: 'scroll', height:'32vh'}}>{SL}</div>
+        <div style={{overflowX: 'hidden', height:'32vh'}}>{SL}</div>
         {deleteOverlay &&
           <div style={{position:'fixed', top:0, left:0, height:'100vh', width:'100vw',
              zIndex: 9, backgroundColor:'rgba(62, 64, 66, 0.5)'}}>
