@@ -139,11 +139,11 @@ export default class LyricsBox extends Component{
     this.setState({songOrder: songOrder})
   }
 
-  updateSections = (formattedLyrics, oldName) => {
+  updateSections = (formattedLyrics, index) => {
     let sections = [];
     let sectionUpdates = {};
     let {songOrder} = this.state;
-    let sectionCounter = {}
+    let sectionCounter = {};
 
     for(let i = 0; i < formattedLyrics.length; ++i){
       if(formattedLyrics[i].type in sectionCounter){
@@ -183,29 +183,24 @@ export default class LyricsBox extends Component{
       songOrder = sections;
     }
 
-    let secName = sections[sections.length-1];
-    if(oldName){
-      secName = oldName;
-    let typeFromName = oldName.replace(/\s\d+$/, "");
-    if(oldName === typeFromName)
-      secName = oldName + ' ' + sectionCounter[typeFromName]
-    }
+    let oldName = formattedLyrics[index] ? formattedLyrics[index].name : formattedLyrics[formattedLyrics.length-1].name;
 
     Sort.sortNamesInList(formattedLyrics)
     Sort.sortList(sections);
 
-    let newIndex = sections.findIndex(e => e === secName);
+    let newIndex = formattedLyrics.findIndex(e => e.name === oldName);
 
     this.setState({
       formattedLyrics: formattedLyrics,
       sectionsPresent: sections,
       songOrder: songOrder,
-      newType: sections[0],
-      sectionIndex: newIndex
+      newType: sections[0]
     })
+    let that = this;
     setTimeout(function(){
       if(!formattedLyrics[newIndex])
         return;
+      that.setState({sectionIndex: newIndex })
       let id = formattedLyrics[newIndex].name
       document.getElementById(id).focus();
     },100)
@@ -244,10 +239,14 @@ export default class LyricsBox extends Component{
     let type = name.replace(/\s\d+$/, "");
     formattedLyrics[sectionIndex].type = type;
     let element = formattedLyrics[sectionIndex];
-    formattedLyrics.splice(sectionIndex, 1);
     let index = formattedLyrics.findIndex(e => e.name === name);
+    if(element.type === type && index > sectionIndex)
+      index--;
+    if(name === type)
+      index = formattedLyrics.length-1;
+    formattedLyrics.splice(sectionIndex, 1);
     formattedLyrics.splice(index, 0, element);
-    this.updateSections(formattedLyrics, name);
+    this.updateSections(formattedLyrics, index);
   }
 
   changeNewType = (e) => {
@@ -313,7 +312,7 @@ export default class LyricsBox extends Component{
     let style;
     let songStyle = {width: "10vw", border:'0.1vmax', borderColor: '#b7b7b7', borderStyle:'solid',
         textAlign: 'center'}
-    let songDraggedStyle = {width: "10vw", color:'rgba(50, 0, 0, 0.5)', position:'fixed', left:(mouseX +2) + 'px',
+    let songDraggedStyle = {width: "10vw", position:'fixed', left:(mouseX +2) + 'px',
         top: (mouseY + 2) + 'px', border:'0.1vmax', borderColor: '#b7b7b7', borderStyle:'solid',
         textAlign: 'center'};
 
@@ -371,8 +370,8 @@ export default class LyricsBox extends Component{
                     onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
                     onMouseLeave={this.releaseElement}>{SO}</div>
                 </div>
-                <div style={{display:'flex', height: '10vh'}}>
-                  <select style={buttonStyle}
+                <div style={{display:'flex', height: '8vh'}}>
+                  <select style={{...buttonStyle, padding:'0'}}
                     value={newType} onChange={(e) => (this.changeNewType(e))}>
                     {sectionsPresent.map((element, index) =>
                       <option key={index}> {element} </option>

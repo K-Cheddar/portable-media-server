@@ -32,7 +32,7 @@ export function formatLyrics(item){
   let box = item.slides[0].boxes[0];
   let lastSlide = item.slides.length-1;
   let lastBox = item.slides[lastSlide].boxes[0];
-  let slides = [Helper.newSlide({type: 'Name', box: box, words: box.words})];
+  let slides = [Helper.newSlide({type: 'Title', box: box, words: box.words})];
   let songOrder = item.songOrder;
   let formattedLyrics = item.formattedLyrics;
   let fontSize = item.slides[1] ? item.slides[1].boxes[0].fontSize : 2.5;

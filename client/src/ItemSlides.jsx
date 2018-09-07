@@ -105,7 +105,7 @@ class ItemSlides extends React.Component{
 
   increaseRows = () => {
     let {slidesPerRow} = this.state;
-    if(slidesPerRow < 6)
+    if(slidesPerRow < 8)
       this.setState({slidesPerRow: slidesPerRow+1})
   }
 

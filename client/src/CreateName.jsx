@@ -66,7 +66,7 @@ export default class CreateName extends React.Component{
 
     if(type === 'song'){
       firstSlide = name;
-      let defaultSongBackground = this.props.state.userSettings.defaultSongBackground;
+      let defaultSongBackground = this.props.userSettings.defaultSongBackground;
       image = defaultSongBackground ? defaultSongBackground.name : '';
       brightness = defaultSongBackground ? defaultSongBackground.brightness : 100;
     }
@@ -111,7 +111,8 @@ export default class CreateName extends React.Component{
       border: '1px solid #CCC',
       borderRadius: 3,
       padding: 10,
-      width: '20vw'
+      width: '20vw',
+      color: 'white'
     }
 
     let messageStyle = {fontSize: "calc(5px + 0.3vw)", fontStyle: 'italic', color: 'yellow'}
@@ -128,8 +129,8 @@ export default class CreateName extends React.Component{
           {(message.length > 0) && <div style={messageStyle}>{message}</div>}
           <div >
             <div style={{display: 'flex'}}>
-              <div>Item Name: </div>
-              <input id="nameChange" type="text" value={this.state.name} onChange={this.nameChange}/>
+              <div style={{width: '30%', margin:'auto'}}>Item Name: </div>
+              <input style={{width: '50%', margin:'auto'}} id="nameChange" type="text" value={this.state.name} onChange={this.nameChange}/>
             </div>
             <button style={buttonStyle} onClick={this.props.close}>
               Cancel
