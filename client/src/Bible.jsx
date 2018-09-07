@@ -30,7 +30,8 @@ export default class Bible extends Component {
       allVerses: []
     }
     this.handlers = {
-      'close': this.close
+      'close': this.close,
+      'nextField': this.nextField,
     }
 
   }
@@ -51,6 +52,34 @@ export default class Bible extends Component {
   }
   close = () => {
     this.props.close()
+  }
+  createVersesItem = () => {
+    let {currentBook, currentChapter, startVerse, endVerse} = this.state;
+    let verses = kjv.books[currentBook].chapters[currentChapter].verses.filter(
+      e => (e.verse >= startVerse+1 && e.verse <= endVerse+1)
+    );
+
+    let verseNum = (endVerse !== startVerse) ? (startVerse+1)+ "-" + (endVerse+1) : (startVerse+1)
+    let name = kjv.books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
+    let defaultBibleBackground = this.props.state.userSettings.defaultBibleBackground;
+    let background = defaultBibleBackground ? defaultBibleBackground.name : '';
+    let brightness = defaultBibleBackground ? defaultBibleBackground.brightness : 100;
+    let item = {
+      "_id": name,
+      "name": name,
+      "slides": [
+        Helper.newSlide({type: "Title", fontSize: 4.5, words: name,
+          background: background, brightness: brightness}),
+        Helper.newSlide({type: "Verse", fontSize: 2.5, words: '',
+          background: background, brightness: brightness})
+      ],
+      "type": "bible",
+      "background": background
+    };
+
+    item = this.props.formatBible(item, 'create', verses);
+    this.props.functions.addItem(item);
+    this.props.close();
   }
   displayVerse = (index) => {
     let {currentBook, currentChapter, startVerse} = this.state;
@@ -140,28 +169,8 @@ export default class Bible extends Component {
     this.setState({filteredVersesEnd: filteredVersesEnd})
   }
 
-  updateBook = (e) => {
-    let bookSearch = e.target.value;
-    this.filterBooks(bookSearch);
-    this.setState({bookSearch: bookSearch})
-  }
-  updateChapter = (e) => {
-    let chapterSearch = e.target.value;
-    let {currentBook} = this.state;
-    this.filterChapters(currentBook, chapterSearch)
-    this.setState({chapterSearch: chapterSearch})
-  }
-  updateStartVerse = (e) =>{
-    let verseStartSearch = e.target.value;
-    let {currentBook, currentChapter} = this.state;
-    this.filterVersesStart(currentBook, currentChapter, verseStartSearch);
-    this.setState({verseStartSearch: verseStartSearch})
-  }
-  updateEndVerse = (e) => {
-    let verseEndSearch = e.target.value;
-    let {currentBook, currentChapter} = this.state;
-    this.filterVersesEnd(currentBook, currentChapter, verseEndSearch);
-    this.setState({verseEndSearch: verseEndSearch})
+  nextField = () => {
+    console.log(document.activeElement);
   }
 
   selectBook = (index) => {
@@ -197,33 +206,28 @@ export default class Bible extends Component {
     this.setState({endVerse: index})
   }
 
-  createVersesItem = () => {
-    let {currentBook, currentChapter, startVerse, endVerse} = this.state;
-    let verses = kjv.books[currentBook].chapters[currentChapter].verses.filter(
-      e => (e.verse >= startVerse+1 && e.verse <= endVerse+1)
-    );
-
-    let verseNum = (endVerse !== startVerse) ? (startVerse+1)+ "-" + (endVerse+1) : (startVerse+1)
-    let name = kjv.books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
-    let defaultBibleBackground = this.props.state.userSettings.defaultBibleBackground;
-    let background = defaultBibleBackground ? defaultBibleBackground.name : '';
-    let brightness = defaultBibleBackground ? defaultBibleBackground.brightness : 100;
-    let item = {
-      "_id": name,
-      "name": name,
-      "slides": [
-        Helper.newSlide({type: "Title", fontSize: 4.5, words: name,
-          background: background, brightness: brightness}),
-        Helper.newSlide({type: "Verse", fontSize: 2.5, words: '',
-          background: background, brightness: brightness})
-      ],
-      "type": "bible",
-      "background": background
-    };
-
-    item = this.props.formatBible(item, 'create', verses);
-    this.props.functions.addItem(item);
-    this.props.close();
+  updateBook = (e) => {
+    let bookSearch = e.target.value;
+    this.filterBooks(bookSearch);
+    this.setState({bookSearch: bookSearch})
+  }
+  updateChapter = (e) => {
+    let chapterSearch = e.target.value;
+    let {currentBook} = this.state;
+    this.filterChapters(currentBook, chapterSearch)
+    this.setState({chapterSearch: chapterSearch})
+  }
+  updateStartVerse = (e) =>{
+    let verseStartSearch = e.target.value;
+    let {currentBook, currentChapter} = this.state;
+    this.filterVersesStart(currentBook, currentChapter, verseStartSearch);
+    this.setState({verseStartSearch: verseStartSearch})
+  }
+  updateEndVerse = (e) => {
+    let verseEndSearch = e.target.value;
+    let {currentBook, currentChapter} = this.state;
+    this.filterVersesEnd(currentBook, currentChapter, verseEndSearch);
+    this.setState({verseEndSearch: verseEndSearch})
   }
 
   render(){
@@ -257,9 +261,11 @@ export default class Bible extends Component {
 
     let books = filteredBooks.map((element, index) => {
       let tStyle = Object.assign({}, style);;
-      tStyle.width = "8vw";
+      tStyle.width = "7.5vw";
+      tStyle.marginLeft = '0.5vw';
       let sStyle = Object.assign({}, selectedStyle);;
-      sStyle.width = "8vw";
+      sStyle.width = "7.5vw";
+      sStyle.marginLeft = '0.5vw';
       let selected = (element.index === currentBook);
       return(
         <div key={index} style={selected ? sStyle : tStyle} onClick={() => (this.selectBook(element.index))}>
@@ -269,36 +275,42 @@ export default class Bible extends Component {
     })
     let chapters = filteredChapters.map((element, index) => {
       let tStyle = Object.assign({}, style);;
-      tStyle.width = "4vw";
+      tStyle.width = "3vw";
+      tStyle.marginLeft = '0.25vw';
       let sStyle = Object.assign({}, selectedStyle);;
-      sStyle.width = "4vw";
+      sStyle.width = "3vw";
+      sStyle.marginLeft = '0.25vw';
       let selected = (element.index === currentChapter);
       return(
-        <div key={index} style={selected ? selectedStyle : style} onClick={() => (this.selectChapter(element.index))}>
+        <div key={index} style={selected ? sStyle : tStyle} onClick={() => (this.selectChapter(element.index))}>
           {element.chapter}
         </div>
       )
     })
     let versesStart = filteredVersesStart.map((element, index) => {
       let tStyle = Object.assign({}, style);;
-      tStyle.width = "4vw";
+      tStyle.width = "3vw";
+      tStyle.marginLeft = '0.25vw';
       let sStyle = Object.assign({}, selectedStyle);;
-      sStyle.width = "4vw";
+      sStyle.width = "3vw";
+      sStyle.marginLeft = '0.25vw';
       let selected = (element.index === startVerse);
       return(
-        <div key={index} style={selected ? selectedStyle : style} onClick={() => (this.selectStartVerse(element.index))}>
+        <div key={index} style={selected ? sStyle : tStyle} onClick={() => (this.selectStartVerse(element.index))}>
           {element.verse.verse}
         </div>
       )
     })
     let versesEnd = filteredVersesEnd.map((element, index) => {
       let tStyle = Object.assign({}, style);;
-      tStyle.width = "4vw";
+      tStyle.width = "3vw";
+      tStyle.marginLeft = '0.25vw';
       let sStyle = Object.assign({}, selectedStyle);;
-      sStyle.width = "4vw";
+      sStyle.width = "3vw";
+      sStyle.marginLeft = '0.25vw';
       let selected = (element.index === endVerse);
       return(
-        <div key={index} style={selected ? selectedStyle : style} onClick={() => (this.selectEndVerse(element.index))}>
+        <div key={index} style={selected ? sStyle : tStyle} onClick={() => (this.selectEndVerse(element.index))}>
           {element.verse.verse}
         </div>
       )
@@ -323,25 +335,25 @@ export default class Bible extends Component {
             <div style={{display:'flex'} }>
               <div style={{display: 'flex', width:'50vw', height:'70vh',
                 fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
-                <div style={{display: 'block', width:'10vw', margin:'0.5vw'}}>
+                <div style={{display: 'block', width:'9vw', margin:'0.5vw'}}>
                   <div >Book</div>
-                  <input style={{width:'98%'}} type='text' value={bookSearch} onChange={this.updateBook}/>
-                  <div style={{overflowX: 'hidden', height: '90%'}}>{books}</div>
+                  <input id='bible-book-search' style={{width:'90%'}} type='text' value={bookSearch} onChange={this.updateBook}/>
+                  <div style={{overflowX: 'hidden', height: '90%', width: '100%'}}>{books}</div>
                 </div>
-                <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
+                <div style={{display: 'block', width:'4vw', margin:'0.5vw'}}>
                   <div>Chapter</div>
-                  <input style={{width:'98%'}} type='text' value={chapterSearch} onChange={this.updateChapter}/>
-                  <div style={{overflowX: 'hidden', height: '90%'}}>{chapters}</div>
+                  <input id='bible-chapter-search' style={{width:'80%', margin:'auto'}} type='text' value={chapterSearch} onChange={this.updateChapter}/>
+                  <div style={{overflowX: 'hidden', height: '90%', width: '100%'}}>{chapters}</div>
                 </div>
-                <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
-                  <div>Start Verse</div>
-                  <input style={{width:'98%'}} type='text' value={verseStartSearch} onChange={this.updateStartVerse}/>
-                  <div style={{overflowX: 'hidden', height: '90%'}}>{versesStart}</div>
+                <div style={{display: 'block', width:'4vw', margin:'0.5vw'}}>
+                  <div>Start</div>
+                  <input id='bible-verse-start-search' style={{width:'80%', margin:'auto'}} type='text' value={verseStartSearch} onChange={this.updateStartVerse}/>
+                  <div style={{overflowX: 'hidden', height: '90%', width: '100%'}}>{versesStart}</div>
                 </div>
-                <div style={{display: 'block', width:'5vw', margin:'0.5vw'}}>
-                  <div>End Verse</div>
-                  <input style={{width:'98%'}} type='text' value={verseEndSearch} onChange={this.updateEndVerse}/>
-                  <div style={{overflowX: 'hidden', height: '90%'}}>{versesEnd}</div>
+                <div style={{display: 'block', width:'4vw', margin:'0.5vw'}}>
+                  <div>End</div>
+                  <input id='bible-verse-end-search' style={{width:'80%', margin:'auto'}} type='text' value={verseEndSearch} onChange={this.updateEndVerse}/>
+                  <div style={{overflowX: 'hidden', height: '90%', width: '100%'}}>{versesEnd}</div>
                 </div>
               </div>
               <div>

@@ -59,7 +59,7 @@ export default class Home extends Component {
             <li><Link to="/presentation"><button style={buttonStyle} onClick={this.props.setAsReceiver}>Presentation</button></Link></li>
             {/*<li><button style={{fontSize: "calc(14px + 0.35vmax)"}} onClick={this.start}>Start Bible</button></li>*/}
             {/*<li><button style={{fontSize: "calc(14px + 0.35vmax)"}} onClick={this.test}>Test</button></li>*/}
-            {!this.props.isLoggedIn && <li><Link to="/login"><button style={{fontSize: "calc(14px + 0.35vmax)"}}>Login</button></Link></li>}
+            {!this.props.isLoggedIn && <li><Link to="/login"><button style={buttonStyle}>Login</button></Link></li>}
             {this.props.isLoggedIn && <li><button style={buttonStyle} onClick={this.props.logout}>Logout</button></li>}
           </ul>
          </nav>

@@ -192,8 +192,6 @@ function formatBibleVerses(verses, item, mode){
       }
 
     }
-    slide = slide.replace(/\s+/g,' ').trim();
-    formattedVerses.push(Helper.newSlide({type: 'Bible', box: currentBox, words: slide}));
   }
 
   formattedVerses.push(Helper.newSlide({type: 'blank', box: currentBox, words: ' '}));

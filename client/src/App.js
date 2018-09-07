@@ -63,6 +63,7 @@ const prev = ['left', 'up', 'shift+space'];
 const next = ['right', 'down', 'space']
 const close = 'esc';
 const submit = 'enter';
+const nextField = ['tab', 'enter']
 const map = {
   // 'nextSlide': 'command+left',
   // 'deleteNode': ['del', 'backspace']
@@ -71,7 +72,8 @@ const map = {
   'nextItem': next,
   'prevItem': prev,
   'close': close,
-  'submit': submit
+  'submit': submit,
+  'nextField': nextField,
 };
 
 const initialState = {
