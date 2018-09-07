@@ -143,7 +143,8 @@ export default class ItemListEditor extends Component{
 
     let {itemLists, allItemLists} = this.props;
     let {selectedIndex, name, deleteOverlay, ailsSearch, ilsSearch, message} = this.state;
-    let buttonStyle={
+
+    let imageButtonStyle={
       display:'block', margin:"0% 1% 0% 1%",width:'1.5vw', height:'1.5vw'
     }
 
@@ -166,30 +167,30 @@ export default class ItemListEditor extends Component{
       let selected = (selectedIndex === index);
 
       return(
-        <div style={{display:'flex'}} key={index}>
+        <div style={{display:'flex', marginBottom: '0.25vh'}} key={index}>
           {!selected && <div style={{margin:"0% 1% 0% 1%", width: '80%'}}>{item.name}</div>}
           {selected &&
-            <form style={{width: '80%', margin:"0% 1% 0% 1%"}} onSubmit={() => (this.confirm(item.name))}>
+            <form style={{width: '80%', margin:"0% 1% 0% 1%"}} onSubmit={() => (this.confirm(item.id))}>
             <input style={{width: '100%'}} onChange={this.editName} value={name}/>
             </form>
           }
-          {!selected && <img className='imgButton' style={buttonStyle}
+          {!selected && <img className='imgButton' style={imageButtonStyle}
            onClick={() => (this.edit(index, item.name))}
            alt="edit" src={edit}
            />}
-          {!selected && <img className='imgButton' style={buttonStyle}
+          {!selected && <img className='imgButton' style={imageButtonStyle}
            onClick={() => (this.deleteList('one', item.id))}
            alt="delete" src={deleteX}
            />}
-          {!selected && <img className='imgButton' style={buttonStyle}
+          {!selected && <img className='imgButton' style={imageButtonStyle}
             onClick={() => (this.props.duplicateList(item.id))}
             alt="duplicate" src={duplicate}
            />}
-           {selected && <img className='imgButton' style={buttonStyle}
+           {selected && <img className='imgButton' style={imageButtonStyle}
             onClick={() => (this.confirm(item.id))}
             alt="check" src={check}
             />}
-           {selected && <img className='imgButton' style={buttonStyle}
+           {selected && <img className='imgButton' style={imageButtonStyle}
             onClick={() => (this.cancel())}
             alt="cancel" src={cancel}
             />}
@@ -199,13 +200,13 @@ export default class ItemListEditor extends Component{
 
     let ails = filteredAILS.map((item, index) => {
       return(
-        <div style={{display:'flex'}} key={item.name}>
+        <div style={{display:'flex', marginBottom: '0.25vh'}} key={item.name}>
           <div style={{width: '80%'}}>{item.name}</div>
-          <img className='imgButton' style={buttonStyle}
+          <img className='imgButton' style={imageButtonStyle}
            onClick={() => (this.addToList(item.name))}
            alt="add" src={add}
            />
-         <img className='imgButton' style={buttonStyle}
+         <img className='imgButton' style={imageButtonStyle}
              onClick={() => (this.openConfirmation(item.name, item.id))}
              alt="delete" src={deleteX}
              />
@@ -218,37 +219,42 @@ export default class ItemListEditor extends Component{
       zIndex:5,
       left:'25%',
       top:'15%',
-      backgroundColor: '#EEE',
+      backgroundColor: '#383838',
       boxShadow: '0 5px 10px rgb(0, 0, 0)',
       border: '1px solid #CCC',
       borderRadius: 3,
       padding: 10,
-      height: '50vh',
-      width: '40vw'
+      height: '45vh',
+      width: '45vw',
+      color: 'white'
     }
+
+    let buttonStyle = {fontSize: "calc(7px + 0.4vw)", margin:"1vh 0.25vw", backgroundColor:'#383838',
+       border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
+       width: '9vw'}
 
     return(
       <div style={{position:'fixed', top:0, left:0, height:'100vh',
         zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
         <div style={style}>
           <div style={{display:'flex'}}>
-            <div style={{width:'19vw', height: '40vh', overflowY: 'scroll'}}>
-              <div>Loaded Item Lists</div>
+            <div style={{width:'21vw', height: '40vh', overflowY: 'scroll'}}>
+              <div style={{fontSize:'1.5vw'}}>Loaded Item Lists</div>
               <input type='text' value={ilsSearch} onChange={this.updateIlsSearch}
                 style={{width:'95%', padding:'1%'}}/>
-              <div style={{paddingTop: '5%'}}>{ils}</div>
+              <div style={{paddingTop: '5%', fontSize:'1.15vw'}}>{ils}</div>
             </div>
-            <div style={{width:'19vw', height: '40vh', overflowY: 'scroll'}}>
-              <div>All Item Lists</div>
+            <div style={{width:'21vw', height: '40vh', overflowY: 'scroll', marginLeft:'1vw'}}>
+              <div style={{fontSize:'1.5vw'}}>All Item Lists</div>
               <input type='text' value={ailsSearch} onChange={this.updateAilsSearch}
                 style={{width:'95%', padding:'1%'}}/>
-              <div style={{paddingTop: '5%'}}>{ails}</div>
+              <div style={{paddingTop: '5%', fontSize:'1.15vw'}}>{ails}</div>
             </div>
           </div>
           {message.length > 0 && <div style={{color: 'red', fontSize:"calc(7.5px + 0.35vw)"}}>{message}</div>}
           <div>
-            <button onClick={this.props.close} style={{float:'right'}}>Close</button>
-            <button onClick={this.newItemList} style={{float:'left'}}>New</button>
+            <button style={{...buttonStyle, float:'right'}} onClick={this.props.close} >Close</button>
+            <button style={{...buttonStyle, float:'left'}} onClick={this.newItemList}>New</button>
           </div>
         </div>
         {deleteOverlay &&
