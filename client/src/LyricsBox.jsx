@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import deleteX from './assets/deleteX.png';
-import SongSection from './SongSection'
-import * as Sort from './Sort'
+import SongSection from './SongSection';
+import * as Sort from './Sort';
+// import zoomIn from './assets/zoomIn.png'
+// import zoomOut from './assets/zoomOut.png'
 
 export default class LyricsBox extends Component{
 
@@ -30,7 +32,8 @@ export default class LyricsBox extends Component{
       mouseY: 0,
       indexBeingDragged:-1,
       mouseDown: false,
-      songIndex: 0
+      songIndex: 0,
+      numSongSections: 4
     }
 
     this.checkHeld = null;
@@ -47,7 +50,8 @@ export default class LyricsBox extends Component{
       formattedLyrics: item.formattedLyrics.slice(),
       songOrder: item.songOrder.slice(),
       sectionsPresent: sectionsPresent,
-      newType: item.formattedLyrics[0] ? item.formattedLyrics[0].name : "Verse"
+      newType: item.formattedLyrics[0] ? item.formattedLyrics[0].name : "Verse",
+      songIndex: item.songOrder.length - 1
     })
   }
 
@@ -134,9 +138,9 @@ export default class LyricsBox extends Component{
   }
 
   addSection = () => {
-    let {songOrder, newType} = this.state;
-    songOrder.push(newType)
-    this.setState({songOrder: songOrder})
+    let {songOrder, newType, songIndex} = this.state;
+    songOrder.splice(songIndex+1, 0, newType)
+    this.setState({songOrder: songOrder, songIndex: songIndex+1})
   }
 
   updateSections = (formattedLyrics, index) => {
@@ -276,15 +280,27 @@ export default class LyricsBox extends Component{
     this.setState({text: event.target.value})
   }
 
+  increaseRows = () => {
+    let {numSongSections} = this.state;
+    if(numSongSections < 6)
+      this.setState({numSongSections: numSongSections+1})
+  }
+
+  decreaseRows = () => {
+    let {numSongSections} = this.state;
+    if(numSongSections > 2)
+      this.setState({numSongSections: numSongSections-1})
+  }
+
   render(){
     let {formattedLyrics, sectionIndex, sectionTypes, songOrder, newType,
-       sectionsPresent, mouseX, mouseY, indexBeingDragged} = this.state;
+       sectionsPresent, mouseX, mouseY, indexBeingDragged, songIndex, numSongSections} = this.state;
       let that = this;
     let fullArray = [];
     let row = [];
 
-    for(var i = 0; i < formattedLyrics.length; i+=3){
-      for(var j = i; j < i+3; ++j){
+    for(var i = 0; i < formattedLyrics.length; i+=numSongSections){
+      for(var j = i; j < i+numSongSections; ++j){
         if(formattedLyrics[j])
           row.push(formattedLyrics[j]);
       }
@@ -296,16 +312,17 @@ export default class LyricsBox extends Component{
     let list = fullArray.map((element, index) => {
       let row = element.map(function (item, i){
         return(
-          <div key={index*3+i}>
+          <div style={{width:`${0.95/numSongSections*100}%`}} key={index*numSongSections+i}>
             <SongSection item={item} setSectionIndex={that.setSectionIndex} changeSectionType={that.changeSectionType}
               sectionTypes={sectionTypes} changeSectionText={that.changeSectionText} deleteSection={that.deleteSection}
               i={i} index={index} sectionIndex={sectionIndex} sectionsPresent={sectionsPresent}
+              numSongSections={numSongSections}
               />
           </div>
         );
       })
       return (
-        <div style={{display:'flex', paddingBottom:'1vmax'}} key={index}> {row}</div>
+        <div style={{display:'flex', paddingBottom:'1vmax', height:`${1.3/numSongSections*100}%`}} key={index}> {row}</div>
       );
     })
 
@@ -319,6 +336,10 @@ export default class LyricsBox extends Component{
     let buttonStyle = {fontSize: "calc(8px + 0.4vw)", margin:"1vw", backgroundColor:'#383838',
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.5vw'}
 
+    let songOrderDiv = {display:'flex', padding:'1vmax', userSelect:'none'};
+    let songOrderSelected = Object.assign({}, songOrderDiv);
+    songOrderSelected.borderBottom = '0.5vh solid #06d1d1';
+
     let SO = songOrder.map((element, index) => {
 
       let beingDragged = (indexBeingDragged === index)
@@ -329,7 +350,7 @@ export default class LyricsBox extends Component{
         style = songStyle
       }
       return(
-        <div style={{display:'flex', padding:'1vmax', userSelect:'none'}} key={index}>
+        <div style={(index === songIndex) ? songOrderSelected : songOrderDiv} key={index}>
           <div style={style}
             onMouseDown={() => (this.setElement(index))}
             onMouseOver={() => (this.setTarget(index))}>
@@ -358,10 +379,20 @@ export default class LyricsBox extends Component{
                 <div style={{paddingLeft:'1vmax', overflowX: 'hidden', height: "85vh", width:"56vw"}}>
                   {list}
                 </div>
-                <button style={buttonStyle}
-                  onClick={this.newSection}>
-                  New Section
-                </button>
+                <div style={{display: 'flex'}}>
+                  <button style={buttonStyle}
+                    onClick={this.newSection}>
+                    New Section
+                  </button>
+{/*                  <img style={{display:'block', width:'2vw', height:'2vw', margin:'1vw'}}
+                      onClick={this.decreaseRows}
+                      alt="zoomIn" src={zoomIn}
+                     />
+                  <img style={{display:'block', width:'2vw', height:'2vw', margin:'1vw'}}
+                       onClick={this.increaseRows}
+                       alt="zoomOut" src={zoomOut}
+                      />*/}
+                </div>
               </div>
               <div >
                 <div style={{paddingLeft:'1vmax', overflowX: 'hidden', height: "80vh", width:"17vw"}}>
@@ -371,13 +402,13 @@ export default class LyricsBox extends Component{
                     onMouseLeave={this.releaseElement}>{SO}</div>
                 </div>
                 <div style={{display:'flex', height: '8vh'}}>
-                  <select style={{...buttonStyle, padding:'0'}}
+                  <select style={{...buttonStyle, padding:'0.25vw'}}
                     value={newType} onChange={(e) => (this.changeNewType(e))}>
                     {sectionsPresent.map((element, index) =>
                       <option key={index}> {element} </option>
                     )}
                   </select>
-                  <button style={buttonStyle}
+                  <button style={{...buttonStyle, padding:'0.25vw'}}
                     onClick={this.addSection}>
                     Add Section
                   </button>

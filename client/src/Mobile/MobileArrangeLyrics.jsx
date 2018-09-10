@@ -174,10 +174,14 @@ export default class MobileArrangeLyrics extends React.Component{
     let type = name.replace(/\s\d+$/, "");
     formattedLyrics[selectedIndex].type = type;
     let element = formattedLyrics[selectedIndex];
-    formattedLyrics.splice(selectedIndex, 1);
     let index = formattedLyrics.findIndex(e => e.name === name);
+    if(element.type === type && index > selectedIndex)
+      index--;
+    if(name === type)
+      index = formattedLyrics.length-1;
+    formattedLyrics.splice(selectedIndex, 1);
     formattedLyrics.splice(index, 0, element);
-    this.updateSections(formattedLyrics, name);
+    this.updateSections(formattedLyrics, index);
   }
 
   changeNewType = (e) => {

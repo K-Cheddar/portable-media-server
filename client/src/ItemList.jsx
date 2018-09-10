@@ -24,7 +24,9 @@ export default class ItemList extends React.Component{
 
       this.handlers = {
         'nextItem': this.nextItem,
-        'prevItem': this.prevItem
+        'prevItem': this.prevItem,
+        'nextSlide': this.nextSlide,
+        'prevSlide': this.prevSlide,
       }
       this.checkHeld = null;
     }
@@ -106,6 +108,24 @@ export default class ItemList extends React.Component{
       this.props.setItemIndex(itemIndex-1)
   }
 
+  nextSlide = () => {
+    let {item, wordIndex} = this.props;
+    if(!item.slides)
+      return;
+    let lastSlide = item.slides.length-1;
+    if(wordIndex < lastSlide)
+      this.props.setWordIndex(wordIndex+1)
+  }
+
+  prevSlide = () => {
+    let {item, wordIndex} = this.props;
+    if(!item.slides)
+      return;
+    if(wordIndex > 0)
+      this.props.setWordIndex(wordIndex-1)
+  }
+
+
 
   render(){
   let {itemList, backgrounds, itemIndex, db} = this.props;
@@ -186,7 +206,7 @@ export default class ItemList extends React.Component{
     color: 'white', textAlign: 'center', marginTop: '5vh'}
 
     return (
-      <div>
+      <div style={{marginLeft: '0.5vw'}}>
         {nameOpen && <CreateName option="edit" name={name} id={id} db={db}
         close={this.close} updateItem={this.props.updateItem}
         />}

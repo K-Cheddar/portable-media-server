@@ -227,27 +227,25 @@ class ItemSlides extends React.Component{
     let buttonLoggedIn = {fontSize: "calc(7px + 0.5vw)", width:'20%'}
 
     return (
-      <HotKeys handlers={this.handlers}>
-        <div style={{color: 'white'}}>
-          <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)",}}>
-            <div style={{fontSize: 'calc(10px + 1vw)', width: '60%', paddingLeft:'0.5vw'}}> {name} </div>
-            {(type==='song') && <button style={buttonLoggedIn} onClick={this.openLBox}>Arrange Lyrics</button>}
-            {(type!=='song') && <div style={{ width: '20%'}} ></div>}
-            <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
-                onClick={this.decreaseRows}
-                alt="zoomIn" src={zoomIn}
-               />
-            <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
-                 onClick={this.increaseRows}
-                 alt="zoomOut" src={zoomOut}
-                />
-          </div>
-        <div style={{ overflowX: 'hidden', height: "35vh", width:"42vw"}}
-          onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
-          onMouseLeave={this.releaseElement}>{ROWtest}</div>
-        {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item}
-        updateItem={this.props.updateItem} formatSong={this.props.formatSong}/>}
-      </div>
+      <HotKeys style={{color: 'white', height: '100%', width: '100%'}} handlers={this.handlers}>
+        <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)",}}>
+          <div style={{fontSize: 'calc(10px + 1vw)', width: '60%', paddingLeft:'0.5vw'}}> {name} </div>
+          {(type==='song') && <button style={buttonLoggedIn} onClick={this.openLBox}>Arrange Lyrics</button>}
+          {(type!=='song') && <div style={{ width: '20%'}} ></div>}
+          <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+              onClick={this.decreaseRows}
+              alt="zoomIn" src={zoomIn}
+             />
+          <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+               onClick={this.increaseRows}
+               alt="zoomOut" src={zoomOut}
+              />
+        </div>
+      <div style={{overflowX: 'hidden', height: "88%", width:"100%"}}
+        onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
+        onMouseLeave={this.releaseElement}>{ROWtest}</div>
+      {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item}
+      updateItem={this.props.updateItem} formatSong={this.props.formatSong}/>}
     </HotKeys>
     )
   }

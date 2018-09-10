@@ -59,18 +59,21 @@ var conn;
 //
 // });
 // }
-const prev = ['left', 'up', 'shift+space'];
-const next = ['right', 'down', 'space']
+const prevItem = ['up'];
+const nextItem = ['down'];
+const nextSlide = ['right','space'];
+const prevSlide = ['left','shift+space'];
+
 const close = 'esc';
 const submit = 'enter';
 const nextField = ['tab', 'enter']
 const map = {
   // 'nextSlide': 'command+left',
   // 'deleteNode': ['del', 'backspace']
-  'nextSlide' : next,
-  'prevSlide' : prev,
-  'nextItem': next,
-  'prevItem': prev,
+  'nextSlide' : nextSlide,
+  'prevSlide' : prevSlide,
+  'nextItem': nextItem,
+  'prevItem': prevItem,
   'close': close,
   'submit': submit,
   'nextField': nextField,
@@ -108,7 +111,8 @@ const initialState = {
   peerID: '',
   isReciever: false,
   isSender: false,
-  userSettings: {}
+  userSettings: {},
+  mode: 'edit'
 }
 
 /* App component */

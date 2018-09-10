@@ -24,7 +24,6 @@ export default class ToolBar extends Component {
       menuMousedOver: false,
       itemListsOpen: false,
       settingsOpen: false,
-      mode: 'edit'
     }
   }
 
@@ -97,8 +96,8 @@ export default class ToolBar extends Component {
        setAsReceiver, connectToReceiver, updateUserSettings, updateBoxPosition,
         updateCurrent} = this.props.parent;
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
-      allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds} = this.props.parent.state;
-    let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen, settingsOpen, mode} = this.state;
+      allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode} = this.props.parent.state;
+    let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen, settingsOpen} = this.state;
 
     let menuItem = {
       display:'inline-block', width:'90%', padding: '2.5%', backgroundColor:'#fff', margin: '5%',
@@ -152,8 +151,8 @@ export default class ToolBar extends Component {
                   />
               </div>
               <div style={{display: 'flex', marginTop: '1vh'}}>
-                <button style={(mode === 'edit') ? modeButtonSelected : modeButton} onClick={() => (this.setState({mode: 'edit'}))}>Edit</button>
-                <button style={(mode === 'display') ? modeButtonSelected : modeButton} onClick={() => (this.setState({mode: 'display'}))}>Display</button>
+                <button style={(mode === 'edit') ? modeButtonSelected : modeButton} onClick={() => (this.props.parent.setState({mode: 'edit'}))}>Edit</button>
+                <button style={(mode === 'display') ? modeButtonSelected : modeButton} onClick={() => (this.props.parent.setState({mode: 'display'}))}>Display</button>
               </div>
 
             </div>
