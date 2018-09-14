@@ -71,7 +71,7 @@ export default class AllItems extends React.Component{
     )
   })
     return (
-      <div style={{color: 'white'}}>
+      <div style={{color: 'white', marginTop: '2vh'}}>
         <div>All Items</div>
         <input type='text' value={this.state.text} onChange={this.updateText}
           style={{width:'70%', padding:'1%'}}/>

@@ -11,6 +11,13 @@ export default class Display_Background extends Component {
     }
   }
 
+  componentDidMount(){
+    let video = document.getElementById('background-video-mini');
+    if(video)
+      video.loop = true;
+  }
+
+
   shouldComponentUpdate(nextProps, nextState){
     let {title, presentation} = this.props;
     if(title === 'Presentation' || presentation){
@@ -25,9 +32,15 @@ export default class Display_Background extends Component {
   }
 
   componentDidUpdate(prevProps){
-    let {title, presentation} = this.props;
-    if(title === 'Presentation' || presentation){
+    let {title, presentation, editor} = this.props;
+    if(title === 'Presentation' || presentation || editor){
       if(prevProps.img !== this.props.img){
+        let video = document.getElementById('background-video-mini');
+        if(video){
+          video.loop = true;
+          if(presentation)
+            video.muted = false
+        }
         setTimeout(function(){
           this.setState({backgroundUpdaterIndex: 1})
         }.bind(this),10)
@@ -50,20 +63,32 @@ export default class Display_Background extends Component {
   }
 
   render(){
-    let {img, brightness, width, height, title, presentation} = this.props;
+    let {img, brightness, width, height, title, presentation, isVideo, asset} = this.props;
     let {backgroundUpdaterIndex, prevBackgroundStyle} = this.state;
 
     let backgroundStyle = this.computeBackgroundStyle(img, brightness, width, height);
+    let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
 
     let animate = (title === 'Presentation' || presentation)
 
     return(
       <div>
-        {animate &&
+        {(animate && !isVideo) &&
           <Transition from={{ opacity: 0 }} enter={{ opacity: 1 }} leave={{ opacity: 0 }}>
             {backgroundUpdaterIndex
               ? styles => <div style={{...styles, ...prevBackgroundStyle}}></div>
               : styles => <div style={{...styles, ...backgroundStyle}}></div>
+            }
+          </Transition>
+        }
+        {isVideo &&
+          <Transition from={{ opacity: 0 }}  enter={{ opacity: 1 }} leave={{ opacity: 0 }}>
+            {backgroundUpdaterIndex
+              ? styles => <video loop muted preload="true" autoPlay id="background-video-mini"
+                          style={{...styles, ...videoStyle}}>
+                            <source src={asset.video.src} type="video/mp4"/>
+                          </video>
+              : styles => <div style={{...styles, ...prevBackgroundStyle}}></div>
             }
           </Transition>
         }

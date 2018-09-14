@@ -11,7 +11,7 @@ export default class SongSection extends Component{
 
   render(){
 
-    let {item, sectionTypes, deleteSection, changeSectionText, i,
+    let {item, sectionTypes, deleteSection, changeSectionText, i, sectionWidth,
        index, sectionIndex, sectionsPresent, setSectionIndex, numSongSections} = this.props;
 
    sectionsPresent = sectionsPresent.filter(e => e !== item.name)
@@ -24,7 +24,7 @@ export default class SongSection extends Component{
     return allSections.indexOf(item) === pos;
     })
 
-  let buttonStyle = {fontSize: "calc(6px + 0.3vw)", backgroundColor:'#383838',
+  let buttonStyle = {fontSize: `calc(56vw*${sectionWidth}/20)`, backgroundColor:'#383838',
      border:'0.15vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', width: '40%'}
 
   let style ={display:'flex', height: '100%', width: '100%'};
@@ -39,7 +39,7 @@ export default class SongSection extends Component{
                 <option key={index}> {element} </option>
               )}
             </select>
-            <div style={{fontSize:'0.9vw', marginLeft: '0.3vw', marginRight:'0.3vw',
+            <div style={{fontSize: `calc(56vw*${sectionWidth}/15)`, marginLeft: '0.3vw', marginRight:'0.3vw',
             textAlign: 'center', width: '60%'}}>
               {item.name}
             </div>
@@ -50,7 +50,7 @@ export default class SongSection extends Component{
               {border:'0.25vw #06d1d1 solid', height: '80%'}
               : { border:'0.25vw #d1d1d1 solid', height: '80%'}}
             >
-            <textarea style={{fontSize:'calc(8px + 0.25vw)', margin:'1%',
+            <textarea style={{fontSize: `calc(56vw*${sectionWidth}/18.5)`, margin:'1%',
               width:"96%", height:"96%", resize:'none'}} value={item.words}
                onChange={changeSectionText} id={item.name}/>
           </div>

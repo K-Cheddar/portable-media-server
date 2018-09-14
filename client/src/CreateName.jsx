@@ -76,8 +76,7 @@ export default class CreateName extends React.Component{
         "name": name,
         "slides": [Helper.newSlide({type: "Title", fontSize: 4.5, words: firstSlide,
          background: image, brightness: brightness})],
-        "formattedLyrics": [],
-        "songOrder": [],
+        "arrangements": [{name: 'Master', formattedLyrics: [], "songOrder": []}], 'selectedArrangement': 0,
         "type": type,
         "background": image
       }

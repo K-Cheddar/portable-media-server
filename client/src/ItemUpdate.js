@@ -34,7 +34,8 @@ export function setItemIndex(props){
 }
 
 export function updateItem(props){
-  let {itemList, allItems, needsUpdate} = props.state;
+  let {itemList, allItems, needsUpdate, wordIndex} = props.state;
+  let oldItem = props.state.item;
   let {updateState, item} = props;
 
   let fontColor = item.slides[0].boxes[0].fontColor;
@@ -54,12 +55,10 @@ export function updateItem(props){
     needsUpdate.updateAllItems = true;
     updateState({allItems: allItems})
   }
-
   if(item.type === 'song')
-    item = Overflow.formatSong(item)
+    item = Overflow.formatSong(item, oldItem, wordIndex)
   if(item.type === 'bible')
     item = Overflow.formatBible(item, 'edit')
-
   needsUpdate.updateItem = true;
   updateState({item: item, needsUpdate: needsUpdate})
 }

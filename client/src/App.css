@@ -47,6 +47,7 @@ div[tabindex="-1"]:focus {
   outline: 0.1vw rgba(50, 50, 50, 0.6) solid;
   background-color: rgba(160, 160, 160, 0.5);
   transition: outline 0.25s ease-in-out;
+  cursor: pointer;
 }
 
 /* width */

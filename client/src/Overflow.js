@@ -4,14 +4,16 @@ export function formatSong(item){
 
   let slides = formatLyrics(item);
   item.slides = slides;
-  for(let i = 0; i < item.formattedLyrics.length; ++i){
-    let type = item.formattedLyrics[i].name
+  let formattedLyrics = item.arrangements[item.selectedArrangement].formattedLyrics;
+  let songOrder = item.arrangements[item.selectedArrangement].songOrder;
+  for(let i = 0; i < formattedLyrics.length; ++i){
+    let type = formattedLyrics[i].name
     let counter = 0;
     let songOrderCounter = 0;
     let slideSpan = 0;
 
-    for (let j = 0; j < item.songOrder.length; j++) {
-      if(type === item.songOrder[j])
+    for (let j = 0; j < songOrder.length; j++) {
+      if(type === songOrder[j])
         ++songOrderCounter;
     }
     for (let j = 0; j < item.slides.length; j++) {
@@ -22,7 +24,7 @@ export function formatSong(item){
       slideSpan = counter/songOrderCounter;
     else
       slideSpan = counter;
-    item.formattedLyrics[i].slideSpan = slideSpan;
+    formattedLyrics[i].slideSpan = slideSpan;
 
   }
   return item;
@@ -33,8 +35,8 @@ export function formatLyrics(item){
   let lastSlide = item.slides.length-1;
   let lastBox = item.slides[lastSlide].boxes[0];
   let slides = [Helper.newSlide({type: 'Title', box: box, words: box.words})];
-  let songOrder = item.songOrder;
-  let formattedLyrics = item.formattedLyrics;
+  let songOrder = item.arrangements[item.selectedArrangement].songOrder;
+  let formattedLyrics = item.arrangements[item.selectedArrangement].formattedLyrics;
   let fontSize = item.slides[1] ? item.slides[1].boxes[0].fontSize : 2.5;
 
   for (let i = 0; i < songOrder.length; ++i){

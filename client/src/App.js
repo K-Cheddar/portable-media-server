@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Route, Switch} from 'react-router-dom';
+import {Route, Switch, Redirect} from 'react-router-dom';
 import './App.css';
 import Presentation from './Presentation';
 import FullView from './FullView';
@@ -112,7 +112,8 @@ const initialState = {
   isReciever: false,
   isSender: false,
   userSettings: {},
-  mode: 'edit'
+  mode: 'edit',
+  redirect: true,
 }
 
 /* App component */
@@ -124,6 +125,7 @@ class App extends Component {
     this.state = Object.assign({}, initialState);
 
     this.updateInterval = null;
+    this.reconnectPeer = null;
     this.sync = null
 
   }
@@ -131,6 +133,7 @@ class App extends Component {
   componentDidMount(){
 
     window.reactLoaded = true;
+    this.setState({redirect: false})
     //grab current info for persistent login
     let database = 'demo'
     localStorage.setItem('presentation', 'null');
@@ -180,8 +183,7 @@ class App extends Component {
     let item = {
         "_id": background, "name": "New Image",
         "slides": [Helper.newSlide({type: 'Image', background: background, fontSize: 4.5})],
-        "formattedLyrics": [], "songOrder": [], "type": "image",
-        "background": background
+        "type": "image", "background": background
       }
       DBUpdater.addItem({parent: this, item: item})
   }
@@ -189,6 +191,7 @@ class App extends Component {
   connectToReceiver = () => {
     let {user} = this.state;
     let that = this;
+    clearTimeout(this.reconnectPeer)
 
     peer = new Peer({
        host: window.location.hostname,
@@ -209,16 +212,22 @@ class App extends Component {
          return response.json();
        }).then(function(res){
          if(res.serverID === undefined){
-           alert("No Receiver Is Established");
            return;
          }
          // console.log(res.serverID);
          conn = peer.connect(res.serverID);
          conn.on('open', function(){
-             that.setState({isSender: true, isReciever: false})
+             that.setState({isSender: 'connected', isReciever: false})
+         })
+         conn.on('error', function (error){
+           that.setState({isSender: 'disconnected'})
+           that.reconnectPeer = setTimeout(function(){
+             that.connectToReceiver();
+           },5000)
          })
        })
      })
+
 
   }
 
@@ -381,6 +390,7 @@ class App extends Component {
     let database = "demo"
     //reset to initial state
     let obj = Object.assign({}, initialState);
+    obj.redirect = false;
     this.setState(obj)
     //for some reason these needed to be done separately in the past, perhaps this has changed
     this.setState({retrieved: {}, attempted:{}})
@@ -450,7 +460,7 @@ class App extends Component {
      });
      peer.on('open', function(id) {
        // console.log('peer is open');
-        that.setState({peerID: id, isReciever: true, isSender: false})
+        that.setState({peerID: id, isReciever: 'connected', isSender: false})
         let obj = {user: user, id: id};
         fetch('api/setAsReceiver', {
            method: 'post',
@@ -466,7 +476,14 @@ class App extends Component {
        conn.on('data', function(data){
          that.setState({currentInfo: data.obj})
        })
+       conn.on('error', function (error){
+          that.setState({isReciever: 'disconnected'})
+         setTimeout(function(){
+           that.setAsReceiver();
+         },3000)
+       })
      })
+
 
   }
 
@@ -476,6 +493,34 @@ class App extends Component {
 
   setWordIndex = (index) => {
     SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent, conn: conn})
+  }
+
+  test = () => {
+  //   fileSystem.root.getFile('log.txt', {}, function(fileEntry) {
+  //
+  //   // Get a File object representing the file,
+  //   // then use FileReader to read its contents.
+  //   fileEntry.file(function(file) {
+  //      var reader = new FileReader();
+  //
+  //      reader.onloadend = function(e) {
+  //        // var txtArea = document.createElement('textarea');
+  //        // txtArea.value = this.result;
+  //        // document.body.appendChild(txtArea);
+  //        console.log(this.result);
+  //      };
+  //
+  //      reader.readAsText(file);
+  //   });
+  //
+  // });
+
+
+  // window.open()
+  }
+
+  toggleFreeze = () => {
+    this.setState({freeze: !this.state.freeze})
   }
 
   update = () => {
@@ -489,6 +534,10 @@ class App extends Component {
         needsUpdate[property] = false;
       }
     }
+  }
+
+  updateItemStructure = () => {
+    DBUpdater.updateItemStructure(this.state.db);
   }
 
   updateBoxPosition = (position) => {
@@ -579,37 +628,9 @@ class App extends Component {
     })
   }
 
-  test = () => {
-  //   fileSystem.root.getFile('log.txt', {}, function(fileEntry) {
-  //
-  //   // Get a File object representing the file,
-  //   // then use FileReader to read its contents.
-  //   fileEntry.file(function(file) {
-  //      var reader = new FileReader();
-  //
-  //      reader.onloadend = function(e) {
-  //        // var txtArea = document.createElement('textarea');
-  //        // txtArea.value = this.result;
-  //        // document.body.appendChild(txtArea);
-  //        console.log(this.result);
-  //      };
-  //
-  //      reader.readAsText(file);
-  //   });
-  //
-  // });
-
-  // DBUpdater.updateALL(this.state.db);
-  // window.open()
-  }
-
-  toggleFreeze = () => {
-    this.setState({freeze: !this.state.freeze})
-  }
-
   render() {
 
-    let {backgrounds, currentInfo, isLoggedIn, retrieved} = this.state;
+    let {backgrounds, currentInfo, isLoggedIn, retrieved, redirect} = this.state;
 
     let style = { height:'100vh',   width: '100vw',   overflow: 'hidden',
                   zIndex: 1,        position: 'fixed'
@@ -620,6 +641,10 @@ class App extends Component {
     else
       style.backgroundColor = '#383838'
 
+    if(redirect){
+      return <Redirect to='/'/>;
+    }
+
     return (
       <HotKeys keyMap={map}>
         <div id="fullApp" style={style}>
@@ -628,14 +653,10 @@ class App extends Component {
           <div>
               {/* Route components are rendered if the path prop matches the current URL */}
               <Switch>
-                <Route exact={true} path="/" render={(props) =>
-                  <Home {...props} isLoggedIn={isLoggedIn} logout={this.logout}
-                    setAsReceiver={this.setAsReceiver}
-                />}/>
-                <Route  path="/fullview" render={(props) =>
+                <Route path="/fullview" render={(props) =>
                   <FullView {...props} parent={this} formatSong={Overflow.formatSong}
                   />}/>
-                <Route  path="/mobile" render={(props) =>
+                <Route path="/mobile" render={(props) =>
                   <MobileView {...props} parent={this} formatSong={Overflow.formatSong}
                   />}/>
                 <Route path="/login" render={(props) =>
@@ -645,6 +666,10 @@ class App extends Component {
                     <Presentation {...props} currentInfo={currentInfo}
                       backgrounds={backgrounds} setAsReceiver={this.setAsReceiver}
                     />}/>
+                <Route render={(props) =>
+                  <Home {...props} isLoggedIn={isLoggedIn} logout={this.logout}
+                    setAsReceiver={this.setAsReceiver} connectToReceiver={this.connectToReceiver}
+                />}/>
               </Switch>
           </div>
         </div>

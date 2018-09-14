@@ -3,6 +3,17 @@ import DisplayWindow from './DisplayWindow';
 
 class DisplayEditor extends React.Component{
 
+  constructor(){
+    super();
+    this.state = {
+      text: '',
+      cursor: 0,
+      updating: false
+    }
+
+    this.throttle = null
+  }
+
   componentDidMount(){
     let video = document.getElementById('background-video');
     if(video)
@@ -10,14 +21,37 @@ class DisplayEditor extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    let {item} = this.props;
-    if(item !== prevProps.item ){
+    let {item, wordIndex} = this.props;
+
+    if(item !== prevProps.item || wordIndex !== prevProps.wordIndex){
       let video = document.getElementById('background-video');
       if(video)
         video.loop = true;
+
+      let slides = item.slides || null;
+      let slide = slides ? slides[wordIndex] : null;
+      let box = slide ? slide.boxes[0] : null;
+
+      if(box)
+        this.setState({text: box.words})
     }
   }
 
+  handleKeyUp = (event) => {
+    let {text, cursor} = this.state;
+
+    // if(event.key === 'Enter'){
+    //   this.updateTextChange(text, cursor, true)
+    //   clearTimeout(this.throttle)
+    // }
+    // if(event.key === 'Delete'){
+    //   let selectionEnd = document.getElementById("displayEditor").selectionEnd;
+    //   if(selectionEnd === cursor){
+    //     this.updateTextChange(text, cursor, true)
+    //     clearTimeout(this.throttle)
+    //   }
+    // }
+  }
 
   handleBoxChange = (x, y, width, height) => {
     let{wordIndex, item} = this.props;
@@ -30,11 +64,32 @@ class DisplayEditor extends React.Component{
   }
 
   handleTextChange = (event) => {
+    let that = this;
+    let {updating} = this.state;
     event.preventDefault();
-    let cursor = event.target.selectionStart
+    this.updateTextChange(event.target.value, event.target.selectionStart, true)
+    // this.setState({text: event.target.value, cursor: event.target.selectionStart})
+    // clearTimeout(this.throttle);
+    // if(updating){
+    //   this.throttle = setTimeout(function(){
+    //     let text = that.state.text;
+    //     let cursor = that.state.cursor;
+    //     that.setState({updating: false})
+    //     that.updateTextChange(text, cursor, true)
+    //   }, 350)
+    // }
+    // else{
+    //   this.setState({updating: true})
+    //   this.updateTextChange(event.target.value, event.target.selectionStart, true)
+    // }
+
+  }
+
+  updateTextChange = (words, cursor, enterPressed) => {
+
     let {wordIndex, item} = this.props;
     let index = -1;
-    let words = event.target.value;
+    let formattedLyrics = item.arrangements[item.selectedArrangement].formattedLyrics
 
     if((item.type === 'bible' && wordIndex === 0) || item.type === 'image'){
       item.slides[wordIndex].boxes[0].words = words
@@ -44,9 +99,9 @@ class DisplayEditor extends React.Component{
 
     if(slide && wordIndex < item.slides.length-1 && wordIndex !== 0){
       if(item.type === 'song'){
-        index = item.formattedLyrics.findIndex(e => e.name === item.slides[wordIndex].type);
+        index = formattedLyrics.findIndex(e => e.name === item.slides[wordIndex].type);
         let start = wordIndex - item.slides[wordIndex].boxes[0].slideIndex;
-        let end = start + item.formattedLyrics[index].slideSpan - 1;
+        let end = start + formattedLyrics[index].slideSpan - 1;
         let newWords = ""
 
         for (let i = start; i <= end; ++i){
@@ -56,7 +111,7 @@ class DisplayEditor extends React.Component{
             newWords+= item.slides[i].boxes[0].words;
         }
         if(newWords !== "")
-          item.formattedLyrics[index].words = newWords
+          formattedLyrics[index].words = newWords
       }
     }
     else if(item.type === 'song'&& slide){
@@ -67,6 +122,8 @@ class DisplayEditor extends React.Component{
     this.props.updateItem(item);
 
     setTimeout(function(){
+      if(!enterPressed)
+        return;
       document.getElementById("displayEditor").selectionEnd = cursor;
       document.getElementById("displayEditor").scrollTop = 0;
     }, 10)
@@ -74,6 +131,7 @@ class DisplayEditor extends React.Component{
 
   render() {
     let {wordIndex, item, backgrounds, width, height} = this.props;
+    // let {text} = this.state;
     let slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
     let box = slide ? slide.boxes[0] : null;
@@ -89,7 +147,7 @@ class DisplayEditor extends React.Component{
     let background = box.background;
 
     return (
-      <div style={{width: width, height: height, position: 'relative'}}>
+      <div onKeyUp={this.handleKeyUp} style={{width: width, height: height, position: 'relative'}}>
         <DisplayWindow words={words} style={box} background={background} backgrounds={backgrounds}
           width={width} height={height} title={''} editor={true} handleTextChange={this.handleTextChange}
           handleBoxChange={this.handleBoxChange}>

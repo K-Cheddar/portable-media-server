@@ -3,7 +3,7 @@ import deleteX from './assets/deleteX.png';
 import edit from './assets/edit.png';
 import add from './assets/addItem.png';
 import check from './assets/check.png';
-import cancel from './assets/cancel.png';
+import cancel from './assets/cancel-icon.png';
 import duplicate from './assets/duplicate.png';
 import DeleteConfirmation from './DeleteConfirmation'
 
@@ -33,7 +33,9 @@ export default class ItemListEditor extends Component{
     this.setState({ilsSearch: event.target.value})
   }
 
-  confirm = (id) => {
+  confirm = (id, e) => {
+    if(e)
+      e.preventDefault()
     let {name} = this.state;
     let {itemLists, allItemLists, needsUpdate} = this.props;
     let index = itemLists.findIndex(e => e.id === id)
@@ -170,7 +172,7 @@ export default class ItemListEditor extends Component{
         <div style={{display:'flex', marginBottom: '0.25vh'}} key={index}>
           {!selected && <div style={{margin:"0% 1% 0% 1%", width: '80%'}}>{item.name}</div>}
           {selected &&
-            <form style={{width: '80%', margin:"0% 1% 0% 1%"}} onSubmit={() => (this.confirm(item.id))}>
+            <form style={{width: '80%', margin:"0% 1% 0% 1%"}} onSubmit={(e) => (this.confirm(item.id, e))}>
             <input style={{width: '100%'}} onChange={this.editName} value={name}/>
             </form>
           }
@@ -179,13 +181,13 @@ export default class ItemListEditor extends Component{
            alt="edit" src={edit}
            />}
           {!selected && <img className='imgButton' style={imageButtonStyle}
-           onClick={() => (this.deleteList('one', item.id))}
-           alt="delete" src={deleteX}
-           />}
-          {!selected && <img className='imgButton' style={imageButtonStyle}
             onClick={() => (this.props.duplicateList(item.id))}
             alt="duplicate" src={duplicate}
            />}
+           {!selected && <img className='imgButton' style={imageButtonStyle}
+            onClick={() => (this.deleteList('one', item.id))}
+            alt="delete" src={deleteX}
+            />}
            {selected && <img className='imgButton' style={imageButtonStyle}
             onClick={() => (this.confirm(item.id))}
             alt="check" src={check}

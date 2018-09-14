@@ -23,9 +23,6 @@ export default class DisplayWindow extends React.Component{
 
   componentDidMount(){
     window.addEventListener("resize", this.updatePosition);
-    let video = document.getElementById('background-video-mini');
-    if(video)
-      video.loop = true;
     this.updatePosition();
   }
 
@@ -71,14 +68,6 @@ export default class DisplayWindow extends React.Component{
     let {background, presentation, editor} = this.props;
     if((this.props.style !== prevProps.style) || (this.props.words !== prevProps.words))
       this.updatePosition();
-    if(background !== prevProps.background ){
-      let video = document.getElementById('background-video-mini');
-      if(video){
-        video.loop = true;
-        if(presentation || editor)
-          video.muted = false
-      }
-    }
   }
 
   onBoxDragStop = (position) => {
@@ -184,16 +173,10 @@ export default class DisplayWindow extends React.Component{
             {title}
         </div>}
           <div style={containerStyle}>
-            {!isVideo &&
-              <DisplayBackground img={img} brightness={style.brightness} presentation={presentation}
-                width={width} height={height} title={title}>
-              </DisplayBackground>
-            }
-            {isVideo && <video muted preload="true" loop autoPlay id="background-video-mini"
-              style={videoStyle}>
-              <source src={asset.video.src} type="video/mp4"/>
-              <source src={asset.video.src} type="video/ogg" />
-            </video>}
+            <DisplayBackground img={img} brightness={style.brightness} presentation={presentation}
+              width={width} height={height} title={title} isVideo={isVideo} asset={asset}
+              editor={editor}>
+            </DisplayBackground>
             {editor &&
               <Rnd size={{width: boxWidth, height: boxHeight}}
               position={{x: box_x, y: box_y}}

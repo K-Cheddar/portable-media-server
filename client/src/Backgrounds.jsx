@@ -133,7 +133,7 @@ export default class Backgrounds extends React.Component{
 
 
     return (
-      <div style={{position: 'relative', height: '22vh', width: width, zIndex: 3, marginBottom:'1%', color: 'white'}}>
+      <div style={{position: 'relative', height: '22vh', width: width, zIndex: 3, marginBottom:'2vh', color: 'white'}}>
           <div style={{display:'flex'}}>
           <div style={{marginTop:'1vh'}}>Backgrounds</div>
           {(user!=='Demo') &&

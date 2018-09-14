@@ -117,18 +117,6 @@ class FormatEditor extends React.Component{
         }
       })
     }
-
-    // let slides = item.slides || null;
-    // let slide = slides ? slides[wordIndex] : null;
-    // let box = slide ? slide.boxes[0] : null;
-    //
-    // let prevSlides = prevProps.item.slides || null;
-    // let prevSlide = prevSlides ? prevSlides[prevProps.wordIndex] : null;
-    // let prevBox = prevSlide ? prevSlide.boxes[0] : null;
-    //
-    // if(box && prevBox && box.fontSize !== prevBox.fontSize){
-    //   this.setState({fontSize: box.fontSize})
-    // }
   }
 
   render() {

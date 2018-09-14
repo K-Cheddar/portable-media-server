@@ -4,7 +4,7 @@ import MobileSlides from './MobileSlides';
 import MobileItemList from './MobileItemList';
 import MobileDisplay from './MobileDisplay';
 import MobileListChanger from './MobileListChanger';
-import MobileArrangeLyrics from './MobileArrangeLyrics';
+// import MobileArrangeLyrics from './MobileArrangeLyrics';
 
 import on from '../assets/on.png';
 import off from '../assets/off.png';
@@ -67,9 +67,9 @@ export default class MobileView extends Component{
             onClick={this.openMenu}>Menu</button>
           <div style={this.state.menuOpen ? menuStyle : {display:'none'}}>
               <button style={menuItem} onClick={() => (this.props.history.push("/"))}>Home</button>
-                {(item.type === 'song') && <button style={menuItem}
+                {/*{(item.type === 'song') && <button style={menuItem}
                 onClick={this.openArrangeLyrics}>Arrange Lyrics</button>}
-                <button style={menuItem} onClick={connectToReceiver}> Connect To Receiver </button>
+                <button style={menuItem} onClick={connectToReceiver}> Connect To Receiver </button>*/}
                 {isSender && <img style={connectedIcon}
                    alt="connected" src={connected}
                   />}
@@ -118,17 +118,19 @@ export default class MobileView extends Component{
                 />
             </div>
         </div>}
-        {this.state.arrangeLyricsOpen &&
-          <div style={{position:'fixed', top:0, left:0, height:'100vh',
-             zIndex: 2, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
-            <div style={{position:'fixed', display:'flex', top:'1vh', left:'13vw',
-               zIndex: 3, backgroundColor:'#383838', width:'80vw', color: 'white', height: '90vh'}}>
-             <MobileArrangeLyrics item={item} close={this.closeArrangeLyrics}
-               formatSong={this.props.formatSong} updateItem={updateItem}/>
-            </div>
-        </div>}
       </div>
     )
   }
 
 }
+
+// {this.state.arrangeLyricsOpen &&
+//   <div style={{position:'fixed', top:0, left:0, height:'100vh',
+//      zIndex: 2, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
+//     <div style={{position:'fixed', display:'flex', top:'1vh', left:'13vw',
+//        zIndex: 3, backgroundColor:'#383838', width:'80vw', color: 'white', height: '90vh'}}>
+//      <MobileArrangeLyrics item={item} close={this.closeArrangeLyrics}
+//        formatSong={this.props.formatSong} updateItem={updateItem}/>
+//     </div>
+// </div>}
+//

@@ -9,6 +9,7 @@ import TextBoxEditor from './TextBoxEditor';
 import ProjectorControl from './ProjectorControl'
 
 import connected from './assets/connected.png';
+import disconnected from './assets/disconnected.png';
 import open from './assets/open.png';
 import bibleIcon from './assets/bibleIcon.png'
 import songIcon from './assets/songIcon.png'
@@ -94,7 +95,7 @@ export default class ToolBar extends Component {
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
        setAsReceiver, connectToReceiver, updateUserSettings, updateBoxPosition,
-        updateCurrent} = this.props.parent;
+        updateCurrent, updateItemStructure} = this.props.parent;
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
       allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode} = this.props.parent.state;
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen, settingsOpen} = this.state;
@@ -121,7 +122,6 @@ export default class ToolBar extends Component {
            marginBottom: '0.25vh'}
         : {display:'none'}} >
         <ul style={{display:'flex', zIndex: 3}}>
-          {/*<li><button onClick={this.props.test}>UPDATE ALL</button></li>*/}
           <li style={{width:'4vw'}}>
             <div className='toolbarSection' onMouseLeave={this.closeMenu}>
               <button onClick={this.openMenu} onMouseEnter={this.openMenu} style={menuButton}>Menu</button>
@@ -133,6 +133,7 @@ export default class ToolBar extends Component {
                   <button style={menuItem} onClick={this.openSettings}> Open Settings </button>
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                   {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
+                  <button style={menuItem} onClick={updateItemStructure}>UPDATE ALL</button>
                 </div>
             </div>
           </li>
@@ -199,15 +200,29 @@ export default class ToolBar extends Component {
               <div style={{width: '9vw'}}>
                 {isReciever && <div style={{display:'flex', marginTop: '0.65vh'}}>
                   <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}}>Direct Receiving:</div>
-                  <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
-                     alt="connected" src={connected}
-                    />
+                    {(isReciever === 'connected') &&
+                      <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
+                         alt="connected" src={connected}
+                        />
+                    }
+                    {(isReciever === 'disconnected') &&
+                      <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
+                         alt="disconnected" src={disconnected}
+                        />
+                    }
                 </div>}
                 {isSender && <div style={{display:'flex', marginTop: '0.65vh'}}>
                   <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}} >Direct Sending:</div>
-                  <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
-                     alt="connected" src={connected}
-                    />
+                  {(isSender === 'connected') &&
+                    <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
+                       alt="connected" src={connected}
+                      />
+                  }
+                  {(isSender === 'disconnected') &&
+                    <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
+                       alt="disconnected" src={disconnected}
+                      />
+                  }
                 </div>}
               </div>
               <div style={{display:'flex', backgroundColor: '#383838', color:'white', padding: '0.5vw', height: '2vh'}}>

@@ -4,13 +4,13 @@ let updaterInterval = null;
 
 export function updateItem(props){
   console.log("Updating Item");
-  let {db, item} = props;
+  let {db, item, selectedArrangement} = props;
   db.get(item._id).then(function (doc) {
     doc.name = item.name;
     doc.background = item.background;
     doc.slides = item.slides;
-    doc.formattedLyrics = item.formattedLyrics;
-    doc.songOrder = item.songOrder;
+    doc.arrangements = item.arrangements;
+    doc.selectedArrangement = item.selectedArrangement;
     return db.put(doc);
    }).catch(function(){
      console.log('update item not working');
@@ -266,7 +266,7 @@ export function deleteItemList(props){
   })
 }
 
-export function updateALL(db){
+export function updateItemStructure(db){
   db.get('allItems').then(function (doc) {
     let items = doc.items;
     let i = 0;
@@ -275,27 +275,16 @@ export function updateALL(db){
       if(i < items.length){
         db.get(items[i]._id).then(function(doc){
           let words = doc.words;
-          let slides = [];
-          for (let j = 0; j < words.length-1; ++j){
-            let slide = {
-                        "type": words[j].type,
-                        "slideIndex": words[j].slideIndex || 0,
-                        "boxes": [
-                          {"background": words[j].background,
-                           "fontSize": (j===0) ? doc.nameSize : doc.style.fontSize,
-                           "fontColor": doc.style.color,
-                           "words": words[j].words,
-                          }
-                        ]
-                      }
-              slides.push(slide);
-          }
+          let arrangements = [
+            {name: 'Master',
+             formattedLyrics: doc.formattedLyrics,
+             songOrder: doc.songOrder
+            }
+          ];
           console.log("Updated: ", doc.name);
-          doc.slides = slides;
-          delete doc.words;
-          delete doc.background;
-          delete doc.nameSize;
-          delete doc.style;
+          doc.arrangements = arrangements;
+          doc.selectedArrangement = 0;
+          delete doc.formattedLyrics;
           db.put(doc);
         })
         ++i
@@ -303,7 +292,7 @@ export function updateALL(db){
       else{
         clearInterval(updaterInterval)
       }
-    }, 250)
+    }, 100)
 
   })
 }
