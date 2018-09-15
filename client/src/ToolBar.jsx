@@ -133,7 +133,7 @@ export default class ToolBar extends Component {
                   <button style={menuItem} onClick={this.openSettings}> Open Settings </button>
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                   {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
-                  <button style={menuItem} onClick={updateItemStructure}>UPDATE ALL</button>
+                  {/*<button style={menuItem} onClick={updateItemStructure}>UPDATE ALL</button>*/}
                 </div>
             </div>
           </li>
