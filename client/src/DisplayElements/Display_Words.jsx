@@ -13,8 +13,8 @@ export default class Display_Words extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState){
-    let {words, title, position} = this.props;
-    if(title === 'Presentation' || this.props.presentation){
+    let {words, position, animate} = this.props;
+    if(animate){
       if((words !== nextProps.words) || (position !== nextProps.position) ){
         let {fontSize, presentation, fsDivider, fontColor, extraPadding} = nextProps;
         let nextPosition = nextProps.position;
@@ -97,8 +97,8 @@ export default class Display_Words extends Component {
   }
 
   componentDidUpdate(prevProps){
-      let {title, presentation} = this.props;
-    if(title === 'Presentation' || presentation){
+      let {animate} = this.props;
+    if(animate){
       if(prevProps.words !== this.props.words){
         setTimeout(function(){
           this.setState({wordUpdaterIndex: 1})
@@ -220,12 +220,10 @@ export default class Display_Words extends Component {
   }
 
   render(){
-    let {id, words, fontSize, presentation, fsDivider, fontColor, extraPadding, title, editor} = this.props;
+    let {id, words, fontSize, presentation, fsDivider, fontColor, extraPadding, animate, editor} = this.props;
     let {prevWords, wordUpdaterIndex, prevWordsStyle} = this.state;
 
     let wordsStyle = this.computeWordsStyle(fontSize, fsDivider, fontColor, extraPadding, presentation)
-
-    let animate = (title === 'Presentation' || presentation)
 
     return(
       <div>

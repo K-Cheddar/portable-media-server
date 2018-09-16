@@ -50,17 +50,8 @@ export function setWordIndex(props){
     element.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
   updateState({wordIndex: index});
   let box = slides[index].boxes[0];
-  let style = {
-    fontColor: box.fontColor,
-    fontSize: box.fontSize,
-    brightness: box.brightness,
-    width: box.width,
-    height: box.height,
-    x: box.x,
-    y: box.y,
-  }
   if(box.background)
-    updateCurrent({words: lyrics, style: style, background: box.background});
+    updateCurrent({words: lyrics, style: box, background: box.background});
   else
-    updateCurrent({words: lyrics, style: style});
+    updateCurrent({words: lyrics, style: box});
 }

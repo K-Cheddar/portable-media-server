@@ -167,6 +167,8 @@ export default class DisplayWindow extends React.Component{
         isVideo = true;
     }
 
+    let animate = presentation || title === 'Presentation' || editor
+
     return (
       <div>
         {(title !== '') && <div style={titleStyle}>
@@ -175,7 +177,7 @@ export default class DisplayWindow extends React.Component{
           <div style={containerStyle}>
             <DisplayBackground img={img} brightness={style.brightness} presentation={presentation}
               width={width} height={height} title={title} isVideo={isVideo} asset={asset}
-              editor={editor}>
+              editor={editor} animate={animate}>
             </DisplayBackground>
             {editor &&
               <Rnd size={{width: boxWidth, height: boxHeight}}
@@ -203,13 +205,13 @@ export default class DisplayWindow extends React.Component{
                 />}
               <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
                 fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding} position={style}
-                title={title} editor={editor} handleTextChange={this.props.handleTextChange}>
+                title={title} editor={editor} handleTextChange={this.props.handleTextChange} animate={animate}>
               </DisplayWords>
             </Rnd>}
             {!editor &&
               <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
                 fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding} position={style}
-                title={title} handleTextChange={this.props.handleTextChange}>
+                title={title} animate={animate} handleTextChange={this.props.handleTextChange}>
               </DisplayWords>
             }
 

@@ -12,7 +12,7 @@ export default class FullView extends React.Component{
 
     let {setItemIndex, setWordIndex, insertItemIntoList, insertWords, addItem, deleteItemFromList,
           updateItem, setItemBackground, handleFileChange, deleteItem, addItemToList, setSlideBackground,
-          openUploader, updateCurrent, duplicateItem} = this.props.parent;
+          openUploader, updateCurrent, duplicateItem, addMedia} = this.props.parent;
     let {wordIndex, itemList, item, backgrounds, itemIndex, allItems, user, db, currentInfo,
           mode} = this.props.parent.state;
     let {formatSong} = this.props;
@@ -41,7 +41,7 @@ export default class FullView extends React.Component{
           </div>
         </div>
         <div style={{marginLeft:'1vw', position: 'relative'}}>
-          <Backgrounds backgrounds={backgrounds} handleFileChange={handleFileChange} addItem={addItem}
+          <Backgrounds backgrounds={backgrounds} handleFileChange={handleFileChange} addMedia={addMedia}
             setItemBackground={setItemBackground} user={user} updateCurrent={updateCurrent}
             setSlideBackground={setSlideBackground} item={item} openUploader={openUploader} db={db}
             />

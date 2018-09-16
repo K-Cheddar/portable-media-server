@@ -174,7 +174,7 @@ export default class Backgrounds extends React.Component{
           </div>
 
           {nameOpen && <CreateName option="create" name={selectedBackground} type={'image'} db={this.props.db}
-          close={this.closeName} addItem={this.props.addItem} background={selectedBackground}
+          close={this.closeName} addMedia={this.props.addMedia} background={selectedBackground}
           />}
       </div>
     )

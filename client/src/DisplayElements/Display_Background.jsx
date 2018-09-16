@@ -22,8 +22,8 @@ export default class Display_Background extends Component {
 
 
   shouldComponentUpdate(nextProps, nextState){
-    let {title, presentation, editor} = this.props;
-    if(title === 'Presentation' || presentation || editor){
+    let {animate} = this.props;
+    if(animate){
       if(this.props.img !== nextProps.img || this.props.brightness !== nextProps.brightness){
         let {img, brightness, width, height} = nextProps;
         this.setState({
@@ -35,8 +35,8 @@ export default class Display_Background extends Component {
   }
 
   componentDidUpdate(prevProps){
-    let {title, presentation, editor, img} = this.props;
-    if(title === 'Presentation' || presentation || editor){
+    let {title, presentation, animate, img} = this.props;
+    if(animate){
       if(prevProps.img !== img || prevProps.title !== title){
         setTimeout(function(){
           this.setState({backgroundUpdaterIndex: 1})
@@ -72,13 +72,11 @@ export default class Display_Background extends Component {
   }
 
   render(){
-    let {img, brightness, width, height, title, presentation, isVideo, asset, editor} = this.props;
+    let {img, brightness, width, height, isVideo, asset, animate} = this.props;
     let {backgroundUpdaterIndex, prevBackgroundStyle} = this.state;
 
     let backgroundStyle = this.computeBackgroundStyle(img, brightness, width, height);
     let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
-
-    let animate = (title === 'Presentation' || presentation || editor)
 
     return(
       <div>

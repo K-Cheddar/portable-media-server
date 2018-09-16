@@ -38,7 +38,10 @@ export default class CreateName extends React.Component{
       }).catch(function(){
         that.setState({message: ""})
         that.props.close();
-        that.addItem(name)
+        if(that.props.addMedia)
+          that.props.addMedia(name, that.props.background)
+        else
+          that.addItem(name)
       })
     }
 

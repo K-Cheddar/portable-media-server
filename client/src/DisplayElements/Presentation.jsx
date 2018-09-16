@@ -64,7 +64,7 @@ class Presentation extends React.Component{
   }
 
   render() {
-    let {backgrounds} = this.props;
+    let {backgrounds, type} = this.props;
     let {background, words, style, time} = this.props.currentInfo
     let {pBackground, pWords, pStyle, pTime, width, height, fullScreen} = this.state;
 
@@ -88,14 +88,20 @@ class Presentation extends React.Component{
     }
 
 
-    let buttonStyle = {fontSize: "10vmin", backgroundColor:'#383838', border:'1.5vw solid #06d1d1',
-      borderRadius:'2vw', color: 'white', padding:'0.25vw', height: '50%', width: '90%'}
+    let buttonStyle = {fontSize: "10vmin", backgroundColor:'#383838', border:'1.5vmin solid #06d1d1',
+      borderRadius:'2vmin', color: 'white', padding:'0.25vmin', height: '50%', width: '100%'}
 
     return (
       <div id="full-presentation">
         {!fullScreen && <div style={{width: '100vw', height: '100vh', display:'flex',
           alignItems: 'center', justifyContent: 'center'}}>
-          <button onClick={this.goFullScreen} style={buttonStyle}>Click To Activate FullScreen</button>
+          <div style={{width: '90%'}}>
+            {type === 'local' && <div style={{textAlign: 'center', fontSize: "8.5vmin", color: 'yellow',
+              backgroundColor:'#383838', padding:'5vh', marginBottom: '10vh'}}>Drag To Intended Display</div>}
+            <div style={{ display:'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <button onClick={this.goFullScreen} style={buttonStyle}>Click To Activate FullScreen</button>
+            </div>
+          </div>
         </div>}
         {fullScreen && <DisplayWindow words={words} style={style} background={background} backgrounds={backgrounds}
           width={'100vw'} height={'100vh'} title={''} titleSize={''} presentation={true} extraPadding={extraPadding}/>

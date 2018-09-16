@@ -178,9 +178,9 @@ class App extends Component {
 
   }
 
-  addMedia = (background) => {
+  addMedia = (name, background) => {
     let item = {
-        "_id": background, "name": "New Image",
+        "_id": name, "name": name,
         "slides": [SlideCreation.newSlide({type: 'Image', background: background, fontSize: 4.5})],
         "type": "image", "background": background
       }
