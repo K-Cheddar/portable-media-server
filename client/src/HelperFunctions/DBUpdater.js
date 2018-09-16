@@ -8,9 +8,13 @@ export function updateItem(props){
   db.get(item._id).then(function (doc) {
     doc.name = item.name;
     doc.background = item.background;
-    doc.slides = item.slides;
-    doc.arrangements = item.arrangements;
-    doc.selectedArrangement = item.selectedArrangement;
+    if(doc.type === 'song'){
+      doc.selectedArrangement = item.selectedArrangement;
+      doc.arrangements = item.arrangements;
+    }
+    else
+      doc.slides = item.slides;
+
     return db.put(doc);
    }).catch(function(){
      console.log('update item not working');
@@ -135,20 +139,32 @@ export function addItem(props){
   let {db, itemIndex} = props.parent.state;
 
   db.get(item._id).then(function(doc){
+    let slides;
+    if (doc.type === 'song')
+      slides = doc.arrangements[item.selectedArrangement].slides;
+    else
+      slides = doc.slides;
     let itemObj = {
-      "name": doc.slides[0].boxes[0].words,
+      "name": slides[0].boxes[0].words,
       "_id": doc._id,
-      "background": doc.slides[0].boxes[0].background,
-      "nameColor": doc.slides[0].boxes[0].fontColor,
+      "background": slides[0].boxes[0].background,
+      "nameColor": slides[0].boxes[0].fontColor,
       "type": doc.type
     }
     addItemToList(itemObj);
   }).catch(function(){
+
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides;
+    else
+      slides = item.slides;
+
       let itemObj = {
         "name": item.name,
         "_id": item._id,
         "background": item.background,
-        "nameColor": item.slides[0].boxes[0].fontColor,
+        "nameColor": slides[0].boxes[0].fontColor,
         "type": item.type
       }
       addItemToList(itemObj);
@@ -273,18 +289,20 @@ export function updateItemStructure(db){
     clearInterval(updaterInterval);
     updaterInterval = setInterval(function(){
       if(i < items.length){
-        db.get(items[i]._id).then(function(doc){
-          let arrangements = [
-            {name: 'Master',
-             formattedLyrics: doc.formattedLyrics,
-             songOrder: doc.songOrder
+        db.get(items[i]._id).then(function(doc2){
+          if(doc2.type === 'song' && doc2.slides){
+            let arrangements = doc2.arrangements.slice();
+            for( let p = 0; p < arrangements.length; ++p){
+              arrangements[p].slides = doc2.slides;
             }
-          ];
-          console.log("Updated: ", doc.name);
-          doc.arrangements = arrangements;
-          doc.selectedArrangement = 0;
-          delete doc.formattedLyrics;
-          db.put(doc);
+            doc2.arrangements = arrangements;
+            delete doc2.slides;
+            console.log("Updated:", doc2.name);
+          }
+          else{
+            console.log("Skipped:", doc2.name);
+          }
+          db.put(doc2);
         })
         ++i
       }

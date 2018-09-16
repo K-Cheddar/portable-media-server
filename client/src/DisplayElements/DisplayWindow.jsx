@@ -1,9 +1,9 @@
 import React from 'react';
 import DisplayWords from './Display_Words'
 import DisplayBackground from './Display_Background'
-import blank from './assets/blank.png';
-import lock from './assets/lock.png';
-import unlock from './assets/unlock.png';
+import blank from '../assets/blank.png';
+import lock from '../assets/lock.png';
+import unlock from '../assets/unlock.png';
 import {Rnd} from 'react-rnd';
 
 export default class DisplayWindow extends React.Component{

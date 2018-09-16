@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import zoomIn from './assets/zoomIn.png'
-import zoomOut from './assets/zoomOut.png'
-import newButton from './assets/new-button.png';
+import zoomIn from '../assets/zoomIn.png'
+import zoomOut from '../assets/zoomOut.png'
+import newButton from '../assets/new-button.png';
 
 import SongSection from './SongSection';
 

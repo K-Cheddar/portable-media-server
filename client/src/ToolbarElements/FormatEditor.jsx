@@ -1,10 +1,10 @@
 import React from 'react';
 import {ChromePicker} from 'react-color';
-import fsUP from './assets/fontSizeUP.png';
-import fsDOWN from './assets/fontSizeDOWN.png';
-import cPicker from './assets/color-picker.png';
-import cPickerClose from './assets/color-picker-close.png';
-import brightness_img from './assets/brightness.png';
+import fsUP from '../assets/fontSizeUP.png';
+import fsDOWN from '../assets/fontSizeDOWN.png';
+import cPicker from '../assets/color-picker.png';
+import cPickerClose from '../assets/color-picker-close.png';
+import brightness_img from '../assets/brightness.png';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
@@ -97,7 +97,12 @@ class FormatEditor extends React.Component{
     let{item, wordIndex} = this.props;
 
     if((wordIndex !== prevProps.wordIndex) || (item._id !== prevProps.item._id)){
-      let slides = item.slides || null;
+      let slides;
+      if (item.type === 'song')
+        slides = item.arrangements[item.selectedArrangement].slides || null;
+      else
+        slides = item.slides || null;
+
       let slide = slides ? slides[wordIndex] : null;
       if(!slide)
         return;

@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import FormatEditor from './FormatEditor';
 import Bible from './Bible'
-import CreateName from './CreateName';
+import CreateName from '../CreateName';
 import ItemListEditor from './ItemListEditor';
 import UserSettings from './UserSettings';
 import TextBoxEditor from './TextBoxEditor';
 import ProjectorControl from './ProjectorControl'
 
-import connected from './assets/connected.png';
-import disconnected from './assets/disconnected.png';
-import open from './assets/open.png';
-import bibleIcon from './assets/bibleIcon.png'
-import songIcon from './assets/songIcon.png'
+import connected from '../assets/connected.png';
+import disconnected from '../assets/disconnected.png';
+import open from '../assets/open.png';
+import bibleIcon from '../assets/bibleIcon.png'
+import songIcon from '../assets/songIcon.png'
 
-export default class ToolBar extends Component {
+export default class Toolbar extends Component {
 
   constructor(){
     super();

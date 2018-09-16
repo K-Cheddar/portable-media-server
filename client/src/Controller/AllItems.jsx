@@ -1,8 +1,8 @@
 import React from 'react';
-import deleteX from './assets/deleteX.png';
-import add from './assets/addItem.png';
-import DeleteConfirmation from './DeleteConfirmation';
-import DisplayWindow from './DisplayWindow';
+import deleteX from '../assets/deleteX.png';
+import add from '../assets/addItem.png';
+import DeleteConfirmation from '../DeleteConfirmation';
+import DisplayWindow from '../DisplayElements/DisplayWindow';
 
 export default class AllItems extends React.Component{
 

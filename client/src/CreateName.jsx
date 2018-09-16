@@ -1,6 +1,6 @@
 import React from 'react';
 import {HotKeys} from 'react-hotkeys';
-import * as Helper from './Helper'
+import * as SlideCreation from './HelperFunctions/SlideCreation'
 
 export default class CreateName extends React.Component{
 
@@ -74,9 +74,13 @@ export default class CreateName extends React.Component{
     let item = {
         "_id": name,
         "name": name,
-        "slides": [Helper.newSlide({type: "Title", fontSize: 4.5, words: firstSlide,
-         background: image, brightness: brightness})],
-        "arrangements": [{name: 'Master', formattedLyrics: [], "songOrder": []}], 'selectedArrangement': 0,
+        "arrangements": [{
+          name: 'Master',
+          formattedLyrics: [],
+          songOrder: [],
+          slides: [SlideCreation.newSlide({type: "Title", fontSize: 4.5, words: firstSlide,
+           background: image, brightness: brightness})]}],
+        "selectedArrangement": 0,
         "type": type,
         "background": image
       }
@@ -90,8 +94,10 @@ export default class CreateName extends React.Component{
 
     db.get(id).then(function(doc){
       doc.name = name;
-      if(doc.type === 'song' || doc.type === 'bible')
+      if(doc.type === 'bible')
         doc.slides[0].boxes[0].words = name;
+      if(doc.type === 'song')
+        doc.arrangements[doc.selectedArrangement].slides[0].boxes[0].words = name;
       updateItem(doc);
     })
     this.props.close();

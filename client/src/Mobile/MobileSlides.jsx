@@ -23,7 +23,12 @@ export default class MobileSlides extends React.Component{
 
   nextSlide = (index) => {
     let {item} = this.props;
-    if(index < item.slides.length-1){
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+    if(index < slides.length-1){
         this.props.setWordIndex(index+1)
     }
 
@@ -37,7 +42,12 @@ export default class MobileSlides extends React.Component{
   render() {
     let {item, backgrounds, wordIndex} = this.props;
     let {slidesPerRow} = this.state;
-    let words = item.slides ? item.slides.map(a => a.boxes[0].words) : null;
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+    let words = slides ? slides.map(a => a.boxes[0].words) : null;
     let row = [];
     let fullArray = [];
     let that = this;
@@ -71,7 +81,7 @@ export default class MobileSlides extends React.Component{
     let slideSelectedStyle = {border:'1vw', borderColor: '#06d1d1', borderStyle:'solid',
        width:width, height:fullHeight};
 
-    let slides = fullArray.map((element, index) => {
+    let ROWtest = fullArray.map((element, index) => {
       let row = element.map(function (lyrics, i){
 
         let selected = (index*slidesPerRow+i === wordIndex);
@@ -84,8 +94,8 @@ export default class MobileSlides extends React.Component{
         return(
           <div style={{display:'flex', width:slideWidth, userSelect:'none'}} key={i} id={"MSlide"+(index*slidesPerRow+i)}>
             <div onClick={() => (that.clickSlide(index*slidesPerRow+i))} style={style}>
-              <MobileSlideInList words={lyrics} style={item.slides[index*slidesPerRow+i].boxes[0]}
-                 backgrounds={backgrounds} name={item.slides[index*slidesPerRow+i].type}
+              <MobileSlideInList words={lyrics} style={slides[index*slidesPerRow+i].boxes[0]}
+                 backgrounds={backgrounds} name={slides[index*slidesPerRow+i].type}
                  width={width} height={height} titleSize={titleSize}/>
 
             </div>
@@ -99,7 +109,7 @@ export default class MobileSlides extends React.Component{
 
     return (
       <div>
-      <div style={{ overflowY:'scroll', width: '100vw', height: "32vh"}}>{slides}</div>
+      <div style={{ overflowY:'scroll', width: '100vw', height: "32vh"}}>{ROWtest}</div>
       {words.length > 1 &&<div style={{ display:'flex', paddingTop:'1.5%'}}>
         <button style={{width:'50vw', height:'20vh', backgroundColor:'#383838', userSelect:'none'}}>
           <img style={{width:'45vw', height:'15vh', marginRight:'2vw'}}

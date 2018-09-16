@@ -1,5 +1,5 @@
 import React from 'react';
-import DisplayWindow from './DisplayWindow';
+import DisplayWindow from '../DisplayElements/DisplayWindow';
 
 export default class SlideInList extends React.Component{
 

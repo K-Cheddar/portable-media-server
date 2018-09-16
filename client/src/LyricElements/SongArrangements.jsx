@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import edit from './assets/edit.png';
-import check from './assets/check.png';
-import cancel from './assets/cancel-icon.png';
-import duplicate from './assets/duplicate.png';
-import deleteX from './assets/deleteX.png';
+import edit from '../assets/edit.png';
+import check from '../assets/check.png';
+import cancel from '../assets/cancel-icon.png';
+import duplicate from '../assets/duplicate.png';
+import deleteX from '../assets/deleteX.png';
 
 export default class SongArrangements extends Component{
   constructor () {
@@ -33,7 +33,8 @@ export default class SongArrangements extends Component{
     let obj = {
       name: element.name + ' Copy',
       formattedLyrics: JSON.parse(JSON.stringify(element.formattedLyrics)),
-      songOrder: JSON.parse(JSON.stringify(element.songOrder))
+      songOrder: JSON.parse(JSON.stringify(element.songOrder)),
+      slides: JSON.parse(JSON.stringify(element.slides))
     }
     arrangements.push(obj);
     this.props.updateArrangements(arrangements)

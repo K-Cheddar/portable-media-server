@@ -1,8 +1,8 @@
 import React from 'react';
-import expandDown from './assets/expandDown.png';
-import collapseUp from './assets/collapseUp.png';
-import upload from './assets/upload.png'
-import CreateName from './CreateName';
+import expandDown from '../assets/expandDown.png';
+import collapseUp from '../assets/collapseUp.png';
+import upload from '../assets/upload.png'
+import CreateName from '../CreateName';
 
 export default class Backgrounds extends React.Component{
 
@@ -70,6 +70,12 @@ export default class Backgrounds extends React.Component{
     let that = this;
     let numCols = 6;
     let width = '38vw';
+
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides;
+    else
+      slides = item.slides;
 
     let itemStyle = {
         border:'0.25vw',   borderColor: '#383838',    borderStyle:'solid',
@@ -145,8 +151,8 @@ export default class Backgrounds extends React.Component{
           <div style={{display:'flex', paddingTop: '1vh'}}>
             <button style={buttonStyle} onClick={this.displayImage}>Display Image</button>
             <button style={buttonStyle} onClick={this.openName}>Add To List</button>
-            {item.slides &&<button style={buttonStyle} onClick={this.setItemBackground}>Set Item Background</button>}
-            {item.type==='song' &&<button style={buttonStyle} onClick={this.setSlideBackground}>Set Slide Background</button>}
+            {slides &&<button style={buttonStyle} onClick={this.setItemBackground}>Set Item Background</button>}
+            {slides &&<button style={buttonStyle} onClick={this.setSlideBackground}>Set Slide Background</button>}
           </div>
           <div >
             {!allOpen && <div style={backgroundsRowStyle}>

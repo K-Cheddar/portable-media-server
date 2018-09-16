@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import textbox_full from './assets/textbox_full.png';
-import textbox_leftHalf from './assets/textbox_leftHalf.png';
-import textbox_lowerThird from './assets/textbox_lowerThird.png';
-import textbox_match from './assets/textbox_match.png';
-import textbox_midThird from './assets/textbox_midThird.png';
-import textbox_rightHalf from './assets/textbox_rightHalf.png';
-import textbox_upperThird from './assets/textbox_upperThird.png';
+import textbox_full from '../assets/textbox_full.png';
+import textbox_leftHalf from '../assets/textbox_leftHalf.png';
+import textbox_lowerThird from '../assets/textbox_lowerThird.png';
+import textbox_match from '../assets/textbox_match.png';
+import textbox_midThird from '../assets/textbox_midThird.png';
+import textbox_rightHalf from '../assets/textbox_rightHalf.png';
+import textbox_upperThird from '../assets/textbox_upperThird.png';
 
 export default class TextBoxEditor extends Component {
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import blank from './assets/blank.png';
+import blank from '../assets/blank.png';
 
-import on from './assets/on.png';
-import off from './assets/off.png';
+import on from '../assets/on.png';
+import off from '../assets/off.png';
 
 export default class ProjectorControl extends Component {
 

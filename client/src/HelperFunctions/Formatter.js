@@ -5,7 +5,11 @@ export function updateFontSize(props){
     let {item, wordIndex, boxIndex, needsUpdate} = props.state;
     let {fontSize, updateState} = props;
 
-    let slides = item.slides || null;
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
 
     if(!slide)
@@ -13,10 +17,10 @@ export function updateFontSize(props){
 
     if(boxIndex === 0){
       if(wordIndex !== 0)
-        for(let i = 1; i < item.slides.length; ++i)
-            item.slides[i].boxes[boxIndex].fontSize = fontSize;
+        for(let i = 1; i < slides.length; ++i)
+            slides[i].boxes[boxIndex].fontSize = fontSize;
       else
-        item.slides[0].boxes[boxIndex].fontSize = fontSize;
+        slides[0].boxes[boxIndex].fontSize = fontSize;
     }
 
     if(item.type === 'bible' && wordIndex !== 0)
@@ -25,8 +29,8 @@ export function updateFontSize(props){
     if(item.type === 'song' && wordIndex !== 0)
       item = Overflow.formatSong(item);
 
-    if(wordIndex >= item.slides.length)
-      wordIndex = item.slides.length-1
+    if(wordIndex >= slides.length)
+      wordIndex = slides.length-1
 
     needsUpdate.updateItem = true;
     updateState({item: item, wordIndex: wordIndex, needsUpdate: needsUpdate});
@@ -40,7 +44,11 @@ export function updateFontColor(props){
     let c = props.fontColor;
 
     let color = 'rgba('+c.r+' , ' +c.g+' , '+c.b+' , '+c.a+')';;
-    let slides = item.slides || null;
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
 
     if(!slide)
@@ -71,13 +79,13 @@ export function updateFontColor(props){
     }
 
     if(item.type === 'bible' && wordIndex !== 0){
-      for(let i = 1; i < item.slides.length; ++i){
-        item.slides[i].boxes[0].fontColor = color;
+      for(let i = 1; i < slides.length; ++i){
+        slides[i].boxes[0].fontColor = color;
       }
     }
     needsUpdate.updateItem = true;
     needsUpdate.updateItemList = true;
-    needsUpdate.allItems = true;
+    needsUpdate.updateAllItems = true;
     updateState({item: item, itemList: itemList, allItems: allItems, needsUpdate: needsUpdate});
 
 
@@ -86,7 +94,12 @@ export function updateFontColor(props){
 export function updateBrightness(props){
     let {item, wordIndex, boxIndex, needsUpdate} = props.state;
     let {level, updateState} = props;
-    let slides = item.slides || null;
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+
     let slide = slides ? slides[wordIndex] : null;
 
     if(!slide)
@@ -109,30 +122,37 @@ export function updateBoxPosition(props){
   let {item, wordIndex, boxIndex} = props.state;
   let {x, y, width, height, applyAll, match} = props.position;
 
-  let slides = item.slides || null;
+  let slides;
+  if (item.type === 'song')
+    slides = item.arrangements[item.selectedArrangement].slides || null;
+  else
+    slides = item.slides || null;
+
   let slide = slides ? slides[wordIndex] : null;
 
   if(!slide)
     return
 
   if(match){
-    let box = item.slides[wordIndex].boxes[boxIndex];
+    let box = slides[wordIndex].boxes[boxIndex];
     x = box.x;
     y = box.y;
     width = box.width;
     height = box.height;
   }
 
+  console.log(props);
+
   if (!applyAll){
-    let box = item.slides[wordIndex].boxes[boxIndex];
+    let box = slides[wordIndex].boxes[boxIndex];
     box.x = x;
     box.y = y;
     box.width = width;
     box.height = height;
   }
   else{
-    for(let i = 1; i < item.slides.length; ++i){
-      let box = item.slides[i].boxes[boxIndex];
+    for(let i = 1; i < slides.length; ++i){
+      let box = slides[i].boxes[boxIndex];
       box.x = x;
       box.y = y;
       box.width = width;

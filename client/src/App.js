@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
 import {Route, Switch} from 'react-router-dom';
 import './App.css';
-import RemotePresentation from './RemotePresentation';
-import LocalPresentation from './LocalPresentation';
-import FullView from './FullView';
+import RemotePresentation from './DisplayElements/RemotePresentation';
+import LocalPresentation from './DisplayElements/LocalPresentation';
+import FullView from './Controller/FullView';
 import Login from './Login';
 import PouchDB from 'pouchdb';
-import DBSetup from './DBSetup';
-import * as DBUpdater from './DBUpdater';
-import * as DBGetter from './DBGetter';
-import * as Overflow from './Overflow';
-import * as Formatter from './Formatter';
-import * as SlideUpdate from './SlideUpdate';
-import * as ItemUpdate from './ItemUpdate';
+import DBSetup from './HelperFunctions/DBSetup';
+import * as DBUpdater from './HelperFunctions/DBUpdater';
+import * as DBGetter from './HelperFunctions/DBGetter';
+import * as Overflow from './HelperFunctions/Overflow';
+import * as Formatter from './HelperFunctions/Formatter';
+import * as SlideUpdate from './HelperFunctions/SlideUpdate';
+import * as ItemUpdate from './HelperFunctions/ItemUpdate';
 import Home from './Home';
 import MobileView from './Mobile/MobileView'
-import ToolBar from './ToolBar'
+import Toolbar from './ToolbarElements/ToolBar'
 import Loading from './Loading'
 import cloudinary from 'cloudinary-core';
 import {HotKeys} from 'react-hotkeys';
-import * as Helper from './Helper';
+import * as SlideCreation from './HelperFunctions/SlideCreation';
 import Peer from 'peerjs'
 
 PouchDB.plugin(require('pouchdb-upsert'));
@@ -181,7 +181,7 @@ class App extends Component {
   addMedia = (background) => {
     let item = {
         "_id": background, "name": "New Image",
-        "slides": [Helper.newSlide({type: 'Image', background: background, fontSize: 4.5})],
+        "slides": [SlideCreation.newSlide({type: 'Image', background: background, fontSize: 4.5})],
         "type": "image", "background": background
       }
       DBUpdater.addItem({parent: this, item: item})
@@ -240,6 +240,7 @@ class App extends Component {
       DBGetter.retrieveImages({parent: that, db: db, cloud: cloud})
       DBGetter.changes({parent: that, db: db, cloud: cloud, remoteDB: remoteDB})
       if(that.state.user !== 'Demo'){
+        // console.log('let sync begin!', db, remoteDB);
           that.sync = db.sync(remoteDB, opts)
       }
     })
@@ -268,7 +269,12 @@ class App extends Component {
   duplicateItem = (id) => {
     let that = this;
     this.state.db.get(id).then(function(doc){
-      let itemObj = {"name": doc.name,"_id": doc._id,"background": doc.background,"nameColor": doc.slides[0].boxes[0].fontColor,"type": doc.type};
+      let slides;
+      if (doc.type === 'song')
+        slides = doc.arrangements[doc.selectedArrangement].slides || null;
+      else
+        slides = doc.slides || null;
+      let itemObj = {"name": doc.name,"_id": doc._id,"background": doc.background,"nameColor": slides[0].boxes[0].fontColor,"type": doc.type};
       that.addItemToList(itemObj)
     })
   }
@@ -535,10 +541,6 @@ class App extends Component {
     }
   }
 
-  updateItemStructure = () => {
-    DBUpdater.updateItemStructure(this.state.db);
-  }
-
   updateBoxPosition = (position) => {
     Formatter.updateBoxPosition({state: this.state, position: position, updateItem: this.updateItem})
   }
@@ -553,7 +555,11 @@ class App extends Component {
       return;
 
     let {item, wordIndex, remoteDB} = this.state;
-    let slides = item.slides || null;
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
 
     if(slide && !displayDirect){
@@ -599,7 +605,12 @@ class App extends Component {
   }
 
   updateItem = (item) => {
+    console.log(this.state.item.selectedArrangement, item.selectedArrangement);
       ItemUpdate.updateItem({state: this.state, item: item, updateState: this.updateState})
+  }
+
+  updateItemStructure = () => {
+    DBUpdater.updateItemStructure(this.state.db);
   }
 
   updateUserSettings = (obj) => {
@@ -643,7 +654,7 @@ class App extends Component {
     return (
       <HotKeys keyMap={map}>
         <div id="fullApp" style={style}>
-          <ToolBar parent={this} formatBible={Overflow.formatBible}/>
+          <Toolbar parent={this} formatBible={Overflow.formatBible}/>
         {!retrieved.finished && <Loading retrieved={retrieved}/>}
           <div>
               {/* Route components are rendered if the path prop matches the current URL */}

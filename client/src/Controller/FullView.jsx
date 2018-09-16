@@ -4,7 +4,7 @@ import ItemList from './ItemList';
 import DisplayEditor from './DisplayEditor';
 import Backgrounds from './Backgrounds';
 import AllItems from './AllItems';
-import DisplayWindow from './DisplayWindow';
+import DisplayWindow from '../DisplayElements/DisplayWindow';
 
 export default class FullView extends React.Component{
 
@@ -35,7 +35,7 @@ export default class FullView extends React.Component{
           <div style={(mode === 'edit') ? {width:'43vw', marginLeft:'0.5vw', height: '40vh'}
           : {width:'43vw', marginLeft:'0.5vw', height: '92.5vh'}}>
             <ItemSlides setWordIndex={setWordIndex} wordIndex={wordIndex}
-              item={item} updateItem={updateItem}
+              item={item} updateItem={updateItem} setSlideBackground={setSlideBackground}
               backgrounds={backgrounds} insertWords={insertWords} formatSong={formatSong}
               />
           </div>

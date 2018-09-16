@@ -1,8 +1,8 @@
 import React from 'react';
-import deleteX from './assets/deleteX.png';
-import duplicate from './assets/duplicate.png';
-import edit from './assets/edit.png';
-import CreateName from './CreateName';
+import deleteX from '../assets/deleteX.png';
+import duplicate from '../assets/duplicate.png';
+import edit from '../assets/edit.png';
+import CreateName from '../CreateName';
 import ItemInList from './ItemInList';
 import {HotKeys} from 'react-hotkeys';
 
@@ -110,16 +110,26 @@ export default class ItemList extends React.Component{
 
   nextSlide = () => {
     let {item, wordIndex} = this.props;
-    if(!item.slides)
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+    if(!slides)
       return;
-    let lastSlide = item.slides.length-1;
+    let lastSlide = slides.length-1;
     if(wordIndex < lastSlide)
       this.props.setWordIndex(wordIndex+1)
   }
 
   prevSlide = () => {
     let {item, wordIndex} = this.props;
-    if(!item.slides)
+    let slides
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+    if(!slides)
       return;
     if(wordIndex > 0)
       this.props.setWordIndex(wordIndex-1)

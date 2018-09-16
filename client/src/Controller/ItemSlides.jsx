@@ -1,9 +1,10 @@
 import React from 'react';
 import SlideInList from './SlideInList';
-import LyricsBox from './LyricsBox';
-import zoomIn from './assets/zoomIn.png'
-import zoomOut from './assets/zoomOut.png'
+import LyricsBox from '../LyricElements/LyricsBox';
+import zoomIn from '../assets/zoomIn.png'
+import zoomOut from '../assets/zoomOut.png'
 import {HotKeys} from 'react-hotkeys';
+import * as SlideCreation from '../HelperFunctions/SlideCreation'
 
 class ItemSlides extends React.Component{
 
@@ -82,24 +83,32 @@ class ItemSlides extends React.Component{
 
   addSlide = () => {
     let {item, wordIndex} = this.props;
-    item.slides.splice(wordIndex+1, 0,     {
-                        type: item.slides[wordIndex].type,
-                        boxes: [
-                          {background: item.slides.boxes[0].background,
-                           fontSize: item.slides.boxes[0].fontSize,
-                           fontColor: 'rgba(255, 255, 255, 1)',
-                           words: ' ',
-                          }
-                        ]
-                      })
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+
+    if(!slides)
+      return;
+
+    let box = slides[wordIndex].boxes[0]
+
+    slides.splice(wordIndex+1, 0, [SlideCreation.newSlide({type: 'Static', fontSize: box.fontSize, words: '',
+     background: box.background, brightness: box.brightness})])
 
     this.props.updateItem(item);
-    this.props.setWordIndex(item.slides.length-1)
+    this.props.setWordIndex(slides.length-1)
   }
 
   deleteSlide = (index) => {
     let {item} = this.props;
-    item.slides.splice(index, 1);
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+    slides.splice(index, 1);
     this.props.updateItem(item);
   }
 
@@ -117,16 +126,26 @@ class ItemSlides extends React.Component{
 
   nextSlide = () => {
     let {item, wordIndex} = this.props;
-    if(!item.slides)
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+    if(!slides)
       return;
-    let lastSlide = item.slides.length-1;
+    let lastSlide = slides.length-1;
     if(wordIndex < lastSlide)
       this.props.setWordIndex(wordIndex+1)
   }
 
   prevSlide = () => {
     let {item, wordIndex} = this.props;
-    if(!item.slides)
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+    if(!slides)
       return;
     if(wordIndex > 0)
       this.props.setWordIndex(wordIndex-1)
@@ -136,11 +155,18 @@ class ItemSlides extends React.Component{
     let {item, backgrounds, wordIndex} = this.props;
     let {mouseX, mouseY, indexBeingDragged, slidesPerRow} = this.state;
     let type = item.type;
-    let words = item.slides ? item.slides.map(a => a.boxes[0].words) : null;
     let that = this;
     let row = [];
     let fullArray = [];
     let name = item.name;
+
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
+
+    let words = slides ? slides.map(a => a.boxes[0].words) : null;
 
     if(name && name.length > 32){
       name = name.substring(0, 33)
@@ -202,15 +228,15 @@ class ItemSlides extends React.Component{
               onMouseOver={() => (that.setTarget(index*slidesPerRow+i))}
               >
               {(selected && beingDragged) &&
-                <SlideInList words={lyrics} style={item.slides[index*slidesPerRow+i].boxes[0]}
+                <SlideInList words={lyrics} style={slides[index*slidesPerRow+i].boxes[0]}
                   backgrounds={backgrounds} x={mouseX} y={mouseY} moving={true}
-                  name={item.slides[index*slidesPerRow+i].type} width={width} height={height}
+                  name={slides[index*slidesPerRow+i].type} width={width} height={height}
                   titleSize={titleSize}
                   />
               }
               {(!selected || !beingDragged) &&
-                <SlideInList words={lyrics} style={item.slides[index*slidesPerRow+i].boxes[0]}
-                  name={item.slides[index*slidesPerRow+i].type}  width={width} height={height}
+                <SlideInList words={lyrics} style={slides[index*slidesPerRow+i].boxes[0]}
+                  name={slides[index*slidesPerRow+i].type}  width={width} height={height}
                   backgrounds={backgrounds} titleSize={titleSize}
                   />
               }
@@ -247,8 +273,9 @@ class ItemSlides extends React.Component{
       <div style={{overflowX: 'hidden', height: "88%", width:"100%"}}
         onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
         onMouseLeave={this.releaseElement}>{ROWtest}</div>
-      {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item}
-      updateItem={this.props.updateItem} formatSong={this.props.formatSong}/>}
+      {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item} setWordIndex={this.props.setWordIndex}
+      updateItem={this.props.updateItem} formatSong={this.props.formatSong}
+      setSlideBackground={this.props.setSlideBackground}/>}
     </HotKeys>
     )
   }

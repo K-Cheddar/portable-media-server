@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import kjv from './assets/kjv';
+import kjv from '../assets/kjv';
 import {HotKeys} from 'react-hotkeys';
-import * as Helper from './Helper';
-import playVerse from './assets/playVerse.png';
-import on from './assets/on.png';
-import off from './assets/off.png';
-import DisplayWindow from './DisplayWindow';
+import * as SlideCreation from '../HelperFunctions/SlideCreation';
+import playVerse from '../assets/playVerse.png';
+import on from '../assets/on.png';
+import off from '../assets/off.png';
+import DisplayWindow from '../DisplayElements/DisplayWindow';
 
 export default class Bible extends Component {
 
@@ -68,9 +68,9 @@ export default class Bible extends Component {
       "_id": name,
       "name": name,
       "slides": [
-        Helper.newSlide({type: "Title", fontSize: 4.5, words: name,
+        SlideCreation.newSlide({type: "Title", fontSize: 4.5, words: name,
           background: background, brightness: brightness}),
-        Helper.newSlide({type: "Verse", fontSize: 2.5, words: '',
+        SlideCreation.newSlide({type: "Verse", fontSize: 2.5, words: '',
           background: background, brightness: brightness})
       ],
       "type": "bible",
@@ -94,9 +94,9 @@ export default class Bible extends Component {
       "_id": name,
       "name": name,
       "slides": [
-        Helper.newSlide({type: "Title", fontSize: 4.5, words: name,
+        SlideCreation.newSlide({type: "Title", fontSize: 4.5, words: name,
           background: background, brightness: brightness}),
-        Helper.newSlide({type: "Verse" + verseNum, fontSize: 2.5, words: '',
+        SlideCreation.newSlide({type: "Verse" + verseNum, fontSize: 2.5, words: '',
           background: background, brightness: brightness})
       ],
       "type": "bible"

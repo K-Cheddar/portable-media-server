@@ -12,9 +12,12 @@ export default class Display_Background extends Component {
   }
 
   componentDidMount(){
-    let video = document.getElementById('background-video-mini');
-    if(video)
-      video.loop = true;
+    let video1 = document.getElementById('background-video-mini-1');
+    if(video1)
+      video1.loop = true;
+    let video2 = document.getElementById('background-video-mini-2');
+    if(video2)
+      video2.loop = true;
   }
 
 
@@ -32,18 +35,24 @@ export default class Display_Background extends Component {
   }
 
   componentDidUpdate(prevProps){
-    let {title, presentation, editor} = this.props;
+    let {title, presentation, editor, img} = this.props;
     if(title === 'Presentation' || presentation || editor){
-      if(prevProps.img !== this.props.img){
+      if(prevProps.img !== img || prevProps.title !== title){
         setTimeout(function(){
           this.setState({backgroundUpdaterIndex: 1})
         }.bind(this),10)
       }
-      let video = document.getElementById('background-video-mini');
-      if(video){
-        video.loop = true;
+      let video1 = document.getElementById('background-video-mini-1');
+      if(video1){
+        video1.loop = true;
         if(presentation)
-          video.muted = false
+          video1.muted = false
+      }
+      let video2 = document.getElementById('background-video-mini-2');
+      if(video2){
+        video2.loop = true;
+        if(presentation)
+          video2.muted = false
       }
     }
   }
@@ -84,11 +93,14 @@ export default class Display_Background extends Component {
         {isVideo &&
           <Transition from={{ opacity: 0 }}  enter={{ opacity: 1 }} leave={{ opacity: 0 }}>
             {backgroundUpdaterIndex
-              ? styles => <video loop muted preload="true" autoPlay id="background-video-mini"
+              ? styles => <video loop muted preload="true" autoPlay id="background-video-mini-1"
                           style={{...styles, ...videoStyle}}>
                             <source src={asset.video.src} type="video/mp4"/>
                           </video>
-              : styles => <div style={{...styles, ...prevBackgroundStyle}}></div>
+              : styles => <video loop muted preload="true" autoPlay id="background-video-mini-2"
+                          style={{...styles, ...videoStyle}}>
+                            <source src={asset.video.src} type="video/mp4"/>
+                          </video>
             }
           </Transition>
         }

@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
-import DisplayEditor from '../DisplayEditor';
+import DisplayEditor from '../Controller/DisplayEditor';
 
 export default class MobileDisplay extends Component{
 
   render() {
 
     let {wordIndex, item, backgrounds, updateItem} = this.props;
-    let slides = item.slides || null;
+    let slides;
+    if (item.type === 'song')
+      slides = item.arrangements[item.selectedArrangement].slides || null;
+    else
+      slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
     let width = "100vw";
     let height = "56.25vw";

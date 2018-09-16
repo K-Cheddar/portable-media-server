@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import deleteX from './assets/deleteX.png';
+import deleteX from '../assets/deleteX.png';
 
 export default class SongOrderArea extends Component{
 

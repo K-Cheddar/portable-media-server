@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import deleteX from '../assets/deleteX.png';
-import * as Sort from '../Sort'
+import * as Sort from '../HelperFunctions/Sort'
 
 export default class MobileSongSection extends Component{
 

@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
-import deleteX from './assets/deleteX.png';
-import edit from './assets/edit.png';
-import add from './assets/addItem.png';
-import check from './assets/check.png';
-import cancel from './assets/cancel-icon.png';
-import duplicate from './assets/duplicate.png';
-import DeleteConfirmation from './DeleteConfirmation'
+import deleteX from '../assets/deleteX.png';
+import edit from '../assets/edit.png';
+import add from '../assets/addItem.png';
+import check from '../assets/check.png';
+import cancel from '../assets/cancel-icon.png';
+import duplicate from '../assets/duplicate.png';
+import DeleteConfirmation from '../DeleteConfirmation'
 
 export default class ItemListEditor extends Component{
 

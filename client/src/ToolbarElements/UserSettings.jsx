@@ -1,6 +1,6 @@
 import React from 'react';
-import blank from './assets/blank.png';
-import brightness_img from './assets/brightness.png';
+import blank from '../assets/blank.png';
+import brightness_img from '../assets/brightness.png';
 import Slider from 'rc-slider';
 
 export default class UserSettings extends React.Component{

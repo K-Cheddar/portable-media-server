@@ -61,7 +61,7 @@ export default class Home extends Component {
            {/* Link components are used for linking to other views */}
             {!isMobile && <li><Link to="/fullview"><button onClick={this.props.connectToReceiver} style={buttonStyle}>Controller</button></Link></li>}
             {isMobile &&<li><Link to="/mobile"><button onClick={this.props.connectToReceiver} style={buttonStyle}>Controller</button></Link></li>}
-            <li><Link to="/remotepresentation"><button style={buttonStyle}>Presentation</button></Link></li>
+            <li><Link to="/remotepresentation"><button style={buttonStyle}>Remote Presentation</button></Link></li>
             {/*<li><button style={{fontSize: "calc(14px + 0.35vmax)"}} onClick={this.start}>Start Bible</button></li>*/}
             {/*<li><button style={{fontSize: "calc(14px + 0.35vmax)"}} onClick={this.test}>Test</button></li>*/}
             {!this.props.isLoggedIn && <li><Link to="/login"><button style={buttonStyle}>Login</button></Link></li>}
