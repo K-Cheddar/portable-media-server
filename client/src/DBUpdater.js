@@ -4,7 +4,7 @@ let updaterInterval = null;
 
 export function updateItem(props){
   console.log("Updating Item");
-  let {db, item, selectedArrangement} = props;
+  let {db, item} = props;
   db.get(item._id).then(function (doc) {
     doc.name = item.name;
     doc.background = item.background;
@@ -274,7 +274,6 @@ export function updateItemStructure(db){
     updaterInterval = setInterval(function(){
       if(i < items.length){
         db.get(items[i]._id).then(function(doc){
-          let words = doc.words;
           let arrangements = [
             {name: 'Master',
              formattedLyrics: doc.formattedLyrics,

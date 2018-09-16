@@ -45,7 +45,7 @@ export default class MobileView extends Component{
   render() {
 
     let {setItemIndex, setWordIndex, updateItem, toggleFreeze, selectItemList,
-        connectToReceiver, logout} = this.props.parent;
+         logout} = this.props.parent; //connectToReceiver,
     let {wordIndex, itemList, item, backgrounds, itemIndex, freeze, itemLists,
        selectedItemList, isLoggedIn, isSender} = this.props.parent.state;
 

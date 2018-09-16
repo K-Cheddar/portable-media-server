@@ -208,9 +208,8 @@ export default class LyricsBox extends Component{
   }
 
   render(){
-    let {formattedLyrics, sectionIndex, songOrder, newType, sectionsPresent, mouseX, mouseY,
-      indexBeingDragged, songIndex, arrangementName, numSongSections, arrangements,
-      editingArrangementIndex, selectedArrangement} = this.state;
+    let {formattedLyrics, sectionIndex, songOrder, newType, sectionsPresent,
+      songIndex, arrangements, selectedArrangement} = this.state;
 
     let buttonStyle = {fontSize: "calc(8px + 0.4vw)", margin:"1vw", backgroundColor:'#383838',
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.5vw'}

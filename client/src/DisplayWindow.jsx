@@ -65,7 +65,7 @@ export default class DisplayWindow extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    let {background, presentation, editor} = this.props;
+    // let {background, presentation, editor} = this.props;
     if((this.props.style !== prevProps.style) || (this.props.words !== prevProps.words))
       this.updatePosition();
   }
@@ -153,7 +153,7 @@ export default class DisplayWindow extends React.Component{
 
     let containerStyle = {width:width, height:height, position:'relative'}
 
-    let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
+    // let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
 
     let lockStyle = {width:'1.25vw', height:'1.25vw',
       top:'-0.5vw', left:'-0.5vw', position: 'absolute', zIndex: 2}

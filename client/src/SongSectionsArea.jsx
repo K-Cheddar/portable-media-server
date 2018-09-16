@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import deleteX from './assets/deleteX.png';
 import zoomIn from './assets/zoomIn.png'
 import zoomOut from './assets/zoomOut.png'
 import newButton from './assets/new-button.png';
@@ -57,7 +56,7 @@ export default class SongSectionsArea extends Component{
   }
 
   deleteSection = (index) => {
-    let {formattedLyrics, songOrder, sectionsPresent, sectionIndex} = this.props;
+    let {formattedLyrics, songOrder, sectionsPresent} = this.props;
 
     for (var i = 0; i < songOrder.length; i++) {
       if(formattedLyrics[index].name === songOrder[i]){

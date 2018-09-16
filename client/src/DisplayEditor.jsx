@@ -38,7 +38,7 @@ class DisplayEditor extends React.Component{
   }
 
   handleKeyUp = (event) => {
-    let {text, cursor} = this.state;
+    // let {text, cursor} = this.state;
 
     // if(event.key === 'Enter'){
     //   this.updateTextChange(text, cursor, true)
@@ -64,8 +64,8 @@ class DisplayEditor extends React.Component{
   }
 
   handleTextChange = (event) => {
-    let that = this;
-    let {updating} = this.state;
+    // let that = this;
+    // let {updating} = this.state;
     event.preventDefault();
     this.updateTextChange(event.target.value, event.target.selectionStart, true)
     // this.setState({text: event.target.value, cursor: event.target.selectionStart})
