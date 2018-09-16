@@ -86,7 +86,7 @@ export default class ToolBar extends Component {
 
   openPresentation = () => {
     let url = window.location.origin;
-    window.open(url+'#presentation', "Presentation", "height=350,width=350,alwaysRaised");
+    window.open(url+'#localpresentation', "Presentation", "height=200,width=250,alwaysRaised");
   }
 
   render(){

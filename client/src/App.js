@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
 import './App.css';
-import Presentation from './Presentation';
+import RemotePresentation from './RemotePresentation';
+import LocalPresentation from './LocalPresentation';
 import FullView from './FullView';
 import Login from './Login';
 import PouchDB from 'pouchdb';
@@ -113,7 +114,6 @@ const initialState = {
   isSender: false,
   userSettings: {},
   mode: 'edit',
-  redirect: true,
 }
 
 /* App component */
@@ -133,7 +133,6 @@ class App extends Component {
   componentDidMount(){
 
     window.reactLoaded = true;
-    this.setState({redirect: false})
     //grab current info for persistent login
     let database = 'demo'
     localStorage.setItem('presentation', 'null');
@@ -630,20 +629,16 @@ class App extends Component {
 
   render() {
 
-    let {backgrounds, currentInfo, isLoggedIn, retrieved, redirect} = this.state;
+    let {backgrounds, currentInfo, isLoggedIn, retrieved} = this.state;
 
     let style = { height:'100vh',   width: '100vw',   overflow: 'hidden',
                   zIndex: 1,        position: 'fixed'
     }
 
-    if(window.location.hash === '#/presentation')
+    if(window.location.hash === '#/localpresentation' || window.location.hash === '#/remotepresentation')
       style.backgroundColor = '#000'
     else
       style.backgroundColor = '#383838'
-
-    if(redirect){
-      return <Redirect to='/'/>;
-    }
 
     return (
       <HotKeys keyMap={map}>
@@ -662,10 +657,14 @@ class App extends Component {
                 <Route path="/login" render={(props) =>
                     <Login {...props} login={this.login}
                     />}/>
-                <Route path="/presentation" render={(props) =>
-                    <Presentation {...props} currentInfo={currentInfo}
-                      backgrounds={backgrounds} setAsReceiver={this.setAsReceiver}
-                    />}/>
+                <Route path="/localpresentation" render={(props) =>
+                  <LocalPresentation {...props} currentInfo={currentInfo}
+                    backgrounds={backgrounds}
+                  />}/>
+                <Route path="/remotepresentation" render={(props) =>
+                  <RemotePresentation {...props} currentInfo={currentInfo}
+                    backgrounds={backgrounds} setAsReceiver={this.setAsReceiver}
+                  />}/>
                 <Route render={(props) =>
                   <Home {...props} isLoggedIn={isLoggedIn} logout={this.logout}
                     setAsReceiver={this.setAsReceiver} connectToReceiver={this.connectToReceiver}
