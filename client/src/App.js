@@ -122,7 +122,7 @@ class App extends Component {
   constructor(){
     super();
 
-    this.state = Object.assign({}, initialState);
+    this.state = JSON.parse(JSON.stringify(initialState));
 
     this.updateInterval = null;
     this.reconnectPeer = null;
@@ -373,8 +373,9 @@ class App extends Component {
     localStorage.setItem('database', database);
     localStorage.setItem('upload_preset', upload_preset);
 
-
-    this.setState({isLoggedIn: true, user: user, upload_preset: upload_preset, retrieved: {}, attempted:{}})
+    let obj = JSON.parse(JSON.stringify(initialState));
+    this.setState(obj)
+    this.setState({isLoggedIn: true, user: user, upload_preset: upload_preset})
 
     this.init(database)
 
@@ -394,11 +395,8 @@ class App extends Component {
 
     let database = "demo"
     //reset to initial state
-    let obj = Object.assign({}, initialState);
-    obj.redirect = false;
+    let obj = JSON.parse(JSON.stringify(initialState));
     this.setState(obj)
-    //for some reason these needed to be done separately in the past, perhaps this has changed
-    this.setState({retrieved: {}, attempted:{}})
     this.init(database)
 
   }
@@ -500,7 +498,7 @@ class App extends Component {
     SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent, conn: conn})
   }
 
-  test = () => {
+  test = (dayOfWeek) => {
   //   fileSystem.root.getFile('log.txt', {}, function(fileEntry) {
   //
   //   // Get a File object representing the file,
@@ -520,8 +518,6 @@ class App extends Component {
   //
   // });
 
-
-  // window.open()
   }
 
   toggleFreeze = () => {
@@ -529,13 +525,11 @@ class App extends Component {
   }
 
   update = () => {
-    let {needsUpdate, db} = this.state;
-    if(!db.get)
-      return;
+    let {needsUpdate} = this.state;
     for(let property in needsUpdate){
       if(needsUpdate[property] && needsUpdate.hasOwnProperty(property)){
         let func = DBUpdater[property];
-        func(this.state);
+        func(this.state, this.updateState);
         needsUpdate[property] = false;
       }
     }
@@ -605,8 +599,7 @@ class App extends Component {
   }
 
   updateItem = (item) => {
-    console.log(this.state.item.selectedArrangement, item.selectedArrangement);
-      ItemUpdate.updateItem({state: this.state, item: item, updateState: this.updateState})
+    ItemUpdate.updateItem({state: this.state, item: item, updateState: this.updateState})
   }
 
   updateItemStructure = () => {
@@ -619,23 +612,9 @@ class App extends Component {
   }
 
   updateState = (obj) => {
-
-    // this.setState({obj.type: obj.data})
-
-    this.setState({
-      currentInfo: obj.currentInfo || this.state.currentInfo,
-      itemList: obj.itemList || this.state.itemList,
-      itemIndex: (obj.itemIndex !== undefined) ? obj.itemIndex : this.state.itemIndex,
-      wordIndex: (obj.wordIndex !== undefined) ? obj.wordIndex : this.state.wordIndex,
-      itemLists: obj.itemLists || this.state.itemLists,
-      allItemLists: obj.allItemLists || this.state.allItemLists,
-      selectedItemList: obj.selectedItemList || this.state.selectedItemList,
-      allItems: obj.allItems || this.state.allItems,
-      backgrounds: obj.backgrounds || this.state.backgrounds,
-      item: obj.item || this.state.item,
-      needsUpdate: obj.needsUpdate || this.state.needsUpdate,
-      userSettings: obj.userSettings || this.state.userSettings,
-    })
+    for(let property in obj)
+      if(obj.hasOwnProperty(property))
+        this.setState({[property]: obj[property]})
   }
 
   render() {

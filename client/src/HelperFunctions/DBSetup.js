@@ -2,6 +2,10 @@
 export default function DBSetup(db){
 
 var listCount = 5;
+let options = {month: 'short', day: 'numeric', year: 'numeric'}
+var date = new Date(Date.now());
+date.setDate(date.getDate());
+var dateString = date.toLocaleDateString("en-US", options);
 
   function SLists(i){
     db.get("Item List "+i).catch(function (err) {
@@ -25,11 +29,8 @@ var listCount = 5;
     let SL = {
     "_id": "ItemLists",
     "itemLists" : [
-      {id: "Item List 1", name: "Item List 1"},
-      {id: "Item List 2", name: "Item List 2"},
-      {id: "Item List 3", name: "Item List 3"},
-      {id: "Item List 4", name: "Item List 4"},
-      {id: "Item List 5", name: "Item List 5"}
+      {id: "Item List 2", name: "Service Outline", outline: true},
+      {id: "Item List 1", name: dateString},
     ]
     };
      db.put(SL)
@@ -41,11 +42,8 @@ var listCount = 5;
     let SL = {
     "_id": "allItemLists",
     "itemLists" : [
-      {id: "Item List 1", name: "Item List 1"},
-      {id: "Item List 2", name: "Item List 2"},
-      {id: "Item List 3", name: "Item List 3"},
-      {id: "Item List 4", name: "Item List 4"},
-      {id: "Item List 5", name: "Item List 5"}
+      {id: "Item List 2", name: "Service Outline", outline: true},
+      {id: "Item List 1", name: dateString},
     ]
     };
      db.put(SL)

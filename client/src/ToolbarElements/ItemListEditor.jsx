@@ -4,8 +4,9 @@ import edit from '../assets/edit.png';
 import add from '../assets/addItem.png';
 import check from '../assets/check.png';
 import cancel from '../assets/cancel-icon.png';
-import duplicate from '../assets/duplicate.png';
+import bookmark from '../assets/bookmark.png';
 import DeleteConfirmation from '../DeleteConfirmation'
+import * as DateFunctions from '../HelperFunctions/DateFunctions'
 
 export default class ItemListEditor extends Component{
 
@@ -19,7 +20,7 @@ export default class ItemListEditor extends Component{
       deleteIndex: -1,
       ailsSearch: '',
       ilsSearch: '',
-      message: '',
+      message: {msg: '', index: -1},
     }
 
     this.messageDisplay = null;
@@ -82,9 +83,8 @@ export default class ItemListEditor extends Component{
     let {deleteIndex} = this.state;
     if(type==='one'){
       let index = itemLists.findIndex(e => e.id === id)
-      if(index === -1)
-        return
       itemLists.splice(index, 1);
+      this.props.selectItemList(itemLists[0].name)
       needsUpdate.updateItemLists = true;
       this.props.updateState({itemLists: itemLists, needsUpdate: needsUpdate})
     }
@@ -104,36 +104,68 @@ export default class ItemListEditor extends Component{
 
   }
 
+  setAsOutline = (id) => {
+    let {itemLists, allItemLists, needsUpdate} = this.props;
+    for(let i = 0; i < itemLists.length; ++i){
+        if(itemLists[i].id === id)
+          itemLists[i].outline = true;
+        else
+          itemLists[i].outline = false;
+    }
+    for(let i = 0; i < allItemLists.length; ++i){
+        if(allItemLists[i].id === id)
+          allItemLists[i].outline = true;
+        else
+          allItemLists[i].outline = false;
+    }
+    needsUpdate.updateItemLists = true;
+    needsUpdate.updateAllItemLists = true;
+    this.props.updateState({itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
+  }
+
+  duplicateOutline = () => {
+    let {allItemLists} = this.props;
+    let index = allItemLists.findIndex(e => e.outline === true)
+    if(index !== -1)
+      this.props.duplicateList(allItemLists[index].id)
+    else
+      this.newItemList();
+  }
+
   newItemList = () => {
     let {itemLists, allItemLists, needsUpdate} = this.props;
     let id = allItemLists[allItemLists.length-1].id;
     let newNumber = parseInt(id.slice(-1), 10) + 1;
-    let name = "Item List " + newNumber
-    let newList = {id: name, name: name}
+    let newId = "Item List " + newNumber;
+    let name = DateFunctions.getDateofNextDay('Saturday');
+    let newList = {id: newId, name: name}
     itemLists.push(newList);
     allItemLists.push(newList);
     needsUpdate.updateItemLists = true;
     needsUpdate.updateAllItemLists = true;
-    this.props.updateState({ itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
+    this.props.updateState({itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
     this.props.newItemList(newList);
   }
 
-  addToList = (name) => {
+  addToList = (id) => {
     let {itemLists, allItemLists, needsUpdate} = this.props;
-    let index = allItemLists.findIndex(e => e.name === name)
-    let val = itemLists.find(e => e.id === allItemLists[index].id)
+    let index = allItemLists.findIndex(e => e.id === id);
+    let name = allItemLists[index].name;
+    let val = itemLists.find(e => e.id === allItemLists[index].id);
     if(val){
-      this.setState({message: val.name + ' has already been added'});
+      let mes = {msg: val.name + ' has already been added', index: index}
+      this.setState({message: mes});
       let that = this;
       clearTimeout(this.messageDisplay)
       this.messageDisplay = setTimeout(function(){
-        that.setState({message:''})
+        let rmes = {msg: '', index: -1}
+        that.setState({message: rmes})
       }, 3000)
       return;
     }
     let obj = {
-      id: allItemLists[index].id,
-      name: allItemLists[index].name
+      id: id,
+      name: name
     }
     itemLists.push(obj)
     needsUpdate.updateItemLists = true;
@@ -146,9 +178,23 @@ export default class ItemListEditor extends Component{
     let {itemLists, allItemLists} = this.props;
     let {selectedIndex, name, deleteOverlay, ailsSearch, ilsSearch, message} = this.state;
 
+    let outlineName = 'Service Outline'
+    let index = allItemLists.findIndex(e => e.outline === true)
+    if(index !== -1)
+      outlineName = allItemLists[index].name;
+    if(outlineName.length > 18){
+      outlineName = outlineName.substring(0, 19);
+      outlineName+="...";
+    }
+
     let imageButtonStyle={
       display:'block', margin:"0% 1% 0% 1%",width:'1.5vw', height:'1.5vw'
     }
+
+    let itemStyle = {display:'flex', marginBottom: '0.15vh', border:'0.075vw', borderColor: '#383838',
+    borderStyle: 'solid', borderRadius: '0.25vw', padding: '0.35vmax'};
+    let outlineStyle = Object.assign({}, itemStyle);
+    outlineStyle.borderColor = 'yellow';
 
     let filteredILS = [], filteredAILS = [];
     if(ilsSearch.length > 0){
@@ -169,20 +215,20 @@ export default class ItemListEditor extends Component{
       let selected = (selectedIndex === index);
 
       return(
-        <div style={{display:'flex', marginBottom: '0.25vh'}} key={index}>
-          {!selected && <div style={{margin:"0% 1% 0% 1%", width: '80%'}}>{item.name}</div>}
+        <div style={item.outline ? outlineStyle: itemStyle} key={index}>
+          {!selected && <div style={{width: '80%'}}>{item.name}</div>}
           {selected &&
-            <form style={{width: '80%', margin:"0% 1% 0% 1%"}} onSubmit={(e) => (this.confirm(item.id, e))}>
+            <form style={{width: '75%', margin:"0% 1% 0% 1%"}} onSubmit={(e) => (this.confirm(item.id, e))}>
             <input style={{width: '100%'}} onChange={this.editName} value={name}/>
             </form>
           }
+          {(!selected && !item.outline) && <img className='imgButton' style={imageButtonStyle}
+             onClick={() => (this.setAsOutline(item.id))}
+             alt="bookmark" src={bookmark}
+             />}
           {!selected && <img className='imgButton' style={imageButtonStyle}
            onClick={() => (this.edit(index, item.name))}
            alt="edit" src={edit}
-           />}
-          {!selected && <img className='imgButton' style={imageButtonStyle}
-            onClick={() => (this.props.duplicateList(item.id))}
-            alt="duplicate" src={duplicate}
            />}
            {!selected && <img className='imgButton' style={imageButtonStyle}
             onClick={() => (this.deleteList('one', item.id))}
@@ -202,38 +248,39 @@ export default class ItemListEditor extends Component{
 
     let ails = filteredAILS.map((item, index) => {
       return(
-        <div style={{display:'flex', marginBottom: '0.25vh'}} key={item.name}>
-          <div style={{width: '80%'}}>{item.name}</div>
-          <img className='imgButton' style={imageButtonStyle}
-           onClick={() => (this.addToList(item.name))}
-           alt="add" src={add}
-           />
-         <img className='imgButton' style={imageButtonStyle}
-             onClick={() => (this.openConfirmation(item.name, item.id))}
-             alt="delete" src={deleteX}
+        <div>
+          <div style={item.outline ? outlineStyle: itemStyle} key={item.name}>
+            <div style={{width: '75%'}}>{item.name}</div>
+            {!item.outline &&<img className='imgButton' style={imageButtonStyle}
+              onClick={() => (this.setAsOutline(item.id))}
+              alt="bookmark" src={bookmark}
+              />}
+            <img className='imgButton' style={imageButtonStyle}
+             onClick={() => (this.addToList(item.id))}
+             alt="add" src={add}
              />
+           <img className='imgButton' style={imageButtonStyle}
+               onClick={() => (this.openConfirmation(item.name, item.id))}
+               alt="delete" src={deleteX}
+               />
+          </div>
+          {(message.msg.length > 0 && message.index === index) &&
+            <div style={{color: '#f98b66', fontSize:"calc(7.5px + 0.35vw)"}}>{message.msg}</div>}
         </div>
       )
     })
 
     let style={
-      position:'absolute',
-      zIndex:5,
-      left:'25%',
-      top:'15%',
-      backgroundColor: '#383838',
-      boxShadow: '0 5px 10px rgb(0, 0, 0)',
-      border: '1px solid #CCC',
-      borderRadius: 3,
-      padding: 10,
-      height: '45vh',
-      width: '45vw',
+      position:'absolute',    zIndex:5,     left:'25%',     top:'15%',
+      backgroundColor: '#383838',           boxShadow: '0 5px 10px rgb(0, 0, 0)',
+      border: '1px solid #CCC',             borderRadius: 3,
+      padding: 10,            height: '45vh',               width: '45vw',
       color: 'white'
     }
 
     let buttonStyle = {fontSize: "calc(7px + 0.4vw)", margin:"1vh 0.25vw", backgroundColor:'#383838',
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
-       width: '9vw'}
+       width: '9vw', display: 'flex', justifyContent: 'center', alignItems: 'center'}
 
     return(
       <div style={{position:'fixed', top:0, left:0, height:'100vh',
@@ -253,10 +300,20 @@ export default class ItemListEditor extends Component{
               <div style={{paddingTop: '5%', fontSize:'1.15vw'}}>{ails}</div>
             </div>
           </div>
-          {message.length > 0 && <div style={{color: 'red', fontSize:"calc(7.5px + 0.35vw)"}}>{message}</div>}
           <div>
+            <div>
+            <button style={{...buttonStyle, float:'left'}} onClick={this.newItemList}>
+              <div>New</div>
+              <div style={{fontSize: 'calc(5px + 0.3vw)', marginLeft: '0.15vw'}}>
+                ({outlineName})</div>
+            </button>
+            <button style={{...buttonStyle, float:'left'}} onClick={this.newItemList}>
+              <div>New</div>
+              <div style={{fontSize: 'calc(5px + 0.3vw)', marginLeft: '0.15vw'}}>
+                (Blank)</div>
+            </button>
+             </div>
             <button style={{...buttonStyle, float:'right'}} onClick={this.props.close} >Close</button>
-            <button style={{...buttonStyle, float:'left'}} onClick={this.newItemList}>New</button>
           </div>
         </div>
         {deleteOverlay &&

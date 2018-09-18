@@ -10,13 +10,12 @@ export default class MobileListChanger extends React.Component{
   let selectedStyle = Object.assign({}, listNameStyle);
   selectedStyle.borderColor = '#06d1d1';
 
-  let list = itemLists.map((ele, index) => {
-  let element = ele.name
+  let list = itemLists.map((element, index) => {
   return(
     <div style={{display:'flex'}} key={index} id={"MItem"+index}>
-      <div style={(selectedItemList.name === element) ?  selectedStyle : listNameStyle}
-        onClick={() => (selectItemList(element))}>
-        {element}
+      <div style={(selectedItemList.name === element.name) ?  selectedStyle : listNameStyle}
+        onClick={() => (selectItemList(element.name))}>
+        {element.name}
       </div>
     </div>
   )

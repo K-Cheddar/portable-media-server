@@ -1,4 +1,5 @@
 import * as Sort from './Sort'
+import * as DateFunctions from './DateFunctions'
 
 let updaterInterval = null;
 
@@ -21,8 +22,8 @@ export function updateItem(props){
    });
 }
 
-export function updateItemList(props){
-  let {db, selectedItemList, itemList, updateState} = props;
+export function updateItemList(props, updateState){
+  let {db, selectedItemList, itemList} = props;
   console.log("Updating ItemList");
   db.get(selectedItemList.id).then(function (doc) {
     for(let i = 0; i <doc.items.length; ++i){
@@ -39,8 +40,8 @@ export function updateItemList(props){
   });
 }
 
-export function updateItemLists(props){
-  let {db, selectedItemList, itemLists, updateState} = props;
+export function updateItemLists(props, updateState){
+  let {db, selectedItemList, itemLists} = props;
   console.log("Updating Item Lists");
   db.get('ItemLists').then(function (doc) {
      if(doc.itemLists.length === 1 && itemLists.length===1){
@@ -76,8 +77,8 @@ export function updateAllItemLists(props){
   });
 }
 
-export function updateAllItems(props){
-  let {db, allItems, updateState} = props;
+export function updateAllItems(props, updateState){
+  let {db, allItems} = props;
   console.log("Updating All Items");
   db.get('allItems').then(function (doc) {
     for(let i = 0; i <doc.items.length; ++i){
@@ -251,8 +252,7 @@ export function duplicateList(props){
     let newID = allItemLists[allItemLists.length-1].id;
     let newNumber = parseInt(newID.slice(-1), 10) + 1;
     newID = "Item List " + newNumber;
-    let name = allItemLists[allItemLists.findIndex(e => e.id === id)].name;
-    name+=' Copy';
+    let name = DateFunctions.getDateofNextDay('Saturday');
     db.get(id).then(function(doc){
       let newListFull = {
         id: newID,
