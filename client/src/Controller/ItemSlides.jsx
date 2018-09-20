@@ -168,8 +168,8 @@ class ItemSlides extends React.Component{
 
     let words = slides ? slides.map(a => a.boxes[0].words) : null;
 
-    if(name && name.length > 32){
-      name = name.substring(0, 33)
+    if(name && name.length > 31){
+      name = name.substring(0, 32)
       name+="..."
     }
 

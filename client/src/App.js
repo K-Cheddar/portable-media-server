@@ -168,7 +168,6 @@ class App extends Component {
       this.setState({upload_preset: sUploadPreset})
 
     this.init(database, true)
-    // document.addEventListener('keydown', handleKeyDown)
     let that = this;
     setTimeout(function(){
       let success = that.state.retrieved;
@@ -665,6 +664,7 @@ class App extends Component {
       case 'init':
       undoHistory = [];
       updateNow = true;
+      undoIndex = -1;
       for(let property in undoProperties){
         if(!undoProperties.hasOwnProperty(property))
           continue;
@@ -684,7 +684,12 @@ class App extends Component {
         if(!undoProperties.hasOwnProperty(property))
           continue;
         let prop = undoProperties[property];
-        if(props[prop] && JSON.stringify(currentVal[prop]) !== JSON.stringify(props[prop])){
+        console.log(currentVal, Object.keys(props));
+        console.log(undoHistory, undoIndex);
+        if(!currentVal){
+          newState[prop] = JSON.parse(JSON.stringify(props[prop]));
+        }
+        else if(props[prop] && JSON.stringify(currentVal[prop]) !== JSON.stringify(props[prop])){
             updateNow = true;
             newState[prop] = JSON.parse(JSON.stringify(props[prop]));
         }
