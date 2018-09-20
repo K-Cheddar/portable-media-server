@@ -12,7 +12,7 @@ export default class FullView extends React.Component{
 
     let {setItemIndex, setWordIndex, insertItemIntoList, insertWords, addItem, deleteItemFromList,
           updateItem, setItemBackground, handleFileChange, deleteItem, addItemToList, setSlideBackground,
-          openUploader, updateCurrent, duplicateItem, addMedia} = this.props.parent;
+          openUploader, updateCurrent, duplicateItem, addMedia, overrideUndoRedo} = this.props.parent;
     let {wordIndex, itemList, item, backgrounds, itemIndex, allItems, user, db, currentInfo,
           mode} = this.props.parent.state;
     let {formatSong} = this.props;
@@ -29,7 +29,7 @@ export default class FullView extends React.Component{
         </div>
         <div>
           {mode === 'edit' &&<div style={{width:'42.5vw', height:'23.9vw', marginLeft:'0.7vw'}}>
-            <DisplayEditor wordIndex={wordIndex} backgrounds={backgrounds}
+            <DisplayEditor wordIndex={wordIndex} backgrounds={backgrounds} overrideUndoRedo={overrideUndoRedo}
               item={item} updateItem={updateItem} width={'42.5vw'} height={'23.9vw'}/>
           </div>}
           <div style={(mode === 'edit') ? {width:'43vw', marginLeft:'0.5vw', height: '40vh'}

@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {HotKeys} from 'react-hotkeys';
+
 import * as Sort from '../HelperFunctions/Sort';
 
 import SongArrangements from './SongArrangements';
@@ -21,7 +23,10 @@ export default class LyricsBox extends Component{
     }
 
     this.checkHeld = null;
-
+    this.handlers = {
+      'undo': (e) => {},
+      'redo': (e) => {},
+    }
   }
 
   componentDidMount(){
@@ -216,7 +221,7 @@ export default class LyricsBox extends Component{
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.5vw'}
 
     return(
-      <div style={{position:'fixed', top:0, left:0, height:'100vh',
+      <HotKeys handlers={this.handlers} style={{position:'fixed', top:0, left:0, height:'100vh',
         zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
         <div style={{position:'fixed', zIndex:5, right:'1%', top:'1%', color:'white',
           width:'95vw', height: '93vh', backgroundColor:"#383838", padding:'1%'}}>
@@ -250,7 +255,7 @@ export default class LyricsBox extends Component{
               </div>
           </div>
         </div>
-      </div>
+      </HotKeys>
     )
   }
 

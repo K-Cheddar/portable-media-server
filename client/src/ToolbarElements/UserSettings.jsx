@@ -27,14 +27,14 @@ export default class UserSettings extends React.Component{
   changeSetting = (background) => {
     let {selectedSetting, brightness} = this.state;
     let obj = {type: selectedSetting, settings: {brightness: brightness, name: background}}
-    this.props.updateUserSettings(obj)
+    this.props.updateUserSetting(obj)
   }
   updateBrightness = (brightness) => {
     let {userSettings} = this.props.state;
     let {selectedSetting} = this.state;
     let background = userSettings[selectedSetting].name;
     let obj = {type: selectedSetting, settings: {brightness: brightness, name: background}}
-    this.props.updateUserSettings(obj)
+    this.props.updateUserSetting(obj)
   }
 
   getBackgroundStyle(setting){
@@ -68,19 +68,24 @@ export default class UserSettings extends React.Component{
     let numCols = 7;
     let style={
       position:'absolute',    zIndex:6,                   left:'15%',
-      top:'10%',              backgroundColor: '#c4c4c4', border: '1px solid #383838',
+      top:'10%',              backgroundColor: '#383838', border: '1px solid #383838',
       boxShadow: '0 5px 10px rgb(0, 0, 0)',               borderRadius: 3,
       padding: 10,            width: '60vw',              height: '60vh',
+      color: 'white'
     }
+
+    let buttonStyle = {fontSize: "calc(7px + 0.4vw)", margin:"1vh 0.25vw", backgroundColor:'#383838',
+       border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
+       width: '9vw', float: 'right'}
 
     let backgroundTableStyle = {
         overflowY: 'scroll',    height: '38vh',
-        background: '#c4c4c4',  marginTop: '1vh',   border: '0.25vw solid #383838',
+        background: '#383838',  marginTop: '1vh',   border: '0.25vw solid #c4c4c4',
         position:'relative',    marginLeft: '2vw'
     }
 
     let itemStyle = {
-        border:'0.25vw',   borderColor: '#c4c4c4',    borderStyle:'solid',
+        border:'0.25vw',   borderColor: '#383838',    borderStyle:'solid',
         height: '3vmax',   width: '5.33vmax',         padding: '.1vmax'
       }
 
@@ -181,7 +186,7 @@ export default class UserSettings extends React.Component{
               </div>
               <div>
                 <div style={backgroundTableStyle}>{BCKS}</div>
-                <button style={{right: '1vw', position: 'absolute', marginTop: '1vh'}} onClick={this.props.close}>Close</button>
+                <button style={buttonStyle} onClick={this.props.close}>Close</button>
               </div>
             </div>
           </div>

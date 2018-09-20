@@ -1,6 +1,8 @@
 export function setSlideBackground(props){
-  let {item, wordIndex, allItems, itemList, itemIndex, needsUpdate} = props.state;
-  let {background, updateState} = props;
+  let {background} = props;
+  let {updateState, updateHistory} = props.parent;
+  let {item, wordIndex, allItems, itemList, itemIndex, needsUpdate} = props.parent.state;
+
   let slides;
   if (item.type === 'song')
     slides = item.arrangements[item.selectedArrangement].slides || null;
@@ -10,15 +12,22 @@ export function setSlideBackground(props){
   slides[wordIndex].boxes[0].background = background;
   let index = allItems.findIndex(e => e.name === item.name)
 
+  needsUpdate.updateItem = true;
+
   if(wordIndex === 0){
     itemList[itemIndex].background = background;
     allItems[index].background = background;
-    item.background = background
+    item.background = background;
+    needsUpdate.updateAllItems = true;
+    needsUpdate.updateItemList = true;
+    updateHistory({type: 'update', item: item, itemList: itemList})
+    updateState({allItems: allItems, itemList: itemList, needsUpdate: needsUpdate})
   }
-  needsUpdate.updateItem = true;
-  needsUpdate.updateAllItems = true;
-  needsUpdate.updateItemList = true;
-  updateState({ item: item, allItems: allItems, itemList: itemList, needsUpdate: needsUpdate})
+  else{
+    updateHistory({type: 'update', item: item})
+    updateState({ item: item, needsUpdate: needsUpdate})
+  }
+
 }
 
 export function setWordIndex(props){

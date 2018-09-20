@@ -2,8 +2,9 @@ import * as Overflow from './Overflow';
 
 export function updateFontSize(props){
 
-    let {item, wordIndex, boxIndex, needsUpdate} = props.state;
-    let {fontSize, updateState} = props;
+    let {fontSize} = props;
+    let {updateState, updateHistory} = props.parent
+    let {item, wordIndex, boxIndex, needsUpdate} = props.parent.state;
 
     let slides;
     if (item.type === 'song')
@@ -33,14 +34,15 @@ export function updateFontSize(props){
       wordIndex = slides.length-1
 
     needsUpdate.updateItem = true;
+    updateHistory({type: 'update', item: item})
     updateState({item: item, wordIndex: wordIndex, needsUpdate: needsUpdate});
 
 }
 
 export function updateFontColor(props){
 
-    let {item, itemList, itemIndex, allItems, wordIndex, boxIndex, needsUpdate} = props.state;
-    let {updateState} = props;
+    let {item, itemList, itemIndex, allItems, wordIndex, boxIndex, needsUpdate} = props.parent.state;
+    let {updateState, updateHistory} = props.parent
     let c = props.fontColor;
 
     let color = 'rgba('+c.r+' , ' +c.g+' , '+c.b+' , '+c.a+')';;
@@ -86,14 +88,16 @@ export function updateFontColor(props){
     needsUpdate.updateItem = true;
     needsUpdate.updateItemList = true;
     needsUpdate.updateAllItems = true;
+    updateHistory({type: 'update', item: item})
     updateState({item: item, itemList: itemList, allItems: allItems, needsUpdate: needsUpdate});
 
 
 }
 
 export function updateBrightness(props){
-    let {item, wordIndex, boxIndex, needsUpdate} = props.state;
-    let {level, updateState} = props;
+    let {item, wordIndex, boxIndex, needsUpdate} = props.parent.state;
+    let {updateState, updateHistory} = props.parent
+    let {level} = props;
     let slides;
     if (item.type === 'song')
       slides = item.arrangements[item.selectedArrangement].slides || null;
@@ -114,12 +118,13 @@ export function updateBrightness(props){
     }
 
     needsUpdate.updateItem = true;
+    updateHistory({type: 'update', item: item})
     updateState({item: item,needsUpdate: needsUpdate});
 
 }
 
 export function updateBoxPosition(props){
-  let {item, wordIndex, boxIndex} = props.state;
+  let {item, wordIndex, boxIndex} = props.parent.state;
   let {x, y, width, height, applyAll, match} = props.position;
 
   let slides;
@@ -160,5 +165,5 @@ export function updateBoxPosition(props){
     }
   }
 
-  props.updateItem(item);
+  props.parent.updateItem(item);
 }

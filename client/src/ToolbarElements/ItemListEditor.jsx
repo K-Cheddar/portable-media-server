@@ -126,6 +126,7 @@ export default class ItemListEditor extends Component{
   duplicateOutline = () => {
     let {allItemLists} = this.props;
     let index = allItemLists.findIndex(e => e.outline === true)
+    console.log(index);
     if(index !== -1)
       this.props.duplicateList(allItemLists[index].id)
     else
@@ -218,7 +219,7 @@ export default class ItemListEditor extends Component{
         <div style={item.outline ? outlineStyle: itemStyle} key={index}>
           {!selected && <div style={{width: '80%'}}>{item.name}</div>}
           {selected &&
-            <form style={{width: '75%', margin:"0% 1% 0% 1%"}} onSubmit={(e) => (this.confirm(item.id, e))}>
+            <form style={{width: '80%', margin:"0% 1% 0% 1%"}} onSubmit={(e) => (this.confirm(item.id, e))}>
             <input style={{width: '100%'}} onChange={this.editName} value={name}/>
             </form>
           }
@@ -248,9 +249,9 @@ export default class ItemListEditor extends Component{
 
     let ails = filteredAILS.map((item, index) => {
       return(
-        <div>
-          <div style={item.outline ? outlineStyle: itemStyle} key={item.name}>
-            <div style={{width: '75%'}}>{item.name}</div>
+        <div key={item.name}>
+          <div style={item.outline ? outlineStyle: itemStyle}>
+            <div style={{width: '80%'}}>{item.name}</div>
             {!item.outline &&<img className='imgButton' style={imageButtonStyle}
               onClick={() => (this.setAsOutline(item.id))}
               alt="bookmark" src={bookmark}
@@ -302,7 +303,7 @@ export default class ItemListEditor extends Component{
           </div>
           <div>
             <div>
-            <button style={{...buttonStyle, float:'left'}} onClick={this.newItemList}>
+            <button style={{...buttonStyle, float:'left'}} onClick={this.duplicateOutline}>
               <div>New</div>
               <div style={{fontSize: 'calc(5px + 0.3vw)', marginLeft: '0.15vw'}}>
                 ({outlineName})</div>

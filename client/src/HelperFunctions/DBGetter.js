@@ -118,22 +118,6 @@ export function retrieveImages(props){
         let img = new Image();
         img.src = tag;
 
-          // var req = new XMLHttpRequest();
-          // req.open('GET', 'video.mp4', true);
-          // req.responseType = 'blob';
-          //
-          // req.onload = function() {
-          //    // Onload is triggered even on 404
-          //    // so we need to check the status code
-          //    if (this.status === 200) {
-          //       var videoBlob = this.response;
-          //       var vid = URL.createObjectURL(videoBlob); // IE10+
-          //       // Video is now downloaded
-          //       // and we can set it as source on the video element
-          //       video.src = vid;
-          //    }
-          // }
-
         let video = document.createElement("video");
         video.setAttribute("src", element.url);
          imgData = {
@@ -168,35 +152,36 @@ export function retrieveImages(props){
   });
 }
 
-export function getItem(props){
-  let {id} = props;
-  let {updateState, setItemIndex} = props.parent;
-  let {db, itemIndex} = props.parent.state;
-  db.get(id).then(function(doc){
-    updateState({item: doc})
-    if(itemIndex < 0)
-      setItemIndex(0)
-    else
-      setItemIndex(itemIndex+1)
-  }).catch(function(){
-    console.log('getItem not loaded');
-  });
-}
-
 export function selectItemList(props){
-  let {db, id, updateState} = props;
-  db.get(id).then(function(doc){
-    updateState({itemList: doc.items})
+  let {selectedItemList, history} = props;
+  let {updateState, updateHistory, historyToState} = props.parent;
+  let {db} = props.parent.state;
+  db.get(selectedItemList.id).then(function(doc){
+    if(!history)
+      updateHistory({type: 'update', itemList: doc.items, selectedItemList: selectedItemList})
+      updateState({itemList: doc.items, selectedItemList: selectedItemList})
   }).catch(function(){
     console.log('selectitemlist not loaded');
+  }).then(function(){
+    if(history){
+      historyToState();
+    }
   });
 }
 
-export function updateItem(props){
-  let {db, itemID} = props;
-  let {updateState, setWordIndex} = props.parent;
-  db.get(itemID).then(function (doc) {
+export function getItem(props){
+  let {id, index, history, newItemIndex} = props;
+  let {updateState, setWordIndex, updateHistory, historyToState} = props.parent;
+  let {db} = props.parent.state
+  db.get(id).then(function (doc) {
+    if(!history)
+      updateHistory({type: 'update', item: doc, itemIndex: index})
     updateState({item: doc});
     setWordIndex(0)
+  }).then(function(){
+    if(history){
+      historyToState();
+      updateState({itemIndex: newItemIndex})
+    }
   })
 }

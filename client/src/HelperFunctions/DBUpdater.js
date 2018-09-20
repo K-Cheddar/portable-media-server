@@ -4,7 +4,7 @@ import * as DateFunctions from './DateFunctions'
 let updaterInterval = null;
 
 export function updateItem(props){
-  console.log("Updating Item");
+  // console.log("Updating Item");
   let {db, item} = props;
   db.get(item._id).then(function (doc) {
     doc.name = item.name;
@@ -24,7 +24,7 @@ export function updateItem(props){
 
 export function updateItemList(props, updateState){
   let {db, selectedItemList, itemList} = props;
-  console.log("Updating ItemList");
+  // console.log("Updating ItemList");
   db.get(selectedItemList.id).then(function (doc) {
     for(let i = 0; i <doc.items.length; ++i){
       let val = itemList.find(e => e.id === doc.items[i].id)
@@ -42,7 +42,7 @@ export function updateItemList(props, updateState){
 
 export function updateItemLists(props, updateState){
   let {db, selectedItemList, itemLists} = props;
-  console.log("Updating Item Lists");
+  // console.log("Updating Item Lists");
   db.get('ItemLists').then(function (doc) {
      if(doc.itemLists.length === 1 && itemLists.length===1){
        let obj = doc.itemLists[0]
@@ -63,7 +63,7 @@ export function updateItemLists(props, updateState){
 
 export function updateAllItemLists(props){
   let {db, allItemLists} = props;
-  console.log("Updating All Item Lists");
+  // console.log("Updating All Item Lists");
   db.get('allItemLists').then(function (doc) {
       doc.itemLists = allItemLists;
       if(doc.itemLists.length === 0){
@@ -79,7 +79,7 @@ export function updateAllItemLists(props){
 
 export function updateAllItems(props, updateState){
   let {db, allItems} = props;
-  console.log("Updating All Items");
+  // console.log("Updating All Items");
   db.get('allItems').then(function (doc) {
     for(let i = 0; i <doc.items.length; ++i){
       let val = allItems.find(e => e.id === doc.items[i].id)
@@ -93,6 +93,16 @@ export function updateAllItems(props, updateState){
   }).catch(function(){
     console.log('update all items (update) not working');
   });
+}
+
+export function updateUserSettings(props){
+  let {db, userSettings} = props;
+  db.get('userSettings').then(function (doc) {
+    doc.settings = userSettings
+    return db.put(doc);
+   }).catch(function(){
+     console.log('update userSettings not working');
+   });
 }
 
 export function updateCurrent(props){
@@ -111,12 +121,14 @@ export function updateCurrent(props){
   db.upsert('currentInfo', updateValues);
 }
 
-export function updateUserSettings(props){
-  let {userSetting, updateState} = props;
-  let {db, userSettings} = props.state;
+export function updateUserSetting(props){
+  let {userSetting} = props;
+  let {updateState, updateHistory} = props.parent;
+  let {db, userSettings} = props.parent.state;
   db.get('userSettings').then(function(doc){
     doc.settings[userSetting.type] = userSetting.obj;
     userSettings[userSetting.type] = userSetting.obj;
+    updateHistory({type: 'update', userSettings: userSettings})
     updateState({userSettings: userSettings});
     db.put(doc);
   })
@@ -125,10 +137,11 @@ export function updateUserSettings(props){
 
 export function putInList(props){
   let {itemObj} = props;
-  let {updateState} = props.parent;
+  let {updateState, updateHistory} = props.parent;
   let {db, selectedItemList, itemIndex} = props.parent.state;
   db.get(selectedItemList.id).then(function (doc) {
     doc.items.splice(itemIndex+1, 0, itemObj);
+    updateHistory({type: 'update', itemList: doc.items})
     updateState({itemList: doc.items});
     db.put(doc);
   })
@@ -214,12 +227,12 @@ export function deleteItem(props){
 
 export function deleteItemFromList(props){
   let {index} = props;
-  let {updateState} = props.parent;
+  let {updateState, updateHistory} = props.parent;
   let {db, selectedItemList, itemList} = props.parent.state;
-
   db.get(selectedItemList.id).then(function (doc) {
     itemList.splice(index, 1);
     doc.items = itemList;
+    updateHistory({type: 'update', itemList: itemList})
     updateState({itemList: itemList})
     return db.put(doc);
   })

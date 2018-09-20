@@ -55,6 +55,9 @@ export default class Home extends Component {
                     This can also be manually activated by using the 'Become Receiver'
                     and 'Connect To Receiver' buttons from the Menu.</div>
                 </li>
+                <li className='notes'>
+                  Undo may be buggy. Use with caution.
+                </li>
               </ul>
             </div>
           <ul style={{paddingLeft: '1%'}}>

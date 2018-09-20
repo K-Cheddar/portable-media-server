@@ -13,6 +13,8 @@ import disconnected from '../assets/disconnected.png';
 import open from '../assets/open.png';
 import bibleIcon from '../assets/bibleIcon.png'
 import songIcon from '../assets/songIcon.png'
+import undoButton from '../assets/undo.png'
+import redoButton from '../assets/redo.png'
 
 export default class Toolbar extends Component {
 
@@ -94,10 +96,11 @@ export default class Toolbar extends Component {
     let {formatBible} = this.props;
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
-       setAsReceiver, connectToReceiver, updateUserSettings, updateBoxPosition,
-        updateCurrent} = this.props.parent; //updateItemStructure
+       setAsReceiver, connectToReceiver, updateUserSetting, updateBoxPosition,
+        updateCurrent, undo, redo} = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
-      allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode} = this.props.parent.state;
+      allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
+      undoReady, redoReady} = this.props.parent.state;
     let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen, settingsOpen} = this.state;
 
     let menuItem = {
@@ -113,7 +116,11 @@ export default class Toolbar extends Component {
       height: '3vh', margin: '0 0.5vw', border: '0.15vw solid #474747'
     }
     let modeButtonSelected = Object.assign({}, modeButton);
-    modeButtonSelected.border = '0.15vw solid #06d1d1'
+    modeButtonSelected.border = '0.15vw solid #06d1d1';
+
+    let undoRedo = {width:'1.25vw', height:'1.25vw', paddingLeft: '0.1vw'};
+    let undoRedoDisabled = Object.assign({}, undoRedo);
+    undoRedoDisabled.opacity = 0.25;
 
     return(
       <div style={window.location.hash==="#/fullview" ?
@@ -124,7 +131,7 @@ export default class Toolbar extends Component {
         <ul style={{display:'flex', zIndex: 3}}>
           <li style={{width:'4vw'}}>
             <div className='toolbarSection' onMouseLeave={this.closeMenu}>
-              <button onClick={this.openMenu} onMouseEnter={this.openMenu} style={menuButton}>Menu</button>
+              <button onClick={this.openMenu} style={menuButton}>Menu</button>
                 <div style={menuMousedOver ? {backgroundColor:'#c4c4c4', position:'absolute', width:'9vw', zIndex: 4} : {display:'none'}}>
                   <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
                   <Link to="/"><button style={menuItem}>Home</button></Link>
@@ -134,6 +141,16 @@ export default class Toolbar extends Component {
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                   {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
                   {/*<button style={menuItem} onClick={updateItemStructure}>UPDATE ALL</button>*/}
+                </div>
+                <div style={{display: 'flex', marginTop: '2vh'}}>
+                  <img className='imgButton' style={undoReady? undoRedo: undoRedoDisabled}
+                     alt="undo" src={undoButton}
+                    onClick={undo}
+                    />
+                  <img className='imgButton' style={redoReady? undoRedo: undoRedoDisabled}
+                     alt="redo" src={redoButton}
+                    onClick={redo}
+                    />
                 </div>
             </div>
           </li>
@@ -243,7 +260,7 @@ export default class Toolbar extends Component {
           needsUpdate={needsUpdate}
         />}
         {settingsOpen && <UserSettings state={this.props.parent.state} close={this.closeSettings}
-        updateUserSettings={updateUserSettings}/>}
+        updateUserSetting={updateUserSetting}/>}
       </div>
     )
   }

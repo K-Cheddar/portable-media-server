@@ -2,8 +2,9 @@ import * as Sort from './Sort'
 import * as Overflow from './Overflow'
 
 export function setItemBackground(props){
-  let {item, itemIndex, itemList, allItems, needsUpdate} = props.state;
-  let {background, updateState} = props;
+  let {background} = props;
+  let {updateState, updateHistory} = props.parent;
+  let {item, itemIndex, itemList, allItems, needsUpdate} = props.parent.state;
 
   let slides;
   if (item.type === 'song')
@@ -27,11 +28,14 @@ export function setItemBackground(props){
   needsUpdate.updateItem = true;
   needsUpdate.updateItemList = true;
   needsUpdate.updateAllItems = true;
+  updateHistory({type: 'update', item: item, itemList: itemList, allItems: allItems})
   updateState({item: item, itemList: itemList, allItems: allItems, needsUpdate: needsUpdate})
 }
 
 export function setItemIndex(props){
-  let {index, updateState} = props;
+  let {index} = props;
+  let {updateState} = props.parent;
+
   var mElement = document.getElementById("MItem"+index);
   var element = document.getElementById("Item"+index);
   if(mElement)
@@ -42,8 +46,9 @@ export function setItemIndex(props){
 }
 
 export function updateItem(props){
-  let {itemList, allItems, needsUpdate} = props.state;
-  let {updateState, item} = props;
+  let {item} = props;
+  let {updateHistory, updateState} = props.parent;
+  let {itemList, allItems, needsUpdate} = props.parent.state;
 
   let slides;
   if (item.type === 'song')
@@ -58,7 +63,6 @@ export function updateItem(props){
     itemList[itemIndex].nameColor = fontColor;
     itemList[itemIndex].name = name;
     needsUpdate.updateItemList = true;
-    updateState({itemList: itemList})
   }
   allItems = Sort.sortNamesInList(allItems)
   let index = allItems.findIndex(e => e._id === item._id)
@@ -66,19 +70,21 @@ export function updateItem(props){
     allItems[index].nameColor = fontColor;
     allItems[index].name = name;
     needsUpdate.updateAllItems = true;
-    updateState({allItems: allItems})
   }
   if(item.type === 'song')
     item = Overflow.formatSong(item)
   if(item.type === 'bible')
     item = Overflow.formatBible(item, 'edit')
   needsUpdate.updateItem = true;
-  updateState({item: item, needsUpdate: needsUpdate})
+
+  updateHistory({type: 'update', item: item, itemList: itemList, allItems: allItems})
+  updateState({item: item, itemList: itemList, allItems: allItems, needsUpdate: needsUpdate})
 }
 
 export function insertWords(props){
-  let {item, wordIndex, needsUpdate} = props.state;
-  let {targetIndex, setWordIndex, updateState} = props;
+  let {targetIndex} = props;
+  let {updateHistory, setWordIndex, updateState} = props.parent;
+  let {item, wordIndex, needsUpdate} = props.parent.state;
 
   let slides;
   if (item.type === 'song')
@@ -91,5 +97,6 @@ export function insertWords(props){
   slides.splice(targetIndex, 0, words);
   needsUpdate.updateItem = true;
   updateState({item: item, needsUpdate: needsUpdate});
+  updateHistory({type: 'update', item: item})
   setWordIndex(targetIndex);
 }

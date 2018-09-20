@@ -64,10 +64,11 @@ const prevItem = ['up'];
 const nextItem = ['down'];
 const nextSlide = ['right','space'];
 const prevSlide = ['left','shift+space'];
-
 const close = 'esc';
 const submit = 'enter';
 const nextField = ['tab', 'enter']
+const undo = ['ctrl+z']
+const redo = ['ctrl+shift+z', 'ctrl+y']
 const map = {
   // 'nextSlide': 'command+left',
   // 'deleteNode': ['del', 'backspace']
@@ -78,6 +79,8 @@ const map = {
   'close': close,
   'submit': submit,
   'nextField': nextField,
+  'undo': undo,
+  'redo': redo,
 };
 
 const initialState = {
@@ -114,7 +117,14 @@ const initialState = {
   isSender: false,
   userSettings: {},
   mode: 'edit',
+  undoReady: false,
+  redoReady: false,
 }
+
+let undoHistory = [];
+let undoProperties = ['item', 'itemList', 'itemIndex', 'allItems', 'userSettings', 'selectedItemList']
+let undoIndex = -1;
+let historyUpdating = false;
 
 /* App component */
 class App extends Component {
@@ -128,6 +138,10 @@ class App extends Component {
     this.reconnectPeer = null;
     this.sync = null
 
+    this.handlers = {
+      'undo': this.undo,
+      'redo': this.redo
+    }
   }
 
   componentDidMount(){
@@ -173,8 +187,6 @@ class App extends Component {
         "nameColor": item.nameColor,"type": item.type};
     //put item in current item list
     DBUpdater.putInList({parent: this, itemObj: itemObj})
-    //select created item
-    DBGetter.getItem({parent: this, id: item._id})
 
   }
 
@@ -253,6 +265,7 @@ class App extends Component {
     }
     let index = allItems.findIndex(e => e.name === name)
     DBUpdater.deleteItem({parent: this, name: name, index: index})
+    this.updateHistory({type: 'clear'})
   }
 
   deleteItemFromList = (index) => {
@@ -264,6 +277,7 @@ class App extends Component {
 
   deleteItemList = (id) =>{
     DBUpdater.deleteItemList({db: this.state.db, id: id, selectItemList: this.selectItemList, itemLists: this.state.itemLists})
+    this.updateHistory({type: 'clear'})
   }
 
   duplicateItem = (id) => {
@@ -293,9 +307,8 @@ class App extends Component {
           setTimeout(function(){
             if(retrieved.finished)
               return
-            let obj = Object.assign({}, initialState);
+            let obj = JSON.parse(JSON.stringify(initialState));
             that.setState(obj)
-            that.setState({retrieved: {}, attempted:{}})
             let localDB = "portable-media"
             that.DBReplicate(db, remoteDB, localDB)
           },10000)
@@ -323,13 +336,39 @@ class App extends Component {
     //don't begin auto update until all values have been retrieved
     if(Object.keys(retrieved).length >= 6){
         retrieved.finished = true;
-        this.updateInterval = setInterval(this.update, 1000); //auto save to database every second if update has occurred
+        this.updateInterval = setInterval(this.update, 250); //auto save to database every second if update has occurred
+        let that = this;
+        setTimeout(function(){that.updateHistory({type: 'init'})},10)
     }
     this.setState({retrieved: retrieved})
   }
 
   getTime = () => {
     return this.state.currentInfo.time
+  }
+
+  historyToState = () => {
+    let {needsUpdate} = this.state;
+    let newState = undoHistory[undoIndex];
+    console.log(newState);
+    for (let property in newState){
+      if(property === 'item')
+        needsUpdate.updateItem = true;
+      if(property === 'itemList')
+        needsUpdate.updateItemList = true;
+      if(property === 'allItems')
+        needsUpdate.updateAllItems = true;
+      if(property === 'userSettings')
+        needsUpdate.updateUserSettings = true;
+        let obj = JSON.parse(JSON.stringify(newState[property]))
+        console.log(property, obj);
+      this.setState({[property]: obj})
+    }
+    this.setState({needsUpdate: needsUpdate})
+    historyUpdating = false;
+    let u = undoIndex > 0;
+    let r = undoIndex < undoHistory.length-1
+    this.setState({undoReady: u, redoReady: r})
   }
 
   init = (database, first) => {
@@ -358,7 +397,7 @@ class App extends Component {
   }
 
   insertWords = (targetIndex) => {
-    ItemUpdate.insertWords({targetIndex: targetIndex, state: this.state, setWordIndex: this.setWordIndex, updateState: this.updateState})
+    ItemUpdate.insertWords({targetIndex: targetIndex, parent: this})
   }
 
   login = (database, user, upload_preset) => {
@@ -432,23 +471,36 @@ class App extends Component {
 
   }
 
+  overrideUndoRedo = (e) => {
+    if((e.ctrlKey && e.key === 'z') || (e.ctrlKey && e.key === 'y') || (e.ctrlKey && e.shiftKey && e.key === 'z')){
+      e.preventDefault()
+    }
+  }
+
+  redo = () => {
+    if(undoIndex >= undoHistory.length-1 || historyUpdating)
+      return;
+    ++undoIndex;
+    this.updateUndoIndex();
+  }
+
   setItemBackground = (background) => {
-    ItemUpdate.setItemBackground({background: background, state: this.state, updateState: this.updateState})
+    ItemUpdate.setItemBackground({background: background, parent: this})
   }
 
   selectItemList = (name) => {
     let {itemLists} = this.state;
     let id = itemLists.find(e => e.name === name).id;
-    this.setState({selectedItemList: {id: id, name: name}})
-    DBGetter.selectItemList({db: this.state.db, id: id, updateState: this.updateState})
+    let selectedItemList = {id: id, name: name}
+    DBGetter.selectItemList({selectedItemList: selectedItemList, parent: this})
   }
 
   setItemIndex = (index) => {
-    let {itemList, db} = this.state;
-    ItemUpdate.setItemIndex({index: index, updateState: this.updateState})
+    let {itemList} = this.state;
+    ItemUpdate.setItemIndex({index: index, parent: this})
     if(itemList.length !== 0){
-      let itemID = itemList[index] ? itemList[index]._id : 0;
-      DBGetter.updateItem({db: db, itemID: itemID, parent: this})
+      let id = itemList[index] ? itemList[index]._id : 0;
+      DBGetter.getItem({id: id, parent: this, index: index})
     }
   }
 
@@ -491,37 +543,43 @@ class App extends Component {
   }
 
   setSlideBackground = (background) => {
-    SlideUpdate.setSlideBackground({background: background, state: this.state, updateState: this.updateState})
+    SlideUpdate.setSlideBackground({background: background, parent: this})
   }
 
   setWordIndex = (index) => {
     SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent, conn: conn})
   }
 
-  test = (dayOfWeek) => {
-  //   fileSystem.root.getFile('log.txt', {}, function(fileEntry) {
-  //
-  //   // Get a File object representing the file,
-  //   // then use FileReader to read its contents.
-  //   fileEntry.file(function(file) {
-  //      var reader = new FileReader();
-  //
-  //      reader.onloadend = function(e) {
-  //        // var txtArea = document.createElement('textarea');
-  //        // txtArea.value = this.result;
-  //        // document.body.appendChild(txtArea);
-  //        console.log(this.result);
-  //      };
-  //
-  //      reader.readAsText(file);
-  //   });
-  //
-  // });
-
+  test = () => {
+    //   fileSystem.root.getFile('log.txt', {}, function(fileEntry) {
+    //
+    //   // Get a File object representing the file,
+    //   // then use FileReader to read its contents.
+    //   fileEntry.file(function(file) {
+    //      var reader = new FileReader();
+    //
+    //      reader.onloadend = function(e) {
+    //        // var txtArea = document.createElement('textarea');
+    //        // txtArea.value = this.result;
+    //        // document.body.appendChild(txtArea);
+    //        console.log(this.result);
+    //      };
+    //
+    //      reader.readAsText(file);
+    //   });
+    //
+    // });
   }
 
   toggleFreeze = () => {
     this.setState({freeze: !this.state.freeze})
+  }
+
+  undo = () => {
+    if(undoIndex <= 0 || historyUpdating)
+      return;
+    --undoIndex;
+    this.updateUndoIndex();
   }
 
   update = () => {
@@ -536,11 +594,11 @@ class App extends Component {
   }
 
   updateBoxPosition = (position) => {
-    Formatter.updateBoxPosition({state: this.state, position: position, updateItem: this.updateItem})
+    Formatter.updateBoxPosition({position: position, parent: this})
   }
 
   updateBrightness = (level) => {
-    Formatter.updateBrightness({state: this.state, level: level, updateState: this.updateState})
+    Formatter.updateBrightness({level: level, parent: this})
   }
 
   updateCurrent = ({words = null,background = null,style = {}, displayDirect=false} = {}) => {
@@ -591,30 +649,98 @@ class App extends Component {
   }
 
   updateFontColor = (fontColor) => {
-    Formatter.updateFontColor({fontColor: fontColor, state:this.state, updateState: this.updateState})
+    Formatter.updateFontColor({fontColor: fontColor, parent: this})
   }
 
   updateFontSize = (fontSize) => {
-    Formatter.updateFontSize({fontSize: fontSize, state:this.state, updateState: this.updateState})
+    Formatter.updateFontSize({fontSize: fontSize, parent: this})
+  }
+
+  updateHistory = (props) => {
+
+    let newState = {};
+    if(undoHistory.length > 0)
+      undoHistory = undoHistory.slice(0, undoIndex+1);
+    let currentVal;
+    let updateNow = false;
+    switch(props.type){
+      case 'init':
+      undoHistory = [];
+      updateNow = true;
+      for(let property in undoProperties){
+        if(!undoProperties.hasOwnProperty(property))
+          continue;
+        let prop = undoProperties[property];
+        newState[prop] = JSON.parse(JSON.stringify(this.state[prop]));
+      }
+      break;
+      case 'clear':
+      newState = undoHistory[0];
+      updateNow = true;
+      undoHistory = [];
+      undoIndex = -1;
+      break;
+      case 'update':
+      currentVal = undoHistory[undoIndex]
+      for(let property in undoProperties){
+        if(!undoProperties.hasOwnProperty(property))
+          continue;
+        let prop = undoProperties[property];
+        if(props[prop] && JSON.stringify(currentVal[prop]) !== JSON.stringify(props[prop])){
+            updateNow = true;
+            newState[prop] = JSON.parse(JSON.stringify(props[prop]));
+        }
+        else{
+          newState[prop] = JSON.parse(JSON.stringify(currentVal[prop]));
+        }
+      }
+      break;
+      default:
+      console.log('Incorrect Parameters');
+    }
+    if(updateNow){
+      undoHistory.push(newState);
+      ++undoIndex;
+    }
+    let u = undoIndex > 0;
+    let r = undoIndex < undoHistory.length-1
+    this.setState({undoReady: u, redoReady: r})
   }
 
   updateItem = (item) => {
-    ItemUpdate.updateItem({state: this.state, item: item, updateState: this.updateState})
+    ItemUpdate.updateItem({item: item, parent: this})
   }
 
   updateItemStructure = () => {
     DBUpdater.updateItemStructure(this.state.db);
   }
 
-  updateUserSettings = (obj) => {
-    let userSetting = {type: obj.type, obj: obj.settings};
-    DBUpdater.updateUserSettings({state: this.state, userSetting: userSetting, updateState: this.updateState})
-  }
-
   updateState = (obj) => {
     for(let property in obj)
       if(obj.hasOwnProperty(property))
         this.setState({[property]: obj[property]})
+  }
+
+  updateUndoIndex = () => {
+    let {itemLists} = this.state;
+    let newState = undoHistory[undoIndex];
+    let newId = newState.item._id;
+    let newListId = newState.selectedItemList.id;
+    historyUpdating = true;
+    if(newId && this.state.item._id !== newId)
+      DBGetter.getItem({id: newId, parent: this, history: true, newItemIndex: newState.itemIndex})
+    else if(newListId !== this.state.selectedItemList.id){
+      let name = itemLists.find(e => e.id === newListId).name;
+      let selectedItemList = {id: newListId, name: name};
+      DBGetter.selectItemList({selectedItemList: selectedItemList, parent: this, history: true})
+    }
+    else
+      this.historyToState();
+  }
+
+  updateUserSetting = (obj) => {
+    let userSetting = {type: obj.type, obj: obj.settings};
+    DBUpdater.updateUserSetting({userSetting: userSetting, parent: this})
   }
 
   render() {
@@ -631,7 +757,7 @@ class App extends Component {
       style.backgroundColor = '#383838'
 
     return (
-      <HotKeys keyMap={map}>
+      <HotKeys handlers={this.handlers} keyMap={map}>
         <div id="fullApp" style={style}>
           <Toolbar parent={this} formatBible={Overflow.formatBible}/>
         {!retrieved.finished && <Loading retrieved={retrieved}/>}
