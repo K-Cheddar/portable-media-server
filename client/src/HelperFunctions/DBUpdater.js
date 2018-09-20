@@ -127,7 +127,9 @@ export function duplicateList(props){
       }
       db.put(newList)
       allItemLists.push(newListFull);
+      updateAllItemLists({db: db, allItemLists: allItemLists})
       itemLists.push(newListFull);
+      updateItemLists({db: db, itemLists: itemLists, selectedItemList:{name: name, id: id}})
       selectItemList(name)
       updateState({allItemLists: allItemLists, itemLists: itemLists, itemList: doc.items,
         selectedItemList:{name: name, id: id}})
