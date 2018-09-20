@@ -438,7 +438,7 @@ class App extends Component {
   }
 
   newItemList = (newList) => {
-    DBUpdater.newList({db: this.state.db, newList: newList})
+    DBUpdater.newList({db: this.state.db, newList: newList, selectItemList: this.selectItemList})
   }
 
   openUploader = () => {
@@ -684,12 +684,7 @@ class App extends Component {
         if(!undoProperties.hasOwnProperty(property))
           continue;
         let prop = undoProperties[property];
-        console.log(currentVal, Object.keys(props));
-        console.log(undoHistory, undoIndex);
-        if(!currentVal){
-          newState[prop] = JSON.parse(JSON.stringify(props[prop]));
-        }
-        else if(props[prop] && JSON.stringify(currentVal[prop]) !== JSON.stringify(props[prop])){
+        if(props[prop] && JSON.stringify(currentVal[prop]) !== JSON.stringify(props[prop])){
             updateNow = true;
             newState[prop] = JSON.parse(JSON.stringify(props[prop]));
         }

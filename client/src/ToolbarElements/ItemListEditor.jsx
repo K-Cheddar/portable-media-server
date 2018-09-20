@@ -7,6 +7,7 @@ import cancel from '../assets/cancel-icon.png';
 import bookmark from '../assets/bookmark.png';
 import DeleteConfirmation from '../DeleteConfirmation'
 import * as DateFunctions from '../HelperFunctions/DateFunctions'
+import MakeUnique from '../HelperFunctions/MakeUnique'
 
 export default class ItemListEditor extends Component{
 
@@ -24,128 +25,6 @@ export default class ItemListEditor extends Component{
     }
 
     this.messageDisplay = null;
-  }
-
-  updateAilsSearch = (event) => {
-    this.setState({ailsSearch: event.target.value})
-  }
-
-  updateIlsSearch = (event) => {
-    this.setState({ilsSearch: event.target.value})
-  }
-
-  confirm = (id, e) => {
-    if(e)
-      e.preventDefault()
-    let {name} = this.state;
-    let {itemLists, allItemLists, needsUpdate} = this.props;
-    let index = itemLists.findIndex(e => e.id === id)
-    let indexAll = allItemLists.findIndex(e => e.id === id)
-    itemLists[index].name = name;
-    allItemLists[indexAll].name = name;
-    needsUpdate.updateItemLists = true;
-    needsUpdate.updateAllItemLists = true;
-    this.props.updateState({ itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
-    this.setState({selectedIndex: -1, name: ''})
-  }
-
-  openConfirmation = (name, id) => {
-    let index = this.props.allItemLists.findIndex(e => e.id === id)
-    this.setState({
-      deleteOverlay: true,
-      name: name,
-      deleteIndex: index
-    })
-  }
-
-  cancel = () => {
-    this.setState({
-      selectedIndex: -1,
-      name: '',
-      deleteOverlay: false,
-      deleteIndex: -1
-    })
-  }
-
-  editName = (event) => {
-    this.setState({name: event.target.value})
-  }
-
-  edit = (index, name) => {
-    this.setState({
-      selectedIndex: index,
-      name: name
-    })
-  }
-
-  deleteList = (type, id) => {
-    let {itemLists, allItemLists, needsUpdate} = this.props;
-    let {deleteIndex} = this.state;
-    if(type==='one'){
-      let index = itemLists.findIndex(e => e.id === id)
-      itemLists.splice(index, 1);
-      this.props.selectItemList(itemLists[0].name)
-      needsUpdate.updateItemLists = true;
-      this.props.updateState({itemLists: itemLists, needsUpdate: needsUpdate})
-    }
-    if(type==='all'){
-      let id = allItemLists[deleteIndex].id
-      let index = itemLists.findIndex(e => e.id === id)
-      this.props.deleteItemList(id)
-      allItemLists.splice(deleteIndex, 1);
-      if(index !== -1){
-        itemLists.splice(index, 1);
-      }
-      needsUpdate.updateItemLists = true;
-      needsUpdate.updateAllItemLists = true;
-      this.props.updateState({itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
-      this.setState({deleteOverlay: false})
-    }
-
-  }
-
-  setAsOutline = (id) => {
-    let {itemLists, allItemLists, needsUpdate} = this.props;
-    for(let i = 0; i < itemLists.length; ++i){
-        if(itemLists[i].id === id)
-          itemLists[i].outline = true;
-        else
-          itemLists[i].outline = false;
-    }
-    for(let i = 0; i < allItemLists.length; ++i){
-        if(allItemLists[i].id === id)
-          allItemLists[i].outline = true;
-        else
-          allItemLists[i].outline = false;
-    }
-    needsUpdate.updateItemLists = true;
-    needsUpdate.updateAllItemLists = true;
-    this.props.updateState({itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
-  }
-
-  duplicateOutline = () => {
-    let {allItemLists} = this.props;
-    let index = allItemLists.findIndex(e => e.outline === true)
-    console.log(index);
-    if(index !== -1)
-      this.props.duplicateList(allItemLists[index].id)
-    else
-      this.newItemList();
-  }
-
-  newItemList = () => {
-    let {itemLists, allItemLists, needsUpdate} = this.props;
-    let id = allItemLists[allItemLists.length-1].id;
-    let newNumber = parseInt(id.slice(-1), 10) + 1;
-    let newId = "Item List " + newNumber;
-    let name = DateFunctions.getDateofNextDay('Saturday');
-    let newList = {id: newId, name: name}
-    itemLists.push(newList);
-    allItemLists.push(newList);
-    needsUpdate.updateItemLists = true;
-    needsUpdate.updateAllItemLists = true;
-    this.props.updateState({itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
-    this.props.newItemList(newList);
   }
 
   addToList = (id) => {
@@ -172,6 +51,131 @@ export default class ItemListEditor extends Component{
     needsUpdate.updateItemLists = true;
     this.props.updateState({itemLists: itemLists, selectedItemList: obj})
     this.props.selectItemList(name)
+  }
+
+  cancel = () => {
+    this.setState({
+      selectedIndex: -1,
+      name: '',
+      deleteOverlay: false,
+      deleteIndex: -1
+    })
+  }
+
+  confirm = (id, e) => {
+    if(e)
+      e.preventDefault()
+    let {name} = this.state;
+    let {itemLists, allItemLists, needsUpdate} = this.props;
+    let index = itemLists.findIndex(e => e.id === id)
+    let indexAll = allItemLists.findIndex(e => e.id === id)
+    name = MakeUnique({name: name, property: 'name', list: allItemLists});
+    itemLists[index].name = name;
+    allItemLists[indexAll].name = name;
+    needsUpdate.updateItemLists = true;
+    needsUpdate.updateAllItemLists = true;
+    this.props.updateState({ itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
+    this.setState({selectedIndex: -1, name: ''})
+  }
+
+  deleteList = (type, id) => {
+    let {itemLists, allItemLists, needsUpdate} = this.props;
+    let {deleteIndex} = this.state;
+    if(type==='one'){
+      let index = itemLists.findIndex(e => e.id === id)
+      itemLists.splice(index, 1);
+      if(itemLists.length > 0)
+        this.props.selectItemList(itemLists[0].name)
+      needsUpdate.updateItemLists = true;
+      this.props.updateState({itemLists: itemLists, needsUpdate: needsUpdate})
+    }
+    if(type==='all'){
+      let id = allItemLists[deleteIndex].id
+      let index = itemLists.findIndex(e => e.id === id)
+      this.props.deleteItemList(id)
+      allItemLists.splice(deleteIndex, 1);
+      if(index !== -1){
+        itemLists.splice(index, 1);
+      }
+      needsUpdate.updateItemLists = true;
+      needsUpdate.updateAllItemLists = true;
+      this.props.updateState({itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
+      this.setState({deleteOverlay: false})
+    }
+
+  }
+
+  duplicateOutline = () => {
+    let {allItemLists} = this.props;
+    let index = allItemLists.findIndex(e => e.outline === true)
+    console.log(index);
+    if(index !== -1)
+      this.props.duplicateList(allItemLists[index].id)
+    else
+      this.newItemList();
+  }
+
+  edit = (index, name) => {
+    this.setState({
+      selectedIndex: index,
+      name: name
+    })
+  }
+
+  editName = (event) => {
+    this.setState({name: event.target.value})
+  }
+
+  newItemList = () => {
+    let {itemLists, allItemLists, needsUpdate} = this.props;
+    let id = allItemLists[allItemLists.length-1].id;
+    let newNumber = parseInt(id.slice(-1), 10) + 1;
+    let newId = "Item List " + newNumber;
+    let name = DateFunctions.getDateofNextDay('Saturday');
+    name = MakeUnique({name: name, property: 'name', list: allItemLists});
+    let newList = {id: newId, name: name}
+    itemLists.push(newList);
+    allItemLists.push(newList);
+    needsUpdate.updateItemLists = true;
+    needsUpdate.updateAllItemLists = true;
+    this.props.updateState({itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
+    this.props.newItemList(newList);
+  }
+
+  openConfirmation = (name, id) => {
+    let index = this.props.allItemLists.findIndex(e => e.id === id)
+    this.setState({
+      deleteOverlay: true,
+      name: name,
+      deleteIndex: index
+    })
+  }
+
+  setAsOutline = (id) => {
+    let {itemLists, allItemLists, needsUpdate} = this.props;
+    for(let i = 0; i < itemLists.length; ++i){
+        if(itemLists[i].id === id)
+          itemLists[i].outline = true;
+        else
+          itemLists[i].outline = false;
+    }
+    for(let i = 0; i < allItemLists.length; ++i){
+        if(allItemLists[i].id === id)
+          allItemLists[i].outline = true;
+        else
+          allItemLists[i].outline = false;
+    }
+    needsUpdate.updateItemLists = true;
+    needsUpdate.updateAllItemLists = true;
+    this.props.updateState({itemLists: itemLists, allItemLists: allItemLists, needsUpdate: needsUpdate})
+  }
+
+  updateAilsSearch = (event) => {
+    this.setState({ailsSearch: event.target.value})
+  }
+
+  updateIlsSearch = (event) => {
+    this.setState({ilsSearch: event.target.value})
   }
 
   render(){
