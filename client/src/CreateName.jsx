@@ -116,8 +116,8 @@ export default class CreateName extends React.Component{
       top:'45%',
       backgroundColor: '#383838',
       boxShadow: '0 5px 10px rgb(0, 0, 0)',
-      border: '1px solid #CCC',
-      borderRadius: 3,
+      border: '0.1vw solid white',
+      borderRadius: '1vw',
       padding: 10,
       width: '20vw',
       color: 'white'
@@ -128,11 +128,11 @@ export default class CreateName extends React.Component{
     let buttonStyle = {fontSize: "calc(7px + 0.4vw)", margin:"1vh 0.25vw", backgroundColor:'#383838',
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
        width: '9vw'}
+     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
+       zIndex: 4, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
 
       return (
-        <HotKeys handlers={this.handlers}>
-        <div style={{position:'fixed', top:0, left:0, height:'100vh',
-          zIndex: 5, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
+        <HotKeys handlers={this.handlers} style={windowBackground}>
           <div style={style}>
           {(message.length > 0) && <div style={messageStyle}>{message}</div>}
           <div >
@@ -148,7 +148,6 @@ export default class CreateName extends React.Component{
             </button>
           </div>
           </div>
-        </div>
       </HotKeys>
       )
   }

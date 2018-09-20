@@ -87,13 +87,13 @@ export default class SongOrderArea extends Component{
       return(
         <div style={(index === songIndex) ? songOrderSelected : songOrderDiv} key={index}>
           <div style={style}
-            onMouseDown={() => (this.setElement(index))}
-            onMouseOver={() => (this.setTarget(index))}>
+            onMouseDown={() => this.setElement(index)}
+            onMouseOver={() => this.setTarget(index)}>
             {element}
           </div>
           {beingDragged && <div style={songStyle}></div>}
           <img className='imgButton' style={{display:'block', width:'1.5vmax', height:'1.5vmax', paddingLeft:"2%"}}
-             onClick={() => (this.props.deleteSectionFromOrder(index))}
+             onClick={() => this.props.deleteSectionFromOrder(index)}
              alt="delete" src={deleteX}
             />
         </div>

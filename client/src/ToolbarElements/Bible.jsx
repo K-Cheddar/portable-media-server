@@ -30,7 +30,6 @@ export default class Bible extends Component {
       allVerses: []
     }
     this.handlers = {
-      'close': this.close,
       'nextField': this.nextField,
     }
 
@@ -50,9 +49,7 @@ export default class Bible extends Component {
       filteredVersesEnd: kjv.books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
     })
   }
-  close = () => {
-    this.props.close()
-  }
+
   createVersesItem = () => {
     let {currentBook, currentChapter, startVerse, endVerse} = this.state;
     let verses = kjv.books[currentBook].chapters[currentChapter].verses.filter(
@@ -248,7 +245,7 @@ export default class Bible extends Component {
       return(
         <div style={{margin: '0.5vmax', display: 'flex'}} key={index}>
           <img className='imgButton' style={{display:'block', width:'1.5vw', height:'1.5vw'}}
-             onClick={ () => (this.displayVerse(index))} alt="playVerse" src={playVerse}
+             onClick={ () => this.displayVerse(index)} alt="playVerse" src={playVerse}
             />
           <div>{element.verse.verse} {element.verse.text}</div>
         </div>
@@ -268,7 +265,7 @@ export default class Bible extends Component {
       sStyle.marginLeft = '0.5vw';
       let selected = (element.index === currentBook);
       return(
-        <div key={index} style={selected ? sStyle : tStyle} onClick={() => (this.selectBook(element.index))}>
+        <div key={index} style={selected ? sStyle : tStyle} onClick={() => this.selectBook(element.index)}>
           {element.name}
         </div>
       )
@@ -282,7 +279,7 @@ export default class Bible extends Component {
       sStyle.marginLeft = '0.25vw';
       let selected = (element.index === currentChapter);
       return(
-        <div key={index} style={selected ? sStyle : tStyle} onClick={() => (this.selectChapter(element.index))}>
+        <div key={index} style={selected ? sStyle : tStyle} onClick={() => this.selectChapter(element.index)}>
           {element.chapter}
         </div>
       )
@@ -296,7 +293,7 @@ export default class Bible extends Component {
       sStyle.marginLeft = '0.25vw';
       let selected = (element.index === startVerse);
       return(
-        <div key={index} style={selected ? sStyle : tStyle} onClick={() => (this.selectStartVerse(element.index))}>
+        <div key={index} style={selected ? sStyle : tStyle} onClick={() => this.selectStartVerse(element.index)}>
           {element.verse.verse}
         </div>
       )
@@ -310,7 +307,7 @@ export default class Bible extends Component {
       sStyle.marginLeft = '0.25vw';
       let selected = (element.index === endVerse);
       return(
-        <div key={index} style={selected ? sStyle : tStyle} onClick={() => (this.selectEndVerse(element.index))}>
+        <div key={index} style={selected ? sStyle : tStyle} onClick={() => this.selectEndVerse(element.index)}>
           {element.verse.verse}
         </div>
       )
@@ -327,12 +324,10 @@ export default class Bible extends Component {
     }
 
     return(
-      <HotKeys handlers={this.handlers}>
-        <div tabIndex="-1" id='bibleWindow' style={{position:'fixed', top:0, left:0, height:'100vh',
-          zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
-          <div style={{position:'fixed', zIndex:5, right:'12.5%', top:'1%',
-            width:'75vw', height: '75vh', backgroundColor:"#383838", padding:'1%', color: 'white'}}>
-            <div style={{display:'flex'} }>
+      <HotKeys handlers={this.handlers} tabIndex="-1" id='bibleWindow'>
+          <div style={{position:'relative', width:'75vw', height: '75vh', backgroundColor:"#383838",
+            margin: '2vh auto', color: 'white'}}>
+            <div style={{display:'flex'}}>
               <div style={{display: 'flex', width:'50vw', height:'70vh',
                 fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
                 <div style={{display: 'block', width:'9vw', margin:'0.5vw'}}>
@@ -400,11 +395,9 @@ export default class Bible extends Component {
               </div>
             </div>
             <div style={{display:'flex', position:'absolute', right:'0.5vw', bottom:'0.5vh'}}>
-              <button style={buttonStyle} onClick={this.props.close}>Close</button>
               <button style={buttonStyle} onClick={this.createVersesItem}>Add Verses</button>
             </div>
           </div>
-        </div>
       </HotKeys>
     )
 

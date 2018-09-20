@@ -93,7 +93,7 @@ export default class MobileSlides extends React.Component{
         }
         return(
           <div style={{display:'flex', width:slideWidth, userSelect:'none'}} key={i} id={"MSlide"+(index*slidesPerRow+i)}>
-            <div onClick={() => (that.clickSlide(index*slidesPerRow+i))} style={style}>
+            <div onClick={() => that.clickSlide(index*slidesPerRow+i)} style={style}>
               <MobileSlideInList words={lyrics} style={slides[index*slidesPerRow+i].boxes[0]}
                  backgrounds={backgrounds} name={slides[index*slidesPerRow+i].type}
                  width={width} height={height} titleSize={titleSize}/>
@@ -113,13 +113,13 @@ export default class MobileSlides extends React.Component{
       {words.length > 1 &&<div style={{ display:'flex', paddingTop:'1.5%'}}>
         <button style={{width:'50vw', height:'20vh', backgroundColor:'#383838', userSelect:'none'}}>
           <img style={{width:'45vw', height:'15vh', marginRight:'2vw'}}
-             onClick={() => (that.prevSlide(wordIndex))}
+             onClick={() => that.prevSlide(wordIndex)}
              alt="left" src={left}
             />
         </button>
         <button style={{width:'50vw', height:'20vh', backgroundColor:'#383838'}}>
           <img style={{width:'45vw', height:'15vh', marginRight:'2vw'}}
-             onClick={() => (that.nextSlide(wordIndex))}
+             onClick={() => that.nextSlide(wordIndex)}
              alt="right" src={right}
             />
         </button>

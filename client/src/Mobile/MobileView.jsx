@@ -66,7 +66,7 @@ export default class MobileView extends Component{
           <button style={buttonLoggedIn}
             onClick={this.openMenu}>Menu</button>
           <div style={this.state.menuOpen ? menuStyle : {display:'none'}}>
-              <button style={menuItem} onClick={() => (this.props.history.push("/"))}>Home</button>
+              <button style={menuItem} onClick={() => this.props.history.push("/")}>Home</button>
                 {/*{(item.type === 'song') && <button style={menuItem}
                 onClick={this.openArrangeLyrics}>Arrange Lyrics</button>}
                 <button style={menuItem} onClick={connectToReceiver}> Connect To Receiver </button>*/}

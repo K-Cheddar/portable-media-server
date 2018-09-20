@@ -23,7 +23,7 @@ export default class MobileItemList extends React.Component{
          width:width, height: fullHeight, marginTop:"3%"}
        : {border:'0.75vmax', borderColor: '#383838', borderStyle:'solid',
           width:width, height: fullHeight, marginTop:"3%"}}
-        onClick={() => (this.props.setItemIndex(index))}
+        onClick={() => this.props.setItemIndex(index)}
         >
         <MobileItemInList name={element.name} background={element.background} type={element.type}
           nameColor = {element.nameColor} backgrounds={backgrounds} width={width} height={height}

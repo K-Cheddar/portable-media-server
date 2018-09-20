@@ -31,7 +31,7 @@ export default class SongSection extends Component{
 
     return(
       <div style={style} key={i}>
-        <div style={{width:'95%'}}onClick={() => (setSectionIndex(index*numSongSections+i))} >
+        <div style={{width:'95%'}} onClick={() => setSectionIndex(index*numSongSections+i)} >
           <div style={{display:'flex', margin:'2%'}}>
             <select style={buttonStyle} value={item.type}
               onChange={ (e) => this.changeSectionType(e, index*numSongSections+i)}>
@@ -44,7 +44,7 @@ export default class SongSection extends Component{
               {item.name}
             </div>
           </div>
-          <div onMouseDown={() => (setSectionIndex(index*numSongSections+i))}
+          <div onMouseDown={() => setSectionIndex(index*numSongSections+i)}
             id={"Section"+(index*numSongSections+i)}
             style={((index*numSongSections+i) === sectionIndex) ?
               {border:'0.25vw #06d1d1 solid', height: '80%'}
@@ -56,7 +56,7 @@ export default class SongSection extends Component{
           </div>
         </div>
         <img style={{display:'block', width:'1.5vmax', height:'1.5vmax'}}
-           onClick={() => (deleteSection(index*numSongSections+i))}
+           onClick={() => deleteSection(index*numSongSections+i)}
            alt="delete" src={deleteX}
           />
       </div>

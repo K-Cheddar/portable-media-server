@@ -224,8 +224,8 @@ class ItemSlides extends React.Component{
         return(
           <div style={{display:'flex', width:slideWidth, userSelect:'none'}} key={i} id={"Slide"+(index*slidesPerRow+i)}>
             <div  style={style}
-              onMouseDown={() => (that.setElement(index*slidesPerRow+i))}
-              onMouseOver={() => (that.setTarget(index*slidesPerRow+i))}
+              onMouseDown={() => that.setElement(index*slidesPerRow+i)}
+              onMouseOver={() => that.setTarget(index*slidesPerRow+i)}
               >
               {(selected && beingDragged) &&
                 <SlideInList words={lyrics} style={slides[index*slidesPerRow+i].boxes[0]}
@@ -290,7 +290,7 @@ export default ItemSlides;
 
 // <div style={{padding:'1.5%'}}>
 //   {deleteEnable && <img style={{display:'block', width:'1.5vw', height:'1.5vw'}}
-//      onClick={() => (that.deleteSlide(index*3+i))}
+//      onClick={() => that.deleteSlide(index*3+i)}
 //      alt="delete" src={deleteX}
 //     />
 //   }

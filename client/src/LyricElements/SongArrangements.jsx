@@ -71,7 +71,7 @@ export default class SongArrangements extends Component{
       let moreThanOne = arrangements.length > 1;
       return(
         <div style={selected ? arrSelected : arrStyle} key={index}>
-          {!selectedToEdit && <div onClick={ () => (this.props.selectArrangement(index))}
+          {!selectedToEdit && <div onClick={ () => this.props.selectArrangement(index)}
             style={{margin:"0% 1% 0% 1%", width: '80%', textAlign: 'center'}}>
             {element.name}
           </div>}
@@ -81,23 +81,23 @@ export default class SongArrangements extends Component{
             </form>
           }
           {!selectedToEdit && <img className='imgButton' style={imageButtonStyle}
-           onClick={() => (this.selectToEdit(index, element.name))}
+           onClick={() => this.selectToEdit(index, element.name)}
            alt="edit" src={edit}
            />}
           {!selectedToEdit && <img className='imgButton' style={imageButtonStyle}
-            onClick={() => (this.duplicateArrangement(element))}
+            onClick={() => this.duplicateArrangement(element)}
             alt="duplicate" src={duplicate}
            />}
            {(!selectedToEdit && moreThanOne) && <img className='imgButton' style={imageButtonStyle}
-            onClick={() => (this.deleteArrangement(index))}
+            onClick={() => this.deleteArrangement(index)}
             alt="delete" src={deleteX}
             />}
            {selectedToEdit && <img className='imgButton' style={imageButtonStyle}
-            onClick={() => (this.confirmName(index))}
+            onClick={() => this.confirmName(index)}
             alt="check" src={check}
             />}
            {selectedToEdit && <img className='imgButton' style={imageButtonStyle}
-            onClick={() => (this.cancelArrangement())}
+            onClick={() => this.cancelArrangement()}
             alt="cancel" src={cancel}
             />}
         </div>

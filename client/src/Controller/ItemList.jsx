@@ -176,8 +176,8 @@ export default class ItemList extends React.Component{
   return(
     <div style={{display:'flex', userSelect:'none'}} key={index} id={"Item"+index}>
       <div style={style}
-        onMouseDown={() => (this.setElement(index))}
-        onMouseOver={() => (this.setTarget(index))}
+        onMouseDown={() => this.setElement(index)}
+        onMouseOver={() => this.setTarget(index)}
         >
         {(selected && beingDragged) &&
           <ItemInList name={element.name} background={element.background} type={element.type}
@@ -195,15 +195,15 @@ export default class ItemList extends React.Component{
       </div>
         <div style={{padding:"3%"}}>
           <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw'}}
-             onClick={() => (this.props.deleteItemFromList(index))}
+             onClick={() => this.props.deleteItemFromList(index)}
              alt="delete" src={deleteX}
              />
            <img className='imgButton' style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
-            onClick={() => (this.editItem(element.name, element._id))}
+            onClick={() => this.editItem(element.name, element._id)}
             alt="edit" src={edit}
             />
           <img className='imgButton' style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
-             onClick={() => (this.props.duplicateItem(element._id))}
+             onClick={() => this.props.duplicateItem(element._id)}
              alt="duplicate" src={duplicate}
              />
         </div>

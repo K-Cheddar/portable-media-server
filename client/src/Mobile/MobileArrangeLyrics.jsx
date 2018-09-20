@@ -241,22 +241,22 @@
 //         <div style={{display:'flex', margin:'1.5vh', userSelect:'none'}} key={index}>
 //           <div style={buttonDiv}>
 //             {!first && <img className='imgButton' style={orderButton}
-//                onClick={() => (this.moveSection(index, index-1))}
+//                onClick={() => this.moveSection(index, index-1)}
 //                alt="upArrow" src={upArrow}
 //               />}
 //           </div>
 //           <div style={ selected ? songOrderSelected : songOrderStyle}
-//             onClick={() => (this.selectSection(name))}> {name}
+//             onClick={() => this.selectSection(name)}> {name}
 //           </div>
 //           <div style={buttonDiv}>
 //             {!last &&<img className='imgButton' style={orderButton}
-//                onClick={() => (this.moveSection(index, index+1))}
+//                onClick={() => this.moveSection(index, index+1)}
 //                alt="downArrow" src={downArrow}
 //               />}
 //           </div>
 //           <div style={buttonDiv}>
 //             <img className='imgButton' style={{...orderButton, marginLeft: '1vw'}}
-//                onClick={() => (this.deleteSectionFromOrder(index))}
+//                onClick={() => this.deleteSectionFromOrder(index)}
 //                alt="delete" src={deleteX}
 //               />
 //           </div>

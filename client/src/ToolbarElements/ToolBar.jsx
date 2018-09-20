@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import FormatEditor from './FormatEditor';
-import Bible from './Bible'
 import CreateName from '../CreateName';
 import ItemListEditor from './ItemListEditor';
 import UserSettings from './UserSettings';
 import TextBoxEditor from './TextBoxEditor';
 import ProjectorControl from './ProjectorControl'
+import AllItems from './AllItems';
 
 import connected from '../assets/connected.png';
 import disconnected from '../assets/disconnected.png';
 import open from '../assets/open.png';
 import bibleIcon from '../assets/bibleIcon.png'
 import songIcon from '../assets/songIcon.png'
+import allItemsIcon from '../assets/allItemsIcon.png'
 import undoButton from '../assets/undo.png'
 import redoButton from '../assets/redo.png'
 
@@ -23,11 +24,20 @@ export default class Toolbar extends Component {
     this.state = {
       bibleOpen: false,
       nameOpen: false,
-      type: "",
+      tab: "Existing",
       menuMousedOver: false,
       itemListsOpen: false,
       settingsOpen: false,
+      allItemsOpen: false
     }
+  }
+
+  openAllItems = (tab) => {
+    this.setState({allItemsOpen: true, tab: tab})
+  }
+
+  closeAllItems = () => {
+    this.setState({allItemsOpen: false})
   }
 
   openMenu = () => {
@@ -54,36 +64,9 @@ export default class Toolbar extends Component {
     this.setState({settingsOpen: false})
   }
 
-  openBible = () => {
-    this.setState({
-      bibleOpen: true,
-      type: 'bible'
-    })
-  }
-  openSong = () => {
-    this.setState({
-      nameOpen: true,
-      type: 'song'
-    })
-  }
-  openImage = () => {
-    this.setState({
-      nameOpen: true,
-      type: 'image'
-    })
-  }
-
-
   logout = () => {
     this.setState({menuMousedOver: false})
     this.props.parent.logout();
-  }
-
-  closeBible = () => {
-    this.setState({bibleOpen: false})
-  }
-  closeName = () => {
-    this.setState({nameOpen: false})
   }
 
   openPresentation = () => {
@@ -101,7 +84,7 @@ export default class Toolbar extends Component {
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
       allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
       undoReady, redoReady} = this.props.parent.state;
-    let {bibleOpen, nameOpen, type, menuMousedOver, itemListsOpen, settingsOpen} = this.state;
+    let {bibleOpen, nameOpen, tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen} = this.state;
 
     let menuItem = {
       display:'inline-block', width:'90%', padding: '2.5%', backgroundColor:'#fff', margin: '5%',
@@ -169,15 +152,17 @@ export default class Toolbar extends Component {
                   />
               </div>
               <div style={{display: 'flex', marginTop: '1vh'}}>
-                <button style={(mode === 'edit') ? modeButtonSelected : modeButton} onClick={() => (this.props.parent.setState({mode: 'edit'}))}>Edit</button>
-                <button style={(mode === 'display') ? modeButtonSelected : modeButton} onClick={() => (this.props.parent.setState({mode: 'display'}))}>Display</button>
+                <button style={(mode === 'edit') ? modeButtonSelected : modeButton}
+                  onClick={() => this.props.parent.setState({mode: 'edit'})}>Edit</button>
+                <button style={(mode === 'display') ? modeButtonSelected : modeButton}
+                  onClick={() => this.props.parent.setState({mode: 'display'})}>Display</button>
               </div>
 
             </div>
           </li>
           <li style={{width: '13vw'}}>
             {mode === 'edit' && <div className='toolbarSection' style={{display:'flex'}}>
-              <div onClick={this.openBible} className='imgButton'
+              <div onClick={ () => this.openAllItems('Bible')} className='imgButton'
                  style={{fontSize: "calc(5px + 0.35vw)", height: '5vh', marginRight:'0.5vw'}}>
                 <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
                   padding: '0.25vh 0.25vw'}}
@@ -185,13 +170,21 @@ export default class Toolbar extends Component {
                    />
                  <div>Open Bible</div>
               </div>
-              <div onClick={this.openSong} className='imgButton'
-                style={{fontSize: "calc(5px + 0.35vw)", height: '5vh'}}>
+              <div onClick={ () => this.openAllItems('Song')} className='imgButton'
+                style={{fontSize: "calc(5px + 0.35vw)", marginRight:'0.5vw', height: '5vh'}}>
                 <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
                   padding: '0.25vh 0.25vw'}}
                    alt="songIcon" src={songIcon}
                    />
                  <div>Add Song</div>
+              </div>
+              <div onClick={ () => this.openAllItems('Existing')} className='imgButton'
+                style={{fontSize: "calc(5px + 0.35vw)", height: '5vh'}}>
+                <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
+                   alt="allItemsIcon" src={allItemsIcon}
+                   />
+                 <div>All Items</div>
               </div>
             </div>}
           </li>
@@ -249,11 +242,6 @@ export default class Toolbar extends Component {
             </div>
           </li>
         </ul>
-        {bibleOpen && <Bible addItem={addItem} close={this.closeBible} formatBible={formatBible}
-        functions={this.props.parent} state={this.props.parent.state}/>}
-        {nameOpen && <CreateName option="create" name={"New " + type} type={type} db={db}
-        close={this.closeName} addItem={addItem} userSettings={userSettings}
-        />}
         {itemListsOpen && <ItemListEditor updateState={updateState} close={this.closeItemLists}
           itemLists={itemLists} allItemLists={allItemLists} deleteItemList={deleteItemList}
           newItemList={newItemList} selectItemList={selectItemList} duplicateList={duplicateList}
@@ -261,6 +249,8 @@ export default class Toolbar extends Component {
         />}
         {settingsOpen && <UserSettings state={this.props.parent.state} close={this.closeSettings}
         updateUserSetting={updateUserSetting}/>}
+        {allItemsOpen && <AllItems close={this.closeAllItems} state={this.props.parent.state}
+        functions={this.props.parent} tab={tab} formatBible={formatBible}/>}
       </div>
     )
   }

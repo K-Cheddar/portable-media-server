@@ -14,7 +14,7 @@ export default class MobileListChanger extends React.Component{
   return(
     <div style={{display:'flex'}} key={index} id={"MItem"+index}>
       <div style={(selectedItemList.name === element.name) ?  selectedStyle : listNameStyle}
-        onClick={() => (selectItemList(element.name))}>
+        onClick={() => selectItemList(element.name)}>
         {element.name}
       </div>
     </div>

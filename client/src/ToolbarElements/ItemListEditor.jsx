@@ -5,9 +5,11 @@ import add from '../assets/addItem.png';
 import check from '../assets/check.png';
 import cancel from '../assets/cancel-icon.png';
 import bookmark from '../assets/bookmark.png';
+import closeIcon from '../assets/closeIcon.png'
 import DeleteConfirmation from '../DeleteConfirmation'
 import * as DateFunctions from '../HelperFunctions/DateFunctions'
-import MakeUnique from '../HelperFunctions/MakeUnique'
+import MakeUnique from '../HelperFunctions/MakeUnique';
+
 
 export default class ItemListEditor extends Component{
 
@@ -228,23 +230,23 @@ export default class ItemListEditor extends Component{
             </form>
           }
           {(!selected && !item.outline) && <img className='imgButton' style={imageButtonStyle}
-             onClick={() => (this.setAsOutline(item.id))}
+             onClick={() => this.setAsOutline(item.id)}
              alt="bookmark" src={bookmark}
              />}
           {!selected && <img className='imgButton' style={imageButtonStyle}
-           onClick={() => (this.edit(index, item.name))}
+           onClick={() => this.edit(index, item.name)}
            alt="edit" src={edit}
            />}
            {!selected && <img className='imgButton' style={imageButtonStyle}
-            onClick={() => (this.deleteList('one', item.id))}
+            onClick={() => this.deleteList('one', item.id)}
             alt="delete" src={deleteX}
             />}
            {selected && <img className='imgButton' style={imageButtonStyle}
-            onClick={() => (this.confirm(item.id))}
+            onClick={() => this.confirm(item.id)}
             alt="check" src={check}
             />}
            {selected && <img className='imgButton' style={imageButtonStyle}
-            onClick={() => (this.cancel())}
+            onClick={() => this.cancel()}
             alt="cancel" src={cancel}
             />}
         </div>
@@ -257,15 +259,15 @@ export default class ItemListEditor extends Component{
           <div style={item.outline ? outlineStyle: itemStyle}>
             <div style={{width: '80%'}}>{item.name}</div>
             {!item.outline &&<img className='imgButton' style={imageButtonStyle}
-              onClick={() => (this.setAsOutline(item.id))}
+              onClick={() => this.setAsOutline(item.id)}
               alt="bookmark" src={bookmark}
               />}
             <img className='imgButton' style={imageButtonStyle}
-             onClick={() => (this.addToList(item.id))}
+             onClick={() => this.addToList(item.id)}
              alt="add" src={add}
              />
            <img className='imgButton' style={imageButtonStyle}
-               onClick={() => (this.openConfirmation(item.name, item.id))}
+               onClick={() => this.openConfirmation(item.name, item.id)}
                alt="delete" src={deleteX}
                />
           </div>
@@ -278,7 +280,7 @@ export default class ItemListEditor extends Component{
     let style={
       position:'absolute',    zIndex:5,     left:'25%',     top:'15%',
       backgroundColor: '#383838',           boxShadow: '0 5px 10px rgb(0, 0, 0)',
-      border: '1px solid #CCC',             borderRadius: 3,
+      border: '0.1vw solid white',          borderRadius: '1vw',
       padding: 10,            height: '45vh',               width: '45vw',
       color: 'white'
     }
@@ -287,9 +289,11 @@ export default class ItemListEditor extends Component{
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
        width: '9vw', display: 'flex', justifyContent: 'center', alignItems: 'center'}
 
+    let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
+       zIndex: 4, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
+
     return(
-      <div style={{position:'fixed', top:0, left:0, height:'100vh',
-        zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
+      <div style={windowBackground}>
         <div style={style}>
           <div style={{display:'flex'}}>
             <div style={{width:'21vw', height: '40vh', overflowX: 'hidden'}}>
@@ -304,6 +308,11 @@ export default class ItemListEditor extends Component{
                 style={{width:'95%', padding:'1%'}}/>
               <div style={{paddingTop: '5%', fontSize:'1.15vw'}}>{ails}</div>
             </div>
+            <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw',
+              padding: '0.25vh 0.25vw', position: 'absolute', right: '1vw'}}
+               alt="closeIcon" src={closeIcon}
+              onClick={this.props.close}
+              />
           </div>
           <div>
             <div>
@@ -318,13 +327,12 @@ export default class ItemListEditor extends Component{
                 (Blank)</div>
             </button>
              </div>
-            <button style={{...buttonStyle, float:'right'}} onClick={this.props.close} >Close</button>
           </div>
         </div>
         {deleteOverlay &&
           <div style={{position:'fixed', top:0, left:0, height:'100vh', width:'100vw',
              zIndex: 9, backgroundColor:'rgba(62, 64, 66, 0.5)'}}>
-             <DeleteConfirmation confirm={() => (this.deleteList('all'))}
+             <DeleteConfirmation confirm={() => this.deleteList('all')}
                cancel={this.cancel} name={name}  />
         </div>}
       </div>

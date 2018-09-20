@@ -3,7 +3,6 @@ import ItemSlides from './ItemSlides';
 import ItemList from './ItemList';
 import DisplayEditor from './DisplayEditor';
 import Backgrounds from './Backgrounds';
-import AllItems from './AllItems';
 import DisplayWindow from '../DisplayElements/DisplayWindow';
 
 export default class FullView extends React.Component{
@@ -48,9 +47,6 @@ export default class FullView extends React.Component{
           <DisplayWindow backgrounds={backgrounds} words={currentInfo.words} style={currentInfo.style}
             background={currentInfo.background} width={"16vw"} title={"Presentation"}
             titleSize="1.25vw"
-            />
-          <AllItems allItems={allItems} backgrounds={backgrounds}
-            deleteItem={deleteItem} addItemToList={addItemToList}
             />
         </div>
       </div>

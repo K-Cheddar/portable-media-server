@@ -34,7 +34,7 @@ export default class MobileSongSection extends Component{
               )}
             </select>
             <img style={{ width:'7vw', height:'7vw', marginLeft: '2vw'}}
-               onClick={() => (deleteSection(index))}
+               onClick={() => deleteSection(index)}
                alt="delete" src={deleteX}
               />
           </div>

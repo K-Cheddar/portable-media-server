@@ -220,11 +220,13 @@ export default class LyricsBox extends Component{
     let buttonStyle = {fontSize: "calc(8px + 0.4vw)", margin:"1vw", backgroundColor:'#383838',
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.5vw'}
 
+    let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
+       zIndex: 4, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
     return(
-      <HotKeys handlers={this.handlers} style={{position:'fixed', top:0, left:0, height:'100vh',
-        zIndex: 4, backgroundColor:'rgba(62, 64, 66, 0.5)', width:'100vw'}}>
+      <HotKeys handlers={this.handlers} style={windowBackground}>
         <div style={{position:'fixed', zIndex:5, right:'1%', top:'1%', color:'white',
-          width:'95vw', height: '93vh', backgroundColor:"#383838", padding:'1%'}}>
+          width:'95vw', height: '93vh', backgroundColor:"#383838", padding:'1%',
+          border: '0.1vw solid white', borderRadius: '1vw'}}>
           <div style={{display:'flex'}}>
               <div>
                 <div style={{marginRight: '0.25vw'}}>
