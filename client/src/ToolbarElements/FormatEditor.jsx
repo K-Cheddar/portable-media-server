@@ -5,6 +5,8 @@ import fsDOWN from '../assets/fontSizeDOWN.png';
 import cPicker from '../assets/color-picker.png';
 import cPickerClose from '../assets/color-picker-close.png';
 import brightness_img from '../assets/brightness.png';
+import skipTitle from '../assets/skipTitle.png';
+import skipTitleOff from '../assets/skipTitleOff.png'
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
@@ -23,6 +25,39 @@ class FormatEditor extends React.Component{
     this.throttle = null
 
   }
+
+  componentDidUpdate(prevProps, prevState){
+
+    let{item, wordIndex} = this.props;
+
+    if((wordIndex !== prevProps.wordIndex) || (item._id !== prevProps.item._id)){
+      let slides;
+      if (item.type === 'song')
+        slides = item.arrangements[item.selectedArrangement].slides || null;
+      else
+        slides = item.slides || null;
+
+      let slide = slides ? slides[wordIndex] : null;
+      if(!slide)
+        return;
+      if(slide.boxes[0].brightness !== undefined)
+        this.setState({brightness: slide.boxes[0].brightness})
+      else{
+        this.setState({brightness: 100})
+      }
+      this.setState({fontSize: slide.boxes[0].fontSize})
+      let stringToRGB = slide.boxes[0].fontColor.replace(/[^\d,]/g, '').split(',');
+      this.setState({
+        color: {
+          r: stringToRGB[0],
+          g: stringToRGB[1],
+          b: stringToRGB[2],
+          a: stringToRGB[3]
+        }
+      })
+    }
+  }
+
   openColors = () => {
     this.setState({cPickerOpen: true})
   }
@@ -92,71 +127,73 @@ class FormatEditor extends React.Component{
 
   }
 
-  componentDidUpdate(prevProps, prevState){
-
-    let{item, wordIndex} = this.props;
-
-    if((wordIndex !== prevProps.wordIndex) || (item._id !== prevProps.item._id)){
-      let slides;
-      if (item.type === 'song')
-        slides = item.arrangements[item.selectedArrangement].slides || null;
-      else
-        slides = item.slides || null;
-
-      let slide = slides ? slides[wordIndex] : null;
-      if(!slide)
-        return;
-      if(slide.boxes[0].brightness !== undefined)
-        this.setState({brightness: slide.boxes[0].brightness})
-      else{
-        this.setState({brightness: 100})
-      }
-      this.setState({fontSize: slide.boxes[0].fontSize})
-      let stringToRGB = slide.boxes[0].fontColor.replace(/[^\d,]/g, '').split(',');
-      this.setState({
-        color: {
-          r: stringToRGB[0],
-          g: stringToRGB[1],
-          b: stringToRGB[2],
-          a: stringToRGB[3]
-        }
-      })
-    }
+  updateSkipTitle = () => {
+    if(this.props.item.skipTitle)
+      this.props.updateSkipTitle(false)
+    else
+      this.props.updateSkipTitle(true)
   }
 
   render() {
 
     let {cPickerOpen, fontSize, brightness} = this.state;
     let sliderStyle = {width: '5vw', margin: '.5vw 1vw'}
+    let {item} = this.props;
+    let showSkipTitle = false;
+    if(item.type === 'song')
+      if(item.arrangements[0].slides.length > 1)
+        showSkipTitle = true;
+    else if(item.type !== 'song')
+      if(item.slides.length > 1)
+        showSkipTitle = true;
 
     return (
-      <div style={{display:'flex'}}>
-          <img className='imgButton' style={!cPickerOpen ? {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw',} : {display:'none'}}
-            alt="cPicker" src={cPicker}
-            onClick={this.openColors}/>
-          <img className='imgButton' style={!cPickerOpen ? {display:'none'} : {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw'} }
-            alt="cPickerClose" src={cPickerClose}
-            onClick={this.closeColors}/>
-          <div style={cPickerOpen ? {position:'fixed', zIndex:2, top: '5vh', backgroundColor:'#EEE', padding:'5px'} : {display: 'none'}}>
-              <ChromePicker color={this.state.color} onChange={this.colorChange}/>
+      <div>
+        <div style={{display:'flex'}}>
+            <img className='imgButton' style={!cPickerOpen ? {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw',} : {display:'none'}}
+              alt="cPicker" src={cPicker}
+              onClick={this.openColors}/>
+            <img className='imgButton' style={!cPickerOpen ? {display:'none'} : {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw'} }
+              alt="cPickerClose" src={cPickerClose}
+              onClick={this.closeColors}/>
+            <div style={cPickerOpen ? {position:'fixed', zIndex:2, top: '5vh', backgroundColor:'#EEE', padding:'5px'} : {display: 'none'}}>
+                <ChromePicker color={this.state.color} onChange={this.colorChange}/>
+            </div>
+           <input style={{width: '1.25vw', height: '1.25vw', textAlign: 'center',
+             marginRight:'1vw', fontSize:"calc(7px + 0.25vw)"}}
+             value={String(fontSize*10)} onChange={this.fontSizeChange}/>
+           <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
+              onClick={this.fontSizeUP}
+              alt="fsUP" src={fsUP}
+            />
+            <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
+                onClick={this.fontSizeDOWN}
+                alt="fsDOWN" src={fsDOWN}
+            />
+            <img style={{marginTop:'.25vw', width:'1.5vw', height:'1.5vw'}}
+                alt="brightness" src={brightness_img}
+                />
+            <Slider style={sliderStyle} min={1} value={brightness} onChange={this.changeBrightness}
+              onAfterChange={() => this.props.updateBrightness(brightness)}/>
           </div>
-         <input style={{width: '1.25vw', height: '1.25vw', textAlign: 'center',
-           marginRight:'1vw', fontSize:"calc(7px + 0.25vw)"}}
-           value={String(fontSize*10)} onChange={this.fontSizeChange}/>
-         <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
-            onClick={this.fontSizeUP}
-            alt="fsUP" src={fsUP}
-          />
-          <img className='imgButton' style={{width:'1.25vw', height: '1.25vw', marginRight:'1vw'}}
-              onClick={this.fontSizeDOWN}
-              alt="fsDOWN" src={fsDOWN}
-          />
-          <img style={{marginTop:'.25vw', width:'1.5vw', height:'1.5vw'}}
-              alt="brightness" src={brightness_img}
-              />
-          <Slider style={sliderStyle} min={1} value={brightness} onChange={this.changeBrightness}
-            onAfterChange={() => this.props.updateBrightness(brightness)}/>
-        </div>
+          <div style={{display: 'flex'}}>
+            {showSkipTitle &&<div onClick={this.updateSkipTitle} className='imgButton'
+               style={{fontSize: "calc(5px + 0.35vw)", height: '5vh', marginRight:'0.5vw'}}>
+               {item.skipTitle && <img
+                style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
+                 alt="skipTitle" src={skipTitle}
+                 />}
+               {!item.skipTitle && <img
+                style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
+                 alt="skipTitleOff" src={skipTitleOff}
+                 />}
+               <div>Skip Title</div>
+            </div>}
+          </div>
+      </div>
+
     )
   }
 

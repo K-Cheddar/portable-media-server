@@ -100,3 +100,13 @@ export function insertWords(props){
   updateHistory({type: 'update', item: item})
   setWordIndex(targetIndex);
 }
+
+export function updateSkipTitle(props){
+  let {val} = props;
+  let {updateState, updateHistory} = props.parent;
+  let {item, needsUpdate} = props.parent.state;
+  item.skipTitle = val;
+  needsUpdate.updateItem = true;
+  updateState({item: item, needsUpdate: needsUpdate});
+  updateHistory({type: 'update', item: item})
+}

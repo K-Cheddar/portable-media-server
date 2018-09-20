@@ -350,7 +350,6 @@ class App extends Component {
   historyToState = () => {
     let {needsUpdate} = this.state;
     let newState = undoHistory[undoIndex];
-    console.log(newState);
     for (let property in newState){
       if(property === 'item')
         needsUpdate.updateItem = true;
@@ -361,7 +360,6 @@ class App extends Component {
       if(property === 'userSettings')
         needsUpdate.updateUserSettings = true;
         let obj = JSON.parse(JSON.stringify(newState[property]))
-        console.log(property, obj);
       this.setState({[property]: obj})
     }
     this.setState({needsUpdate: needsUpdate})
@@ -719,6 +717,10 @@ class App extends Component {
     for(let property in obj)
       if(obj.hasOwnProperty(property))
         this.setState({[property]: obj[property]})
+  }
+
+  updateSkipTitle = (val) => {
+    ItemUpdate.updateSkipTitle({val: val, parent: this})
   }
 
   updateUndoIndex = () => {

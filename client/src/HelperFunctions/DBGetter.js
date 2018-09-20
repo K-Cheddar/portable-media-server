@@ -177,7 +177,10 @@ export function getItem(props){
     if(!history)
       updateHistory({type: 'update', item: doc, itemIndex: index})
     updateState({item: doc});
-    setWordIndex(0)
+    if(doc.skipTitle)
+      setWordIndex(1)
+    else
+      setWordIndex(0)
   }).then(function(){
     if(history){
       historyToState();

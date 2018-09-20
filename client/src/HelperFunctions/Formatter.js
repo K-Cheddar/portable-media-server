@@ -146,14 +146,13 @@ export function updateBoxPosition(props){
     height = box.height;
   }
 
-  console.log(props);
-
   if (!applyAll){
     let box = slides[wordIndex].boxes[boxIndex];
     box.x = x;
     box.y = y;
     box.width = width;
     box.height = height;
+    item.slides[wordIndex].boxes[boxIndex] = box;
   }
   else{
     for(let i = 1; i < slides.length; ++i){
@@ -164,6 +163,5 @@ export function updateBoxPosition(props){
       box.height = height;
     }
   }
-
   props.parent.updateItem(item);
 }

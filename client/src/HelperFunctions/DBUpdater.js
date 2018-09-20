@@ -15,7 +15,7 @@ export function updateItem(props){
     }
     else
       doc.slides = item.slides;
-
+    doc.skipTitle = item.skipTitle;
     return db.put(doc);
    }).catch(function(){
      console.log('update item not working');

@@ -257,7 +257,7 @@ class ItemSlides extends React.Component{
 
     return (
       <HotKeys style={{color: 'white', height: '100%', width: '100%'}} handlers={this.handlers}>
-        <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)",}}>
+        <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)"}}>
           <div style={{fontSize: 'calc(10px + 1vw)', width: '60%', paddingLeft:'0.5vw'}}> {name} </div>
           {(type==='song') && <button style={buttonStyle} onClick={this.openLBox}>Arrange Lyrics</button>}
           {(type!=='song') && <div style={{ width: '20%'}} ></div>}
@@ -270,7 +270,7 @@ class ItemSlides extends React.Component{
                alt="zoomOut" src={zoomOut}
               />
         </div>
-      <div style={{overflowX: 'hidden', height: "88%", width:"100%"}}
+      <div style={{overflowX: 'hidden', height: "86%", width:"100%"}}
         onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
         onMouseLeave={this.releaseElement}>{ROWtest}</div>
       {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item} setWordIndex={this.props.setWordIndex}

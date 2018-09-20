@@ -97,7 +97,7 @@ export default class Toolbar extends Component {
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
        setAsReceiver, connectToReceiver, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo} = this.props.parent; //updateItemStructure
+        updateCurrent, undo, redo, updateSkipTitle} = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
       allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
       undoReady, redoReady} = this.props.parent.state;
@@ -198,7 +198,7 @@ export default class Toolbar extends Component {
           <li style={{width: '20vw'}}>
             {mode === 'edit' && <div className='toolbarSection'>
                <FormatEditor item={item} updateFontSize={updateFontSize} updateFontColor={updateFontColor}
-                 wordIndex={wordIndex} updateBrightness={updateBrightness}/>
+                 wordIndex={wordIndex} updateBrightness={updateBrightness} updateSkipTitle={updateSkipTitle}/>
              </div>}
           </li>
           <li style={{width: '20vw'}}>
