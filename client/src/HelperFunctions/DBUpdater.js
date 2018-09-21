@@ -127,7 +127,10 @@ export function duplicateList(props){
       }
       db.put(newList)
       allItemLists.push(newListFull);
+      updateAllItemLists({db: db, allItemLists: allItemLists})
       itemLists.push(newListFull);
+      console.log(itemLists);
+      updateItemLists({db: db, itemLists: itemLists, selectedItemList:{name: name, id: id}}, updateState)
       selectItemList(name)
       updateState({allItemLists: allItemLists, itemLists: itemLists, itemList: doc.items,
         selectedItemList:{name: name, id: id}})
@@ -173,8 +176,8 @@ export function updateAllItems(props, updateState){
          updateState({allItems: allItems})
       doc.items = allItems;
       db.put(doc);
-  }).catch(function(){
-    console.log('update all items (update) not working');
+  }).catch(function(error){
+    console.log('update all items not working', error);
   });
 }
 
@@ -189,8 +192,8 @@ export function updateAllItemLists(props){
         newList(obj)
       }
       db.put(doc);
-  }).catch(function(){
-    console.log('update all itemLists not working');
+  }).catch(function(error){
+    console.log('update all itemLists not working', error);
   });
 }
 
@@ -232,8 +235,8 @@ export function updateItem(props){
       doc.slides = item.slides;
     doc.skipTitle = item.skipTitle;
     return db.put(doc);
-   }).catch(function(){
-     console.log('update item not working');
+  }).catch(function(error){
+     console.log('update item not working', error);
    });
 }
 
@@ -250,8 +253,8 @@ export function updateItemList(props, updateState){
     if(doc.items.length !== itemList.length)
      updateState({itemList: itemList})
     db.put(doc)
-  }).catch(function(){
-    console.log('update selectedItemList not working');
+  }).catch(function(error){
+    console.log('update selectedItemList not working', error);
   });
 }
 
@@ -271,8 +274,8 @@ export function updateItemLists(props, updateState){
        updateState({selectedItemList: {}, itemList: [], item:{}})
       doc.itemLists = itemLists;
       db.put(doc);
-  }).catch(function(){
-    console.log('update itemLists not working');
+  }).catch(function(error){
+    console.log('Update itemLists not working', error);
   });
 }
 
@@ -326,7 +329,7 @@ export function updateUserSettings(props){
   db.get('userSettings').then(function (doc) {
     doc.settings = userSettings
     return db.put(doc);
-   }).catch(function(){
-     console.log('update userSettings not working');
+  }).catch(function(error){
+     console.log('update userSettings not working', error);
    });
 }
