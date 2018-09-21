@@ -134,6 +134,11 @@ export function retrieveImages(props){
       let element = doc.backgrounds[i];
       let tag, imgData;
       let type = element.type;
+      if(element.url){
+        element.url = element.url.substring(4);
+        element.url = 'https' + element.url;
+      }
+      // console.log(element);
       if(type === 'video'){
         tag = element.url.substring(0,(element.url.lastIndexOf('.'))) + '.jpg'
         let img = new Image();

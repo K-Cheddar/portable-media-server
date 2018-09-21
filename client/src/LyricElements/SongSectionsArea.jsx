@@ -79,7 +79,7 @@ export default class SongSectionsArea extends Component{
     let {formattedLyrics} = this.props;
     formattedLyrics.push({
       type: "Verse",
-      name: "Verse",
+      name: "Verse "+formattedLyrics.length,
       words: ""
     })
     this.props.updateSections({formattedLyrics: formattedLyrics})
