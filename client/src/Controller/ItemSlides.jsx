@@ -259,7 +259,7 @@ class ItemSlides extends React.Component{
       <HotKeys style={{color: 'white', height: '100%', width: '100%'}} handlers={this.handlers}>
         <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)"}}>
           <div style={{fontSize: 'calc(10px + 1vw)', width: '60%', paddingLeft:'0.5vw'}}> {name} </div>
-          {(type==='song') && <button style={buttonStyle} onClick={this.openLBox}>Arrange Lyrics</button>}
+          {(type==='song') && <button style={buttonStyle} onClick={this.openLBox}>Arrange Lyric</button>}
           {(type!=='song') && <div style={{ width: '20%'}} ></div>}
           <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
               onClick={this.decreaseRows}

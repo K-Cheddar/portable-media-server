@@ -76,7 +76,6 @@ export default class Bible extends Component {
 
     item = this.props.formatBible(item, 'create', verses);
     this.props.functions.addItem(item);
-    this.props.close();
   }
   displayVerse = (index) => {
     let {currentBook, currentChapter, startVerse} = this.state;
@@ -325,10 +324,10 @@ export default class Bible extends Component {
 
     return(
       <HotKeys handlers={this.handlers} tabIndex="-1" id='bibleWindow'>
-          <div style={{position:'relative', width:'75vw', height: '75vh', backgroundColor:"#383838",
-            margin: '2vh auto', color: 'white'}}>
+          <div style={{position:'relative', height: '75vh', backgroundColor:"#383838",
+            margin: '1vh 0', color: 'white'}}>
             <div style={{display:'flex'}}>
-              <div style={{display: 'flex', width:'50vw', height:'70vh',
+              <div style={{display: 'flex', width:'27vw', height:'70vh',
                 fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
                 <div style={{display: 'block', width:'9vw', margin:'0.5vw'}}>
                   <div >Book</div>
@@ -351,7 +350,7 @@ export default class Bible extends Component {
                   <div style={{overflowX: 'hidden', height: '90%', width: '100%'}}>{versesEnd}</div>
                 </div>
               </div>
-              <div>
+              <div style={{width: '36vw'}}>
                 <div style={{display: 'flex'}}>
                   <div style={{color: 'yellow'}}>
                     {(endVerse !== startVerse) && <div style={{display: 'flex'}}>
@@ -384,18 +383,17 @@ export default class Bible extends Component {
                     }
                   </div>
                 </div>
-                <div style={{overflowX: 'hidden', height: '40vh', width: '40vw', backgroundColor:'#5b5b5b',
+                <div style={{overflowX: 'hidden', height: '40vh', backgroundColor:'#5b5b5b',
                    top: '1vh', position: 'relative'}}>{displayText}</div>
-                <div style={{position: 'relative', top: '2vh'}}>
+                <div style={{display:'flex', position: 'relative', top: '2vh'}}>
                   <DisplayWindow backgrounds={backgrounds} words={currentInfo.words} style={currentInfo.style}
                     background={currentInfo.background} width={"16vw"} title={"Presentation"}
                     titleSize="1.25vw"
                     />
+                  <button style={{...buttonStyle, position: 'absolute', right: '0.5vw', bottom: '0.5vh'}}
+                     onClick={this.createVersesItem}>Add Verses</button>
                 </div>
               </div>
-            </div>
-            <div style={{display:'flex', position:'absolute', right:'0.5vw', bottom:'0.5vh'}}>
-              <button style={buttonStyle} onClick={this.createVersesItem}>Add Verses</button>
             </div>
           </div>
       </HotKeys>

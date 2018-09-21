@@ -80,7 +80,7 @@ export default class Toolbar extends Component {
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
        setAsReceiver, connectToReceiver, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo, updateSkipTitle} = this.props.parent; //updateItemStructure
+        updateCurrent, undo, redo, updateSkipTitle, test} = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
       allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
       undoReady, redoReady} = this.props.parent.state;
@@ -123,6 +123,7 @@ export default class Toolbar extends Component {
                   <button style={menuItem} onClick={this.openSettings}> Open Settings </button>
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                   {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
+                  <button onClick={test}>TEST</button>
                   {/*<button style={menuItem} onClick={updateItemStructure}>UPDATE ALL</button>*/}
                 </div>
                 <div style={{display: 'flex', marginTop: '2vh'}}>
@@ -140,13 +141,13 @@ export default class Toolbar extends Component {
           <li style={{width: '12vw'}}>
             <div className='toolbarSection'>
               <div style={{display: 'flex'}}>
-                <select style={{fontSize: "calc(10px + 0.35vw)", width: '10vw', height: '3vh'}} value={selectedItemList.name}
+                <select style={{fontSize: "0.85vw", width: '9vw', height: '2.5vh'}} value={selectedItemList.name}
                   onChange={(e) => (selectItemList(e.target.value))}>
                   {itemLists.map((element, index) =>
                     <option key={index}> {element.name} </option>
                   )}
                 </select>
-                <img className='imgButton' style={{width:'1.5vw', height:'1.5vw', marginLeft: '0.25vw'}}
+                <img className='imgButton' style={{width:'1.25vw', height:'1.25vw', marginLeft: '0.25vw'}}
                    alt="open" src={open}
                   onClick={this.openItemLists}
                   />

@@ -567,6 +567,9 @@ class App extends Component {
     //   });
     //
     // });
+    // let url = 'https://www.azlyrics.com/'
+    // const html = (await (await fetch(url)).text());
+    // console.log(html);
   }
 
   toggleFreeze = () => {
@@ -703,6 +706,7 @@ class App extends Component {
     }
     let u = undoIndex > 0;
     let r = undoIndex < undoHistory.length-1
+    console.log(undoHistory);
     this.setState({undoReady: u, redoReady: r})
   }
 

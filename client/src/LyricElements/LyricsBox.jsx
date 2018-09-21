@@ -62,14 +62,21 @@ export default class LyricsBox extends Component{
   }
 
   createSections(lyrics){
-    let {formattedLyrics} = this.state;
+    let {formattedLyrics, songOrder} = this.state;
     let lines = lyrics.split("\n\n");
     for(let i = 0; i < lines.length; ++i){
-      formattedLyrics.push({
-        type: "Verse",
-        name: "Verse",
-        words: lines[i]
-      })
+      let name = "Verse "+ formattedLyrics.length + 1;
+      let index = formattedLyrics.findIndex(e => e.words === lines[i]);
+      if(index === -1){
+        formattedLyrics.push({
+          type: "Verse",
+          name: name,
+          words: lines[i]
+        })
+        songOrder.push(name)
+      }
+      else
+        songOrder.push(formattedLyrics[index].name)
     }
 
     this.updateSections({formattedLyrics: formattedLyrics})

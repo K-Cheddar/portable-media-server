@@ -223,9 +223,9 @@ export default class ItemListEditor extends Component{
 
       return(
         <div style={item.outline ? outlineStyle: itemStyle} key={index}>
-          {!selected && <div style={{width: '80%'}}>{item.name}</div>}
+          {!selected && <div style={{width: '75%'}}>{item.name}</div>}
           {selected &&
-            <form style={{width: '80%', margin:"0% 1% 0% 1%"}} onSubmit={(e) => (this.confirm(item.id, e))}>
+            <form style={{width: '75%', margin:"0% 1% 0% 1%"}} onSubmit={(e) => (this.confirm(item.id, e))}>
             <input style={{width: '100%'}} onChange={this.editName} value={name}/>
             </form>
           }
@@ -257,7 +257,7 @@ export default class ItemListEditor extends Component{
       return(
         <div key={item.name}>
           <div style={item.outline ? outlineStyle: itemStyle}>
-            <div style={{width: '80%'}}>{item.name}</div>
+            <div style={{width: '75%'}}>{item.name}</div>
             {!item.outline &&<img className='imgButton' style={imageButtonStyle}
               onClick={() => this.setAsOutline(item.id)}
               alt="bookmark" src={bookmark}

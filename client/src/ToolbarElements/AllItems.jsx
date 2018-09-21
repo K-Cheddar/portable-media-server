@@ -31,9 +31,9 @@ export default class AllItems extends Component {
 
     let tabNames = ['Existing', 'Song', 'Bible', 'Image', 'Video', 'Announcements'];
 
-    let tabStyle = {width: '13.25vw', padding: '0 1vw', height: '5vh', borderLeft:'0.15vw solid #06d1d1',
-      borderBottom:'0.15vw solid #c4c4c4', display: 'flex', alignItems: 'center', textAlign: 'center',
-      opacity: 0.75};
+    let tabStyle = {width: '8vw', padding: '0 1vw', height: '5vh', borderLeft:'0.15vw solid #06d1d1',
+      borderBottom:'0.15vw solid yellow', display: 'flex', alignItems: 'center', textAlign: 'center',
+      opacity: 0.75, fontSize: '1.15vw'};
     let tabSelected = Object.assign({}, tabStyle);
     tabSelected.opacity = 1;
     tabSelected.borderBottom ='0.15vw solid #06d1d1';
@@ -52,8 +52,8 @@ export default class AllItems extends Component {
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
       zIndex: 4, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
 
-    let style = {position:'fixed', zIndex:5, right:'1%', top:'1%', color:'white',
-      width:'95vw', height: '93vh', backgroundColor:"#383838", padding:'1%', border: '0.1vw solid white',
+    let style = {position:'fixed', zIndex:5, right:'15%', top:'5%', color:'white',
+      width:'65vw', height: '80vh', backgroundColor:"#383838", padding:'1%', border: '0.1vw solid white',
       borderRadius: '1vw'}
 
     return(

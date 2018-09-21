@@ -43,7 +43,7 @@ export default class ProjectorControl extends Component {
 
     return(
       <div>
-        {freeze && <div style={{display:'flex', margin: 'auto', width: '65%'}}>
+        {freeze && <div style={{display:'flex', margin: 'auto', width: '70%'}}>
          <div>
            <button style={buttonStyle} onClick={toggleFreeze}>Unfreeze</button>
          </div>
@@ -52,7 +52,7 @@ export default class ProjectorControl extends Component {
             />
           </div>
         }
-        {!freeze && <div style={{display:'flex', margin: 'auto', width: '65%'}}>
+        {!freeze && <div style={{display:'flex', margin: 'auto', width: '70%'}}>
         <div>
           <button style={buttonStyle} onClick={toggleFreeze}>Freeze</button>
         </div>
