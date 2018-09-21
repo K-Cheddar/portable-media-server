@@ -704,6 +704,7 @@ class App extends Component {
       undoHistory.push(newState);
       ++undoIndex;
     }
+    console.log(undoHistory);
     let u = undoIndex > 0;
     let r = undoIndex < undoHistory.length-1
     console.log(undoHistory);
@@ -736,7 +737,7 @@ class App extends Component {
     historyUpdating = true;
     if(newId && this.state.item._id !== newId)
       DBGetter.getItem({id: newId, parent: this, history: true, newItemIndex: newState.itemIndex})
-    else if(newListId !== this.state.selectedItemList.id){
+    else if(newListId && newListId !== this.state.selectedItemList.id){
       let name = itemLists.find(e => e.id === newListId).name;
       let selectedItemList = {id: newListId, name: name};
       DBGetter.selectItemList({selectedItemList: selectedItemList, parent: this, history: true})
