@@ -504,6 +504,7 @@ class App extends Component {
   setAsReceiver = () => {
     let {user} = this.state;
     let that = this;
+    clearTimeout(this.reconnectPeer)
 
     peer = new Peer({
        host: window.location.hostname,
@@ -530,7 +531,7 @@ class App extends Component {
        })
        conn.on('error', function (error){
           that.setState({isReciever: 'disconnected'})
-         setTimeout(function(){
+          that.reconnectPeer = setTimeout(function(){
            that.setAsReceiver();
          },3000)
        })
