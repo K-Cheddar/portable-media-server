@@ -56,10 +56,12 @@ export default class ExistingItems extends React.Component{
     let imageStyle = {fontSize: 4.5, fontColor: element.nameColor}
     return(
       <div style={{display:'flex', padding:'0.25vh'}} key={index}>
-        <div style={{width:'25vw', fontSize:'0.75vw'}}>{element.name}</div>
-        <div style={{width:'5vw', fontSize:'0.75vw'}}>{element.type}</div>
-        <DisplayWindow words={''} style={imageStyle} background={element.background}
-          backgrounds={backgrounds} width={width} title={''} titleSize={''}/>
+        <div style={{width:'25vw', fontSize:'0.75vw', borderRight:'0.075vw solid black'}}>{element.name}</div>
+        <div style={{width:'5vw', fontSize:'0.75vw', borderRight:'0.075vw solid black'}}>{element.type}</div>
+        <div style={{width: '8vw', display: 'flex', borderRight:'0.075vw solid black', justifyContent:'center'}}>
+          <DisplayWindow words={''} style={imageStyle} background={element.background}
+            backgrounds={backgrounds} width={width} title={''} titleSize={''}/>
+        </div>
         <div style={{width:'10vw', marginLeft: '1.5vw'}}>
           <img className='imgButton' style={{width:'1.5vw', height:'1.5vw'}}
              onClick={() => this.props.functions.addItemToList(element)}
@@ -79,9 +81,12 @@ export default class ExistingItems extends React.Component{
           style={{width:'20vw', padding: '0.25vh 0.25vw'}}/>
         <div style={{overflowX: 'hidden', height:'70vh'}}>
           <div style={{display: 'flex'}}>
-            <div style={{fontSize: '1.15vw', width: '25vw'}}>Name</div>
-            <div style={{fontSize: '1.15vw', width: '5vw'}}>Type</div>
-            <div style={{fontSize: '1.15vw', width: '5vw'}}>Background</div>
+            <div style={{fontSize: '1.15vw', width: '25vw', display: 'flex', justifyContent:'center'}}>
+              Name</div>
+            <div style={{fontSize: '1.15vw', width: '5vw', display: 'flex', justifyContent:'center'}}>
+              Type</div>
+            <div style={{fontSize: '1.15vw', width: '8vw', display: 'flex', justifyContent:'center'}}>
+              Background</div>
           </div>
           {SL}
         </div>
