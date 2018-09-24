@@ -171,7 +171,8 @@ class App extends Component {
     let that = this;
     setTimeout(function(){
       let success = that.state.retrieved;
-      if(!success.finished){
+
+      if(Object.keys(success).length < 6){
         window.location.reload(true)
       }
     }, 15000)
