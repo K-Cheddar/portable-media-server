@@ -223,9 +223,9 @@ export default class ItemListEditor extends Component{
 
       return(
         <div style={item.outline ? outlineStyle: itemStyle} key={index}>
-          {!selected && <div style={{width: '75%'}}>{item.name}</div>}
+          {!selected && <div style={{width: '70%'}}>{item.name}</div>}
           {selected &&
-            <form style={{width: '75%', margin:"0% 1% 0% 1%"}} onSubmit={(e) => (this.confirm(item.id, e))}>
+            <form style={{width: '70%', margin:"0% 1% 0% 1%"}} onSubmit={(e) => (this.confirm(item.id, e))}>
             <input style={{width: '100%'}} onChange={this.editName} value={name}/>
             </form>
           }
@@ -257,7 +257,7 @@ export default class ItemListEditor extends Component{
       return(
         <div key={item.name}>
           <div style={item.outline ? outlineStyle: itemStyle}>
-            <div style={{width: '75%'}}>{item.name}</div>
+            <div style={{width: '70%'}}>{item.name}</div>
             {!item.outline &&<img className='imgButton' style={imageButtonStyle}
               onClick={() => this.setAsOutline(item.id)}
               alt="bookmark" src={bookmark}
@@ -296,17 +296,17 @@ export default class ItemListEditor extends Component{
       <div style={windowBackground}>
         <div style={style}>
           <div style={{display:'flex'}}>
-            <div style={{width:'21vw', height: '40vh', overflowX: 'hidden'}}>
+            <div style={{width:'21vw', height: '40vh'}}>
               <div style={{fontSize:'1.5vw'}}>Loaded Item Lists</div>
               <input type='text' value={ilsSearch} onChange={this.updateIlsSearch}
                 style={{width:'95%', padding:'1%'}}/>
-              <div style={{paddingTop: '5%', fontSize:'1.15vw'}}>{ils}</div>
+              <div style={{paddingTop: '5%', fontSize:'1.15vw', height: '75%', overflowX: 'hidden'}}>{ils}</div>
             </div>
-            <div style={{width:'21vw', height: '40vh', overflowX: 'hidden', marginLeft:'1vw'}}>
+            <div style={{width:'21vw', height: '40vh', marginLeft:'1vw'}}>
               <div style={{fontSize:'1.5vw'}}>All Item Lists</div>
               <input type='text' value={ailsSearch} onChange={this.updateAilsSearch}
                 style={{width:'95%', padding:'1%'}}/>
-              <div style={{paddingTop: '5%', fontSize:'1.15vw'}}>{ails}</div>
+              <div style={{paddingTop: '5%', fontSize:'1.15vw', height: '75%', overflowX: 'hidden'}}>{ails}</div>
             </div>
             <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw',
               padding: '0.25vh 0.25vw', position: 'absolute', right: '1vw'}}

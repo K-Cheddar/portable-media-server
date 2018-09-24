@@ -1,5 +1,6 @@
 import React from 'react';
 import DisplayWindow from './DisplayWindow'
+import {Link} from 'react-router-dom';
 
 class Presentation extends React.Component{
 
@@ -45,7 +46,7 @@ class Presentation extends React.Component{
       width: window.innerWidth,
       height: window.innerHeight
     })
-    if(window.innerWidth !== window.screen.width || window.innerHeight !== window.screen.height )
+    if(window.innerWidth < window.screen.width || window.innerHeight < window.screen.height )
       this.setState({fullScreen: false})
   }
 
@@ -89,7 +90,10 @@ class Presentation extends React.Component{
 
 
     let buttonStyle = {fontSize: "10vmin", backgroundColor:'#383838', border:'1.5vmin solid #06d1d1',
-      borderRadius:'2vmin', color: 'white', padding:'0.25vmin', height: '50%', width: '100%'}
+      borderRadius:'2vmin', color: 'white'}
+
+    let homeButton = {fontSize: "5vmin", backgroundColor:'#383838', border:'1.25vmin solid #06d1d1',
+      borderRadius:'1.5vmin', color: 'white', position: 'absolute', left: '1vmin', top: '1vmin'}
 
     return (
       <div id="full-presentation">
@@ -98,6 +102,10 @@ class Presentation extends React.Component{
           <div style={{width: '90%'}}>
             {type === 'local' && <div style={{textAlign: 'center', fontSize: "8.5vmin", color: 'yellow',
               backgroundColor:'#383838', padding:'5vh', marginBottom: '10vh'}}>Drag To Intended Display</div>}
+            {type === 'remote' && <div style={{ display:'flex', alignItems: 'center',
+              justifyContent: 'center'}}>
+              <Link to="/"><button style={homeButton}>Home</button></Link>
+            </div>}
             <div style={{ display:'flex', alignItems: 'center', justifyContent: 'center'}}>
               <button onClick={this.goFullScreen} style={buttonStyle}>Click To Activate FullScreen</button>
             </div>
