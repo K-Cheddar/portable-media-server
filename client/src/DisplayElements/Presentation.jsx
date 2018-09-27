@@ -9,10 +9,8 @@ class Presentation extends React.Component{
     this.state = {
       width: 0,
       height: 0,
-      pBackground: '',
-      pWords: '',
-      pStyle: {},
-      pTime: -1,
+      localSlide: {},
+      localTime: -1,
       fullScreen: false,
     }
   }
@@ -55,25 +53,20 @@ class Presentation extends React.Component{
       let val = JSON.parse(e.newValue);
       if (!val)
         return;
-      this.setState({
-        pBackground: val.background,
-        pWords: val.words,
-        pStyle: val.style,
-        pTime: val.time
-      })
+      this.setState({ localSlide: val.slide,localTime: val.time})
     }
   }
 
   render() {
-    let {backgrounds, type} = this.props;
-    let {background, words, style, time} = this.props.currentInfo
-    let {pBackground, pWords, pStyle, pTime, width, height, fullScreen} = this.state;
+    let {backgrounds, type, currentInfo} = this.props;
+    let {localSlide, localTime, width, height, fullScreen} = this.state;
+    let slide;
 
-    if(pTime >= time){
-      background = pBackground;
-      words = pWords;
-      style = pStyle
-    }
+    if(currentInfo.time > localTime)
+      slide = currentInfo.slide;
+    else
+      slide = localSlide
+
 
     let sixteenByNine = Math.round((16/9)*100)/100;
     let fourByThree = Math.round((4/3)*100)/100;
@@ -111,8 +104,8 @@ class Presentation extends React.Component{
             </div>
           </div>
         </div>}
-        {fullScreen && <DisplayWindow words={words} style={style} background={background} backgrounds={backgrounds}
-          width={'100vw'} height={'100vh'} title={''} titleSize={''} presentation={true} extraPadding={extraPadding}/>
+        {fullScreen && <DisplayWindow slide={slide} backgrounds={backgrounds} width={'100vw'} height={'100vh'}
+        title={''} titleSize={''} presentation={true} extraPadding={extraPadding}/>
         }
       </div>
     )

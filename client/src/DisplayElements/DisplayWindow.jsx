@@ -18,6 +18,7 @@ export default class DisplayWindow extends React.Component{
       maxHeight: '100%',
       maxWidth:'100%',
       lockBox: true,
+      boxIndex: 0,
     }
   }
 
@@ -29,7 +30,7 @@ export default class DisplayWindow extends React.Component{
   updatePosition = () => {
     if(!this.props.editor)
       return;
-
+    let style = this.props.slide.boxes[0]
     let maxW = this.props.width;
     maxW = parseFloat(maxW.substring(0, maxW.length-2),10);
     maxW/=100;
@@ -44,14 +45,14 @@ export default class DisplayWindow extends React.Component{
     let box_y = 0;
     let boxWidth = maxW+ 'px';
     let boxHeight = maxH+'px';
-    if(this.props.style.x)
-      box_x = this.props.style.x*.01*maxW;
-    if(this.props.style.y)
-      box_y = this.props.style.y*.01*maxH;
-    if(this.props.style.width)
-      boxWidth = this.props.style.width*.01*maxW+'px';
-    if(this.props.style.height)
-      boxHeight = this.props.style.height*.01*maxH+'px';
+    if(style.x)
+      box_x = style.x*.01*maxW;
+    if(style.y)
+      box_y = style.y*.01*maxH;
+    if(style.width)
+      boxWidth = style.width*.01*maxW+'px';
+    if(style.height)
+      boxHeight = style.height*.01*maxH+'px';
 
     this.setState({
       maxWidth: maxW+'px',
@@ -65,8 +66,15 @@ export default class DisplayWindow extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    // let {background, presentation, editor} = this.props;
-    if((this.props.style !== prevProps.style) || (this.props.words !== prevProps.words))
+    if(!this.props.slide || !prevProps.slide)
+      return;
+    let box = this.props.slide.boxes[0];
+    let prevBox = prevProps.slide.boxes[0];
+    let style = box;
+    let prevStyle = prevBox;
+    let words = box.words;
+    let prevWords = prevBox.words;
+    if((style !== prevStyle) || (words !== prevWords))
       this.updatePosition();
   }
 
@@ -108,7 +116,7 @@ export default class DisplayWindow extends React.Component{
   }
 
   render() {
-    let {backgrounds, background, style, words, width, title,
+    let {backgrounds, slide, width, title,
       titleSize, presentation, extraPadding, editor} = this.props;
 
     let {box_x, box_y, boxWidth, boxHeight, maxWidth, maxHeight, lockBox} = this.state;
@@ -116,15 +124,8 @@ export default class DisplayWindow extends React.Component{
     let img = blank, asset;
     let isVideo = false;
 
-    let height = (parseFloat(width.substring(0, width.length-2),10)*.5625)+"vw";
-    if(presentation)
-      height = '100vh';
-    let tWidth = parseFloat(width.substring(0, width.length-2), 10);
-    let fsDivider = tWidth/(42.5);
-
-    if(title.length > 25){
-      title = title.substring(0, 26);
-      title+="...";
+    if(!slide){
+      slide = {boxes: [{words: '', background: '', style: {}}]}
     }
 
     let colorCodes = {
@@ -151,23 +152,89 @@ export default class DisplayWindow extends React.Component{
       titleStyle.color = '#FFF'
     }
 
-    let containerStyle = {width:width, height:height, position:'relative'}
+    if(title.length > 25){
+      title = title.substring(0, 26);
+      title+="...";
+    }
 
-    // let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
+    let height = (parseFloat(width.substring(0, width.length-2),10)*.5625)+"vw";
+    if(presentation)
+      height = '100vh';
+    let tWidth = parseFloat(width.substring(0, width.length-2), 10);
+    let fsDivider = tWidth/(42.5);
+
+    let containerStyle = {width:width, height:height, position:'relative'}
 
     let lockStyle = {width:'1.25vw', height:'1.25vw',
       top:'-0.5vw', left:'-0.5vw', position: 'absolute', zIndex: 2}
+    // 
+    // if(editor)
+    //   slide.boxes.push({words: '', background: slide.boxes[0].background, style: {}})
 
-    let id = `background-text-${title}-${words}`;
+    let boxes = slide.boxes.map((box, index) => {
+      let background = box.background;
+      let words = box.words;
+      let style = box;
+      let id = `background-text-${title}-${words}`;
 
-    if(backgrounds.some(e => e.name === background)){
-      asset = backgrounds.find(e => e.name === background);
-      img = asset.image.src;
-      if(asset.type === 'video' && (title === 'Presentation' || presentation || editor))
-        isVideo = true;
-    }
+      if(backgrounds.some(e => e.name === background)){
+        asset = backgrounds.find(e => e.name === background);
+        img = asset.image.src;
+        if(asset.type === 'video' && (title === 'Presentation' || presentation || editor))
+          isVideo = true;
+      }
 
-    let animate = presentation || title === 'Presentation' || editor
+      let animate = presentation || title === 'Presentation' || editor || title === 'Presentation '
+      return(
+        <div>
+          {editor &&
+            <Rnd size={{width: boxWidth, height: boxHeight}}
+            position={{x: box_x, y: box_y}}
+            onDragStop={(e, position) => {this.onBoxDragStop(position) }}
+            onResize={(e, direction, ref, delta, position) =>
+              {this.onBoxResize(e, direction, ref, delta, position)}}
+            onResizeStop={(e, direction, ref, delta, position) =>
+              {this.onBoxResizeStop(e, direction, ref, delta, position)}}
+            enableUserSelectHack={!lockBox} maxWidth={maxWidth} maxHeight={maxHeight}
+            minWidth={'35%'} minHeight={'35%'} bounds={'parent'}
+            style={{zIndex: 2, outline: '0.15vw solid #FFF'}}
+            disableDragging={lockBox}
+            enableResizing={{ top:!lockBox, right:!lockBox, bottom:!lockBox,
+              left:!lockBox, topRight:!lockBox, bottomRight:!lockBox,
+              bottomLeft:!lockBox, topLeft:!lockBox }}
+            >
+            {(lockBox && editor) && <img style={lockStyle}
+               alt="lock" src={lock}
+              onClick={this.toggleDragLock}
+              />}
+            {(!lockBox && editor) && <img style={lockStyle}
+               alt="unlock" src={unlock}
+              onClick={this.toggleDragLock}
+              />}
+            <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
+              fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding} position={style}
+              title={title} editor={editor} handleTextChange={this.props.handleTextChange} animate={animate}>
+            </DisplayWords>
+            <DisplayBackground img={img} brightness={style.brightness} presentation={presentation}
+              width={width} height={height} title={title} isVideo={isVideo} asset={asset}
+              editor={editor} animate={animate}>
+            </DisplayBackground>
+          </Rnd>}
+          {!editor && <div>
+            <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
+              fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding} position={style}
+              title={title} animate={animate}>
+            </DisplayWords>
+            <DisplayBackground img={img} brightness={style.brightness} presentation={presentation}
+              position={style} title={title} isVideo={isVideo} asset={asset} editor={editor}
+              animate={animate}>
+            </DisplayBackground>
+            </div>
+          }
+        </div>
+      )
+    })
+
 
     return (
       <div>
@@ -175,46 +242,7 @@ export default class DisplayWindow extends React.Component{
             {title}
         </div>}
           <div style={containerStyle}>
-            <DisplayBackground img={img} brightness={style.brightness} presentation={presentation}
-              width={width} height={height} title={title} isVideo={isVideo} asset={asset}
-              editor={editor} animate={animate}>
-            </DisplayBackground>
-            {editor &&
-              <Rnd size={{width: boxWidth, height: boxHeight}}
-              position={{x: box_x, y: box_y}}
-              onDragStop={(e, position) => {this.onBoxDragStop(position) }}
-              onResize={(e, direction, ref, delta, position) =>
-                {this.onBoxResize(e, direction, ref, delta, position)}}
-              onResizeStop={(e, direction, ref, delta, position) =>
-                {this.onBoxResizeStop(e, direction, ref, delta, position)}}
-              enableUserSelectHack={!lockBox} maxWidth={maxWidth} maxHeight={maxHeight}
-              minWidth={'35%'} minHeight={'35%'} bounds={'parent'}
-              style={{zIndex: 2, outline: '0.15vw solid #FFF'}}
-              disableDragging={lockBox}
-              enableResizing={{ top:!lockBox, right:!lockBox, bottom:!lockBox,
-                left:!lockBox, topRight:!lockBox, bottomRight:!lockBox,
-                bottomLeft:!lockBox, topLeft:!lockBox }}
-              >
-              {(lockBox && editor) && <img style={lockStyle}
-                 alt="lock" src={lock}
-                onClick={this.toggleDragLock}
-                />}
-              {(!lockBox && editor) && <img style={lockStyle}
-                 alt="unlock" src={unlock}
-                onClick={this.toggleDragLock}
-                />}
-              <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
-                fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding} position={style}
-                title={title} editor={editor} handleTextChange={this.props.handleTextChange} animate={animate}>
-              </DisplayWords>
-            </Rnd>}
-            {!editor &&
-              <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
-                fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding} position={style}
-                title={title} animate={animate} handleTextChange={this.props.handleTextChange}>
-              </DisplayWords>
-            }
-
+            {boxes}
           </div>
       </div>
     )

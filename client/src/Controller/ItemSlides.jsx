@@ -228,15 +228,14 @@ class ItemSlides extends React.Component{
               onMouseOver={() => that.setTarget(index*slidesPerRow+i)}
               >
               {(selected && beingDragged) &&
-                <SlideInList words={lyrics} style={slides[index*slidesPerRow+i].boxes[0]}
-                  backgrounds={backgrounds} x={mouseX} y={mouseY} moving={true}
-                  name={slides[index*slidesPerRow+i].type} width={width} height={height}
+                <SlideInList slide={slides[index*slidesPerRow+i]} backgrounds={backgrounds}
+                  x={mouseX} y={mouseY} moving={true} width={width} height={height}
                   titleSize={titleSize}
                   />
               }
               {(!selected || !beingDragged) &&
-                <SlideInList words={lyrics} style={slides[index*slidesPerRow+i].boxes[0]}
-                  name={slides[index*slidesPerRow+i].type}  width={width} height={height}
+                <SlideInList slide={slides[index*slidesPerRow+i]}
+                  name={slides[index*slidesPerRow+i].type} width={width} height={height}
                   backgrounds={backgrounds} titleSize={titleSize}
                   />
               }

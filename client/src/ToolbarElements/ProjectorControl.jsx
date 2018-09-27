@@ -63,22 +63,22 @@ export default class ProjectorControl extends Component {
         }
         <div style={{display: 'flex', marginTop: '1vh'}}>
           <div className='imgButton' style={{marginRight: '0.5vw'}}>
-            <div onClick={ () => {updateCurrent({background: '', displayDirect: true})}}
+            <div onClick={ () => {updateCurrent({image: ''})}}
               style={blankBackgroundStyle}></div>
             <div style={{fontSize: 'calc(5px + 0.25vw)', textAlign: 'center'}}>Black</div>
           </div>
           <div className='imgButton' style={{marginRight: '0.5vw'}}>
-            <div onClick={ () => {updateCurrent({background: defaultScreenBackground.name, displayDirect: true})}}
+            <div onClick={ () => {updateCurrent({image: defaultScreenBackground.name})}}
               style={screenBackgroundStyle}></div>
             <div style={{fontSize: 'calc(5px + 0.25vw)', textAlign: 'center'}}>Default</div>
           </div>
           <div className='imgButton' style={{marginRight: '0.5vw'}}>
-            <div onClick={ () => {updateCurrent({background: defaultWelcomeBackground.name, displayDirect: true})}}
+            <div onClick={ () => {updateCurrent({image: defaultWelcomeBackground.name})}}
               style={welcomeBackgroundStyle}></div>
             <div style={{fontSize: 'calc(5px + 0.25vw)', textAlign: 'center'}}>Welcome</div>
           </div>
           <div className='imgButton' style={{marginRight: '0.5vw'}}>
-            <div onClick={ () => {updateCurrent({background: defaultFarewellBackground.name, displayDirect: true})}}
+            <div onClick={ () => {updateCurrent({image: defaultFarewellBackground.name})}}
               style={farewellBackgroundStyle}></div>
             <div style={{fontSize: 'calc(5px + 0.25vw)', textAlign: 'center'}}>Farewell</div>
           </div>

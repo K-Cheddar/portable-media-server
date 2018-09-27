@@ -5,7 +5,7 @@ export default class SlideInList extends React.Component{
 
 
   render(){
-  let {words, backgrounds, style, moving, x, y, width, height, name, titleSize} = this.props;
+  let {backgrounds, slide, moving, x, y, width, height, name, titleSize} = this.props;
 
     let divStyle={width: width, height: height}
 
@@ -14,10 +14,12 @@ export default class SlideInList extends React.Component{
       divStyle.top = (y+3)  + 'px';
     }
 
+    // let slide = {boxes: [{words: words, background: style.background, ...style}]}
+
     return (
       <div style={divStyle}>
-        <DisplayWindow words={words} style={style} background={style.background} backgrounds={backgrounds}
-          width={width} height={height} title={name} titleSize={titleSize}/>
+        <DisplayWindow slide={slide} backgrounds={backgrounds}
+          width={width} height={height} title={slide.type} titleSize={titleSize}/>
       </div>
     )
   }

@@ -80,7 +80,7 @@ export default class Toolbar extends Component {
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
        setAsReceiver, connectToReceiver, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo, updateSkipTitle, test} = this.props.parent; //updateItemStructure
+        updateCurrent, undo, redo, updateSkipTitle} = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
       allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
       undoReady, redoReady} = this.props.parent.state;
@@ -123,7 +123,6 @@ export default class Toolbar extends Component {
                   <button style={menuItem} onClick={this.openSettings}> Open Settings </button>
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                   {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
-                  <button onClick={test}>TEST</button>
                   {/*<button style={menuItem} onClick={updateItemStructure}>UPDATE ALL</button>*/}
                 </div>
                 <div style={{display: 'flex', marginTop: '2vh'}}>
@@ -171,7 +170,7 @@ export default class Toolbar extends Component {
                    />
                  <div>Open Bible</div>
               </div>
-              <div onClick={ () => this.openAllItems('Song')} className='imgButton'
+              <div onClick={ () => this.openAllItems('Songs')} className='imgButton'
                 style={{fontSize: "calc(5px + 0.35vw)", marginRight:'0.5vw', height: '5vh'}}>
                 <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
                   padding: '0.25vh 0.25vw'}}

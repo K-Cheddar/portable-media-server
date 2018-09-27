@@ -22,9 +22,11 @@ export default class ItemInList extends React.Component{
 
   let style = {fontSize: 4.5, fontColor: nameColor}
 
+  let slide = {boxes:[{words: words, background: background, ...style}]}
+
     return (
         <div style={divStyle}>
-          <DisplayWindow words={words} style={style} background={background} backgrounds={backgrounds}
+          <DisplayWindow slide={slide} backgrounds={backgrounds}
             width={width} title={name} titleSize={".75vw"}/>
         </div>
     )

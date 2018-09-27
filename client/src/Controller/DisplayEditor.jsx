@@ -148,22 +148,18 @@ class DisplayEditor extends React.Component{
     else
       slides = item.slides || null;
     let slide = slides ? slides[wordIndex] : null;
-    let box = slide ? slide.boxes[0] : null;
 
     let blankStyle = {width: width, height: height, background: 'black'}
     let blankTextStyle = {color: 'white', textAlign: 'center',
     fontSize: '4vw', paddingTop: '15%'}
 
-    if(!box)
+    if(!slide)
       return (<div style={blankStyle}><div style={blankTextStyle}>No Item Selected</div></div>)
-
-    let words = box.words;
-    let background = box.background;
 
     return (
       <div onKeyUp={this.handleKeyUp} onKeyDown={this.props.overrideUndoRedo}
          style={{width: width, height: height, position: 'relative'}}>
-        <DisplayWindow words={words} style={box} background={background} backgrounds={backgrounds}
+        <DisplayWindow slide={slide}  backgrounds={backgrounds}
           width={width} height={height} title={''} editor={true} handleTextChange={this.handleTextChange}
           handleBoxChange={this.handleBoxChange}>
         </DisplayWindow>
@@ -173,3 +169,4 @@ class DisplayEditor extends React.Component{
 
 }
 export default DisplayEditor;
+// words={words} style={box} background={background}

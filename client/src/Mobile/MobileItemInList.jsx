@@ -16,10 +16,10 @@ export default class MobileItemInList extends React.Component{
       fontSize: 4.5
     }
 
-
+    let slide = {boxes: [{words: words, background: background, ...style}]}
 
     return (
-      <DisplayWindow words={words} style={style} background={background} backgrounds={backgrounds}
+      <DisplayWindow slide={slide} backgrounds={backgrounds}
         width={width} height={height} title={name} titleSize={'3vw'}/>
     )
   }

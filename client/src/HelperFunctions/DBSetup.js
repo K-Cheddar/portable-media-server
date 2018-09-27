@@ -57,13 +57,8 @@ var dateString = date.toLocaleDateString("en-US", options);
       let upload = {
         _id: "currentInfo",
         info: {
-          words:"",
-          background:"",
-          style:{
-            color:'',
-            fontSize:''
-          },
-          updated: false
+          box: {words: '', background: '', fontColor: 'rgba(0, 0, 0, 0)', fontSize: 2.5},
+          time: -1
         }
       }
       db.put(upload);

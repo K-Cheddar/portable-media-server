@@ -40,8 +40,6 @@ export default class ExistingItems extends React.Component{
   let {allItems, backgrounds} = this.props.state;
   let {text, deleteOverlay, name} = this.state;
 
-  let tabNames = ['Song', 'Bible', 'Image', 'Video', 'Announcements'];
-
   let filteredList = [];
   if(text.length > 0){
     filteredList = allItems.filter(ele => ele.name.toLowerCase().includes(text.toLowerCase()))
@@ -52,8 +50,10 @@ export default class ExistingItems extends React.Component{
 
   let width = '3.5vw';
 
+
   let SL = filteredList.map((element, index) => {
     let imageStyle = {fontSize: 4.5, fontColor: element.nameColor}
+    let slide = {boxes: [{words: '',  background: element.background, ...imageStyle}]}
     return(
       <div className='tableRow' style={{display:'flex'}}
         key={index}>
@@ -65,8 +65,7 @@ export default class ExistingItems extends React.Component{
           {element.type}</div>
         <div style={{width:'8vw', display: 'flex', justifyContent:'center', alignItems: 'center',
           borderRight:'0.1vw solid black', paddingTop: '0.5vh'}}>
-          <DisplayWindow words={''} style={imageStyle} background={element.background}
-            backgrounds={backgrounds} width={width} title={''} titleSize={''}/>
+          <DisplayWindow slide={slide} backgrounds={backgrounds} width={width} title={''} titleSize={''}/>
         </div>
         <div style={{width:'10vw', marginLeft: '1.5vw', paddingTop: '0.5vh'}}>
           <img className='imgButton' style={{width:'1.5vw', height:'1.5vw'}}
@@ -88,7 +87,7 @@ export default class ExistingItems extends React.Component{
           <input type='text' value={this.state.text} onChange={this.updateText}
             style={{width:'20vw', padding: '0.25vh 0.25vw'}}/>
         </div>
-        <div style={{overflowX: 'hidden', height:'70vh'}}>
+        <div style={{overflowX: 'hidden', height:'70vh', width: '80%'}}>
           <div style={{display: 'flex', paddingBottom: '1vh', borderBottom: '0.1vw solid #c4c4c4'}}>
             <div style={{fontSize: '1.15vw', width: '20vw', display: 'flex', justifyContent:'center'}}>
               Name</div>

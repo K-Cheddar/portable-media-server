@@ -34,16 +34,13 @@ export function setWordIndex(props){
   let {index, updateState, updateCurrent} = props;
   let {item, wordIndex} = props.state;
   let slides;
-  if (item.type === 'song')
-    slides = item.arrangements[item.selectedArrangement].slides || null;
-  else
-    slides = item.slides || null;
 
-  let lyrics = slides[index].boxes[0].words;
+  if (item.type === 'song')
+    slides = item.arrangements[item.selectedArrangement].slides;
+  else
+    slides = item.slides;
 
   let scrollTo = index;
-  if(!slides)
-    return;
 
   if(index > wordIndex && index+1 < slides.length)
     scrollTo+=1;
@@ -57,10 +54,8 @@ export function setWordIndex(props){
     mElement.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
   if(element)
     element.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
+
   updateState({wordIndex: index});
-  let box = slides[index].boxes[0];
-  if(box.background)
-    updateCurrent({words: lyrics, style: box, background: box.background});
-  else
-    updateCurrent({words: lyrics, style: box});
+  updateCurrent({slide: slides[index]});
+
 }

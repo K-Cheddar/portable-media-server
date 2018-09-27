@@ -24,10 +24,11 @@ export default class Display_Background extends Component {
   shouldComponentUpdate(nextProps, nextState){
     let {animate} = this.props;
     if(animate){
-      if(this.props.img !== nextProps.img || this.props.brightness !== nextProps.brightness){
-        let {img, brightness, width, height} = nextProps;
+      if(this.props.img !== nextProps.img || this.props.brightness !== nextProps.brightness ||
+      JSON.stringify(this.props.position) !== JSON.stringify(nextProps.position)){
+        let {img, brightness, position} = nextProps;
         this.setState({
-          prevBackgroundStyle: this.computeBackgroundStyle(img, brightness, width, height),
+          prevBackgroundStyle: this.computeBackgroundStyle(img, brightness, position),
           backgroundUpdaterIndex: 0})
       }
     }
@@ -57,14 +58,19 @@ export default class Display_Background extends Component {
     }
   }
 
-  computeBackgroundStyle = (img, brightness, width, height) => {
+  computeBackgroundStyle = (img, brightness, position) => {
+
+    let width = (position && position.width) ? position.width + '%' : '100%';
+    let height = (position && position.height) ? position.height + '%' : '100%';
+    let top = (position && position.y) ? Math.max(position.y, 0) + '%' : 0;
+    let left = (position && position.x) ? Math.max(position.x, 0) + '%' : 0;
 
     let level = "100%";
     if(brightness)
       level = brightness+"%"
 
     let backgroundStyle= { position:'absolute', zIndex:1, backgroundImage: 'url('+img+')',
-      backgroundSize: '100% 100%', filter: `brightness(${level})`,
+      backgroundSize: '100% 100%', filter: `brightness(${level})`, top: top, left: left,
       width: width, height: height, maxHeight:'80vw'}
 
     return backgroundStyle;
@@ -72,10 +78,10 @@ export default class Display_Background extends Component {
   }
 
   render(){
-    let {img, brightness, width, height, isVideo, asset, animate} = this.props;
+    let {img, brightness, position, isVideo, asset, animate} = this.props;
     let {backgroundUpdaterIndex, prevBackgroundStyle} = this.state;
 
-    let backgroundStyle = this.computeBackgroundStyle(img, brightness, width, height);
+    let backgroundStyle = this.computeBackgroundStyle(img, brightness, position);
     let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
 
     return(

@@ -39,7 +39,7 @@ export default class Backgrounds extends React.Component{
 
   displayImage = () =>{
     let {selectedBackground} = this.state;
-    this.props.updateCurrent({background: selectedBackground, displayDirect: true})
+    this.props.updateCurrent({image: selectedBackground})
   }
 
   selectBackground = (index) => {

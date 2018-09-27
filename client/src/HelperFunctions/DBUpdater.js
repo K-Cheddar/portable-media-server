@@ -198,14 +198,11 @@ export function updateAllItemLists(props){
 
 export function updateCurrent(props){
   let {db} = props;
-  let {words, background, style, time} = props.obj;
+  let {slide, time} = props.obj;
   time-=1;
   function updateValues(doc) {
-    doc.info.words = words;
-    doc.info.background = background;
+    doc.info.slide = slide;
     doc.info.time = time;
-    doc.info.style = style
-    doc.info.updated = true;
     return doc;
   }
 

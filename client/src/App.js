@@ -96,13 +96,8 @@ const initialState = {
   selectedItemList: {},
   needsUpdate: {},
   currentInfo : {
-    words:"",
-    background:"",
-    style:{
-      fontColor:'',
-      fontSize:''
-    },
-    time: -1,
+    box: {words: '', background: '', fontColor: 'rgba(0, 0, 0, 0)', fontSize: 2.5},
+    time: -1
   },
   allItems:[],
   freeze: true,
@@ -210,7 +205,6 @@ class App extends Component {
        path: '/peerjs'
      });
      peer.on('open', function(id) {
-       // console.log("Peer Sender Ready");
        let obj = {user: user};
        fetch('api/getReceiverId', {
           method: 'post',
@@ -225,7 +219,6 @@ class App extends Component {
          if(res.serverID === undefined){
            return;
          }
-         // console.log(res.serverID);
          conn = peer.connect(res.serverID);
          conn.on('open', function(){
              that.setState({isSender: 'connected', isReciever: false})
@@ -252,7 +245,6 @@ class App extends Component {
       DBGetter.retrieveImages({parent: that, db: db, cloud: cloud})
       DBGetter.changes({parent: that, db: db, cloud: cloud, remoteDB: remoteDB})
       if(that.state.user !== 'Demo'){
-        // console.log('let sync begin!', db, remoteDB);
           that.sync = db.sync(remoteDB, opts)
       }
     })
@@ -513,7 +505,6 @@ class App extends Component {
        path: '/peerjs'
      });
      peer.on('open', function(id) {
-       // console.log('peer is open');
         that.setState({peerID: id, isReciever: 'connected', isSender: false})
         let obj = {user: user, id: id};
         fetch('api/setAsReceiver', {
@@ -528,7 +519,7 @@ class App extends Component {
      peer.on('connection', function (serverConn){
        conn = serverConn;
        conn.on('data', function(data){
-         that.setState({currentInfo: data.obj})
+         that.setState({currentInfo: data.update})
        })
        conn.on('error', function (error){
           that.setState({isReciever: 'disconnected'})
@@ -603,51 +594,28 @@ class App extends Component {
     Formatter.updateBrightness({level: level, parent: this})
   }
 
-  updateCurrent = ({words = null,background = null,style = {}, displayDirect=false} = {}) => {
+  updateCurrent = (props) => {
 
     if(this.state.freeze)
       return;
 
-    let {item, wordIndex, remoteDB} = this.state;
-    let slides;
-    if (item.type === 'song')
-      slides = item.arrangements[item.selectedArrangement].slides || null;
-    else
-      slides = item.slides || null;
-    let slide = slides ? slides[wordIndex] : null;
-
-    if(slide && !displayDirect){
-      if(!words)
-        words = slide.boxes[0].words;
-      if(!background)
-        background = slide.boxes[0].background;
-      if(!style)
-        style = slide.boxes[0];
-    }
-    else if(displayDirect){
-      if(!words)
-        words = ' '
-      if(!background)
-        background = ' '
-      if(!style)
-        style = {}
-    }
-    else
-      words = ""
+    let {slide, image} = props;
 
     let date = new Date();
     let time = date.getTime();
-    let obj = {
-      words: words,
-      background: background,
-      style: style,
-      time: time
-    }
+    let update = {time: time};
+
+    if(image)
+      update.slide = {boxes: [{words: '', background: image, style:{}}]}
+    else
+      update.slide = JSON.parse(JSON.stringify(slide));
+
+
     if(conn)
-      conn.send({obj})
-    this.setState({currentInfo: obj})
-    DBUpdater.updateCurrent({db: remoteDB, obj: obj});
-    localStorage.setItem('presentation', JSON.stringify(obj));
+      conn.send(update)
+    this.setState({currentInfo: update})
+    DBUpdater.updateCurrent({db: this.state.remoteDB, obj: update});
+    localStorage.setItem('presentation', JSON.stringify(update));
   }
 
   updateFontColor = (fontColor) => {
@@ -705,10 +673,8 @@ class App extends Component {
       undoHistory.push(newState);
       ++undoIndex;
     }
-    console.log(undoHistory);
     let u = undoIndex > 0;
     let r = undoIndex < undoHistory.length-1
-    console.log(undoHistory);
     this.setState({undoReady: u, redoReady: r})
   }
 

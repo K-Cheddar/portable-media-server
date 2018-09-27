@@ -99,10 +99,7 @@ export default class Bible extends Component {
     };
 
     item = this.props.formatBible(item, 'fit', verse);
-
-    let box = item.slides[1].boxes[0];
-    let words = box.words;
-    this.props.functions.updateCurrent({words: words, style: box, background: box.background, displayDirect: true});
+    this.props.functions.updateCurrent({slide: item.slides[1]});
   }
 
   filterBooks = (bookSearch) => {
@@ -237,7 +234,6 @@ export default class Bible extends Component {
 
     if(!allBooks[0])
       return null;
-
 
     let text = allVerses.filter(e => (e.verse.verse >= startVerse+1 && e.verse.verse <= endVerse+1));
     let displayText = text.map((element, index) => {
@@ -386,8 +382,7 @@ export default class Bible extends Component {
                 <div style={{overflowX: 'hidden', height: '40vh', backgroundColor:'#5b5b5b',
                    top: '1vh', position: 'relative'}}>{displayText}</div>
                 <div style={{display:'flex', position: 'relative', top: '2vh'}}>
-                  <DisplayWindow backgrounds={backgrounds} words={currentInfo.words} style={currentInfo.style}
-                    background={currentInfo.background} width={"16vw"} title={"Presentation"}
+                  <DisplayWindow backgrounds={backgrounds} slide={currentInfo.slide} width={"16vw"} title={"Presentation "}
                     titleSize="1.25vw"
                     />
                   <button style={{...buttonStyle, position: 'absolute', right: '0.5vw', bottom: '0.5vh'}}
