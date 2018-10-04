@@ -9,7 +9,7 @@ export default class ItemInList extends React.Component{
 
   let words = ""
 
-  if(type !== 'image')
+  if(type === 'bible' || type === 'song')
     words = name
 
   let divStyle={width: width, height: height}

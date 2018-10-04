@@ -1,5 +1,5 @@
 export function newSlide (props) {
-  let {type, box, words, slideIndex, fontSize, background, brightness, boxIndex, boxes} = props;
+  let {type, box, words, slideIndex, fontSize, background, brightness, boxes, textFontSize} = props;
   if(!words)
     words = ''
   if(!box)
@@ -19,23 +19,45 @@ export function newSlide (props) {
       }
     ]
   }
-  let obj = {
-    type: type,
-    boxes: boxes
+  if(type === 'Announcement'){
+    boxes = [];
+    let obj = Object.assign({}, box);
+    boxes.push(obj);
+    obj = Object.assign({}, box);
+    obj.height = 24
+    obj.fontSize = 2.1;
+    obj.fontColor = 'rgba(255, 251, 43, 1)';
+    obj.transparent = true;
+    obj.topMargin = 2.5;
+    obj.excludeFromOverflow = true;
+    obj.words = '';
+    boxes.push(obj);
+    obj = Object.assign({}, box);
+    obj.height = 76;
+    obj.y = 24;
+    obj.fontSize = textFontSize ? textFontSize : 1.5;
+    obj.textAlign = 'left';
+    obj.transparent = true;
+    obj.topMargin = 1;
+    obj.excludeFromOverflow = true;
+    obj.words = ''
+    boxes.push(obj);
   }
 
-  if(slideIndex >= 0){
-    obj.boxes[boxIndex].slideIndex = slideIndex
+  let obj = {
+    type: type,
+    boxes: JSON.parse(JSON.stringify(boxes)),
+    duration: 6,
   }
-  if(fontSize){
-    obj.boxes[boxIndex].fontSize = fontSize
-  }
-  if(background){
-    obj.boxes[boxIndex].background = background
-  }
-  if(brightness){
-    obj.boxes[boxIndex].brightness = brightness
-  }
+
+  if(slideIndex >= 0)
+      obj.boxes[0].slideIndex = slideIndex
+  if(fontSize)
+      obj.boxes[0].fontSize = fontSize
+  if(background)
+      obj.boxes[0].background = background
+  if(brightness)
+      obj.boxes[0].brightness = brightness
 
   return obj;
 

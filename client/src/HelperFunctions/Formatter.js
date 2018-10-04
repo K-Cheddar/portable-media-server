@@ -16,11 +16,17 @@ export function updateFontSize(props){
     if(!slide)
       return
 
-    if(wordIndex !== 0)
-      for(let i = 1; i < slides.length; ++i){
-        if(!slides[i].boxes[boxIndex].excludeFromOverflow)
-          slides[i].boxes[boxIndex].fontSize = fontSize;
+    if(wordIndex !== 0){
+      if(item.type === 'song'){
+        for(let i = 1; i < slides.length; ++i){
+          if(!slides[i].boxes[boxIndex].excludeFromOverflow)
+            slides[i].boxes[boxIndex].fontSize = fontSize;
+        }
       }
+      else
+        slides[wordIndex].boxes[boxIndex].fontSize = fontSize;
+    }
+
     else
       slides[0].boxes[boxIndex].fontSize = fontSize;
 
@@ -63,8 +69,8 @@ export function updateFontColor(props){
     let background = slide.boxes[boxIndex].background;
 
     for(let i = 0; i < slides.length; ++i){
-      if(slides[i].boxes[boxIndex].background === background){
-        slides[i].boxes[boxIndex].fontColor = color;
+      if(slides[i].boxes[0].background === background){
+        slides[i].boxes[0].fontColor = color;
         if(i === 0)
           {
             itemList[itemIndex].nameColor = color
@@ -114,8 +120,8 @@ export function updateBrightness(props){
     let background = slide.boxes[boxIndex].background;
 
     for(let i = 0; i < slides.length; ++i){
-      if(slides[i].boxes[boxIndex].background === background)
-        slides[i].boxes[boxIndex].brightness = level
+      if(slides[i].boxes[0].background === background)
+        slides[i].boxes[0].brightness = level
     }
 
     needsUpdate.updateItem = true;
@@ -153,7 +159,7 @@ export function updateBoxPosition(props){
     box.y = y;
     box.width = width;
     box.height = height;
-    item.slides[wordIndex].boxes[boxIndex] = box;
+    slides[wordIndex].boxes[boxIndex] = box;
   }
   else{
     for(let i = 1; i < slides.length; ++i){

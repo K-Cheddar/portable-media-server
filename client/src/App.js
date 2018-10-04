@@ -131,7 +131,8 @@ class App extends Component {
 
     this.updateInterval = null;
     this.reconnectPeer = null;
-    this.sync = null
+    this.sync = null;
+    this.timer = null;
 
     this.handlers = {
       'undo': this.undo,
@@ -542,7 +543,7 @@ class App extends Component {
   }
 
   setWordIndex = (index) => {
-    SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent, conn: conn})
+    SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent, timer: this.timer})
   }
 
   test = () => {
@@ -582,6 +583,7 @@ class App extends Component {
 
   toggleFreeze = () => {
     this.setState({freeze: !this.state.freeze})
+    this.timer = null
   }
 
   undo = () => {

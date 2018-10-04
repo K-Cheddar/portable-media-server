@@ -60,7 +60,10 @@ export default class DisplayWindow extends React.Component{
       return;
     if(JSON.stringify(this.props.box) !== this.state.prevBox){
       this.updatePosition()
-      this.setState({prevBox: JSON.stringify(this.props.box), lockBox: true})
+      this.setState({prevBox: JSON.stringify(this.props.box)})
+    }
+    if(this.props.index !== prevProps.index){
+      this.setState({lockBox: true})
     }
   }
 
@@ -101,7 +104,7 @@ export default class DisplayWindow extends React.Component{
   }
 
   render() {
-    let {box, img, asset, isVideo, fsDivider, animate, title, index, id} = this.props;
+    let {box, img, asset, isVideo, fsDivider, animate, title, index, id, zIndex} = this.props;
     let {x, y, width, height, lockBox, maxWidth, maxHeight} = this.state;
 
     let lockStyle = {width:'1.25vw', height:'1.25vw',
@@ -118,7 +121,7 @@ export default class DisplayWindow extends React.Component{
           {this.onBoxResizeStop(e, direction, ref, delta, position)}}
         enableUserSelectHack={!lockBox} maxWidth={maxWidth} maxHeight={maxHeight}
         minWidth={'7.5%'} minHeight={'7.5%'} bounds={'parent'}
-        style={{zIndex: 2+index, outline: '0.15vw solid #FFF'}}
+        style={{zIndex: zIndex, outline: '0.15vw solid #FFF'}}
         disableDragging={lockBox}
         enableResizing={{ top:!lockBox, right:!lockBox, bottom:!lockBox,
           left:!lockBox, topRight:!lockBox, bottomRight:!lockBox,
@@ -133,7 +136,7 @@ export default class DisplayWindow extends React.Component{
            alt="unlock" src={unlock}
           onClick={this.toggleDragLock}
           />}
-        <DisplayWords id={id} words={box.words} fontSize={box.fontSize}
+        <DisplayWords id={id} words={box.words} fontSize={box.fontSize} index={index}
           fontColor={box.fontColor} fsDivider={fsDivider} position={box} title={title}
           editor={true} handleTextChange={this.props.handleTextChange} animate={animate}>
         </DisplayWords>

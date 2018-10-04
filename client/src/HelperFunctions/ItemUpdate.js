@@ -56,7 +56,7 @@ export function updateItem(props){
   else
     slides = item.slides || null;
 
-  let fontColor = slides[0].boxes[boxIndex].fontColor;
+  let fontColor = slides[0].boxes[0].fontColor;
   let name = item.name
   let itemIndex = itemList.findIndex(e => e._id === item._id)
   if(itemIndex !== -1 && (itemList[itemIndex].nameColor !== fontColor || itemList[itemIndex].name !== name)){

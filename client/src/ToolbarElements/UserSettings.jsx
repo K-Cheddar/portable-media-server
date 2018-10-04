@@ -51,7 +51,7 @@ export default class UserSettings extends React.Component{
       level = setting.brightness+"%"
 
     let backgroundStyle= {backgroundImage: 'url('+img+')', backgroundSize: '100% 100%',
-      filter: `brightness(${level})`, width: '6vw', height: '3.38vw', marginRight: '0.25vw'}
+      filter: `brightness(${level})`, width: '4vw', height: '2.25vw', marginRight: '0.25vw'}
 
     return backgroundStyle;
   }
@@ -59,13 +59,17 @@ export default class UserSettings extends React.Component{
   render(){
     let {selectedSetting, brightness} = this.state;
     let {backgrounds, userSettings} = this.props.state;
-    let defaultBibleBackground = userSettings.defaultBibleBackground || {};
-    let defaultSongBackground = userSettings.defaultSongBackground || {};
-    let defaultScreenBackground = userSettings.defaultScreenBackground || {};
-    let defaultWelcomeBackground = userSettings.defaultWelcomeBackground || {};
-    let defaultFarewellBackground = userSettings.defaultFarewellBackground || {};
 
-    let BCKS = [], fullArray= [], row = [];
+    let settingObjs = [
+      {name: 'defaultBibleBackground', type: 'Bible'},
+      {name: 'defaultSongBackground', type: 'Song'},
+      {name: 'defaultScreenBackground', type: 'Default'},
+      {name: 'defaultWelcomeBackground', type: 'Welcome'},
+      {name: 'defaultFarewellBackground', type: 'Farewell'},
+      {name: 'defaultAnnouncementsBackground', type: 'Announcements'}
+    ]
+
+    let fullArray= [], row = []
     let numCols = 7;
     let style={
       position:'absolute',    zIndex:6,                   left:'15%',
@@ -91,7 +95,7 @@ export default class UserSettings extends React.Component{
       }
 
     let sectionWords = {
-      marginRight: '0.25vw', fontSize: "calc(8px + 0.35vw)", width: '4vw'
+      marginRight: '0.25vw', fontSize: "0.75vw", width: '6vw'
     }
 
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
@@ -99,14 +103,8 @@ export default class UserSettings extends React.Component{
 
     let sliderStyle = {width: '5vw', margin: '.5vw 1vw'}
 
-    let bibleBackgroundStyle = this.getBackgroundStyle(defaultBibleBackground);
-    let songBackgroundStyle = this.getBackgroundStyle(defaultSongBackground);
-    let screenBackgroundStyle = this.getBackgroundStyle(defaultScreenBackground);
-    let welcomeBackgroundStyle = this.getBackgroundStyle(defaultWelcomeBackground);
-    let farewellBackgroundStyle = this.getBackgroundStyle(defaultFarewellBackground);
-
-    let sectionStyle = {display: 'flex', border: '.25vw solid #383838', height: '7vh',
-       marginTop: '1vh', padding:'1%'}
+    let sectionStyle = {display: 'flex', border: '.25vw solid #383838', height: '5vh',
+       marginTop: '0.65vh', padding:'1%'}
     let selectedSectionStyle = Object.assign({}, sectionStyle);
     selectedSectionStyle.border = '.25vw solid #4286f4'
 
@@ -120,7 +118,7 @@ export default class UserSettings extends React.Component{
     }
 
     let that = this;
-    BCKS = fullArray.map((element, index) => {
+    let BCKS = fullArray.map((element, index) => {
       let row = element.map(function (pic, i){
         return(
           <div key={index*numCols+i}>
@@ -132,6 +130,21 @@ export default class UserSettings extends React.Component{
       return (
         <div style={{display:'flex', paddingBottom:'0.5vh', paddingRight: '0.5vw'}} key={index}> {row}</div>
       );
+    })
+
+    let settings = settingObjs.map((element, index) => {
+      let loadedSetting = userSettings[element.name] || ''
+      let style = this.getBackgroundStyle(loadedSetting)
+      return(
+        <div onClick={ () => this.setState({
+            selectedSetting: element.name,
+            brightness: userSettings[element.name] ? userSettings[element.name].brightness : 100
+          })}
+          style={selectedSetting === element.name ? selectedSectionStyle : sectionStyle}>
+          <div style={sectionWords}>{element.type}</div>
+          <div style={style}></div>
+        </div>
+      )
     })
 
       return (
@@ -151,46 +164,7 @@ export default class UserSettings extends React.Component{
             </div>
             <div style={{display: 'flex'}}>
               <div>
-                <div onClick={ () => this.setState({
-                    selectedSetting: 'defaultBibleBackground',
-                    brightness: userSettings.defaultBibleBackground ? userSettings.defaultBibleBackground.brightness : 100
-                  })}
-                  style={selectedSetting === 'defaultBibleBackground' ? selectedSectionStyle : sectionStyle}>
-                  <div style={sectionWords}>Bible</div>
-                  <div style={bibleBackgroundStyle}></div>
-                </div>
-                <div onClick={ () => this.setState({
-                    selectedSetting: 'defaultSongBackground',
-                    brightness: userSettings.defaultSongBackground ? userSettings.defaultSongBackground.brightness : 100
-                  })}
-                  style={selectedSetting === 'defaultSongBackground' ? selectedSectionStyle : sectionStyle}>
-                  <div style={sectionWords}>Song</div>
-                  <div style={songBackgroundStyle}></div>
-                </div>
-                <div onClick={ () => this.setState({
-                    selectedSetting: 'defaultScreenBackground',
-                    brightness: userSettings.defaultScreenBackground ? userSettings.defaultScreenBackground.brightness : 100
-                  })}
-                  style={selectedSetting === 'defaultScreenBackground' ? selectedSectionStyle : sectionStyle}>
-                  <div style={sectionWords}>Default</div>
-                  <div style={screenBackgroundStyle}></div>
-                </div>
-                <div onClick={ () => this.setState({
-                    selectedSetting: 'defaultWelcomeBackground',
-                    brightness: userSettings.defaultWelcomeBackground ? userSettings.defaultWelcomeBackground.brightness : 100
-                  })}
-                  style={selectedSetting === 'defaultWelcomeBackground' ? selectedSectionStyle : sectionStyle}>
-                  <div style={sectionWords}>Welcome</div>
-                  <div style={welcomeBackgroundStyle}></div>
-                </div>
-                <div onClick={ () => this.setState({
-                    selectedSetting: 'defaultFarewellBackground',
-                    brightness: userSettings.defaultFarewellBackground ? userSettings.defaultFarewellBackground.brightness : 100
-                  })}
-                  style={selectedSetting === 'defaultFarewellBackground' ? selectedSectionStyle : sectionStyle}>
-                  <div style={sectionWords}>Farewell</div>
-                  <div style={farewellBackgroundStyle}></div>
-                </div>
+                {settings}
               </div>
               <div style={backgroundTableStyle}>{BCKS}</div>
             </div>

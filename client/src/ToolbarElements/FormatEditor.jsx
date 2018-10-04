@@ -30,7 +30,8 @@ class FormatEditor extends React.Component{
 
     let{item, wordIndex, boxIndex} = this.props;
 
-    if((wordIndex !== prevProps.wordIndex) || (item._id !== prevProps.item._id)){
+    if((wordIndex !== prevProps.wordIndex) || (item._id !== prevProps.item._id) ||
+        boxIndex!== prevProps.boxIndex){
       let slides;
       if (item.type === 'song')
         slides = item.arrangements[item.selectedArrangement].slides || null;
@@ -144,10 +145,7 @@ class FormatEditor extends React.Component{
     let {item} = this.props;
     let showSkipTitle = false;
     if(item.type === 'song')
-      if(item.arrangements[0].slides.length > 1)
-        showSkipTitle = true;
-    else if(item.type !== 'song')
-      if(item.slides.length > 1)
+      if(item.arrangements[item.selectedArrangement].slides.length > 1)
         showSkipTitle = true;
 
     return (
@@ -159,7 +157,7 @@ class FormatEditor extends React.Component{
             <img className='imgButton' style={!cPickerOpen ? {display:'none'} : {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw'} }
               alt="cPickerClose" src={cPickerClose}
               onClick={this.closeColors}/>
-            <div style={cPickerOpen ? {position:'fixed', zIndex:2, top: '5vh', backgroundColor:'#EEE', padding:'5px'} : {display: 'none'}}>
+            <div style={cPickerOpen ? {position:'absolute', zIndex:5, top: '5vh', backgroundColor:'#EEE', padding:'5px'} : {display: 'none'}}>
                 <ChromePicker color={this.state.color} onChange={this.colorChange}/>
             </div>
            <input style={{width: '1.25vw', height: '1.25vw', textAlign: 'center',

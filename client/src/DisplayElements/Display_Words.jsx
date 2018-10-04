@@ -188,8 +188,8 @@ export default class Display_Words extends Component {
     let {position} = this.props;
     let width = '90%';
     let height = '86%';
-    let marginT_B = 3.5;
-    let marginL_R = 4.5;
+    let marginT_B = position.topMargin ? position.topMargin : 3.5;
+    let marginL_R = position.sideMargin ? position.sideMargin : 4.5;
     let top = 0;
     let left = 0;
 
@@ -206,9 +206,10 @@ export default class Display_Words extends Component {
       left = Math.max((position.x - (marginL_R/2)),0)+ '%';
     }
 
+    let textAlign = position.textAlign ? position.textAlign : 'center'
 
     let wordsStyle = {
-      textAlign: 'center', background: 'transparent', resize:'none', outline: 'none', border: 'none',
+      textAlign: textAlign, background: 'transparent', resize:'none', outline: 'none', border: 'none',
       whiteSpace:'pre-wrap', color: fontColor, fontSize: actualfontSize, fontFamily: "Verdana",
       margin: extraPadding ? "12.5% 5%" : `${marginT_B}% ${marginL_R}%`, textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
       width: width, height: height, position: 'absolute', zIndex: 2, top: top, left: left,
@@ -220,7 +221,7 @@ export default class Display_Words extends Component {
   }
 
   render(){
-    let {id, words, fontSize, presentation, fsDivider, fontColor, extraPadding, animate, editor} = this.props;
+    let {id, words, fontSize, presentation, fsDivider, fontColor, extraPadding, animate, editor, index} = this.props;
     let {prevWords, wordUpdaterIndex, prevWordsStyle} = this.state;
 
     let wordsStyle = this.computeWordsStyle(fontSize, fsDivider, fontColor, extraPadding, presentation)
@@ -238,7 +239,7 @@ export default class Display_Words extends Component {
         {(!animate && !editor) &&
           <div id={id} style={wordsStyle}>{words}</div>
         }
-        {editor && <textarea id={"displayEditor"} style={wordsStyle} value={words}
+        {editor && <textarea id={`displayEditor-${index}`} style={wordsStyle} value={words}
           onChange={this.props.handleTextChange}/>}
       </div>
     )

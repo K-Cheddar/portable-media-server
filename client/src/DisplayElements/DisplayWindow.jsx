@@ -17,7 +17,7 @@ export default class DisplayWindow extends React.Component{
   }
 
   render() {
-    let {backgrounds, slide, width, title, titleSize, presentation, extraPadding, editor} = this.props;
+    let {backgrounds, slide, width, title, titleSize, presentation, extraPadding, editor, zIndex} = this.props;
 
     let img = blank, asset;
     let isVideo = false;
@@ -62,17 +62,9 @@ export default class DisplayWindow extends React.Component{
     let fsDivider = tWidth/(42.5);
 
     let containerStyle = {width:width, height:height, position:'relative'};
-    //
-    // if(editor){
-    //   console.log(slide.boxes);
-    //   slide.boxes[1].x = 0;
-    //   slide.boxes[1].width = 100;
-    //   slide.boxes[2].x = 0;
-    //   slide.boxes[2].width = 100;
-    // }
-    //   if(!slide.boxes[2])
-    //     slide.boxes.push({words: '', background: '', style: {}})
+
     let boxes = slide.boxes.map((box, index) => {
+      let zIndex = index
       let background = box.background;
       let words = box.words;
       let style = box;
@@ -85,12 +77,12 @@ export default class DisplayWindow extends React.Component{
       }
       let animate = presentation || title === 'Presentation' || editor || title === 'Presentation ';
       return(
-        <div style={{width: '100%', height: '100%', position: 'absolute'}} key={index}>
+        <div style={{zIndeX: zIndex}} key={index}>
           {editor &&
             <DisplayBox box={box} handleTextChange={this.props.handleTextChange} animate={animate}
               index={index} handleBoxChange={this.props.handleBoxChange} id={id} title={title} isVideo={isVideo}
                asset={asset} img={img} setBoxIndex={this.props.setBoxIndex} fsDivider={fsDivider} width={width}
-               height={height}/>}
+               height={height} zIndex={zIndex} index={index}/>}
           {!editor && <div>
             <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
               fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding} position={style}
@@ -107,7 +99,7 @@ export default class DisplayWindow extends React.Component{
 
 
     return (
-      <div style={{width: '100%', height: '100%', position: 'relative'}}>
+      <div>
         {(title !== '') && <div style={titleStyle}>
             {title}
         </div>}

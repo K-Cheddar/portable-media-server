@@ -4,7 +4,9 @@ import LyricsBox from '../LyricElements/LyricsBox';
 import zoomIn from '../assets/zoomIn.png'
 import zoomOut from '../assets/zoomOut.png'
 import {HotKeys} from 'react-hotkeys';
-import * as SlideCreation from '../HelperFunctions/SlideCreation'
+import * as SlideCreation from '../HelperFunctions/SlideCreation';
+import newButton from '../assets/new-button.png';
+import deleteX from '../assets/deleteX.png';
 
 class ItemSlides extends React.Component{
 
@@ -37,8 +39,12 @@ class ItemSlides extends React.Component{
   }
 
   setElement = (index) => {
-
-    this.props.setWordIndex(index);
+    if(this.props.item.type === 'announcements'){
+      if(index < this.props.item.slides.length)
+        this.props.setWordIndex(index);
+    }
+    else
+      this.props.setWordIndex(index);
 
     // this.setState({
     //   mouseDown: true
@@ -81,33 +87,47 @@ class ItemSlides extends React.Component{
     this.setState({lBoxOpen: false})
   }
 
+  updateTimer = (e) => {
+    let {item, wordIndex} = this.props;
+    let num = e.target.value;
+    if(num <= 0)
+      num = 1
+    item.slides[wordIndex].duration = num
+    this.props.updateItem(item);
+  }
+
   addSlide = () => {
     let {item, wordIndex, boxIndex} = this.props;
     let slides;
-    if (item.type === 'song')
-      slides = item.arrangements[item.selectedArrangement].slides || null;
-    else
-      slides = item.slides || null;
+    // if (item.type === 'song')
+    //   slides = item.arrangements[item.selectedArrangement].slides || null;
+    // else
+    //   slides = item.slides || null;
+    //
+    // if(!slides)
+    //   return;
 
-    if(!slides)
-      return;
-
-    let box = slides[wordIndex].boxes[boxIndex]
-
-    slides.splice(wordIndex+1, 0, [SlideCreation.newSlide({type: 'Static', fontSize: box.fontSize, words: '',
-     background: box.background, brightness: box.brightness})])
-
+    if(item.type === 'announcements'){
+      slides = item.slides;
+      let fontSize = slides[slides.length-1].boxes[2].fontSize;
+      slides.push(SlideCreation.newSlide({type: "Announcement", textFontSize: fontSize}))
+    }
+    if(item.type === 'image'){
+      slides = item.slides;
+      slides.push(SlideCreation.newSlide({type: 'Image', background: '', fontSize: 4.5}))
+    }
+    // slides.splice(wordIndex+1, 0, [SlideCreation.newSlide({type: 'Static', fontSize: box.fontSize, words: '',
+    //  background: box.background, brightness: box.brightness})])
     this.props.updateItem(item);
-    this.props.setWordIndex(slides.length-1)
   }
 
   deleteSlide = (index) => {
     let {item} = this.props;
     let slides;
-    if (item.type === 'song')
-      slides = item.arrangements[item.selectedArrangement].slides || null;
-    else
-      slides = item.slides || null;
+    // if (item.type === 'song')
+    //   slides = item.arrangements[item.selectedArrangement].slides || null;
+    // else
+    slides = item.slides
     slides.splice(index, 1);
     this.props.updateItem(item);
   }
@@ -159,6 +179,7 @@ class ItemSlides extends React.Component{
     let row = [];
     let fullArray = [];
     let name = item.name;
+    let freeSlides = item.type === 'announcements' || item.type === 'image';
 
     let slides;
     if (item.type === 'song')
@@ -172,7 +193,7 @@ class ItemSlides extends React.Component{
     }
     if(!slides)
       return null;
-      
+
     for(var i = 0; i < slides.length; i+=slidesPerRow){
       for(var j = i; j < i+slidesPerRow; ++j){
         if(slides[j])
@@ -181,10 +202,17 @@ class ItemSlides extends React.Component{
       fullArray.push(row);
       row = [];
     }
+    if(freeSlides){
+      let lastRow = fullArray[fullArray.length -1];
+      if(lastRow.length < slidesPerRow)
+        lastRow.push('newSection')
+      else
+        fullArray.push(['newSection'])
+    }
 
     let style;
 
-    let widthNumber = 37/slidesPerRow
+    let widthNumber = freeSlides ? 34/slidesPerRow : 37/slidesPerRow
     let width = widthNumber + "vw"
     let height = (widthNumber*.5625) + "vw"
     let titleSize = .5+ 1.25/slidesPerRow + "vw"
@@ -202,9 +230,10 @@ class ItemSlides extends React.Component{
 
     let ROWtest = fullArray.map((element, index) => {
       let row = element.map(function (subElement, i){
-
+        let newSection = subElement === 'newSection';
         let selected = (index*slidesPerRow+i === wordIndex);
-        let beingDragged = (indexBeingDragged === index*slidesPerRow+i)
+        let beingDragged = (indexBeingDragged === index*slidesPerRow+i);
+        let deleteEnable = (index+i > 1 && freeSlides);
         if(selected){
           style = slideSelectedStyle;
         }
@@ -216,24 +245,38 @@ class ItemSlides extends React.Component{
         }
         return(
           <div style={{display:'flex', width:slideWidth, userSelect:'none'}} key={i} id={"Slide"+(index*slidesPerRow+i)}>
-            <div  style={style}
+            <div style={style}
               onMouseDown={() => that.setElement(index*slidesPerRow+i)}
               onMouseOver={() => that.setTarget(index*slidesPerRow+i)}
               >
-              {(selected && beingDragged) &&
+              {(selected && beingDragged && !newSection) &&
                 <SlideInList slide={slides[index*slidesPerRow+i]} backgrounds={backgrounds}
                   x={mouseX} y={mouseY} moving={true} width={width} height={height}
                   titleSize={titleSize}
                   />
               }
-              {(!selected || !beingDragged) &&
+              {((!selected || !beingDragged) && !newSection) &&
                 <SlideInList slide={slides[index*slidesPerRow+i]}
                   name={slides[index*slidesPerRow+i].type} width={width} height={height}
                   backgrounds={backgrounds} titleSize={titleSize}
                   />
               }
-
+              {newSection && <div className='imgButton' style={{backgroundColor: '#b7b7b7',
+                 height:'95%', border: '0.25vw #2ECC71 solid',
+                borderRadius:'0.5vw', fontWeight: 'bold'}}
+              onClick={that.addSlide}>
+              <div style={{textAlign: 'center', paddingTop: '5%', fontSize: `calc(5.6vw*${1/slidesPerRow})`,
+                color: 'black'}}>New Slide</div>
+              <img style={{display:'block', width:'50%', height:'60%', margin:'0.5vh auto'}}
+                 alt="newButton" src={newButton}
+                />
+              </div>}
             </div>
+            {(deleteEnable && !newSection) && <img className='imgButton' style={{display:'block', width:'1.5vw', height:'1.5vw'}}
+               onClick={() => that.deleteSlide(index*slidesPerRow+i)}
+               alt="delete" src={deleteX}
+              />
+            }
           </div>
         );
       })
@@ -246,18 +289,23 @@ class ItemSlides extends React.Component{
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
        width:'20%'}
 
-
     return (
       <HotKeys style={{color: 'white', height: '100%', width: '100%'}} handlers={this.handlers}>
         <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)"}}>
           <div style={{fontSize: 'calc(10px + 1vw)', width: '60%', paddingLeft:'0.5vw'}}> {name} </div>
           {(type==='song') && <button style={buttonStyle} onClick={this.openLBox}>Arrange Lyric</button>}
-          {(type!=='song') && <div style={{ width: '20%'}} ></div>}
-          <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+          {(type==='announcements' && wordIndex >= 0) && <div style={{display: 'flex'}}>
+            <div style={{fontSize: '0.85vw', marginRight: '0.5vw', display: 'flex', alignItems: 'center'}}>
+              Duration</div>
+            <input type='number' value={item.slides[wordIndex].duration} onChange={this.updateTimer}
+              style={{fontSize: '0.85vw', width:'2vw', padding: '0.25vh 0'}}/>
+          </div>}
+          {(type !=='song' && type !== 'announcements') && <div style={{ width: '20%'}} ></div>}
+          <img className='imgButton' style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
               onClick={this.decreaseRows}
               alt="zoomIn" src={zoomIn}
              />
-          <img style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+          <img className='imgButton' style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
                onClick={this.increaseRows}
                alt="zoomOut" src={zoomOut}
               />
@@ -274,16 +322,3 @@ class ItemSlides extends React.Component{
 
 }
 export default ItemSlides;
-
-
-// import deleteX from './assets/deleteX.png';
-
-// let deleteEnable = (index+i !== 0 && type === 'song');
-
-// <div style={{padding:'1.5%'}}>
-//   {deleteEnable && <img style={{display:'block', width:'1.5vw', height:'1.5vw'}}
-//      onClick={() => that.deleteSlide(index*3+i)}
-//      alt="delete" src={deleteX}
-//     />
-//   }
-// </div>

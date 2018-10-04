@@ -72,6 +72,8 @@ export default class Display_Background extends Component {
     let backgroundStyle= { position:'absolute', zIndex:1, backgroundImage: 'url('+img+')',
       backgroundSize: '100% 100%', filter: `brightness(${level})`, top: top, left: left,
       width: width, height: height, maxHeight:'80vw'}
+    if(position && position.transparent)
+      backgroundStyle.background = 'transparent';
 
     return backgroundStyle;
 

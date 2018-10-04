@@ -3,6 +3,7 @@ import Bible from './Bible';
 import {HotKeys} from 'react-hotkeys';
 import closeIcon from '../assets/closeIcon.png'
 import ExistingItems from './ExistingItems';
+import Announcements from './Announcements';
 import Songs from './Songs';
 
 export default class AllItems extends Component {
@@ -72,6 +73,7 @@ export default class AllItems extends Component {
           functions={this.props.functions} state={this.props.state} close={this.props.close}/>}
           {tab === 'Existing' && <ExistingItems functions={this.props.functions} state={this.props.state}/>}
           {tab === 'Songs' && <Songs functions={this.props.functions} state={this.props.state}/>}
+          {tab === 'Announcements' && <Announcements functions={this.props.functions} state={this.props.state}/>}
         </div>
       </HotKeys>
     )

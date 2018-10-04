@@ -127,9 +127,9 @@ export default class SongSectionsArea extends Component{
                marginTop:'12.5%', width: '87.5%', height:'82.5%', border: '0.25vw #2ECC71 solid',
               borderRadius:'0.5vw', fontWeight: 'bold'}}
             onClick={that.newSection}>
-            <div style={{textAlign: 'center', paddingTop: '5%', fontSize: `calc(56vw*${sectionWidth}/10)`,
+            <div style={{textAlign: 'center', paddingTop: '5%', fontSize: `calc(5.6vw*${sectionWidth})`,
               color: 'black'}}>New Section</div>
-            <img style={{display:'block', width:'80%', height:'75%', margin:'auto'}}
+            <img style={{display:'block', width:'72.5%', height:'70%', margin:'1vh auto'}}
                alt="newButton" src={newButton}
               />
             </div>}

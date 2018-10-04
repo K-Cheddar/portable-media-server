@@ -101,7 +101,8 @@ class DisplayEditor extends React.Component{
     let index = -1;
     let slides, formattedLyrics, newWords, start, end;
 
-    if((item.type === 'bible' && wordIndex === 0) || item.type === 'image'){
+    if((item.type === 'bible' && wordIndex === 0) || item.type === 'image'
+      || item.type === 'announcements'){
       slides = item.slides;
       slides[wordIndex].boxes[boxIndex].words = words;
     }
@@ -134,8 +135,8 @@ class DisplayEditor extends React.Component{
     setTimeout(function(){
       if(!enterPressed)
         return;
-      document.getElementById("displayEditor").selectionEnd = cursor;
-      document.getElementById("displayEditor").scrollTop = 0;
+      document.getElementById(`displayEditor-${boxIndex}`).selectionEnd = cursor;
+      document.getElementById(`displayEditor-${boxIndex}`).scrollTop = 0;
     }, 10)
   }
 
