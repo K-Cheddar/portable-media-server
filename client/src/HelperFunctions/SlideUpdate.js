@@ -1,7 +1,7 @@
 export function setSlideBackground(props){
   let {background} = props;
   let {updateState, updateHistory} = props.parent;
-  let {item, wordIndex, allItems, itemList, itemIndex, needsUpdate} = props.parent.state;
+  let {item, wordIndex, allItems, itemList, itemIndex, needsUpdate, boxIndex} = props.parent.state;
 
   let slides;
   if (item.type === 'song')
@@ -9,7 +9,7 @@ export function setSlideBackground(props){
   else
     slides = item.slides || null;
 
-  slides[wordIndex].boxes[0].background = background;
+  slides[wordIndex].boxes[boxIndex].background = background;
   let index = allItems.findIndex(e => e.name === item.name)
 
   needsUpdate.updateItem = true;
@@ -55,7 +55,7 @@ export function setWordIndex(props){
   if(element)
     element.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
 
-  updateState({wordIndex: index});
+  updateState({wordIndex: index, boxIndex: 0});
   updateCurrent({slide: slides[index]});
 
 }

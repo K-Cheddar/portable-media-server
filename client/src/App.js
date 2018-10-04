@@ -280,6 +280,7 @@ class App extends Component {
         slides = doc.arrangements[doc.selectedArrangement].slides || null;
       else
         slides = doc.slides || null;
+        //Change box
       let itemObj = {"name": doc.name,"_id": doc._id,"background": doc.background,"nameColor": slides[0].boxes[0].fontColor,"type": doc.type};
       that.addItemToList(itemObj)
     })
@@ -474,6 +475,10 @@ class App extends Component {
     this.updateUndoIndex();
   }
 
+  setBoxIndex = (index) => {
+    this.setState({boxIndex: index});
+  }
+
   setItemBackground = (background) => {
     ItemUpdate.setItemBackground({background: background, parent: this})
   }
@@ -562,6 +567,17 @@ class App extends Component {
     // let url = 'https://www.azlyrics.com/'
     // const html = (await (await fetch(url)).text());
     // console.log(html);
+    fetch('api/getLyrics', {
+       method: 'post',
+       body: JSON.stringify({name: 'William McDowell'}),
+       headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        },
+    }).then((response) => response.json())
+    .then(function(data){
+      console.log(data);
+    })
   }
 
   toggleFreeze = () => {

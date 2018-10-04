@@ -47,7 +47,7 @@ export default class MobileView extends Component{
     let {setItemIndex, setWordIndex, updateItem, toggleFreeze, selectItemList,
          logout} = this.props.parent; //connectToReceiver,
     let {wordIndex, itemList, item, backgrounds, itemIndex, freeze, itemLists,
-       selectedItemList, isLoggedIn, isSender} = this.props.parent.state;
+       selectedItemList, isLoggedIn, isSender, boxIndex} = this.props.parent.state;
 
     let buttonLoggedIn = {margin:'auto', width: '25vw', minWidth:'18vw', backgroundColor: '#383838',
     color: 'white', height: '4.5vh'}
@@ -99,7 +99,7 @@ export default class MobileView extends Component{
           </div>
           <div style={{paddingTop:'1.5%', maxWidth:'100%'}}>
             <MobileSlides setWordIndex={setWordIndex} wordIndex={wordIndex}
-              item={item} updateItem={updateItem}
+              item={item} updateItem={updateItem} boxIndex={boxIndex}
               backgrounds={backgrounds}
               />
           </div>

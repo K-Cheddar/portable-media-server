@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import FormatEditor from './FormatEditor';
-import CreateName from '../CreateName';
 import ItemListEditor from './ItemListEditor';
 import UserSettings from './UserSettings';
 import TextBoxEditor from './TextBoxEditor';
@@ -80,10 +79,10 @@ export default class Toolbar extends Component {
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
        setAsReceiver, connectToReceiver, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo, updateSkipTitle} = this.props.parent; //updateItemStructure
+        updateCurrent, undo, redo, updateSkipTitle, test} = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
       allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
-      undoReady, redoReady} = this.props.parent.state;
+      undoReady, redoReady, boxIndex} = this.props.parent.state;
     let {bibleOpen, nameOpen, tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen} = this.state;
 
     let menuItem = {
@@ -124,6 +123,7 @@ export default class Toolbar extends Component {
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                   {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
                   {/*<button style={menuItem} onClick={updateItemStructure}>UPDATE ALL</button>*/}
+                  <button onClick={test}>Test</button>
                 </div>
                 <div style={{display: 'flex', marginTop: '2vh'}}>
                   <img className='imgButton' style={undoReady? undoRedo: undoRedoDisabled}
@@ -191,7 +191,8 @@ export default class Toolbar extends Component {
           <li style={{width: '20vw'}}>
             {mode === 'edit' && <div className='toolbarSection'>
                <FormatEditor item={item} updateFontSize={updateFontSize} updateFontColor={updateFontColor}
-                 wordIndex={wordIndex} updateBrightness={updateBrightness} updateSkipTitle={updateSkipTitle}/>
+                 wordIndex={wordIndex} updateBrightness={updateBrightness} updateSkipTitle={updateSkipTitle}
+                 boxIndex={boxIndex}/>
              </div>}
           </li>
           <li style={{width: '20vw'}}>

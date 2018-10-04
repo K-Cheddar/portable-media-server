@@ -16,13 +16,14 @@ export function updateFontSize(props){
     if(!slide)
       return
 
-    if(boxIndex === 0){
-      if(wordIndex !== 0)
-        for(let i = 1; i < slides.length; ++i)
-            slides[i].boxes[boxIndex].fontSize = fontSize;
-      else
-        slides[0].boxes[boxIndex].fontSize = fontSize;
-    }
+    if(wordIndex !== 0)
+      for(let i = 1; i < slides.length; ++i){
+        if(!slides[i].boxes[boxIndex].excludeFromOverflow)
+          slides[i].boxes[boxIndex].fontSize = fontSize;
+      }
+    else
+      slides[0].boxes[boxIndex].fontSize = fontSize;
+
 
     if(item.type === 'bible' && wordIndex !== 0)
       item = Overflow.formatBible(item, 'edit');
@@ -56,7 +57,7 @@ export function updateFontColor(props){
     if(!slide)
       return
 
-    slide.boxes[0].fontColor = color;
+    slide.boxes[boxIndex].fontColor = color;
     let index = allItems.findIndex(e => e._id === item._id)
 
     let background = slide.boxes[boxIndex].background;
@@ -82,7 +83,7 @@ export function updateFontColor(props){
 
     if(item.type === 'bible' && wordIndex !== 0){
       for(let i = 1; i < slides.length; ++i){
-        slides[i].boxes[0].fontColor = color;
+        slides[i].boxes[boxIndex].fontColor = color;
       }
     }
     needsUpdate.updateItem = true;

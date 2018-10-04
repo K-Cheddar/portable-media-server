@@ -16,6 +16,7 @@ export function addItem(props){
     else
       slides = doc.slides;
     let itemObj = {
+      //Change box
       "name": slides[0].boxes[0].words,
       "_id": doc._id,
       "background": slides[0].boxes[0].background,

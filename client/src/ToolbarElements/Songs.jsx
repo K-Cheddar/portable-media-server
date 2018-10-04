@@ -43,7 +43,6 @@ export default class Songs extends React.Component{
     let {userSettings, allItems} = this.props.state;
 
     name = MakeUnique({name: name, property: '_id', list: allItems});
-    console.log(name);
 
     let firstSlide = name;
     let defaultSongBackground = userSettings.defaultSongBackground;

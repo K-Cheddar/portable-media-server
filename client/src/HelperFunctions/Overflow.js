@@ -38,10 +38,10 @@ export function formatLyrics(item){
 
   let slides = item.arrangements[item.selectedArrangement].slides || null;
 
-  let box = slides[0].boxes[0];
+  let boxes = slides[0].boxes;
   let lastSlide = slides.length-1;
-  let lastBox = slides[lastSlide].boxes[0];
-  let newSlides = [SlideCreation.newSlide({type: 'Title', box: box, words: box.words})];
+  let lastBoxes = slides[lastSlide].boxes;
+  let newSlides = [SlideCreation.newSlide({type: 'Title', boxes: slides[0].boxes, words: boxes[0].words})];
   let songOrder = item.arrangements[item.selectedArrangement].songOrder;
   let formattedLyrics = item.arrangements[item.selectedArrangement].formattedLyrics;
   let fontSize = slides[1] ? slides[1].boxes[0].fontSize : 2.5;
@@ -53,45 +53,50 @@ export function formatLyrics(item){
 
   function formatSection(lyrics, type){
     let lines = lyrics.split("\n");
-    let fLyrics = [];
-    let currentBox = {}, obj = {};
+    let fLyrics = [], currentBoxes = [], boxes=[];
+    let lineContainer = {}, box = {};
     let maxLines = 0, lineHeight = 0, lineCounter = 0, counter = 0;
-    let slide = "";
+    let boxWords = "";
 
     for(let i = 0; i < lines.length; ++i){
       counter = 0;
       lineCounter = 0;
-      slide= "";
+      boxWords= "";
+      boxes=[];
 
       if(slides[newSlides.length+fLyrics.length])
-        currentBox = slides[newSlides.length+fLyrics.length].boxes[0]
+        currentBoxes = slides[newSlides.length+fLyrics.length].boxes;
       else
-        currentBox = lastBox;
+        currentBoxes = lastBoxes;
 
-      obj = getMaxLines(fontSize, currentBox.height);
-      maxLines = obj.maxLines;
-      lineHeight = obj.lineHeight;
+      for(let j = 0; j < currentBoxes.length; ++j){
+        lineContainer = getMaxLines(fontSize, currentBoxes[j].height)
+        maxLines = lineContainer.maxLines;
+        lineHeight = lineContainer.lineHeight;
 
-      while(i+counter < lines.length && lineCounter < maxLines){
-        if(i+counter< lines.length-1)
-          slide+=lines[i+counter]+"\n";
-        else
-          slide+=lines[i+counter]
-        let lineCount = getNumLines(lines[i+counter], fontSize, lineHeight, currentBox.width);
-        if(lineCount === 0)
-          lineCount = 1;
-        lineCounter+=lineCount;
-        counter++;
+        while(i+counter < lines.length && lineCounter < maxLines){
+          boxWords+=lines[i+counter];
+          if(i+counter < lines.length-1)
+            boxWords+="\n";
+
+          let lineCount = getNumLines(lines[i+counter], fontSize, lineHeight, currentBoxes[j].width);
+          if(lineCount === 0)
+            lineCount = 1;
+          lineCounter+=lineCount;
+          counter++;
+        }
+        box = Object.assign({}, currentBoxes[j]);
+        if(boxWords === "")
+          boxWords = " ";
+        box.words = boxWords;
+        boxes.push(box)
       }
-
       i+=counter-1;
-      if(slide === "")
-        slide = " ";
-      fLyrics.push(SlideCreation.newSlide({type: type, box: currentBox, words: slide, fontSize: fontSize, slideIndex: fLyrics.length}))
+      fLyrics.push(SlideCreation.newSlide({type: type, boxes: boxes, fontSize: fontSize, slideIndex: fLyrics.length}))
     }
     return fLyrics;
   }
-  newSlides.push(SlideCreation.newSlide({type: 'blank', box: lastBox, words: ' '}))
+  newSlides.push(SlideCreation.newSlide({type: 'blank', box: lastBoxes[0], words: ' '}))
   return newSlides;
 }
 
@@ -202,8 +207,6 @@ function formatBibleVerses(verses, item, mode){
   formattedVerses.push(SlideCreation.newSlide({type: 'blank', box: currentBox, words: ' '}));
   return formattedVerses;
 }
-
-
 
 function getMaxLines(fontSize, height){
   fontSize = fontSize + "vw"

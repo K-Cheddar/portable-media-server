@@ -11,16 +11,16 @@ export default class FullView extends React.Component{
 
     let {setItemIndex, setWordIndex, insertItemIntoList, insertWords, addItem, deleteItemFromList,
           updateItem, setItemBackground, handleFileChange, deleteItem, addItemToList, setSlideBackground,
-          openUploader, updateCurrent, duplicateItem, addMedia, overrideUndoRedo} = this.props.parent;
+          openUploader, updateCurrent, duplicateItem, addMedia, overrideUndoRedo, setBoxIndex} = this.props.parent;
     let {wordIndex, itemList, item, backgrounds, itemIndex, allItems, user, db, currentInfo,
-          mode} = this.props.parent.state;
+          mode, boxIndex} = this.props.parent.state;
     let {formatSong} = this.props;
 
     return (
       <div style={{position:'absolute', display:'flex', fontSize:'calc(10px + 1vw)'}}>
         <div style={{width:'14vw', overflowX:'hidden'}}>
           <ItemList setItemIndex={setItemIndex} setWordIndex={setWordIndex}
-            addItem={addItem} itemList={itemList} db={db} duplicateItem={duplicateItem}
+            addItem={addItem} itemList={itemList} allItems={allItems} duplicateItem={duplicateItem}
             deleteItemFromList={deleteItemFromList} backgrounds={backgrounds}
             updateItem={updateItem} insertItemIntoList={insertItemIntoList}
             itemIndex={itemIndex} wordIndex={wordIndex} item={item}
@@ -29,11 +29,12 @@ export default class FullView extends React.Component{
         <div>
           {mode === 'edit' &&<div style={{width:'42.5vw', height:'23.9vw', marginLeft:'0.7vw'}}>
             <DisplayEditor wordIndex={wordIndex} backgrounds={backgrounds} overrideUndoRedo={overrideUndoRedo}
-              item={item} updateItem={updateItem} width={'42.5vw'} height={'23.9vw'}/>
+              item={item} updateItem={updateItem} width={'42.5vw'} height={'23.9vw'}
+              boxIndex={boxIndex} setBoxIndex={setBoxIndex}/>
           </div>}
           <div style={(mode === 'edit') ? {width:'43vw', marginLeft:'0.5vw', height: '40vh'}
           : {width:'43vw', marginLeft:'0.5vw', height: '92.5vh'}}>
-            <ItemSlides setWordIndex={setWordIndex} wordIndex={wordIndex}
+            <ItemSlides setWordIndex={setWordIndex} wordIndex={wordIndex} boxIndex={boxIndex}
               item={item} updateItem={updateItem} setSlideBackground={setSlideBackground}
               backgrounds={backgrounds} insertWords={insertWords} formatSong={formatSong}
               />
@@ -42,7 +43,7 @@ export default class FullView extends React.Component{
         <div style={{marginLeft:'1vw', position: 'relative'}}>
           <Backgrounds backgrounds={backgrounds} handleFileChange={handleFileChange} addMedia={addMedia}
             setItemBackground={setItemBackground} user={user} updateCurrent={updateCurrent}
-            setSlideBackground={setSlideBackground} item={item} openUploader={openUploader} db={db}
+            setSlideBackground={setSlideBackground} item={item} openUploader={openUploader} allItems={allItems}
             />
           <DisplayWindow backgrounds={backgrounds} slide={currentInfo.slide} width={"16vw"} title={"Presentation"}
             titleSize="1.25vw"

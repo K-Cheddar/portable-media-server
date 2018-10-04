@@ -10,10 +10,14 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cheerio": "^1.0.0-rc.2",
     "cors": "^2.8.4",
     "express": "^4.16.2",
+    "html2plaintext": "^2.0.1",
     "jade": "^1.11.0",
-    "peer": "^0.2.10"
+    "peer": "^0.2.10",
+    "querystring": "^0.2.0",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "concurrently": "^3.5.0"

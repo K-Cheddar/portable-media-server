@@ -40,14 +40,14 @@ export default class MobileSlides extends React.Component{
   }
 
   render() {
-    let {item, backgrounds, wordIndex} = this.props;
+    let {item, backgrounds, wordIndex, boxIndex} = this.props;
     let {slidesPerRow} = this.state;
     let slides;
     if (item.type === 'song')
       slides = item.arrangements[item.selectedArrangement].slides || null;
     else
       slides = item.slides || null;
-    let words = slides ? slides.map(a => a.boxes[0].words) : null;
+    let words = slides ? slides.map(a => a.boxes[boxIndex].words) : null;
     let row = [];
     let fullArray = [];
     let that = this;
@@ -94,7 +94,7 @@ export default class MobileSlides extends React.Component{
         return(
           <div style={{display:'flex', width:slideWidth, userSelect:'none'}} key={i} id={"MSlide"+(index*slidesPerRow+i)}>
             <div onClick={() => that.clickSlide(index*slidesPerRow+i)} style={style}>
-              <MobileSlideInList words={lyrics} style={slides[index*slidesPerRow+i].boxes[0]}
+              <MobileSlideInList words={lyrics} style={slides[index*slidesPerRow+i].boxes[boxIndex]}
                  backgrounds={backgrounds} name={slides[index*slidesPerRow+i].type}
                  width={width} height={height} titleSize={titleSize}/>
 

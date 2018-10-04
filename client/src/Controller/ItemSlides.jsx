@@ -82,7 +82,7 @@ class ItemSlides extends React.Component{
   }
 
   addSlide = () => {
-    let {item, wordIndex} = this.props;
+    let {item, wordIndex, boxIndex} = this.props;
     let slides;
     if (item.type === 'song')
       slides = item.arrangements[item.selectedArrangement].slides || null;
@@ -92,7 +92,7 @@ class ItemSlides extends React.Component{
     if(!slides)
       return;
 
-    let box = slides[wordIndex].boxes[0]
+    let box = slides[wordIndex].boxes[boxIndex]
 
     slides.splice(wordIndex+1, 0, [SlideCreation.newSlide({type: 'Static', fontSize: box.fontSize, words: '',
      background: box.background, brightness: box.brightness})])
@@ -152,7 +152,7 @@ class ItemSlides extends React.Component{
   }
 
   render() {
-    let {item, backgrounds, wordIndex} = this.props;
+    let {item, backgrounds, wordIndex, boxIndex} = this.props;
     let {mouseX, mouseY, indexBeingDragged, slidesPerRow} = this.state;
     let type = item.type;
     let that = this;
@@ -166,25 +166,18 @@ class ItemSlides extends React.Component{
     else
       slides = item.slides || null;
 
-    let words = slides ? slides.map(a => a.boxes[0].words) : null;
-
     if(name && name.length > 31){
       name = name.substring(0, 32)
       name+="..."
     }
-
-    if(!words)
+    if(!slides)
       return null;
-
-    if(words[0] === "")
-      words[0] = " "
-
-    for(var i = 0; i < words.length; i+=slidesPerRow){
+      
+    for(var i = 0; i < slides.length; i+=slidesPerRow){
       for(var j = i; j < i+slidesPerRow; ++j){
-        if(words[j])
-          row.push(words[j]);
+        if(slides[j])
+          row.push(slides[j]);
       }
-
       fullArray.push(row);
       row = [];
     }
@@ -208,7 +201,7 @@ class ItemSlides extends React.Component{
       width:width, height:fullHeight, opacity:'0.5'};
 
     let ROWtest = fullArray.map((element, index) => {
-      let row = element.map(function (lyrics, i){
+      let row = element.map(function (subElement, i){
 
         let selected = (index*slidesPerRow+i === wordIndex);
         let beingDragged = (indexBeingDragged === index*slidesPerRow+i)
@@ -273,7 +266,7 @@ class ItemSlides extends React.Component{
         onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}
         onMouseLeave={this.releaseElement}>{ROWtest}</div>
       {this.state.lBoxOpen &&<LyricsBox close={this.closeLBox} item={item} setWordIndex={this.props.setWordIndex}
-      updateItem={this.props.updateItem} formatSong={this.props.formatSong}
+      updateItem={this.props.updateItem} formatSong={this.props.formatSong} boxIndex={boxIndex}
       setSlideBackground={this.props.setSlideBackground}/>}
     </HotKeys>
     )

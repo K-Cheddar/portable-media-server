@@ -3,6 +3,11 @@ const path = require('path');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 5000;
+const request = require('request');
+const cheerio = require('cheerio');
+const qs = require('querystring');
+const h2p = require('html2plaintext')
+
 var bodyParser = require('body-parser');
 let srv = app.listen(port, () => console.log(`Listening on port ${port}`));
 app.use('/peerjs', require('peer').ExpressPeerServer(srv, {
@@ -43,6 +48,58 @@ app.post('/api/setAsReceiver', (req, res) => {
   let obj = req.body
   peerServer[obj.user] = obj.id;
 });
+
+app.post('/api/getLyrics', (req, res) => {
+	search(req.body.name, res);
+})
+
+
+const baseURL = 'http://search.azlyrics.com';
+
+function search(query, send){
+    let url = baseURL + '/search.php?q=' + qs.escape(query);
+
+    request(url, function(err, res, body){
+        if(!err){
+            $ = cheerio.load(body);
+
+            $('td.text-left a').each(function(){
+                url = $(this).attr('href');
+
+                // Get Lyrics
+                lyrics(url, send);
+
+                // Break From Each Loop
+                return false;
+            });
+        }
+        else{
+            console.log('Error : ', err);
+        }
+    });
+}
+
+function lyrics(url, send){
+    console.log('Getting lyrics from: ', url);
+
+    request(url, {ciphers: 'DES-CBC3-SHA'}, function(err, res, body){
+        if(!err){
+            $ = cheerio.load(body);
+
+            $('div:not([class])').each(function(){
+                var lyrics = h2p($(this).html());
+                if(lyrics != ''){
+										send.send({lyrics: lyrics})
+                }
+            });
+        }
+        else{
+            console.log('Error in Getting Lyrics : ', err);
+        }
+    });
+}
+
+
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files

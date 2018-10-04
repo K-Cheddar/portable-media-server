@@ -1,14 +1,12 @@
 export function newSlide (props) {
-  let {type, box, words, slideIndex, fontSize, background, brightness} = props;
+  let {type, box, words, slideIndex, fontSize, background, brightness, boxIndex, boxes} = props;
   if(!words)
     words = ''
   if(!box)
     box = {brightness: 100, height: 100, width: 100, x: 0, y: 0, fontSize: fontSize,
       background: '', fontColor: 'rgba(255, 255, 255, 1)'}
-  // console.log("BOX", box);
-  let obj = {
-    type: type,
-    boxes: [
+  if(!boxes){
+    boxes = [
       {background: box.background,
        fontSize: box.fontSize,
        fontColor: box.fontColor,
@@ -21,18 +19,22 @@ export function newSlide (props) {
       }
     ]
   }
+  let obj = {
+    type: type,
+    boxes: boxes
+  }
 
   if(slideIndex >= 0){
-    obj.boxes[0].slideIndex = slideIndex
+    obj.boxes[boxIndex].slideIndex = slideIndex
   }
   if(fontSize){
-    obj.boxes[0].fontSize = fontSize
+    obj.boxes[boxIndex].fontSize = fontSize
   }
   if(background){
-    obj.boxes[0].background = background
+    obj.boxes[boxIndex].background = background
   }
   if(brightness){
-    obj.boxes[0].brightness = brightness
+    obj.boxes[boxIndex].brightness = brightness
   }
 
   return obj;

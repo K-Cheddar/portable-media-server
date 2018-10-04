@@ -21,7 +21,7 @@ class DisplayEditor extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    let {item, wordIndex} = this.props;
+    let {item, wordIndex, boxIndex} = this.props;
 
     if(item !== prevProps.item || wordIndex !== prevProps.wordIndex){
       let video = document.getElementById('background-video');
@@ -35,7 +35,7 @@ class DisplayEditor extends React.Component{
         slides = item.slides || null;
 
       let slide = slides ? slides[wordIndex] : null;
-      let box = slide ? slide.boxes[0] : null;
+      let box = slide ? slide.boxes[boxIndex] : null;
 
       if(box)
         this.setState({text: box.words})
@@ -59,13 +59,13 @@ class DisplayEditor extends React.Component{
   }
 
   handleBoxChange = (x, y, width, height) => {
-    let{wordIndex, item} = this.props;
+    let {wordIndex, item, boxIndex} = this.props;
     let slides;
     if (item.type === 'song')
       slides = item.arrangements[item.selectedArrangement].slides
     else
       slides = item.slides
-    let box = slides[wordIndex].boxes[0];
+    let box = slides[wordIndex].boxes[boxIndex];
     box.x = x;
     box.y = y;
     box.width = width;
@@ -97,24 +97,24 @@ class DisplayEditor extends React.Component{
 
   updateTextChange = (words, cursor, enterPressed) => {
 
-    let {wordIndex, item} = this.props;
+    let {wordIndex, item, boxIndex} = this.props;
     let index = -1;
     let slides, formattedLyrics, newWords, start, end;
 
     if((item.type === 'bible' && wordIndex === 0) || item.type === 'image'){
       slides = item.slides;
-      slides[wordIndex].boxes[0].words = words;
+      slides[wordIndex].boxes[boxIndex].words = words;
     }
 
     else if (item.type === 'song'){
         slides = item.arrangements[item.selectedArrangement].slides
         if(wordIndex === 0)
-            slides[wordIndex].boxes[0].words = words
+            slides[wordIndex].boxes[boxIndex].words = words
         else if(wordIndex < slides.length-1){
             formattedLyrics = item.arrangements[item.selectedArrangement].formattedLyrics;
             index = formattedLyrics.findIndex(e => e.name === slides[wordIndex].type);
 
-            start = wordIndex - slides[wordIndex].boxes[0].slideIndex;
+            start = wordIndex - slides[wordIndex].boxes[boxIndex].slideIndex;
             end = start + formattedLyrics[index].slideSpan - 1;
             newWords = ""
 
@@ -122,7 +122,7 @@ class DisplayEditor extends React.Component{
               if(i === wordIndex)
                 newWords+= words;
               else
-                newWords+= slides[i].boxes[0].words;
+                newWords+= slides[i].boxes[boxIndex].words;
             }
             if(newWords !== "")
               formattedLyrics[index].words = newWords
@@ -140,9 +140,9 @@ class DisplayEditor extends React.Component{
   }
 
   render() {
-    let {wordIndex, item, backgrounds, width, height} = this.props;
+    let {wordIndex, item, backgrounds, width, height, boxIndex} = this.props;
     // let {text} = this.state;
-    let slides
+    let slides;
     if (item.type === 'song')
       slides = item.arrangements[item.selectedArrangement].slides || null;
     else
@@ -159,9 +159,9 @@ class DisplayEditor extends React.Component{
     return (
       <div onKeyUp={this.handleKeyUp} onKeyDown={this.props.overrideUndoRedo}
          style={{width: width, height: height, position: 'relative'}}>
-        <DisplayWindow slide={slide}  backgrounds={backgrounds}
+        <DisplayWindow slide={slide}  backgrounds={backgrounds} boxIndex={boxIndex} wordIndex={wordIndex}
           width={width} height={height} title={''} editor={true} handleTextChange={this.handleTextChange}
-          handleBoxChange={this.handleBoxChange}>
+          handleBoxChange={this.handleBoxChange} setBoxIndex={this.props.setBoxIndex} itemID={item._id}>
         </DisplayWindow>
       </div>
     )

@@ -4,7 +4,7 @@ import * as Overflow from './Overflow'
 export function setItemBackground(props){
   let {background} = props;
   let {updateState, updateHistory} = props.parent;
-  let {item, itemIndex, itemList, allItems, needsUpdate} = props.parent.state;
+  let {item, itemIndex, itemList, allItems, needsUpdate, boxIndex} = props.parent.state;
 
   let slides;
   if (item.type === 'song')
@@ -18,7 +18,7 @@ export function setItemBackground(props){
   let index = allItems.findIndex(e => e.name === item.name)
   //set all slides to match item background
   for (var i = 0; i < slides.length; i++) {
-    slides[i].boxes[0].background = background;
+    slides[i].boxes[boxIndex].background = background;
   }
   //update Item background in all places
   itemList[itemIndex].background = background;
@@ -42,13 +42,13 @@ export function setItemIndex(props){
     mElement.scrollIntoView({behavior: "smooth", block: "center", inline:'center'})
   if(element)
     element.scrollIntoView({behavior: "instant", block: "nearest", inline: "nearest"});
-  updateState({itemIndex: index})
+  updateState({itemIndex: index, boxIndex: 0})
 }
 
 export function updateItem(props){
   let {item} = props;
   let {updateHistory, updateState} = props.parent;
-  let {itemList, allItems, needsUpdate} = props.parent.state;
+  let {itemList, allItems, needsUpdate, boxIndex} = props.parent.state;
 
   let slides;
   if (item.type === 'song')
@@ -56,7 +56,7 @@ export function updateItem(props){
   else
     slides = item.slides || null;
 
-  let fontColor = slides[0].boxes[0].fontColor;
+  let fontColor = slides[0].boxes[boxIndex].fontColor;
   let name = item.name
   let itemIndex = itemList.findIndex(e => e._id === item._id)
   if(itemIndex !== -1 && (itemList[itemIndex].nameColor !== fontColor || itemList[itemIndex].name !== name)){
@@ -84,7 +84,7 @@ export function updateItem(props){
 export function insertWords(props){
   let {targetIndex} = props;
   let {updateHistory, setWordIndex, updateState} = props.parent;
-  let {item, wordIndex, needsUpdate} = props.parent.state;
+  let {item, wordIndex, needsUpdate, boxIndex} = props.parent.state;
 
   let slides;
   if (item.type === 'song')
@@ -92,7 +92,7 @@ export function insertWords(props){
   else
     slides = item.slides || null;
 
-  let words = slides[wordIndex].boxes[0].words;
+  let words = slides[wordIndex].boxes[boxIndex].words;
   slides.splice(wordIndex, 1);
   slides.splice(targetIndex, 0, words);
   needsUpdate.updateItem = true;

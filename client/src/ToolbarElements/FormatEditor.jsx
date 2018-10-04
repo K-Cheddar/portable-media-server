@@ -28,7 +28,7 @@ class FormatEditor extends React.Component{
 
   componentDidUpdate(prevProps, prevState){
 
-    let{item, wordIndex} = this.props;
+    let{item, wordIndex, boxIndex} = this.props;
 
     if((wordIndex !== prevProps.wordIndex) || (item._id !== prevProps.item._id)){
       let slides;
@@ -40,13 +40,16 @@ class FormatEditor extends React.Component{
       let slide = slides ? slides[wordIndex] : null;
       if(!slide)
         return;
-      if(slide.boxes[0].brightness !== undefined)
-        this.setState({brightness: slide.boxes[0].brightness})
+      if(slide.boxes[boxIndex].brightness !== undefined)
+        this.setState({brightness: slide.boxes[boxIndex].brightness})
       else{
         this.setState({brightness: 100})
       }
-      this.setState({fontSize: slide.boxes[0].fontSize})
-      let stringToRGB = slide.boxes[0].fontColor.replace(/[^\d,]/g, '').split(',');
+
+      if(!slide.boxes[boxIndex].fontSize)
+        return
+      this.setState({fontSize: slide.boxes[boxIndex].fontSize})
+      let stringToRGB = slide.boxes[boxIndex].fontColor.replace(/[^\d,]/g, '').split(',');
       this.setState({
         color: {
           r: stringToRGB[0],
