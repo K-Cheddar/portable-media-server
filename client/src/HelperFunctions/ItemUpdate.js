@@ -18,7 +18,7 @@ export function setItemBackground(props){
   let index = allItems.findIndex(e => e.name === item.name)
   //set all slides to match item background
   for (var i = 0; i < slides.length; i++) {
-    slides[i].boxes[boxIndex].background = background;
+    slides[i].boxes[0].background = background;
   }
   //update Item background in all places
   itemList[itemIndex].background = background;

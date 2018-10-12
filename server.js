@@ -53,6 +53,34 @@ app.post('/api/getLyrics', (req, res) => {
 	search(req.body.name, res);
 })
 
+app.post('/api/getHymnal', (req, res) => {
+	searchHymnal(req.body.number, res);
+})
+
+const hymnURL = 'http://sdahymnals.com/Hymnal/';
+
+function searchHymnal(query, send){
+    let url = hymnURL + query;
+		let song = {}
+    request(url, function(err, res, body){
+        if(!err){
+            $ = cheerio.load(body);
+            $('h1.title').each(function(){
+								song.title = $(this).text();
+                // Break From Each Loop
+                return false;
+            });
+						$('div.thecontent p').each(function(){
+							let text = $(this).text().split('\n');
+							song[text[0]] = text.slice(1)
+						})
+						send.send({song: song})
+        }
+        else{
+            console.log('Error : ', err);
+        }
+    });
+}
 
 const baseURL = 'http://search.azlyrics.com';
 

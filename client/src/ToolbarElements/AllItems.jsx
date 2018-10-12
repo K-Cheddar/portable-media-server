@@ -52,9 +52,9 @@ export default class AllItems extends Component {
     })
 
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
-      zIndex: 4, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
+      zIndex: 5, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
 
-    let style = {position:'fixed', zIndex:5, right:'15%', top:'5%', color:'white',
+    let style = {position:'fixed', zIndex:6, right:'15%', top:'5%', color:'white',
       width:'65vw', height: '80vh', backgroundColor:"#383838", padding:'1%', border: '0.1vw solid white',
       borderRadius: '1vw'}
 

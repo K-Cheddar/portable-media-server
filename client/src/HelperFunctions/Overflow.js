@@ -208,14 +208,125 @@ function formatBibleVerses(verses, item, mode){
   return formattedVerses;
 }
 
-function getMaxLines(fontSize, height){
+export function formatAnnouncements(props){
+  let lines = props.text.split('\n');
+  let {background, brightness} = props.slide.boxes[0];
+  let sections = [];
+  let currentSection = [];
+  let currentSectionNumber = -1;
+  let lineCounter = 0;
+  let box = props.slide.boxes[2]
+  let {lineHeight, maxLines} = getMaxLines(box.fontSize, box.height, box.topMargin)
+  for(let i = 0; i < lines.length; ++i){
+    if(lines[i] === '' ||
+       lines[i] === '\n' ||
+       lines[i].split('---').length > 3 ||
+       lines[i].split('–––').length > 3)
+      continue
+    if(lines[i] === lines[i].toUpperCase()){
+      if(currentSection.length !== 0)
+        sections.push(currentSection)
+
+      currentSection = []
+      currentSection.push({title: lines[i], totalLines: 0});
+      if(sections[currentSectionNumber]){
+        sections[currentSectionNumber][0].totalLines = lineCounter;
+        let slideSpan = Math.ceil(lineCounter/maxLines);
+        sections[currentSectionNumber][0].slideSpan = slideSpan;
+        sections[currentSectionNumber][0].linesPerSlide = Math.ceil(lineCounter/slideSpan);
+        lineCounter = 0;
+      }
+      ++currentSectionNumber
+    }
+    else{
+      let linesNum = getNumLines(lines[i], box.fontSize, lineHeight, box.width, box.sideMargin)
+      currentSection.push({text: lines[i], lines: linesNum})
+      lineCounter+=linesNum;
+    }
+
+  }
+  sections.push(currentSection)
+  sections[currentSectionNumber][0].totalLines = lineCounter;
+  let slideSpan = Math.ceil(lineCounter/maxLines);
+  sections[currentSectionNumber][0].slideSpan = slideSpan;
+  sections[currentSectionNumber][0].linesPerSlide = Math.ceil(lineCounter/slideSpan);
+  console.log(sections);
+  let words;
+  let slides = [];
+  for (let i = 0; i < sections.length; ++i){
+    let lineCounter = 0;
+    let slideSpan = sections[i][0].slideSpan;
+    let totalLines = sections[i][0].totalLines;
+    let linesPerSlide = sections[i][0].linesPerSlide;
+    let title = sections[i][0].title;
+    words = ''
+    for(let j = 1; j < sections[i].length; ++j){
+      let section = sections[i][j];
+      lineCounter+=section.lines;
+      if(lineCounter <= linesPerSlide){
+        if(section.lines <=3 && section.text[section.text.length-1] !== ':')
+          words+= '• ' + section.text + '\n'
+        else
+          words+= section.text + '\n'
+      }
+      else if(section.lines > maxLines){
+        let sectionMaxLines = Math.ceil(section.lines/Math.ceil(section.lines/maxLines))+1;
+        let sentences = section.text.match( /[^\.!\?]+[\.!\?]+/g );
+        if(words !== '')
+          words+='\n'
+        for (let k = 0; k < sentences.length; ++k){
+          let update = words + sentences[k];
+          let linesNum = getNumLines(update, box.fontSize, lineHeight, box.width, box.sideMargin)
+          if(linesNum <= sectionMaxLines)
+            words = update;
+          else{
+            slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: words,
+                        background: background, brightness: brightness}))
+            words = sentences[k];
+          }
+        }
+      }
+      else if(lineCounter >= linesPerSlide){
+        if(words !== '')
+        slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: words,
+                    background: background, brightness: brightness}))
+        if(section.lines <=3)
+          words = '• ' + section.text + '\n'
+        else
+          words = section.text + '\n'
+        lineCounter=section.lines;
+      }
+      else if(lineCounter <= maxLines){
+        if(words !== '')
+          slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: words,
+                      background: background, brightness: brightness}))
+        slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: section.text,
+                    background: background, brightness: brightness}))
+        lineCounter = 0;
+        words = ''
+      }
+
+
+    }
+    if(lineCounter !== 0){
+      slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: words,
+                  background: background, brightness: brightness}))
+      lineCounter = 0;
+      words = '';
+    }
+  }
+  // console.log(slides);
+  return slides;
+}
+
+function getMaxLines(fontSize, height, topMarg){
   fontSize = fontSize + "vw"
   let windowWidth = window.innerWidth;
-
+  let topMargin = (1 - topMarg*2/100) || .86
   if(!height)
     height = 86
   else
-    height*=.86;
+    height*=topMargin;
   height /= 100; // % -> decimal
   height = height*windowWidth*.239 //Height of Display Editor = 23.9vw
 
@@ -233,13 +344,14 @@ function getMaxLines(fontSize, height){
   return obj;
 }
 
-function getNumLines(text, fontSize, lineHeight, width){
+function getNumLines(text, fontSize, lineHeight, width, sideMarg){
   fontSize = fontSize + "vw"
   let windowWidth = window.innerWidth;
+  let sideMargin = (1 - sideMarg*2/100) || .90
   if(!width)
     width = 90
   else
-    width*=.90
+    width*=sideMargin
   width /= 100;
   width= width*windowWidth*.425 //Width of Display Editor = 42.5vw
 

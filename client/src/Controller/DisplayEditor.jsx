@@ -133,7 +133,7 @@ class DisplayEditor extends React.Component{
     this.props.updateItem(item);
 
     setTimeout(function(){
-      if(!enterPressed)
+      if(!enterPressed || item.type !== 'song')
         return;
       document.getElementById(`displayEditor-${boxIndex}`).selectionEnd = cursor;
       document.getElementById(`displayEditor-${boxIndex}`).scrollTop = 0;

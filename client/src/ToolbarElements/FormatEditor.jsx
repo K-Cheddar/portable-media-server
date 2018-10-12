@@ -157,9 +157,9 @@ class FormatEditor extends React.Component{
             <img className='imgButton' style={!cPickerOpen ? {display:'none'} : {marginRight:'1vw', fontSize: "calc(8px + 0.4vw)", width:'1.5vw', height: '1.5vw'} }
               alt="cPickerClose" src={cPickerClose}
               onClick={this.closeColors}/>
-            <div style={cPickerOpen ? {position:'absolute', zIndex:5, top: '5vh', backgroundColor:'#EEE', padding:'5px'} : {display: 'none'}}>
+            {cPickerOpen &&<div style={{position:'absolute', zIndex:5, top: '5vh', backgroundColor:'#EEE', padding:'5px'}}>
                 <ChromePicker color={this.state.color} onChange={this.colorChange}/>
-            </div>
+            </div>}
            <input style={{width: '1.25vw', height: '1.25vw', textAlign: 'center',
              marginRight:'1vw', fontSize:"calc(7px + 0.25vw)"}}
              value={String(fontSize*10)} onChange={this.fontSizeChange}/>

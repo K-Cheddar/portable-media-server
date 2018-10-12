@@ -41,6 +41,8 @@ export default class Songs extends React.Component{
   newSong = () => {
     let {name} = this.state;
     let {userSettings, allItems} = this.props.state;
+    if(name === '')
+      return
 
     name = MakeUnique({name: name, property: '_id', list: allItems});
 

@@ -39,33 +39,49 @@ class ItemSlides extends React.Component{
   }
 
   setElement = (index) => {
-    if(this.props.item.type === 'announcements'){
+    let {item} = this.props;
+    if(item.type === 'announcements' || item.type === 'image'){
       if(index < this.props.item.slides.length)
         this.props.setWordIndex(index);
+
+        this.setState({
+          mouseDown: true
+        })
+
+        this.checkHeld = setTimeout(function() {
+          let {mouseDown, indexBeingDragged } = this.state;
+          if(mouseDown && indexBeingDragged ===-1){
+            this.setState({indexBeingDragged: index})
+          }
+
+        }.bind(this), 250);
     }
     else
       this.props.setWordIndex(index);
-
-    // this.setState({
-    //   mouseDown: true
-    // })
-    //
-    // this.checkHeld = setTimeout(function() {
-    //   let {mouseDown} = this.state;
-    //   if(mouseDown){
-    //     this.setState({indexBeingDragged: index})
-    //   }
-    //
-    // }.bind(this), 350);
 
   }
 
   setTarget = (index) => {
     let {indexBeingDragged} = this.state;
     if((indexBeingDragged !== -1) && (indexBeingDragged !== index)){
-      this.props.insertWords(index);
+      this.insertWords(index);
       this.setState({indexBeingDragged: index})
     }
+  }
+
+  insertWords = (targetIndex) => {
+    let {item, wordIndex} = this.props;
+    let slides, slide;
+    if(item.type === 'announcements' || item.type === 'image'){
+      slides = item.slides;
+      slide = slides[wordIndex];
+      slides.splice(wordIndex, 1);
+      slides.splice(targetIndex, 0, slide);
+      item.slides = slides
+    }
+
+    this.props.setWordIndex(targetIndex);
+    this.props.updateItem(item);
   }
 
   releaseElement = () => {
@@ -127,7 +143,10 @@ class ItemSlides extends React.Component{
     // if (item.type === 'song')
     //   slides = item.arrangements[item.selectedArrangement].slides || null;
     // else
+
     slides = item.slides
+    if(index === slides.length-1)
+      this.props.setWordIndex(index-1)
     slides.splice(index, 1);
     this.props.updateItem(item);
   }
@@ -194,6 +213,7 @@ class ItemSlides extends React.Component{
     if(!slides)
       return null;
 
+
     for(var i = 0; i < slides.length; i+=slidesPerRow){
       for(var j = i; j < i+slidesPerRow; ++j){
         if(slides[j])
@@ -233,7 +253,11 @@ class ItemSlides extends React.Component{
         let newSection = subElement === 'newSection';
         let selected = (index*slidesPerRow+i === wordIndex);
         let beingDragged = (indexBeingDragged === index*slidesPerRow+i);
-        let deleteEnable = (index+i > 1 && freeSlides);
+        let deleteEnable = false;
+        if(item.type === 'image')
+          deleteEnable = item.slides.length > 1;
+        if(item.type === 'announcements')
+          deleteEnable = index+i > 1 || index > 0;
         if(selected){
           style = slideSelectedStyle;
         }
@@ -272,7 +296,8 @@ class ItemSlides extends React.Component{
                 />
               </div>}
             </div>
-            {(deleteEnable && !newSection) && <img className='imgButton' style={{display:'block', width:'1.5vw', height:'1.5vw'}}
+            {(deleteEnable && !newSection) && <img className='imgButton'
+              style={{display:'block', width:`calc(1.5vw*${4/slidesPerRow})`, height:`calc(1.5vw*${4/slidesPerRow})`}}
                onClick={() => that.deleteSlide(index*slidesPerRow+i)}
                alt="delete" src={deleteX}
               />

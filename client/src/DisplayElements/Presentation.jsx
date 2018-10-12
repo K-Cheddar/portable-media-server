@@ -44,7 +44,7 @@ class Presentation extends React.Component{
       width: window.innerWidth,
       height: window.innerHeight
     })
-    if(window.innerWidth < window.screen.width || window.innerHeight < window.screen.height )
+    if(window.innerWidth < (window.screen.width*.98) || window.innerHeight < (window.screen.height*.98) )
       this.setState({fullScreen: false})
   }
 
@@ -81,7 +81,6 @@ class Presentation extends React.Component{
       extraPadding = true
     }
 
-
     let buttonStyle = {fontSize: "10vmin", backgroundColor:'#383838', border:'1.5vmin solid #06d1d1',
       borderRadius:'2vmin', color: 'white'}
 
@@ -104,7 +103,7 @@ class Presentation extends React.Component{
             </div>
           </div>
         </div>}
-        {fullScreen && <DisplayWindow slide={slide} backgrounds={backgrounds} width={'100vw'} height={'100vh'}
+        {fullScreen && <DisplayWindow slide={slide} backgrounds={backgrounds} width={'100vw'}
         title={''} titleSize={''} presentation={true} extraPadding={extraPadding}/>
         }
       </div>

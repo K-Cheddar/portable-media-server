@@ -228,10 +228,10 @@ export default class LyricsBox extends Component{
        border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.5vw'}
 
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
-       zIndex: 4, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
+       zIndex: 5, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
     return(
       <HotKeys handlers={this.handlers} style={windowBackground}>
-        <div style={{position:'fixed', zIndex:5, right:'1%', top:'1%', color:'white',
+        <div style={{position:'fixed', zIndex:6, right:'1%', top:'1%', color:'white',
           width:'95vw', height: '93vh', backgroundColor:"#383838", padding:'1%',
           border: '0.1vw solid white', borderRadius: '1vw'}}>
           <div style={{display:'flex'}}>

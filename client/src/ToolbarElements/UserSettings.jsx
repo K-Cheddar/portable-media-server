@@ -99,7 +99,7 @@ export default class UserSettings extends React.Component{
     }
 
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
-      zIndex: 4, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
+      zIndex: 5, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
 
     let sliderStyle = {width: '5vw', margin: '.5vw 1vw'}
 

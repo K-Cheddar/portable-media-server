@@ -19,9 +19,6 @@ export default class DisplayWindow extends React.Component{
   render() {
     let {backgrounds, slide, width, title, titleSize, presentation, extraPadding, editor, zIndex} = this.props;
 
-    let img = blank, asset;
-    let isVideo = false;
-
     if(!slide){
       slide = {boxes: [{words: '', background: '', style: {}}]}
     }
@@ -64,7 +61,9 @@ export default class DisplayWindow extends React.Component{
     let containerStyle = {width:width, height:height, position:'relative'};
 
     let boxes = slide.boxes.map((box, index) => {
-      let zIndex = index
+      let img = blank, asset;
+      let isVideo = false;
+      let zIndex = index+1
       let background = box.background;
       let words = box.words;
       let style = box;
@@ -77,26 +76,13 @@ export default class DisplayWindow extends React.Component{
       }
       let animate = presentation || title === 'Presentation' || editor || title === 'Presentation ';
       return(
-        <div style={{zIndeX: zIndex}} key={index}>
-          {editor &&
-            <DisplayBox box={box} handleTextChange={this.props.handleTextChange} animate={animate}
-              index={index} handleBoxChange={this.props.handleBoxChange} id={id} title={title} isVideo={isVideo}
-               asset={asset} img={img} setBoxIndex={this.props.setBoxIndex} fsDivider={fsDivider} width={width}
-               height={height} zIndex={zIndex} index={index}/>}
-          {!editor && <div>
-            <DisplayWords id={id} words={words} fontSize={style.fontSize} presentation={presentation}
-              fontColor={style.fontColor} fsDivider={fsDivider} extraPadding={extraPadding} position={style}
-              title={title} animate={animate}>
-            </DisplayWords>
-            <DisplayBackground img={img} brightness={style.brightness} presentation={presentation}
-              position={style} title={title} isVideo={isVideo} asset={asset} animate={animate}>
-            </DisplayBackground>
-            </div>
-          }
-        </div>
+        <DisplayBox box={box} handleTextChange={this.props.handleTextChange} animate={animate}
+         index={index} handleBoxChange={this.props.handleBoxChange} id={id} title={title} isVideo={isVideo}
+         asset={asset} img={img} setBoxIndex={this.props.setBoxIndex} fsDivider={fsDivider} width={width}
+         height={height} zIndex={zIndex} index={index} editor={editor} key={index}
+         presentation={presentation} extraPadding={extraPadding}/>
       )
     })
-
 
     return (
       <div>

@@ -186,33 +186,35 @@ export default class Display_Words extends Component {
       SS = `${fs*4}vw`;
 
     let {position} = this.props;
-    let width = '90%';
-    let height = '86%';
-    let marginT_B = position.topMargin ? position.topMargin : 3.5;
-    let marginL_R = position.sideMargin ? position.sideMargin : 4.5;
+    let marginT_B = position.topMargin || 3;
+    let marginL_R = position.sideMargin || 4;
+    if(extraPadding)
+      marginT_B*=5;
     let top = 0;
     let left = 0;
+    let width =  100 - (marginL_R*2) + '%';
+    let height = 100 - (marginT_B*2) + '%';
 
-    if(nextPosition && nextPosition.width){
-      width = .9*nextPosition.width + '%';
-      height = .86*nextPosition.height + '%';
-      top = Math.max((nextPosition.y - (marginT_B/2)),0) + '%';
-      left = Math.max((nextPosition.x - (marginL_R/2)),0) + '%';
-    }
-    else if(!this.props.editor && position.width){
-      width = .9*position.width + '%';
-      height = .86*position.height + '%';
-      top = Math.max((position.y - (marginT_B/2)),0)+ '%';
-      left = Math.max((position.x - (marginL_R/2)),0)+ '%';
-    }
+    // if(nextPosition && nextPosition.width){
+    //   width = .9*nextPosition.width + '%';
+    //   height = .86*nextPosition.height + '%';
+    //   top = Math.max((nextPosition.y - (marginT_B/2)),0) + '%';
+    //   left = Math.max((nextPosition.x - (marginL_R/2)),0) + '%';
+    // }
+    // // else if(!this.props.editor && position.width){
+    // //   width = .9*position.width + '%';
+    // //   height = .86*position.height + '%';
+    // //   top = Math.max((position.y - (marginT_B/2)),0)+ '%';
+    // //   left = Math.max((position.x - (marginL_R/2)),0)+ '%';
+    // // }
 
     let textAlign = position.textAlign ? position.textAlign : 'center'
 
     let wordsStyle = {
       textAlign: textAlign, background: 'transparent', resize:'none', outline: 'none', border: 'none',
       whiteSpace:'pre-wrap', color: fontColor, fontSize: actualfontSize, fontFamily: "Verdana",
-      margin: extraPadding ? "12.5% 5%" : `${marginT_B}% ${marginL_R}%`, textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
-      width: width, height: height, position: 'absolute', zIndex: 2, top: top, left: left,
+      margin: `${marginT_B}% ${marginL_R}%`, textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
+      width: width, height: height, position: 'absolute', zIndex: this.props.zIndex+1, top: top, left: left,
       WebkitTextStroke: `${strokeRadius} ${strokeColor}`, overflow: 'hidden'
     }
 

@@ -132,7 +132,6 @@ class App extends Component {
     this.updateInterval = null;
     this.reconnectPeer = null;
     this.sync = null;
-    this.timer = null;
 
     this.handlers = {
       'undo': this.undo,
@@ -477,6 +476,7 @@ class App extends Component {
   }
 
   setBoxIndex = (index) => {
+    console.log("BOX:", index);
     this.setState({boxIndex: index});
   }
 
@@ -543,7 +543,7 @@ class App extends Component {
   }
 
   setWordIndex = (index) => {
-    SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent, timer: this.timer})
+    SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent})
   }
 
   test = () => {
@@ -568,14 +568,26 @@ class App extends Component {
     // let url = 'https://www.azlyrics.com/'
     // const html = (await (await fetch(url)).text());
     // console.log(html);
-    fetch('api/getLyrics', {
+    // fetch('api/getLyrics', {
+    //    method: 'post',
+    //    body: JSON.stringify({name: 'William McDowell'}),
+    //    headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //     },
+    // }).then((response) => response.json())
+    // .then(function(data){
+    //   console.log(data);
+    // })
+    fetch('api/getHymnal', {
        method: 'post',
-       body: JSON.stringify({name: 'William McDowell'}),
+       body: JSON.stringify({number: '528'}),
        headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
         },
-    }).then((response) => response.json())
+    })
+    .then((response) => response.json())
     .then(function(data){
       console.log(data);
     })
@@ -583,7 +595,6 @@ class App extends Component {
 
   toggleFreeze = () => {
     this.setState({freeze: !this.state.freeze})
-    this.timer = null
   }
 
   undo = () => {

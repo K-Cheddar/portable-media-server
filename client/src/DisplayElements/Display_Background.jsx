@@ -60,20 +60,17 @@ export default class Display_Background extends Component {
 
   computeBackgroundStyle = (img, brightness, position) => {
 
-    let width = (position && position.width) ? position.width + '%' : '100%';
-    let height = (position && position.height) ? position.height + '%' : '100%';
-    let top = (position && position.y) ? Math.max(position.y, 0) + '%' : 0;
-    let left = (position && position.x) ? Math.max(position.x, 0) + '%' : 0;
-
     let level = "100%";
     if(brightness)
       level = brightness+"%"
 
-    let backgroundStyle= { position:'absolute', zIndex:1, backgroundImage: 'url('+img+')',
-      backgroundSize: '100% 100%', filter: `brightness(${level})`, top: top, left: left,
-      width: width, height: height, maxHeight:'80vw'}
+    let backgroundStyle= { position:'absolute', backgroundSize: '100% 100%',
+      filter: `brightness(${level})`, width: '100%', height: '100%',
+      maxHeight:'80vw', zIndex: this.props.zIndex}
     if(position && position.transparent)
       backgroundStyle.background = 'transparent';
+    else
+      backgroundStyle.backgroundImage = 'url('+img+')'
 
     return backgroundStyle;
 

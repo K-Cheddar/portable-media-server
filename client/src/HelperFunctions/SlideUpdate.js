@@ -1,3 +1,4 @@
+let timer = null;
 export function setSlideBackground(props){
   let {background} = props;
   let {updateState, updateHistory} = props.parent;
@@ -9,9 +10,9 @@ export function setSlideBackground(props){
   else
     slides = item.slides || null;
 
-  slides[wordIndex].boxes[boxIndex].background = background;
+  slides[wordIndex].boxes[0].background = background;
   let index = allItems.findIndex(e => e.name === item.name)
-
+  console.log((slides));
   needsUpdate.updateItem = true;
 
   if(wordIndex === 0){
@@ -31,7 +32,7 @@ export function setSlideBackground(props){
 }
 
 export function setWordIndex(props){
-  let {index, updateState, updateCurrent, timer} = props;
+  let {index, updateState, updateCurrent} = props;
   let {item, wordIndex} = props.state;
   let slides;
 
@@ -56,15 +57,19 @@ export function setWordIndex(props){
     element.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
 
   updateState({wordIndex: index, boxIndex: 0});
-  props.runTimer = false;
-  timerUpdate(props);
+  clearTimeout(timer)
+  updateSlide(props);
 }
 
-function timerUpdate(props){
-  let {index, updateCurrent, timer, runTimer} = props;
+function updateSlide(props){
+  let {index, updateCurrent} = props;
   let {item, wordIndex, freeze} = props.state;
   let slides;
-  clearTimeout(timer);
+  if(freeze){
+    clearTimeout(timer)
+    return;
+  }
+
   if (item.type === 'song')
     slides = item.arrangements[item.selectedArrangement].slides;
   else
@@ -72,28 +77,19 @@ function timerUpdate(props){
 
   updateCurrent({slide: slides[index]});
 
-  if(freeze)
-    return;
-
   if(item.type === 'announcements'){
     let length = item.slides.length;
     let duration = item.slides[index].duration * 1000;
-    runTimer = true;
-    console.log(duration, index);
-    if(runTimer){
       timer = setTimeout(function(){
         if(index < length-1) {
           props.index++;
-          props.runTimer = true;
-          timerUpdate(props)
+          updateSlide(props)
         }
         else {
           props.index = 0;
-          props.runTimer = true;
-          timerUpdate(props)
+          updateSlide(props)
         }
       },duration)
-    }
 
   }
 

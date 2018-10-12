@@ -10,8 +10,9 @@ export default class SlideInList extends React.Component{
     let divStyle={width: width, height: height}
 
     if(moving){
-      divStyle.left = (x+3)  + 'px';
-      divStyle.top = (y+3)  + 'px';
+      divStyle.left = `calc(${x}px - 5vw)`;
+      divStyle.top = `calc(${y}px - 10vh)`;
+      divStyle.position = 'absolute';
     }
 
     // let slide = {boxes: [{words: words, background: style.background, ...style}]}

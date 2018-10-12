@@ -13,6 +13,7 @@ import open from '../assets/open.png';
 import bibleIcon from '../assets/bibleIcon.png'
 import songIcon from '../assets/songIcon.png'
 import allItemsIcon from '../assets/allItemsIcon.png'
+import announcementsIcon from '../assets/announcementsIcon.png'
 import undoButton from '../assets/undo.png'
 import redoButton from '../assets/redo.png'
 
@@ -123,7 +124,7 @@ export default class Toolbar extends Component {
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                   {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
                   {/*<button style={menuItem} onClick={updateItemStructure}>UPDATE ALL</button>*/}
-                  <button onClick={test}>Test</button>
+                  {/*<button onClick={test}>Test</button>*/}
                 </div>
                 <div style={{display: 'flex', marginTop: '2vh'}}>
                   <img className='imgButton' style={undoReady? undoRedo: undoRedoDisabled}
@@ -163,7 +164,7 @@ export default class Toolbar extends Component {
           <li style={{width: '13vw'}}>
             {mode === 'edit' && <div className='toolbarSection' style={{display:'flex'}}>
               <div onClick={ () => this.openAllItems('Bible')} className='imgButton'
-                 style={{fontSize: "calc(5px + 0.35vw)", height: '5vh', marginRight:'0.5vw'}}>
+                 style={{fontSize: '0.65vw', height: '6vh', marginRight:'0.5vw', textAlign: 'center'}}>
                 <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
                   padding: '0.25vh 0.25vw'}}
                    alt="bibleIcon" src={bibleIcon}
@@ -171,7 +172,7 @@ export default class Toolbar extends Component {
                  <div>Open Bible</div>
               </div>
               <div onClick={ () => this.openAllItems('Songs')} className='imgButton'
-                style={{fontSize: "calc(5px + 0.35vw)", marginRight:'0.5vw', height: '5vh'}}>
+                style={{fontSize: '0.65vw', marginRight:'0.5vw', height: '6vh', textAlign: 'center'}}>
                 <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
                   padding: '0.25vh 0.25vw'}}
                    alt="songIcon" src={songIcon}
@@ -179,12 +180,20 @@ export default class Toolbar extends Component {
                  <div>Add Song</div>
               </div>
               <div onClick={ () => this.openAllItems('Existing')} className='imgButton'
-                style={{fontSize: "calc(5px + 0.35vw)", height: '5vh'}}>
+                style={{fontSize: '0.65vw', height: '6vh', marginRight:'0.5vw', textAlign: 'center'}}>
                 <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
                   padding: '0.25vh 0.25vw'}}
                    alt="allItemsIcon" src={allItemsIcon}
                    />
                  <div>All Items</div>
+              </div>
+              <div onClick={ () => this.openAllItems('Announcements')} className='imgButton'
+                style={{fontSize: '0.65vw', height: '5vh', textAlign: 'center'}}>
+                <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
+                   alt="announcementsIcon" src={announcementsIcon}
+                   />
+                 <div>Announcements</div>
               </div>
             </div>}
           </li>

@@ -278,7 +278,7 @@ export default class ItemListEditor extends Component{
     })
 
     let style={
-      position:'absolute',    zIndex:5,     left:'25%',     top:'15%',
+      position:'absolute',    zIndex:6,     left:'25%',     top:'15%',
       backgroundColor: '#383838',           boxShadow: '0 5px 10px rgb(0, 0, 0)',
       border: '0.1vw solid white',          borderRadius: '1vw',
       padding: 10,            height: '45vh',               width: '45vw',
@@ -290,7 +290,7 @@ export default class ItemListEditor extends Component{
        width: '9vw', display: 'flex', justifyContent: 'center', alignItems: 'center'}
 
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
-       zIndex: 4, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
+       zIndex: 5, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
 
     return(
       <div style={windowBackground}>
