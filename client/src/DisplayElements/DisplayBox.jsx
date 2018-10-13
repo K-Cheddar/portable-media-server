@@ -151,7 +151,7 @@ export default class DisplayWindow extends React.Component{
           zIndex={zIndex} presentation={presentation} extraPadding={extraPadding}>
         </DisplayWords>
         <DisplayBackground img={img} brightness={box.brightness} title={title} isVideo={isVideo}
-          asset={asset} animate={animate} zIndex={zIndex} position={box}>
+          asset={asset} animate={animate} zIndex={zIndex} position={box} presentation={presentation}>
         </DisplayBackground>
       </Rnd>
       </div>
