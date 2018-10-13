@@ -39,7 +39,7 @@ export default class Backgrounds extends React.Component{
 
   displayImage = () =>{
     let {selectedBackground} = this.state;
-    this.props.updateCurrent({image: selectedBackground})
+    this.props.updateCurrent({image: selectedBackground, displayDirect: true})
   }
 
   selectBackground = (index) => {
@@ -62,7 +62,7 @@ export default class Backgrounds extends React.Component{
 
   render() {
 
-    let {backgrounds, item, openUploader, user} = this.props;
+    let {backgrounds, item, openUploader, user, allItems} = this.props;
     let {selected, allOpen, nameOpen, selectedBackground} = this.state;
     let BCKS = "";
     let row = [];
@@ -173,8 +173,9 @@ export default class Backgrounds extends React.Component{
               />}
           </div>
 
-          {nameOpen && <CreateName option="create" name={selectedBackground} type={'image'} db={this.props.db}
+          {nameOpen && <CreateName option="create" name={selectedBackground} type={'image'}
           close={this.closeName} addMedia={this.props.addMedia} background={selectedBackground}
+          allItems={allItems} item={item}
           />}
       </div>
     )

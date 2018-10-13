@@ -31,7 +31,8 @@ export default class AllItems extends Component {
 
     let {tab} = this.state;
 
-    let tabNames = ['Existing', 'Songs', 'Bible', 'Images', 'Videos', 'Announcements'];
+    // let tabNames = ['Existing', 'Songs', 'Bible', 'Images', 'Videos', 'Announcements'];
+    let tabNames = ['Existing', 'Songs', 'Bible', 'Announcements'];
 
     let tabStyle = {width: '8vw', padding: '0 1vw', height: '5vh', borderLeft:'0.15vw solid #06d1d1',
       borderBottom:'0.15vw solid yellow', display: 'flex', alignItems: 'center', textAlign: 'center',

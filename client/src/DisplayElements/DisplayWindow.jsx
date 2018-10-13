@@ -1,11 +1,6 @@
 import React from 'react';
-import DisplayWords from './Display_Words';
-import DisplayBackground from './Display_Background';
 import DisplayBox from './DisplayBox';
 import blank from '../assets/blank.png';
-import lock from '../assets/lock.png';
-import unlock from '../assets/unlock.png';
-import {Rnd} from 'react-rnd';
 
 export default class DisplayWindow extends React.Component{
 
@@ -17,7 +12,7 @@ export default class DisplayWindow extends React.Component{
   }
 
   render() {
-    let {backgrounds, slide, width, title, titleSize, presentation, extraPadding, editor, zIndex} = this.props;
+    let {backgrounds, slide, width, title, titleSize, presentation, extraPadding, editor} = this.props;
 
     if(!slide){
       slide = {boxes: [{words: '', background: '', style: {}}]}
@@ -66,7 +61,6 @@ export default class DisplayWindow extends React.Component{
       let zIndex = index+1
       let background = box.background;
       let words = box.words;
-      let style = box;
       let id = `background-text-${title}-${words}`;
       if(backgrounds.some(e => e.name === background)){
         asset = backgrounds.find(e => e.name === background);
@@ -79,7 +73,7 @@ export default class DisplayWindow extends React.Component{
         <DisplayBox box={box} handleTextChange={this.props.handleTextChange} animate={animate}
          index={index} handleBoxChange={this.props.handleBoxChange} id={id} title={title} isVideo={isVideo}
          asset={asset} img={img} setBoxIndex={this.props.setBoxIndex} fsDivider={fsDivider} width={width}
-         height={height} zIndex={zIndex} index={index} editor={editor} key={index}
+         height={height} zIndex={zIndex} editor={editor} key={index}
          presentation={presentation} extraPadding={extraPadding}/>
       )
     })

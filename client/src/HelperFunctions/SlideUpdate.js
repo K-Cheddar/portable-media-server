@@ -2,7 +2,7 @@ let timer = null;
 export function setSlideBackground(props){
   let {background} = props;
   let {updateState, updateHistory} = props.parent;
-  let {item, wordIndex, allItems, itemList, itemIndex, needsUpdate, boxIndex} = props.parent.state;
+  let {item, wordIndex, allItems, itemList, itemIndex, needsUpdate} = props.parent.state;
 
   let slides;
   if (item.type === 'song')
@@ -32,7 +32,7 @@ export function setSlideBackground(props){
 }
 
 export function setWordIndex(props){
-  let {index, updateState, updateCurrent} = props;
+  let {index, updateState} = props;
   let {item, wordIndex} = props.state;
   let slides;
 
@@ -57,16 +57,20 @@ export function setWordIndex(props){
     element.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
 
   updateState({wordIndex: index, boxIndex: 0});
-  clearTimeout(timer)
+  clearTimer()
   updateSlide(props);
+}
+
+export function clearTimer(){
+  clearTimeout(timer)
 }
 
 function updateSlide(props){
   let {index, updateCurrent} = props;
-  let {item, wordIndex, freeze} = props.state;
+  let {item, freeze} = props.state;
   let slides;
   if(freeze){
-    clearTimeout(timer)
+    clearTimer()
     return;
   }
 

@@ -99,7 +99,7 @@ export default class Bible extends Component {
     };
 
     item = this.props.formatBible(item, 'fit', verse);
-    this.props.functions.updateCurrent({slide: item.slides[1]});
+    this.props.functions.updateCurrent({slide: item.slides[1], displayDirect: true});
   }
 
   filterBooks = (bookSearch) => {

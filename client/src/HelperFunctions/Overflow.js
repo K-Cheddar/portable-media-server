@@ -228,11 +228,9 @@ export function formatAnnouncements(props){
         sections.push(currentSection)
 
       currentSection = []
-      currentSection.push({title: lines[i], totalLines: 0});
+      currentSection.push({title: lines[i]});
       if(sections[currentSectionNumber]){
-        sections[currentSectionNumber][0].totalLines = lineCounter;
         let slideSpan = Math.ceil(lineCounter/maxLines);
-        sections[currentSectionNumber][0].slideSpan = slideSpan;
         sections[currentSectionNumber][0].linesPerSlide = Math.ceil(lineCounter/slideSpan);
         lineCounter = 0;
       }
@@ -246,17 +244,13 @@ export function formatAnnouncements(props){
 
   }
   sections.push(currentSection)
-  sections[currentSectionNumber][0].totalLines = lineCounter;
   let slideSpan = Math.ceil(lineCounter/maxLines);
-  sections[currentSectionNumber][0].slideSpan = slideSpan;
   sections[currentSectionNumber][0].linesPerSlide = Math.ceil(lineCounter/slideSpan);
   console.log(sections);
   let words;
   let slides = [];
   for (let i = 0; i < sections.length; ++i){
     let lineCounter = 0;
-    let slideSpan = sections[i][0].slideSpan;
-    let totalLines = sections[i][0].totalLines;
     let linesPerSlide = sections[i][0].linesPerSlide;
     let title = sections[i][0].title;
     words = ''
@@ -271,7 +265,7 @@ export function formatAnnouncements(props){
       }
       else if(section.lines > maxLines){
         let sectionMaxLines = Math.ceil(section.lines/Math.ceil(section.lines/maxLines))+1;
-        let sentences = section.text.match( /[^\.!\?]+[\.!\?]+/g );
+        let sentences = section.text.match( /[^.!?]+[.!?]+/g );
         if(words !== '')
           words+='\n'
         for (let k = 0; k < sentences.length; ++k){

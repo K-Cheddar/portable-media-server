@@ -57,10 +57,10 @@ export default class ExistingItems extends React.Component{
     return(
       <div className='tableRow' style={{display:'flex'}}
         key={index}>
-        <div style={{width:'20vw',display: 'flex', alignItems: 'center', fontSize:'0.75vw',
+        <div style={{width:'18.5vw',display: 'flex', alignItems: 'center', fontSize:'0.75vw',
           borderRight:'0.1vw solid black', paddingTop: '0.5vh'}}>
           {element.name}</div>
-        <div style={{width:'5vw', display: 'flex', justifyContent:'center', alignItems: 'center',
+        <div style={{width:'7vw', display: 'flex', justifyContent:'center', alignItems: 'center',
           fontSize:'0.75vw', borderRight:'0.1vw solid black', paddingTop: '0.5vh'}}>
           {element.type}</div>
         <div style={{width:'8vw', display: 'flex', justifyContent:'center', alignItems: 'center',

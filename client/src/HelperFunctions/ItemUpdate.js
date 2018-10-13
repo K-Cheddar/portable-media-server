@@ -4,7 +4,7 @@ import * as Overflow from './Overflow'
 export function setItemBackground(props){
   let {background} = props;
   let {updateState, updateHistory} = props.parent;
-  let {item, itemIndex, itemList, allItems, needsUpdate, boxIndex} = props.parent.state;
+  let {item, itemIndex, itemList, allItems, needsUpdate} = props.parent.state;
 
   let slides;
   if (item.type === 'song')
@@ -48,7 +48,7 @@ export function setItemIndex(props){
 export function updateItem(props){
   let {item} = props;
   let {updateHistory, updateState} = props.parent;
-  let {itemList, allItems, needsUpdate, boxIndex} = props.parent.state;
+  let {itemList, allItems, needsUpdate} = props.parent.state;
 
   let slides;
   if (item.type === 'song')

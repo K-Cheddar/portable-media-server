@@ -77,14 +77,14 @@ export default class Toolbar extends Component {
   render(){
 
     let {formatBible} = this.props;
-    let {selectItemList, toggleFreeze, updateFontSize, updateFontColor, addItem,
+    let {selectItemList, toggleFreeze, updateFontSize, updateFontColor,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
        setAsReceiver, connectToReceiver, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo, updateSkipTitle, test} = this.props.parent; //updateItemStructure
-    let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn, db,
+        updateCurrent, undo, redo, updateSkipTitle} = this.props.parent; //updateItemStructure
+    let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn,
       allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
       undoReady, redoReady, boxIndex} = this.props.parent.state;
-    let {bibleOpen, nameOpen, tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen} = this.state;
+    let {tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen} = this.state;
 
     let menuItem = {
       display:'inline-block', width:'90%', padding: '2.5%', backgroundColor:'#fff', margin: '5%',

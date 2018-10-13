@@ -113,7 +113,7 @@ class ItemSlides extends React.Component{
   }
 
   addSlide = () => {
-    let {item, wordIndex, boxIndex} = this.props;
+    let {item} = this.props;
     let slides;
     // if (item.type === 'song')
     //   slides = item.arrangements[item.selectedArrangement].slides || null;

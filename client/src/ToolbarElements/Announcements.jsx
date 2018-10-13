@@ -130,7 +130,7 @@ export default class Announcements extends React.Component{
         <div>
           <div style={{display: 'flex', marginBottom: '1.5vh'}}>
             <div style={{fontSize: '1vw', marginRight: '1vw', display: 'flex', alignItems: 'center'}}>
-              Song Name</div>
+              Name</div>
             <input type='text' value={this.state.name} onChange={this.updateName}
               style={{width:'15vw', padding: '0.25vh 0.25vw'}}/>
             <button style={buttonStyle} onClick={() => this.newAnnouncements(null)}>Blank Announcements</button>

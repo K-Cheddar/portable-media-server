@@ -79,10 +79,6 @@ export default class UserSettings extends React.Component{
       color: 'white'
     }
 
-    let buttonStyle = {fontSize: "calc(7px + 0.4vw)", margin:"1vh 0.25vw", backgroundColor:'#383838',
-       border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', padding:'0.25vw',
-       width: '9vw', float: 'right'}
-
     let backgroundTableStyle = {
         overflowY: 'scroll',    height: '38vh',
         background: '#383838',  marginTop: '1vh',   border: '0.25vw solid #c4c4c4',

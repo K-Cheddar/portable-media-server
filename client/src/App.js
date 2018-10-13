@@ -132,6 +132,7 @@ class App extends Component {
     this.updateInterval = null;
     this.reconnectPeer = null;
     this.sync = null;
+    this.timer = null;
 
     this.handlers = {
       'undo': this.undo,
@@ -543,7 +544,7 @@ class App extends Component {
   }
 
   setWordIndex = (index) => {
-    SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent})
+    SlideUpdate.setWordIndex({index: index, state: this.state, updateState: this.updateState, updateCurrent: this.updateCurrent, timer: this.timer})
   }
 
   test = () => {
@@ -594,6 +595,7 @@ class App extends Component {
   }
 
   toggleFreeze = () => {
+    SlideUpdate.clearTimer()
     this.setState({freeze: !this.state.freeze})
   }
 
@@ -633,12 +635,13 @@ class App extends Component {
     let date = new Date();
     let time = date.getTime();
     let update = {time: time};
-
-    if(image)
+    if(image || image === '')
       update.slide = {boxes: [{words: '', background: image, style:{}}]}
     else
       update.slide = JSON.parse(JSON.stringify(slide));
 
+    if(props.displayDirect)
+      SlideUpdate.clearTimer()
 
     if(conn)
       conn.send(update)

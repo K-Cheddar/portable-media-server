@@ -1,6 +1,6 @@
 import React from 'react';
 import {HotKeys} from 'react-hotkeys';
-import * as SlideCreation from './HelperFunctions/SlideCreation'
+import MakeUnique from './HelperFunctions/MakeUnique';
 
 export default class CreateName extends React.Component{
 
@@ -30,20 +30,14 @@ export default class CreateName extends React.Component{
     this.props.close()
   }
 
-  nameAvailable = () => {
-      let {name} = this.state;
-      var that = this;
-      this.props.db.get(name).then(function(){
-        that.setState({message: "Name Not Available"})
-      }).catch(function(){
-        that.setState({message: ""})
-        that.props.close();
-        if(that.props.addMedia)
-          that.props.addMedia(name, that.props.background)
-        else
-          that.addItem(name)
-      })
-    }
+  makeNameUnique = () => {
+    let {name} = this.state;
+    let {allItems, background} = this.props;
+    if(name === '')
+      return;
+    name = MakeUnique({name: name, property: '_id', list: allItems});
+    this.props.addMedia(name, background)
+  }
 
   nameChange = (event) => {
     this.setState({name: event.target.value})
@@ -56,53 +50,24 @@ export default class CreateName extends React.Component{
       this.editName()
     }
     if(option === 'create'){
-      this.nameAvailable();
+      this.makeNameUnique();
     }
   }
-
-  addItem = (name) =>{
-
-    let {type, background} = this.props;
-    let image = background ? background : '';
-    let firstSlide = ' ';
-    let brightness = 100;
-
-    if(type === 'song'){
-      firstSlide = name;
-      let defaultSongBackground = this.props.userSettings.defaultSongBackground;
-      image = defaultSongBackground ? defaultSongBackground.name : '';
-      brightness = defaultSongBackground ? defaultSongBackground.brightness : 100;
-    }
-
-    let item = {
-        "_id": name,
-        "name": name,
-        "arrangements": [{
-          name: 'Master',
-          formattedLyrics: [],
-          songOrder: [],
-          slides: [SlideCreation.newSlide({type: "Title", fontSize: 4.5, words: firstSlide,
-           background: image, brightness: brightness})]}],
-        "selectedArrangement": 0,
-        "type": type,
-        "background": image
-      }
-      this.props.addItem(item);
-    }
 
   editName = () => {
 
     let {name} = this.state;
-    let {id, updateItem, db} = this.props;
+    let {item, updateItem, allItems} = this.props;
+    if(name === '')
+      return;
+    name = MakeUnique({name: name, property: '_id', list: allItems});
+    item.name = name;
+    if(item.type === 'song')
+      item.arrangements[item.selectedArrangement].slides[0].boxes[0].words = name;
+    else if(item.type === 'bible')
+      item.slides.boxes[0].words = name;
 
-    db.get(id).then(function(doc){
-      doc.name = name;
-      if(doc.type === 'bible')
-        doc.slides[0].boxes[0].words = name;
-      if(doc.type === 'song')
-        doc.arrangements[doc.selectedArrangement].slides[0].boxes[0].words = name;
-      updateItem(doc);
-    })
+    updateItem(item)
     this.props.close();
   }
 

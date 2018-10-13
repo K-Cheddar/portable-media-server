@@ -79,17 +79,18 @@ export default class ItemList extends React.Component{
 
   }
 
-  editItem = (name, id) =>{
+  editItem = (name, id, index) =>{
       this.setState({
         nameOpen: true,
         name: name,
         id: id
       })
-    }
+    this.props.setItemIndex(index);
+  }
 
   close = () => {
       this.setState({nameOpen: false})
-    }
+  }
 
   nextItem = () => {
     let {itemList, itemIndex} = this.props;
@@ -138,8 +139,8 @@ export default class ItemList extends React.Component{
 
 
   render(){
-  let {itemList, backgrounds, itemIndex, db} = this.props;
-  let {nameOpen, name, id, mouseX, mouseY, indexBeingDragged} = this.state;
+  let {itemList, backgrounds, itemIndex, allItems, item} = this.props;
+  let {nameOpen, name, mouseX, mouseY, indexBeingDragged} = this.state;
 
   let list = [];
   for(var i = 0; i < itemList.length; ++i){
@@ -199,7 +200,7 @@ export default class ItemList extends React.Component{
              alt="delete" src={deleteX}
              />
            <img className='imgButton' style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
-            onClick={() => this.editItem(element.name, element._id)}
+            onClick={() => this.editItem(element.name, element._id, index)}
             alt="edit" src={edit}
             />
           <img className='imgButton' style={{display:'block', paddingTop:"10%", width:'1.25vw', height:'1.25vw'}}
@@ -217,8 +218,8 @@ export default class ItemList extends React.Component{
 
     return (
       <div style={{marginLeft: '0.5vw'}}>
-        {nameOpen && <CreateName option="edit" name={name} id={id} db={db}
-        close={this.close} updateItem={this.props.updateItem}
+        {nameOpen && <CreateName option="edit" name={name} item={item} close={this.close}
+        updateItem={this.props.updateItem} allItems={allItems}
         />}
         <HotKeys handlers={this.handlers}>
         {itemList.length > 0 && <div style={{ height:'89vh', overflowY: 'scroll', overflowX: 'hidden'}} onMouseMove={this.updateMouse}

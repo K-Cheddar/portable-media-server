@@ -5,7 +5,7 @@ export default class SlideInList extends React.Component{
 
 
   render(){
-  let {backgrounds, slide, moving, x, y, width, height, name, titleSize} = this.props;
+  let {backgrounds, slide, moving, x, y, width, height, titleSize} = this.props;
 
     let divStyle={width: width, height: height}
 
