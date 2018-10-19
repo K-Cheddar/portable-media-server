@@ -284,17 +284,50 @@ export function updateItemStructure(db){
     updaterInterval = setInterval(function(){
       if(i < items.length){
         db.get(items[i]._id).then(function(doc2){
-          if(doc2.type === 'song' && doc2.slides){
-            let arrangements = doc2.arrangements.slice();
-            for( let p = 0; p < arrangements.length; ++p){
-              arrangements[p].slides = doc2.slides;
+          if(doc2.type === 'song'){
+            for (let j = 0; j < doc2.arrangements.length; ++j){
+              let temp = doc2.arrangements[j].slides;
+              for(let k = 0; k < temp.length; ++k){
+                let boxes = []
+                let box1 = Object.assign({}, temp[k].boxes[0]);
+                box1.words = ''
+                box1.height = 100;
+                box1.width = 100;
+                box1.x = 0;
+                box1.y = 0;
+                boxes.push(box1)
+                let box2 = Object.assign({}, temp[k].boxes[0]);
+                box2.background = '';
+                box2.brightness = 100;
+                box2.transparent = true;
+                box2.topMargin = 3;
+                box2.sideMargin = 4;
+                boxes.push(box2)
+                doc2.arrangements[j].slides[k].boxes = boxes;
+              }
             }
-            doc2.arrangements = arrangements;
-            delete doc2.slides;
             console.log("Updated:", doc2.name);
           }
-          else{
-            console.log("Skipped:", doc2.name);
+          if(doc2.type === 'bible'){
+            for(let k = 0; k < doc2.slides.length; ++k){
+              let boxes = []
+              let box1 = Object.assign({}, doc2.slides[k].boxes[0]);
+              box1.words = ''
+              box1.height = 100;
+              box1.width = 100;
+              box1.x = 0;
+              box1.y = 0;
+              boxes.push(box1)
+              let box2 = Object.assign({}, doc2.slides[k].boxes[0]);
+              box2.background = '';
+              box2.brightness = 100;
+              box2.transparent = true;
+              box2.topMargin = 3;
+              box2.sideMargin = 4;
+              boxes.push(box2)
+              doc2.slides[k].boxes = boxes;
+            }
+            console.log("Updated:", doc2.name);
           }
           db.put(doc2);
         })
@@ -303,7 +336,7 @@ export function updateItemStructure(db){
       else{
         clearInterval(updaterInterval)
       }
-    }, 100)
+    }, 50)
 
   })
 }

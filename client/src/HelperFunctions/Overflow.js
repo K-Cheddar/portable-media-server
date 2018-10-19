@@ -44,7 +44,7 @@ export function formatLyrics(item){
   let newSlides = [SlideCreation.newSlide({type: 'Title', boxes: slides[0].boxes, words: boxes[0].words})];
   let songOrder = item.arrangements[item.selectedArrangement].songOrder;
   let formattedLyrics = item.arrangements[item.selectedArrangement].formattedLyrics;
-  let fontSize = slides[1] ? slides[1].boxes[0].fontSize : 2.5;
+  let fontSize = slides[1] ? slides[1].boxes[1].fontSize : 2.5;
 
   for (let i = 0; i < songOrder.length; ++i){
     let lyrics = formattedLyrics.find(e => e.name === songOrder[i]).words;
@@ -70,16 +70,14 @@ export function formatLyrics(item){
         currentBoxes = lastBoxes;
 
       for(let j = 0; j < currentBoxes.length; ++j){
-        lineContainer = getMaxLines(fontSize, currentBoxes[j].height)
-        maxLines = lineContainer.maxLines;
-        lineHeight = lineContainer.lineHeight;
+        ({maxLines, lineHeight} = getMaxLines(fontSize, currentBoxes[1].height));
 
         while(i+counter < lines.length && lineCounter < maxLines){
           boxWords+=lines[i+counter];
           if(i+counter < lines.length-1)
             boxWords+="\n";
 
-          let lineCount = getNumLines(lines[i+counter], fontSize, lineHeight, currentBoxes[j].width);
+          let lineCount = getNumLines(lines[i+counter], fontSize, lineHeight, currentBoxes[1].width);
           if(lineCount === 0)
             lineCount = 1;
           lineCounter+=lineCount;
@@ -91,19 +89,23 @@ export function formatLyrics(item){
         box.words = boxWords;
         boxes.push(box)
       }
+      boxes[0].words = ' ';
+      boxes[1].excludeFromOverflow = false;
       i+=counter-1;
-      fLyrics.push(SlideCreation.newSlide({type: type, boxes: boxes, fontSize: fontSize, slideIndex: fLyrics.length}))
+      fLyrics.push(SlideCreation.newSlide({type: type, boxes: boxes, fontSize: fontSize,
+        slideIndex: fLyrics.length}))
     }
     return fLyrics;
   }
-  newSlides.push(SlideCreation.newSlide({type: 'blank', box: lastBoxes[0], words: ' '}))
+  newSlides.push(SlideCreation.newSlide({type: 'blank', box: lastBoxes[0]}))
   return newSlides;
 }
 
 export function formatBible(item, mode, verses, fit){
   let slides = item.slides;
-  let box = slides[0].boxes[0]
-  let newSlides = [SlideCreation.newSlide({type: 'Bible', box: box, words: box.words})];
+  let boxes = slides[0].boxes;
+  let newSlides = [SlideCreation.newSlide({type: "Title", fontSize: 4.5, words: boxes[1].words,
+    background: boxes[0].background, brightness: boxes[0].brightness})];
   if(verses)
     newSlides.push(...formatBibleVerses(verses, item, mode));
   else
@@ -116,13 +118,14 @@ export function formatBible(item, mode, verses, fit){
 function formatBibleVerses(verses, item, mode){
   let slides = item.slides
   let currentSlide = slides[1];
-  let currentBox = currentSlide.boxes[0]
-  let obj = getMaxLines(currentBox.fontSize, currentBox.height);
-  let maxLines = obj.maxLines;
-  let lineHeight = obj.lineHeight;
+  console.log(currentSlide);
+  // let allBoxes = slides.flatMap(x => x.boxes);
+  // let overflowBoxes = allBoxes.filter(e => !e.excludeFromOverflow)
+  let currentBoxes = currentSlide.boxes;
+  let {maxLines, lineHeight} = getMaxLines(currentBoxes[1].fontSize, currentBoxes[1].height);
   let formattedVerses = [];
   let slide = "";
-  let type = slides[1].type;
+  let type = currentSlide.type;
   let fitProcessing = true;
 
   if (mode === 'create'){
@@ -134,15 +137,17 @@ function formatBibleVerses(verses, item, mode){
 
        for (let j = 0; j < words.length; j++) {
          let update = slide + words[j]
-         if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
+         if(getNumLines(update, currentBoxes[1].fontSize, lineHeight, currentBoxes[1].width) <= maxLines)
            slide = update + " ";
          else{
            slide = slide.replace(/\s+/g,' ').trim();
-           formattedVerses.push(SlideCreation.newSlide({type: 'Verse '+(verses[i].verse), box: currentBox, words: slide}))
+           formattedVerses.push(SlideCreation.newSlide({type: 'Verse '+ (verses[i].verse),
+           boxes: currentBoxes, words: [0, slide]}))
            slide = words[j] +" ";
          }
        }
-       formattedVerses.push(SlideCreation.newSlide({type: 'Verse '+(verses[i].verse), box: currentBox, words: slide}))
+       formattedVerses.push(SlideCreation.newSlide({type: 'Verse '+ (verses[i].verse),
+       boxes: currentBoxes, words: [0, slide]}))
        slide = " ";
     }
   }
@@ -157,19 +162,18 @@ function formatBibleVerses(verses, item, mode){
 
          for (let j = 0; j < words.length; j++) {
            let update = slide + words[j]
-           if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
+           if(getNumLines(update, currentBoxes[1].fontSize, lineHeight, currentBoxes[1].width) <= maxLines)
              slide = update + " ";
            else{
-             currentBox.fontSize = currentBox.fontSize - 0.10;
-             obj = getMaxLines(currentBox.fontSize, currentBox.height);
-             maxLines = obj.maxLines;
-             lineHeight = obj.lineHeight;
+             currentBoxes[1].fontSize = currentBoxes[1].fontSize - 0.10;
+             ({maxLines, lineHeight} = getMaxLines(currentBoxes[1].fontSize, currentBoxes[1].height));
              formattedVerses = [];
              slide = "";
              break verseLoop;
            }
          }
-         formattedVerses.push(SlideCreation.newSlide({type: 'Verse '+(verses[i].verse), box: currentBox, words: slide}))
+         formattedVerses.push(SlideCreation.newSlide({type: 'Verse '+ (verses[i].verse),
+         boxes: currentBoxes, words: [slide]}))
          fitProcessing = false;
       }
     }
@@ -179,32 +183,33 @@ function formatBibleVerses(verses, item, mode){
   if(mode === 'edit'){
     for (let i = 1; i < slides.length; ++i){
       currentSlide = slides[i];
-      currentBox = currentSlide.boxes[0];
-      let words = currentBox.words.split(" ");
+      currentBoxes = currentSlide.boxes;
+      let words = currentBoxes[1].words.split(" ");
       if(type !== currentSlide.type){
         slide = slide.replace(/\s+/g,' ').trim();
-        formattedVerses.push(SlideCreation.newSlide({type: type, box: currentBox, words: slide}))
+        formattedVerses.push(SlideCreation.newSlide({type: type, boxes: currentBoxes, words: [0, slide]}))
         slide = "";
       }
       type = currentSlide.type;
-      obj = getMaxLines(currentBox.fontSize, currentBox.height);
-      maxLines = obj.maxLines;
-      lineHeight = obj.lineHeight;
+      ({maxLines, lineHeight} = getMaxLines(currentBoxes[1].fontSize, currentBoxes[1].height));
 
-      for (let j = 0; j < words.length; j++) {
-          let update = slide + words[j]
-        if(getNumLines(update, currentBox.fontSize, lineHeight, currentBox.width) <= maxLines)
+
+      for (let k = 0; k < words.length; k++) {
+          let update = slide + words[k]
+        if(getNumLines(update, currentBoxes[1].fontSize, lineHeight, currentBoxes[1].width) <= maxLines)
           slide = update + " ";
         else{
           slide = slide.replace(/\s+/g,' ').trim();
-          formattedVerses.push(SlideCreation.newSlide({type: type, box: currentBox, words: slide}))
-          slide = words[j] +" ";
+                  console.log(slide);
+          formattedVerses.push(SlideCreation.newSlide({type: type, boxes: currentBoxes, words: [0, slide]}))
+          slide = words[k] +" ";
           }
       }
     }
   }
 
-  formattedVerses.push(SlideCreation.newSlide({type: 'blank', box: currentBox, words: ' '}));
+  formattedVerses.push(SlideCreation.newSlide({type: 'blank', boxes: currentBoxes}))
+
   return formattedVerses;
 }
 
@@ -243,6 +248,8 @@ export function formatAnnouncements(props){
     }
 
   }
+  if(sections.length === 0)
+    return null
   sections.push(currentSection)
   let slideSpan = Math.ceil(lineCounter/maxLines);
   sections[currentSectionNumber][0].linesPerSlide = Math.ceil(lineCounter/slideSpan);
@@ -274,7 +281,7 @@ export function formatAnnouncements(props){
           if(linesNum <= sectionMaxLines)
             words = update;
           else{
-            slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: words,
+            slides.push(SlideCreation.newSlide({type: "Announcement", words: [title, words],
                         background: background, brightness: brightness}))
             words = sentences[k];
           }
@@ -282,7 +289,7 @@ export function formatAnnouncements(props){
       }
       else if(lineCounter >= linesPerSlide){
         if(words !== '')
-        slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: words,
+        slides.push(SlideCreation.newSlide({type: "Announcement", words: [title, words],
                     background: background, brightness: brightness}))
         if(section.lines <=3)
           words = '• ' + section.text + '\n'
@@ -292,9 +299,9 @@ export function formatAnnouncements(props){
       }
       else if(lineCounter <= maxLines){
         if(words !== '')
-          slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: words,
+          slides.push(SlideCreation.newSlide({type: "Announcement", words: [title, words],
                       background: background, brightness: brightness}))
-        slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: section.text,
+        slides.push(SlideCreation.newSlide({type: "Announcement", words: [title, section.text],
                     background: background, brightness: brightness}))
         lineCounter = 0;
         words = ''
@@ -303,7 +310,7 @@ export function formatAnnouncements(props){
 
     }
     if(lineCounter !== 0){
-      slides.push(SlideCreation.newSlide({type: "Announcement", title: title, words: words,
+      slides.push(SlideCreation.newSlide({type: "Announcement", words: [title, words],
                   background: background, brightness: brightness}))
       lineCounter = 0;
       words = '';

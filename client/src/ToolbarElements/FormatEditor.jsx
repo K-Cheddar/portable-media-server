@@ -41,8 +41,8 @@ class FormatEditor extends React.Component{
       let slide = slides ? slides[wordIndex] : null;
       if(!slide)
         return;
-      if(slide.boxes[boxIndex].brightness !== undefined)
-        this.setState({brightness: slide.boxes[boxIndex].brightness})
+      if(slide.boxes[0].brightness !== undefined)
+        this.setState({brightness: slide.boxes[0].brightness})
       else{
         this.setState({brightness: 100})
       }

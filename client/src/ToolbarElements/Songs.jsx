@@ -58,8 +58,13 @@ export default class Songs extends React.Component{
           name: 'Master',
           formattedLyrics: [],
           songOrder: [],
-          slides: [SlideCreation.newSlide({type: "Title", fontSize: 4.5, words: firstSlide,
-           background: image, brightness: brightness})]}],
+          slides: [
+            SlideCreation.newSlide({type: "Song Title", fontSize: 4.5, words: firstSlide,
+           background: image, brightness: brightness}),
+           SlideCreation.newSlide({type: "blank", fontSize: 2.5, words: '',
+             background: image, brightness: brightness})
+           ]
+         }],
         "selectedArrangement": 0,
         "type": 'song',
         "background": image

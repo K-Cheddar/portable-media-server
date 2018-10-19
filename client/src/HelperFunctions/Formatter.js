@@ -17,18 +17,14 @@ export function updateFontSize(props){
       return
 
     if(wordIndex !== 0){
-      if(item.type === 'song'){
         for(let i = 1; i < slides.length; ++i){
           if(!slides[i].boxes[boxIndex].excludeFromOverflow)
             slides[i].boxes[boxIndex].fontSize = fontSize;
         }
       }
-      else
-        slides[wordIndex].boxes[boxIndex].fontSize = fontSize;
-    }
-
     else
-      slides[0].boxes[boxIndex].fontSize = fontSize;
+      slides[wordIndex].boxes[boxIndex].fontSize = fontSize;
+
 
 
     if(item.type === 'bible' && wordIndex !== 0)
@@ -116,8 +112,8 @@ export function updateBrightness(props){
     if(!slide)
       return
 
-    slide.boxes[boxIndex].brightness = level;
-    let background = slide.boxes[boxIndex].background;
+    slide.boxes[0].brightness = level;
+    let background = slide.boxes[0].background;
 
     for(let i = 0; i < slides.length; ++i){
       if(slides[i].boxes[0].background === background)

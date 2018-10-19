@@ -1,25 +1,16 @@
 export function newSlide (props) {
   let {type, box, words, slideIndex, fontSize, background, brightness, boxes, textFontSize, title} = props;
-  if(!words)
-    words = ' '
+
   if(!box)
     box = {brightness: 100, height: 100, width: 100, x: 0, y: 0, fontSize: fontSize,
       background: '', fontColor: 'rgba(255, 255, 255, 1)'}
-  if(!boxes){
-    boxes = [
-      {background: box.background,
-       fontSize: box.fontSize,
-       fontColor: box.fontColor,
-       words: words,
-       brightness: box.brightness,
-       height: box.height,
-       width: box.width,
-       x: box.x,
-       y: box.y,
-      }
-    ]
-  }
-  if(type === 'Announcement'){
+
+  if(boxes && words)
+    for(let i = 0; i < boxes.length; ++i)
+      if(words[i])
+        boxes[i].words = words[i];
+
+  if(type === 'Announcement' && !boxes){
     boxes = [];
     let obj = Object.assign({}, box);
     obj.words = ' ';
@@ -32,7 +23,7 @@ export function newSlide (props) {
     obj.topMargin = 1;
     obj.sideMargin = 2.5;
     obj.excludeFromOverflow = true;
-    obj.words = title || ' ';
+    obj.words = words ? words[0] : ' '
     boxes.push(obj);
     obj = Object.assign({}, box);
     obj.height = 77;
@@ -43,7 +34,20 @@ export function newSlide (props) {
     obj.topMargin = 1;
     obj.sideMargin = 2.5;
     obj.excludeFromOverflow = true;
-    obj.words = words || ' '
+    obj.words = words ? words[1] : ' '
+    boxes.push(obj);
+  }
+  else if(!boxes) {
+    boxes = [];
+    let obj = Object.assign({}, box);
+    obj.words = ' ';
+    obj.excludeFromOverflow = true;
+    boxes.push(obj);
+    obj = Object.assign({}, box);
+    obj.transparent = true;
+    obj.topMargin = 3;
+    obj.sideMargin = 4;
+    obj.words = words;
     boxes.push(obj);
   }
 
@@ -58,9 +62,9 @@ export function newSlide (props) {
     obj.duration = 5;
 
   if(slideIndex >= 0)
-      obj.boxes[0].slideIndex = slideIndex
+      obj.boxes[1].slideIndex = slideIndex
   if(fontSize)
-      obj.boxes[0].fontSize = fontSize
+      obj.boxes[1].fontSize = fontSize
   if(background)
       obj.boxes[0].background = background
   if(brightness)

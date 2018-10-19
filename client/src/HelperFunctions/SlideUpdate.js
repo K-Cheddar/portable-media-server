@@ -12,7 +12,6 @@ export function setSlideBackground(props){
 
   slides[wordIndex].boxes[0].background = background;
   let index = allItems.findIndex(e => e.name === item.name)
-  console.log((slides));
   needsUpdate.updateItem = true;
 
   if(wordIndex === 0){

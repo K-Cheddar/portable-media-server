@@ -526,7 +526,7 @@ class App extends Component {
      peer.on('connection', function (serverConn){
        conn = serverConn;
        conn.on('data', function(data){
-         that.setState({currentInfo: data.update})
+         that.setState({currentInfo: data})
        })
        conn.on('error', function (error){
           that.setState({isReciever: 'disconnected'})
@@ -757,6 +757,8 @@ class App extends Component {
     let style = { height:'100vh',   width: '100vw',   overflow: 'hidden',
                   zIndex: 1,        position: 'fixed'
     }
+
+    console.log('CURRENT', currentInfo);
 
     if(window.location.hash === '#/localpresentation' || window.location.hash === '#/remotepresentation')
       style.backgroundColor = '#000'

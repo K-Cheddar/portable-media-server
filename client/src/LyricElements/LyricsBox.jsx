@@ -57,7 +57,8 @@ export default class LyricsBox extends Component{
     item.selectedArrangement = selectedArrangement;
     this.props.updateItem(item);
     this.props.setWordIndex(0)
-    this.props.setSlideBackground(arrangements[selectedArrangement].slides[0].boxes[boxIndex].background)
+    //why is this here;
+    // this.props.setSlideBackground(arrangements[selectedArrangement].slides[0].boxes[boxIndex].background)
     this.props.close();
   }
 

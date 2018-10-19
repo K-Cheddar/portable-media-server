@@ -5,13 +5,11 @@ export default class MobileSlideInList extends React.Component{
 
 
   render(){
-  let {words, backgrounds, width, height, titleSize, name, style} = this.props;
-
-  let slide = {boxes: [{words: words, background: style.background, ...style}]}
+  let {slide, backgrounds, width, height, titleSize} = this.props;
 
     return (
       <DisplayWindow slide={slide} backgrounds={backgrounds}
-        width={width} height={height} title={name} titleSize={titleSize}/>
+        width={width} height={height} title={slide.type} titleSize={titleSize}/>
     )
   }
 
