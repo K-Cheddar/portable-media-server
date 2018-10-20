@@ -48,7 +48,7 @@ export default class SongOrderArea extends Component{
   setTarget = (index) => {
     let {indexBeingDragged} = this.state;
     if((indexBeingDragged !== -1) && (indexBeingDragged !== index)){
-      this.insertSongIntoOrder(index);
+      this.props.insertSongIntoOrder(index);
       this.setState({indexBeingDragged: index})
     }
   }

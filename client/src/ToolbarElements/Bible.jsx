@@ -92,7 +92,7 @@ export default class Bible extends Component {
       "slides": [
         SlideCreation.newSlide({type: "Title", fontSize: 4.5, words: name,
           background: background, brightness: brightness}),
-        SlideCreation.newSlide({type: "Verse" + verseNum, fontSize: 2.5, words: '',
+        SlideCreation.newSlide({type: "Verse" + verseNum, fontSize: 2.5,
           background: background, brightness: brightness})
       ],
       "type": "bible"

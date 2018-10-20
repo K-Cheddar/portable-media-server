@@ -63,9 +63,9 @@ export default class CreateName extends React.Component{
     name = MakeUnique({name: name, property: '_id', list: allItems});
     item.name = name;
     if(item.type === 'song')
-      item.arrangements[item.selectedArrangement].slides[0].boxes[0].words = name;
+      item.arrangements[item.selectedArrangement].slides[0].boxes[1].words = name;
     else if(item.type === 'bible')
-      item.slides.boxes[0].words = name;
+      item.slides.boxes[1].words = name;
 
     updateItem(item)
     this.props.close();

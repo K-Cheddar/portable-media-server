@@ -118,7 +118,6 @@ export function formatBible(item, mode, verses, fit){
 function formatBibleVerses(verses, item, mode){
   let slides = item.slides
   let currentSlide = slides[1];
-  console.log(currentSlide);
   // let allBoxes = slides.flatMap(x => x.boxes);
   // let overflowBoxes = allBoxes.filter(e => !e.excludeFromOverflow)
   let currentBoxes = currentSlide.boxes;
