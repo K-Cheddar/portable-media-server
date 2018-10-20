@@ -477,7 +477,6 @@ class App extends Component {
   }
 
   setBoxIndex = (index) => {
-    console.log("BOX:", index);
     this.setState({boxIndex: index});
   }
 
@@ -757,8 +756,6 @@ class App extends Component {
     let style = { height:'100vh',   width: '100vw',   overflow: 'hidden',
                   zIndex: 1,        position: 'fixed'
     }
-
-    console.log('CURRENT', currentInfo);
 
     if(window.location.hash === '#/localpresentation' || window.location.hash === '#/remotepresentation')
       style.backgroundColor = '#000'
