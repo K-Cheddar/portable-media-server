@@ -257,7 +257,8 @@ export default class LyricsBox extends Component{
               <div>
                 <SongOrderArea songOrder={songOrder} songIndex={songIndex} sectionsPresent={sectionsPresent}
                   deleteSectionFromOrder={this.deleteSectionFromOrder} updateSongIndex={this.updateSongIndex}
-                  updateSongOrder={this.updateSongOrder} updateNewType={this.updateNewType} newType={newType}/>
+                  updateSongOrder={this.updateSongOrder} updateNewType={this.updateNewType} newType={newType}
+                  insertSongIntoOrder={this.insertSongIntoOrder}/>
                 <div style={{display: 'flex'}}>
                     <button style={buttonStyle} onClick={this.props.close}>Cancel</button>
                     <button style={buttonStyle} onClick={this.autoFormatLyrics}> Submit Changes </button>

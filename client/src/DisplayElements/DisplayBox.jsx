@@ -119,32 +119,44 @@ export default class DisplayWindow extends React.Component{
       top:'-0.5vw', left:'-0.5vw', position: 'absolute', zIndex: zIndex+1}
 
     return (
-      <div style={{width: '100%', height: '100%', position: 'absolute'}}>
-        <Rnd size={{width: width, height: height}}
-          position={{x: x, y: y}}
-        onDragStop={(e, position) => this.onBoxDragStop(position)}
-        onResize={(e, direction, ref, delta, position) =>
-          {this.onBoxResize(e, direction, ref, delta, position, index)}}
-        onResizeStop={(e, direction, ref, delta, position) =>
-          {this.onBoxResizeStop(e, direction, ref, delta, position)}}
-        enableUserSelectHack={!lockBox} maxWidth={maxWidth} maxHeight={maxHeight}
-        minWidth={'7.5%'} minHeight={'7.5%'} bounds={'parent'}
-        style={editor ? {zIndex: zIndex, outline: '0.15vw solid #FFF'} :
-        {zIndex: zIndex, outline: '0'}}
-        disableDragging={lockBox}
-        enableResizing={{ top:!lockBox, right:!lockBox, bottom:!lockBox,
-          left:!lockBox, topRight:!lockBox, bottomRight:!lockBox,
-          bottomLeft:!lockBox, topLeft:!lockBox }}
-          onMouseDown={() => this.setBoxIndex(index)}
-        >
-        {(lockBox && editor) && <img style={lockStyle}
-           alt="lock" src={lock}
-          onClick={this.toggleDragLock}
-          />}
-        {(!lockBox && editor)&& <img style={lockStyle}
-           alt="unlock" src={unlock}
-          onClick={this.toggleDragLock}
-          />}
+      <div>
+        {editor && <div style={{width: '100%', height: '100%', position: 'absolute'}}>
+          <Rnd size={{width: width, height: height}}
+            position={{x: x, y: y}}
+          onDragStop={(e, position) => this.onBoxDragStop(position)}
+          onResize={(e, direction, ref, delta, position) =>
+            {this.onBoxResize(e, direction, ref, delta, position, index)}}
+          onResizeStop={(e, direction, ref, delta, position) =>
+            {this.onBoxResizeStop(e, direction, ref, delta, position)}}
+          enableUserSelectHack={!lockBox} maxWidth={maxWidth} maxHeight={maxHeight}
+          minWidth={'7.5%'} minHeight={'7.5%'} bounds={'parent'}
+          style={editor ? {zIndex: zIndex, outline: '0.15vw solid #FFF'} :
+          {zIndex: zIndex, outline: '0'}}
+          disableDragging={lockBox}
+          enableResizing={{ top:!lockBox, right:!lockBox, bottom:!lockBox,
+            left:!lockBox, topRight:!lockBox, bottomRight:!lockBox,
+            bottomLeft:!lockBox, topLeft:!lockBox }}
+            onMouseDown={() => this.setBoxIndex(index)}
+          >
+          {(lockBox && editor) && <img style={lockStyle}
+             alt="lock" src={lock}
+            onClick={this.toggleDragLock}
+            />}
+          {(!lockBox && editor)&& <img style={lockStyle}
+             alt="unlock" src={unlock}
+            onClick={this.toggleDragLock}
+            />}
+          <DisplayWords id={id} words={box.words} fontSize={box.fontSize} index={index}
+            fontColor={box.fontColor} fsDivider={fsDivider} position={box} title={title}
+            editor={editor} handleTextChange={this.props.handleTextChange} animate={animate}
+            zIndex={zIndex} presentation={presentation} extraPadding={extraPadding}>
+          </DisplayWords>
+          <DisplayBackground img={img} brightness={box.brightness} title={title} isVideo={isVideo}
+            asset={asset} animate={animate} zIndex={zIndex} position={box} presentation={presentation}>
+          </DisplayBackground>
+        </Rnd>
+      </div>}
+      {!editor && <div style={{top: y, left: x, width: width, height: height, position: 'absolute'}}>
         <DisplayWords id={id} words={box.words} fontSize={box.fontSize} index={index}
           fontColor={box.fontColor} fsDivider={fsDivider} position={box} title={title}
           editor={editor} handleTextChange={this.props.handleTextChange} animate={animate}
@@ -153,8 +165,9 @@ export default class DisplayWindow extends React.Component{
         <DisplayBackground img={img} brightness={box.brightness} title={title} isVideo={isVideo}
           asset={asset} animate={animate} zIndex={zIndex} position={box} presentation={presentation}>
         </DisplayBackground>
-      </Rnd>
+      </div>}
       </div>
+
     )
   }
 

@@ -1,6 +1,7 @@
 export function newSlide (props) {
   let {type, box, words, slideIndex, fontSize, background, brightness, boxes, textFontSize, title} = props;
-
+  if(!words)
+    words = ' '
   if(!box)
     box = {brightness: 100, height: 100, width: 100, x: 0, y: 0, fontSize: fontSize,
       background: '', fontColor: 'rgba(255, 255, 255, 1)'}

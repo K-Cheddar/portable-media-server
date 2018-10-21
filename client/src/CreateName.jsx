@@ -32,10 +32,10 @@ export default class CreateName extends React.Component{
 
   makeNameUnique = () => {
     let {name} = this.state;
-    let {allItems, background} = this.props;
+    let {allItems, background, item} = this.props;
     if(name === '')
       return;
-    name = MakeUnique({name: name, property: '_id', list: allItems});
+    name = MakeUnique({name: name, property: '_id', list: allItems, id: item._id});
     this.props.addMedia(name, background)
   }
 
@@ -60,12 +60,14 @@ export default class CreateName extends React.Component{
     let {item, updateItem, allItems} = this.props;
     if(name === '')
       return;
-    name = MakeUnique({name: name, property: '_id', list: allItems});
+
+    name = MakeUnique({name: name, property: 'name', list: allItems, id: item._id});
     item.name = name;
+    console.log(item);
     if(item.type === 'song')
       item.arrangements[item.selectedArrangement].slides[0].boxes[1].words = name;
     else if(item.type === 'bible')
-      item.slides.boxes[1].words = name;
+      item.slides[0].boxes[1].words = name;
 
     updateItem(item)
     this.props.close();

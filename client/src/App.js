@@ -733,8 +733,10 @@ class App extends Component {
     let newId = newState.item._id;
     let newListId = newState.selectedItemList.id;
     historyUpdating = true;
-    if(newId && this.state.item._id !== newId)
+    if(newId && this.state.item._id !== newId){
       DBGetter.getItem({id: newId, parent: this, history: true, newItemIndex: newState.itemIndex})
+      this.setState({boxIndex: 0})
+    }
     else if(newListId && newListId !== this.state.selectedItemList.id){
       let name = itemLists.find(e => e.id === newListId).name;
       let selectedItemList = {id: newListId, name: name};

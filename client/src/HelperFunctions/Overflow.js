@@ -171,8 +171,9 @@ function formatBibleVerses(verses, item, mode){
              break verseLoop;
            }
          }
+         console.log(currentBoxes);
          formattedVerses.push(SlideCreation.newSlide({type: 'Verse '+ (verses[i].verse),
-         boxes: currentBoxes, words: [slide]}))
+         boxes: currentBoxes, words: [0, slide]}))
          fitProcessing = false;
       }
     }
@@ -207,7 +208,7 @@ function formatBibleVerses(verses, item, mode){
     }
   }
 
-  formattedVerses.push(SlideCreation.newSlide({type: 'blank', boxes: currentBoxes}))
+  formattedVerses.push(SlideCreation.newSlide({type: 'blank', boxes: currentBoxes, words: [0, ' ']}))
 
   return formattedVerses;
 }

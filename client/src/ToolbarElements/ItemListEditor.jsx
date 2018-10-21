@@ -71,7 +71,7 @@ export default class ItemListEditor extends Component{
     let {itemLists, allItemLists, needsUpdate} = this.props;
     let index = itemLists.findIndex(e => e.id === id)
     let indexAll = allItemLists.findIndex(e => e.id === id)
-    name = MakeUnique({name: name, property: 'name', list: allItemLists});
+    name = MakeUnique({name: name, property: 'name', list: allItemLists, id: allItemLists[indexAll].id});
     itemLists[index].name = name;
     allItemLists[indexAll].name = name;
     needsUpdate.updateItemLists = true;
