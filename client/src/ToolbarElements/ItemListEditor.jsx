@@ -110,11 +110,8 @@ export default class ItemListEditor extends Component{
   duplicateOutline = () => {
     let {allItemLists} = this.props;
     let index = allItemLists.findIndex(e => e.outline === true)
-    console.log(index);
-    if(index !== -1){
+    if(index !== -1)
       this.props.duplicateList(allItemLists[index].id)
-      console.log(allItemLists[index]);
-    }
     else
       this.newItemList();
   }
