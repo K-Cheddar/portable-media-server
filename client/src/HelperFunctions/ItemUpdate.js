@@ -110,3 +110,13 @@ export function updateSkipTitle(props){
   updateState({item: item, needsUpdate: needsUpdate});
   updateHistory({type: 'update', item: item})
 }
+
+export function updateNextOnFinish(props){
+  let {val} = props;
+  let {updateState, updateHistory} = props.parent;
+  let {item, needsUpdate} = props.parent.state;
+  item.nextOnFinish = val;
+  needsUpdate.updateItem = true;
+  updateState({item: item, needsUpdate: needsUpdate});
+  updateHistory({type: 'update', item: item})
+}

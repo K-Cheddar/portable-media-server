@@ -17,7 +17,7 @@ export function addItem(props){
       slides = doc.slides;
     let itemObj = {
       //Change box
-      "name": slides[0].boxes[0].words,
+      "name": doc.name,
       "_id": doc._id,
       "background": slides[0].boxes[0].background,
       "nameColor": slides[0].boxes[0].fontColor,
@@ -225,6 +225,11 @@ export function updateItem(props){
   db.get(item._id).then(function (doc) {
     doc.name = item.name;
     doc.background = item.background;
+    if(doc.type === 'timer'){
+      doc.hours = item.hours;
+      doc.minutes = item.minutes;
+      doc.seconds = item.seconds;
+    }
     if(doc.type === 'song'){
       doc.selectedArrangement = item.selectedArrangement;
       doc.arrangements = item.arrangements;

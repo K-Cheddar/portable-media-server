@@ -138,6 +138,13 @@ class FormatEditor extends React.Component{
       this.props.updateSkipTitle(true)
   }
 
+  updateNextOnFinish = () => {
+    if(this.props.item.nextOnFinish)
+      this.props.updateNextOnFinish(false)
+    else
+      this.props.updateNextOnFinish(true)
+  }
+
   render() {
 
     let {cPickerOpen, fontSize, brightness} = this.state;
@@ -178,7 +185,7 @@ class FormatEditor extends React.Component{
               onAfterChange={() => this.props.updateBrightness(brightness)}/>
           </div>
           <div style={{display: 'flex'}}>
-            {showSkipTitle &&<div onClick={this.updateSkipTitle} className='imgButton'
+            {(showSkipTitle) &&<div onClick={this.updateNextOnFinish} className='imgButton'
                style={{fontSize: "calc(5px + 0.35vw)", height: '5vh', marginRight:'0.5vw'}}>
                {item.skipTitle && <img
                 style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
@@ -192,6 +199,21 @@ class FormatEditor extends React.Component{
                  />}
                <div>Skip Title</div>
             </div>}
+            {(item.type === 'timer') &&<div onClick={this.updateNextOnFinish} className='imgButton'
+               style={{fontSize: "calc(5px + 0.35vw)", height: '5vh', marginRight:'0.5vw'}}>
+               {item.nextOnFinish && <img
+                style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
+                 alt="skipTitle" src={skipTitle}
+                 />}
+               {!item.nextOnFinish && <img
+                style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
+                 alt="skipTitleOff" src={skipTitleOff}
+                 />}
+               <div>Next On Finish</div>
+            </div>}
+
           </div>
       </div>
 

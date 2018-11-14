@@ -1,4 +1,5 @@
 let timer = null;
+let countdown = null;
 export function setSlideBackground(props){
   let {background} = props;
   let {updateState, updateHistory} = props.parent;
@@ -31,8 +32,9 @@ export function setSlideBackground(props){
 }
 
 export function setWordIndex(props){
-  let {index, updateState} = props;
-  let {item, wordIndex} = props.state;
+  let {index} = props;
+  let {updateState} = props.parent;
+  let {item, wordIndex} = props.parent.state;
   let slides;
 
   if (item.type === 'song')
@@ -56,17 +58,21 @@ export function setWordIndex(props){
     element.scrollIntoView({behavior: "instant", block: "nearest", inline:'nearest'});
 
   updateState({wordIndex: index, boxIndex: 0});
-  clearTimer()
+  clearTimer();
+  clearCountdown();
   updateSlide(props);
 }
 
 export function clearTimer(){
   clearTimeout(timer)
 }
-
+export function clearCountdown(){
+  clearInterval(countdown)
+}
 function updateSlide(props){
-  let {index, updateCurrent} = props;
-  let {item, freeze} = props.state;
+  let {index} = props;
+  let {updateCurrent, setItemIndex} = props.parent;
+  let {item, freeze, itemIndex, itemList} = props.parent.state;
   let slides;
   if(freeze){
     clearTimer()
@@ -94,6 +100,47 @@ function updateSlide(props){
         }
       },duration)
 
+  }
+  else if (item.type === 'timer'){
+    let {hours, minutes, seconds} = item;
+    let hoursString = '0';
+    let minutesString = '0';
+    let secondsString = '0';
+    countdown = setInterval(() => {
+      if(seconds === 0 && minutes === 0 && hours > 0){
+        seconds = 59;
+        minutes = 59;
+        --hours;
+      }
+      else if(seconds === 0 && minutes > 0){
+        seconds = 59;
+        --minutes;
+      }
+      else if(seconds > 0)
+        --seconds;
+      else{
+        clearCountdown()
+        if(item.nextOnFinish && itemIndex < itemList.length-1)
+          setItemIndex(itemIndex+1)
+      }
+
+      if(hours >= 0 && hours <= 9)
+        hoursString = '0' + hours;
+      else
+        hoursString = hours;
+      if(minutes >= 0 && minutes <= 9)
+        minutesString = '0' + minutes;
+      else
+        minutesString = minutes;
+      if(seconds >= 0 && seconds <= 9)
+        secondsString = '0' + seconds;
+      else
+        secondsString = seconds;
+      let words = `${hoursString}:${minutesString}:${secondsString}`;
+      let slide = JSON.parse(JSON.stringify(item.slides[index]));
+      slide.boxes[1].words = words;
+      updateCurrent({slide: slide})
+    },1000)
   }
 
 }

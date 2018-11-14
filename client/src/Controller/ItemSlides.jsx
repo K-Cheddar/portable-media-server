@@ -103,7 +103,7 @@ class ItemSlides extends React.Component{
     this.setState({lBoxOpen: false})
   }
 
-  updateTimer = (e) => {
+  updateDuration = (e) => {
     let {item, wordIndex} = this.props;
     let num = e.target.value;
     if(num <= 0)
@@ -189,6 +189,68 @@ class ItemSlides extends React.Component{
     if(wordIndex > 0)
       this.props.setWordIndex(wordIndex-1)
   }
+
+  updateTimerHours = (e) => {
+    let {item, wordIndex} = this.props;
+    let num = parseInt(e.target.value, 10);
+    if(isNaN(num))
+      num = 0
+    let words = item.slides[wordIndex].boxes[1].words;
+    let numAsString = "0";
+    if(num < 0)
+      num = 0
+    if(num > 99)
+      num = 99;
+    item.hours = num;
+    if(num >= 0 && num <= 9)
+      numAsString+=num;
+    else
+      numAsString= num.toString();
+    item.slides[wordIndex].boxes[1].words = numAsString + words.substring(2);
+    this.props.updateItem(item);
+  }
+
+  updateTimerMinutes = (e) => {
+    let {item, wordIndex} = this.props;
+    let num = parseInt(e.target.value, 10);
+    if(isNaN(num))
+      num = 0
+    let words = item.slides[wordIndex].boxes[1].words;
+    let numAsString = "0";
+    if(num < 0)
+      num = 0
+    if(num > 59)
+      num = 59;
+    item.minutes = num;
+    if(num >= 0 && num <= 9)
+      numAsString+=num;
+    else
+      numAsString= num.toString();
+    item.slides[wordIndex].boxes[1].words = words.substring(0,3) + numAsString + words.substring(5);
+    this.props.updateItem(item);
+  }
+
+  updateTimerSeconds = (e) => {
+    let {item, wordIndex} = this.props;
+    let num = parseInt(e.target.value, 10);
+    if(isNaN(num))
+      num = 0
+
+    let words = item.slides[wordIndex].boxes[1].words;
+    let numAsString = "0";
+    if(num < 0)
+      num = 0
+    if(num > 59)
+      num = 59;
+    item.seconds = num;
+    if(num >= 0 && num <= 9)
+      numAsString+=num;
+    else
+      numAsString= num.toString();
+    item.slides[wordIndex].boxes[1].words = words.substring(0,6) + numAsString;
+    this.props.updateItem(item);
+  }
+
 
   render() {
     let {item, backgrounds, wordIndex, boxIndex} = this.props;
@@ -319,21 +381,39 @@ class ItemSlides extends React.Component{
         <div style={{display:'flex', margin:'1% 0%', fontSize: "calc(7px + 0.5vw)"}}>
           <div style={{fontSize: 'calc(10px + 1vw)', width: '60%', paddingLeft:'0.5vw'}}> {name} </div>
           {(type==='song') && <button style={buttonStyle} onClick={this.openLBox}>Arrange Lyric</button>}
+          {(type==='timer' && <div style={{display: 'flex'}}>
+            <div style={{fontSize: '0.85vw', margin: '0 0.5vw', display: 'flex', alignItems: 'center'}}>
+              Hours</div>
+            <input type='number' value={item.hours} onChange={this.updateTimerHours}
+              style={{fontSize: '0.85vw', width:'2vw', padding: '0.25vh 0'}}/>
+            <div style={{fontSize: '0.85vw', margin: '0 0.5vw', display: 'flex', alignItems: 'center'}}>
+              Minutes</div>
+            <input type='number' value={item.minutes} onChange={this.updateTimerMinutes}
+              style={{fontSize: '0.85vw', width:'2vw', padding: '0.25vh 0'}}/>
+            <div style={{fontSize: '0.85vw', margin: '0 0.5vw', display: 'flex', alignItems: 'center'}}>
+              Seconds</div>
+            <input type='number' value={item.seconds} onChange={this.updateTimerSeconds}
+              style={{fontSize: '0.85vw', width:'2vw', padding: '0.25vh 0'}}/>
+          </div>
+
+          )}
           {(type==='announcements' && wordIndex >= 0) && <div style={{display: 'flex'}}>
             <div style={{fontSize: '0.85vw', marginRight: '0.5vw', display: 'flex', alignItems: 'center'}}>
               Duration</div>
-            <input type='number' value={item.slides[wordIndex].duration} onChange={this.updateTimer}
+            <input type='number' value={item.slides[wordIndex].duration} onChange={this.updateDuration}
               style={{fontSize: '0.85vw', width:'2vw', padding: '0.25vh 0'}}/>
           </div>}
           {(type !=='song' && type !== 'announcements') && <div style={{ width: '20%'}} ></div>}
-          <img className='imgButton' style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
-              onClick={this.decreaseRows}
-              alt="zoomIn" src={zoomIn}
-             />
-          <img className='imgButton' style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
-               onClick={this.increaseRows}
-               alt="zoomOut" src={zoomOut}
-              />
+          {(type !=='timer' && <div style={{display: 'flex'}}>
+            <img className='imgButton' style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+                onClick={this.decreaseRows}
+                alt="zoomIn" src={zoomIn}
+               />
+            <img className='imgButton' style={{display:'block', width:'2vw', height:'2vw', marginLeft:'1vw'}}
+                 onClick={this.increaseRows}
+                 alt="zoomOut" src={zoomOut}
+                />
+          </div>)}
         </div>
       <div style={{overflowX: 'hidden', height: "86%", width:"100%"}}
         onMouseMove={this.updateMouse} onMouseUp={this.releaseElement}

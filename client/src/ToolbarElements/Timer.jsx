@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import deleteX from '../assets/deleteX.png';
 import add from '../assets/addItem.png';
 import DeleteConfirmation from '../DeleteConfirmation';
@@ -6,7 +6,7 @@ import DisplayWindow from '../DisplayElements/DisplayWindow';
 import MakeUnique from '../HelperFunctions/MakeUnique';
 import * as SlideCreation from '../HelperFunctions/SlideCreation'
 
-export default class Songs extends React.Component{
+export default class Timer extends Component{
 
   constructor(){
     super();
@@ -14,6 +14,9 @@ export default class Songs extends React.Component{
       deleteOverlay: false,
       name: "",
       nameToDelete: "",
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
     }
 
   }
@@ -38,37 +41,31 @@ export default class Songs extends React.Component{
     this.props.functions.deleteItem(this.state.nameToDelete)
   }
 
-  newSong = () => {
+  newTimer = () => {
     let {name} = this.state;
     let {userSettings, allItems} = this.props.state;
     if(name === '')
-      name = "New Song"
-
+      name = 'Timer'
     name = MakeUnique({name: name, property: '_id', list: allItems});
 
     let firstSlide = name;
-    let defaultSongBackground = userSettings.defaultSongBackground;
-    let brightness = defaultSongBackground ? defaultSongBackground.brightness : 100;
-    let image = defaultSongBackground ? defaultSongBackground.name : '';
+    let defaultTimerBackground = userSettings.defaultTimerBackground;
+    let brightness = defaultTimerBackground ? defaultTimerBackground.brightness : 100;
+    let image = defaultTimerBackground ? defaultTimerBackground.name : '';
 
     let item = {
         "_id": name,
         "name": name,
-        "arrangements": [{
-          name: 'Master',
-          formattedLyrics: [],
-          songOrder: [],
-          slides: [
-            SlideCreation.newSlide({type: "Song Title", fontSize: 4.5, words: firstSlide,
-           background: image, brightness: brightness}),
-           SlideCreation.newSlide({type: "blank", fontSize: 2.5, words: '',
-             background: image, brightness: brightness})
-           ]
-         }],
-        "selectedArrangement": 0,
-        "type": 'song',
+        "slides": [
+         SlideCreation.newSlide({type: "timer", fontSize: 4.5, words: '00:00:00',
+           background: image, brightness: brightness})
+         ],
+        "hours": 0,
+        "minutes": 0,
+        "seconds": 0,
+        "type": 'timer',
         "background": image,
-        "skipTitle": true
+        "nextOnFinish": true
       }
       this.props.functions.addItem(item);
   }
@@ -78,12 +75,12 @@ export default class Songs extends React.Component{
     let {deleteOverlay, name, nameToDelete} = this.state;
 
     let filteredList = [];
-    let allSongs = allItems.filter(e => e.type === 'song');
+    let allTimers = allItems.filter(e => e.type === 'timer');
     if(name.length > 0){
-      filteredList = allSongs.filter(ele => ele.name.toLowerCase().includes(name.toLowerCase()))
+      filteredList = allTimers.filter(ele => ele.name.toLowerCase().includes(name.toLowerCase()))
     }
     else{
-      filteredList = allSongs.slice(0);
+      filteredList = allTimers.slice(0);
     }
 
     let width = '3.5vw';
@@ -122,10 +119,10 @@ export default class Songs extends React.Component{
     return (
       <div style={{color: 'white', margin: '2vh auto', width: '80%'}}>
         <div style={{display: 'flex', marginBottom: '1.5vh'}}>
-          <div style={{fontSize: '1vw', marginRight: '1vw', display: 'flex', alignItems: 'center'}}>Song Name</div>
+          <div style={{fontSize: '1vw', marginRight: '1vw', display: 'flex', alignItems: 'center'}}>Timer Name</div>
           <input type='text' value={this.state.name} onChange={this.updateName}
             style={{width:'15vw', padding: '0.25vh 0.25vw'}}/>
-          <button style={buttonStyle} onClick={this.newSong}>New Song</button>
+          <button style={buttonStyle} onClick={this.newTimer}>New Timer</button>
         </div>
         <div style={{overflowX: 'hidden', height:'70vh', width: '60%'}}>
           <div style={{display: 'flex', paddingBottom: '1vh', borderBottom: '0.1vw solid #c4c4c4'}}>

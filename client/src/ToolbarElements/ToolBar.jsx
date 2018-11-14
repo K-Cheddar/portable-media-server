@@ -12,7 +12,8 @@ import disconnected from '../assets/disconnected.png';
 import open from '../assets/open.png';
 import bibleIcon from '../assets/bibleIcon.png'
 import songIcon from '../assets/songIcon.png'
-import allItemsIcon from '../assets/allItemsIcon.png'
+import allItemsIcon from '../assets/allItemsIcon.png';
+import timerIcon from '../assets/timerIcon.png'
 import announcementsIcon from '../assets/announcementsIcon.png'
 import undoButton from '../assets/undo.png'
 import redoButton from '../assets/redo.png'
@@ -22,8 +23,6 @@ export default class Toolbar extends Component {
   constructor(){
     super();
     this.state = {
-      bibleOpen: false,
-      nameOpen: false,
       tab: "Existing",
       menuMousedOver: false,
       itemListsOpen: false,
@@ -80,7 +79,7 @@ export default class Toolbar extends Component {
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
        setAsReceiver, connectToReceiver, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo, updateSkipTitle} = this.props.parent; //updateItemStructure
+        updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish} = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn,
       allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
       undoReady, redoReady, boxIndex} = this.props.parent.state;
@@ -107,7 +106,7 @@ export default class Toolbar extends Component {
 
     return(
       <div style={window.location.hash==="#/fullview" ?
-        {display: 'flex', width:'100vw', height: '10vh', backgroundColor: '#c4c4c4',
+        {display: 'flex', width:'100vw', height: '10.5vh', backgroundColor: '#c4c4c4',
           borderBottom: '0.15vw solid #06d1d1', borderTop: '0.15vw solid #06d1d1',
            marginBottom: '0.25vh'}
         : {display:'none'}} >
@@ -162,30 +161,31 @@ export default class Toolbar extends Component {
             </div>
           </li>
           <li style={{width: '13vw'}}>
-            {mode === 'edit' && <div className='toolbarSection' style={{display:'flex'}}>
+            {mode === 'edit' && <div className='toolbarSection'>
+            <div style={{display:'flex'}}>
               <div onClick={ () => this.openAllItems('Bible')} className='imgButton'
-                 style={{fontSize: '0.65vw', height: '6vh', marginRight:'0.5vw', textAlign: 'center'}}>
+                 style={{fontSize: '0.65vw', height: '4.5vh', marginRight:'0.5vw', textAlign: 'center'}}>
                 <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
                   padding: '0.25vh 0.25vw'}}
                    alt="bibleIcon" src={bibleIcon}
                    />
-                 <div>Open Bible</div>
+                 <div>Bible</div>
               </div>
               <div onClick={ () => this.openAllItems('Songs')} className='imgButton'
-                style={{fontSize: '0.65vw', marginRight:'0.5vw', height: '6vh', textAlign: 'center'}}>
+                style={{fontSize: '0.65vw', marginRight:'0.5vw', height: '4.5vh', textAlign: 'center'}}>
                 <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
                   padding: '0.25vh 0.25vw'}}
                    alt="songIcon" src={songIcon}
                    />
-                 <div>Add Song</div>
+                 <div>Song</div>
               </div>
               <div onClick={ () => this.openAllItems('Existing')} className='imgButton'
-                style={{fontSize: '0.65vw', height: '6vh', marginRight:'0.5vw', textAlign: 'center'}}>
+                style={{fontSize: '0.65vw', height: '4.5vh', marginRight:'0.5vw', textAlign: 'center'}}>
                 <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
                   padding: '0.25vh 0.25vw'}}
                    alt="allItemsIcon" src={allItemsIcon}
                    />
-                 <div>All Items</div>
+                 <div>All</div>
               </div>
               <div onClick={ () => this.openAllItems('Announcements')} className='imgButton'
                 style={{fontSize: '0.65vw', height: '5vh', textAlign: 'center'}}>
@@ -195,13 +195,24 @@ export default class Toolbar extends Component {
                    />
                  <div>Announcements</div>
               </div>
+            </div>
+            <div style={{display:'flex'}}>
+              <div onClick={ () => this.openAllItems('Timer')} className='imgButton'
+                style={{fontSize: '0.65vw', height: '4.5vh', marginRight:'0.5vw', textAlign: 'center'}}>
+                <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
+                   alt="timerIcon" src={timerIcon}
+                   />
+                 <div>Timer</div>
+              </div>
+            </div>
             </div>}
           </li>
           <li style={{width: '20vw'}}>
             {mode === 'edit' && <div className='toolbarSection'>
                <FormatEditor item={item} updateFontSize={updateFontSize} updateFontColor={updateFontColor}
                  wordIndex={wordIndex} updateBrightness={updateBrightness} updateSkipTitle={updateSkipTitle}
-                 boxIndex={boxIndex}/>
+                 boxIndex={boxIndex} updateNextOnFinish={updateNextOnFinish}/>
              </div>}
           </li>
           <li style={{width: '20vw'}}>

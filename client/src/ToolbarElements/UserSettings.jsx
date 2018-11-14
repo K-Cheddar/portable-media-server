@@ -66,7 +66,8 @@ export default class UserSettings extends React.Component{
       {name: 'defaultScreenBackground', type: 'Default'},
       {name: 'defaultWelcomeBackground', type: 'Welcome'},
       {name: 'defaultFarewellBackground', type: 'Farewell'},
-      {name: 'defaultAnnouncementsBackground', type: 'Announcements'}
+      {name: 'defaultAnnouncementsBackground', type: 'Announcements'},
+      {name: 'defaultTimerBackground', type: 'Timer'}
     ]
 
     let fullArray= [], row = []

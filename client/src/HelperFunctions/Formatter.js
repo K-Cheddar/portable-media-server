@@ -114,9 +114,10 @@ export function updateBrightness(props){
 
     slide.boxes[0].brightness = level;
     let background = slide.boxes[0].background;
+    let words = slide.boxes[1].words || slide.boxes[0].words
 
     for(let i = 0; i < slides.length; ++i){
-      if(slides[i].boxes[0].background === background)
+      if(slides[i].boxes[0].background === background && words !== ' ')
         slides[i].boxes[0].brightness = level
     }
 

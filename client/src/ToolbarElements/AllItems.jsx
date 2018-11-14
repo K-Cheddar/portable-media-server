@@ -5,6 +5,7 @@ import closeIcon from '../assets/closeIcon.png'
 import ExistingItems from './ExistingItems';
 import Announcements from './Announcements';
 import Songs from './Songs';
+import Timer from './Timer';
 
 export default class AllItems extends Component {
 
@@ -32,7 +33,7 @@ export default class AllItems extends Component {
     let {tab} = this.state;
 
     // let tabNames = ['Existing', 'Songs', 'Bible', 'Images', 'Videos', 'Announcements'];
-    let tabNames = ['Existing', 'Songs', 'Bible', 'Announcements'];
+    let tabNames = ['Existing', 'Songs', 'Bible', 'Announcements', 'Timer'];
 
     let tabStyle = {width: '8vw', padding: '0 1vw', height: '5vh', borderLeft:'0.15vw solid #06d1d1',
       borderBottom:'0.15vw solid yellow', display: 'flex', alignItems: 'center', textAlign: 'center',
@@ -75,6 +76,7 @@ export default class AllItems extends Component {
           {tab === 'Existing' && <ExistingItems functions={this.props.functions} state={this.props.state}/>}
           {tab === 'Songs' && <Songs functions={this.props.functions} state={this.props.state}/>}
           {tab === 'Announcements' && <Announcements functions={this.props.functions} state={this.props.state}/>}
+          {tab === 'Timer' && <Timer functions={this.props.functions} state={this.props.state}/>}
         </div>
       </HotKeys>
     )

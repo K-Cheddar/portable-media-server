@@ -35,7 +35,7 @@ export default class CreateName extends React.Component{
     let {allItems, background, item} = this.props;
     if(name === '')
       return;
-    name = MakeUnique({name: name, property: '_id', list: allItems, id: item._id});
+    //name = MakeUnique({name: name, property: '_id', list: allItems, id: item._id});
     this.props.addMedia(name, background)
   }
 

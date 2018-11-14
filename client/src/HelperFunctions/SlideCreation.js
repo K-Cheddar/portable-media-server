@@ -38,6 +38,21 @@ export function newSlide (props) {
     obj.words = words ? words[1] : ' '
     boxes.push(obj);
   }
+  else if(!boxes && type === 'timer'){
+    boxes = [];
+    let obj = Object.assign({}, box);
+    obj.words = ' ';
+    obj.excludeFromOverflow = true;
+    boxes.push(obj);
+    obj = Object.assign({}, box);
+    obj.transparent = true;
+    obj.y = 30;
+    obj.height = 35;
+    obj.topMargin = 3;
+    obj.sideMargin = 4;
+    obj.words = words;
+    boxes.push(obj);
+  }
   else if(!boxes) {
     boxes = [];
     let obj = Object.assign({}, box);
