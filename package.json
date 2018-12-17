@@ -15,6 +15,7 @@
     "express": "^4.16.4",
     "html2plaintext": "^2.1.0",
     "jade": "^1.11.0",
+    "latest": "^0.2.0",
     "peer": "^0.2.10",
     "querystring": "^0.2.0",
     "react-scripts": "^2.1.1",
