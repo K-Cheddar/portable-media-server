@@ -18,7 +18,7 @@
     "latest": "^0.2.0",
     "peer": "^0.2.10",
     "querystring": "^0.2.0",
-    "react-scripts": "^2.1.1",
+    "react-scripts": "^2.1.2",
     "request": "^2.88.0"
   },
   "devDependencies": {
