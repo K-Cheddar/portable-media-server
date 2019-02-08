@@ -1,0 +1,73 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: #383838;
+}
+
+h1 {
+  font-size: calc(9px + 3vw);
+  text-align: center;
+}
+
+h2 {
+  font-size: calc(7px + 2vw);
+  text-align: center;
+  font-style: italic;
+}
+
+.disclaimer {
+  font-size: calc(5px + 1vw);
+  text-align: center;
+  font-style: italic;
+}
+
+.notesHeader {
+  font-size: calc(5px + 1vw);
+  text-align: center;
+  font-weight: bold;
+}
+
+.notesSection {
+  background-color: #f2f2f2;
+  border: 1vmax #f2f2f2 solid;
+  border-radius: 1vw;
+  width: 60%;
+  margin: 2vh auto;
+}
+
+.notes {
+  font-size: calc(5px + 0.5vw);
+  margin: 1vh auto auto;
+  width: 80%;
+  text-align: left;
+  list-style-type: circle;
+}
+
+
+
+.welcome{
+  width: 50vw;
+  height: 96vh;
+  background: #c4c4c4;
+  border: 1vw solid #06d1d1;
+  borderRadius: 1vw/2vw;
+  margin: 0 auto;
+}
+
+.loader {
+    border-right: 1.5vw solid #f3f3f3; /* Light grey */
+    border-left: 1.5vw solid #f3f3f3; /* Light grey */
+    border-bottom: 1.5vw solid #a7bde2; /* Blue */
+    border-top: 1.5vw solid #a7bde2; /* Blue */
+    border-radius: 50%;
+    width: 4vw;
+    height: 4vw;
+    animation: spin 1.5s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
