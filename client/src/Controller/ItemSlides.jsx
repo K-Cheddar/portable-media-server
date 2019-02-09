@@ -329,6 +329,7 @@ class ItemSlides extends React.Component{
         if(beingDragged){
           style = slideDraggedStyle;
         }
+        const currentSlide = slides[index*slidesPerRow+i] || {};
         return(
           <div style={{display:'flex', width:slideWidth, userSelect:'none'}} key={i} id={"Slide"+(index*slidesPerRow+i)}>
             <div style={style}
@@ -336,14 +337,14 @@ class ItemSlides extends React.Component{
               onMouseOver={() => that.setTarget(index*slidesPerRow+i)}
               >
               {(selected && beingDragged && !newSection) &&
-                <SlideInList slide={slides[index*slidesPerRow+i]} backgrounds={backgrounds}
+                <SlideInList slide={currentSlide} backgrounds={backgrounds}
                   x={mouseX} y={mouseY} moving={true} width={width} height={height}
                   titleSize={titleSize}
                   />
               }
               {((!selected || !beingDragged) && !newSection) &&
-                <SlideInList slide={slides[index*slidesPerRow+i]}
-                  name={slides[index*slidesPerRow+i].type} width={width} height={height}
+                <SlideInList slide={currentSlide}
+                  name={currentSlide.type} width={width} height={height}
                   backgrounds={backgrounds} titleSize={titleSize}
                   />
               }
