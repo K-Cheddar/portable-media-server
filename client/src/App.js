@@ -550,6 +550,16 @@ class App extends Component {
     }
   };
 
+  pingPeerServer = () => {
+    if (peer.socket) {
+      console.log('Its workgin');
+      
+      peer.socket.send({type: 'ping'})
+      this.pingServer = setTimeout(() => this.pingPeerServer, 20000);
+    }
+ 
+  }
+
   setAsReceiver = () => {
     let { user } = this.state;
     let that = this;
@@ -564,6 +574,7 @@ class App extends Component {
     });
     peer.on("open", function(id) {
       that.setState({ peerID: id, isReciever: "connected", isSender: false });
+      that.pingPeerServer();
       let obj = { user: user, id: id };
       fetch("api/setAsReceiver", {
         method: "post",
