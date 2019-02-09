@@ -12,8 +12,7 @@ export default class DisplayWindow extends React.Component{
 	}
 
 	render() {
-		let {backgrounds = [], slide = {}, width= '100%', title ='', titleSize ='100%', 
-			presentation = false, extraPadding, editor} = this.props;
+		let {backgrounds, slide, width, title, titleSize, presentation, extraPadding, editor} = this.props;
 
 		if(!slide){
 			slide = {boxes: [{words: '', background: '', style: {}}]};
