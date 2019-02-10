@@ -552,10 +552,9 @@ class App extends Component {
 
   pingPeerServer = () => {
     if (peer.socket) {
-      console.log('Its workgin');
-      
       peer.socket.send({type: 'ping'})
-      this.pingServer = setTimeout(() => this.pingPeerServer, 20000);
+      console.log('doing it')
+      this.pingServer = setTimeout(() => this.pingPeerServer, 1000);
     }
  
   }

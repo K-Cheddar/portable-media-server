@@ -6,7 +6,7 @@
   "dependencies": {
     "cloudinary-core": "^2.5.0",
     "npm": "^6.5.0",
-    "peerjs": "^0.3.20",
+    "peerjs": "0.3.18",
     "pouchdb": "^7.0.0",
     "pouchdb-upsert": "^2.2.0",
     "rc-slider": "^8.6.4",
