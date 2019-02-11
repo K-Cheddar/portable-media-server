@@ -199,25 +199,24 @@ export default class Bible extends Component {
     this.setState({endVerse: index})
   }
 
-  updateBook = (e) => {
-    let bookSearch = e.target.value;
+  updateBook = (bookSearch) => {
     this.filterBooks(bookSearch);
-    this.setState({bookSearch: bookSearch})
+    this.setState({bookSearch: bookSearch});
+    this.updateChapter('');
   }
-  updateChapter = (e) => {
-    let chapterSearch = e.target.value;
+  updateChapter = (chapterSearch) => {
     let {currentBook} = this.state;
     this.filterChapters(currentBook, chapterSearch)
-    this.setState({chapterSearch: chapterSearch})
+    this.setState({chapterSearch: chapterSearch});
+    this.updateStartVerse('');
   }
-  updateStartVerse = (e) =>{
-    let verseStartSearch = e.target.value;
+  updateStartVerse = (verseStartSearch) =>{
     let {currentBook, currentChapter} = this.state;
     this.filterVersesStart(currentBook, currentChapter, verseStartSearch);
-    this.setState({verseStartSearch: verseStartSearch})
+    this.setState({verseStartSearch: verseStartSearch});
+    this.updateEndVerse('')
   }
-  updateEndVerse = (e) => {
-    let verseEndSearch = e.target.value;
+  updateEndVerse = (verseEndSearch) => {
     let {currentBook, currentChapter} = this.state;
     this.filterVersesEnd(currentBook, currentChapter, verseEndSearch);
     this.setState({verseEndSearch: verseEndSearch})
@@ -327,22 +326,22 @@ export default class Bible extends Component {
                 fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
                 <div style={{display: 'block', width:'9vw', margin:'0.5vw'}}>
                   <div >Book</div>
-                  <input id='bible-book-search' style={{width:'90%'}} type='text' value={bookSearch} onChange={this.updateBook}/>
+                  <input id='bible-book-search' style={{width:'90%'}} type='text' value={bookSearch} onChange={(e) => this.updateBook(e.target.value)}/>
                   <div style={{overflowX: 'hidden', height: '90%', width: '100%'}}>{books}</div>
                 </div>
                 <div style={{display: 'block', width:'4vw', margin:'0.5vw'}}>
                   <div>Chapter</div>
-                  <input id='bible-chapter-search' style={{width:'80%', margin:'auto'}} type='text' value={chapterSearch} onChange={this.updateChapter}/>
+                  <input id='bible-chapter-search' style={{width:'80%', margin:'auto'}} type='text' value={chapterSearch} onChange={(e) => this.updateChapter(e.target.value)}/>
                   <div style={{overflowX: 'hidden', height: '90%', width: '100%'}}>{chapters}</div>
                 </div>
                 <div style={{display: 'block', width:'4vw', margin:'0.5vw'}}>
                   <div>Start</div>
-                  <input id='bible-verse-start-search' style={{width:'80%', margin:'auto'}} type='text' value={verseStartSearch} onChange={this.updateStartVerse}/>
+                  <input id='bible-verse-start-search' style={{width:'80%', margin:'auto'}} type='text' value={verseStartSearch} onChange={(e) => this.updateStartVerse(e.target.value)}/>
                   <div style={{overflowX: 'hidden', height: '90%', width: '100%'}}>{versesStart}</div>
                 </div>
                 <div style={{display: 'block', width:'4vw', margin:'0.5vw'}}>
                   <div>End</div>
-                  <input id='bible-verse-end-search' style={{width:'80%', margin:'auto'}} type='text' value={verseEndSearch} onChange={this.updateEndVerse}/>
+                  <input id='bible-verse-end-search' style={{width:'80%', margin:'auto'}} type='text' value={verseEndSearch} onChange={(e) => this.updateEndVerse(e.target.value)}/>
                   <div style={{overflowX: 'hidden', height: '90%', width: '100%'}}>{versesEnd}</div>
                 </div>
               </div>
