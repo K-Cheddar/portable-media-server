@@ -44,8 +44,7 @@ class FormatEditor extends React.Component {
       else {
         this.setState({ brightness: 100 });
       }
-
-      if (!slide.boxes[boxIndex].fontSize) return;
+      if (!slide.boxes[boxIndex] || !slide.boxes[boxIndex].fontSize) return;
       this.setState({ fontSize: slide.boxes[boxIndex].fontSize });
       let stringToRGB = slide.boxes[boxIndex].fontColor
         .replace(/[^\d,]/g, "")
