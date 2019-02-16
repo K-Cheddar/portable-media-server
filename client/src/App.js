@@ -90,7 +90,7 @@ const map = {
 
 const initialState = {
   isLoggedIn: false,
-  wordIndex: -1,
+  wordIndex: 0,
   itemIndex: -1,
   boxIndex: 0,
   item: {},
@@ -175,7 +175,7 @@ class App extends Component {
 
     this.init(database, true);
     let that = this;
-    setTimeout(function() {
+    setTimeout(function () {
       let success = that.state.retrieved;
 
       if (Object.keys(success).length < 6) {
@@ -229,7 +229,7 @@ class App extends Component {
         (window.location.protocol === "https:" ? 443 : 80),
       path: "/peerjs"
     });
-    peer.on("open", function(id) {
+    peer.on("open", function (id) {
       let obj = { user: user };
       fetch("api/getReceiverId", {
         method: "post",
@@ -239,20 +239,20 @@ class App extends Component {
           "Content-Type": "application/json"
         }
       })
-        .then(function(response) {
+        .then(function (response) {
           return response.json();
         })
-        .then(function(res) {
+        .then(function (res) {
           if (res.serverID === undefined) {
             return;
           }
           conn = peer.connect(res.serverID);
-          conn.on("open", function() {
+          conn.on("open", function () {
             that.setState({ isSender: "connected", isReciever: false });
           });
-          conn.on("error", function(error) {
+          conn.on("error", function (error) {
             that.setState({ isSender: "disconnected" });
-            that.reconnectPeer = setTimeout(function() {
+            that.reconnectPeer = setTimeout(function () {
               that.connectToReceiver();
             }, 3000);
           });
@@ -264,7 +264,7 @@ class App extends Component {
     let that = this;
     let opts = { live: true, retry: true };
     that.setState({ db: db, remoteDB: remoteDB });
-    remoteDB.replicate.to(localDB).on("complete", function(info) {
+    remoteDB.replicate.to(localDB).on("complete", function (info) {
       DBSetup(db);
       DBGetter.init({ parent: that, db: db });
       DBGetter.retrieveImages({ parent: that, db: db, cloud: cloud });
@@ -308,7 +308,7 @@ class App extends Component {
 
   duplicateItem = id => {
     let that = this;
-    this.state.db.get(id).then(function(doc) {
+    this.state.db.get(id).then(function (doc) {
       let slides;
       if (doc.type === "song")
         slides = doc.arrangements[doc.selectedArrangement].slides || null;
@@ -336,7 +336,7 @@ class App extends Component {
       if (!retrieved.finished) {
         if (navigator.onLine) {
           let that = this;
-          setTimeout(function() {
+          setTimeout(function () {
             if (retrieved.finished) return;
             let obj = JSON.parse(JSON.stringify(initialState));
             that.setState(obj);
@@ -367,7 +367,7 @@ class App extends Component {
       retrieved.finished = true;
       this.updateInterval = setInterval(this.update, 250); //auto save to database every second if update has occurred
       let that = this;
-      setTimeout(function() {
+      setTimeout(function () {
         that.updateHistory({ type: "init" });
       }, 10);
     }
@@ -404,7 +404,7 @@ class App extends Component {
     let remoteDB = new PouchDB(remoteURL);
     let that = this;
     if (!first) {
-      db.destroy().then(function() {
+      db.destroy().then(function () {
         db = new PouchDB(localDB);
         that.DBReplicate(db, remoteDB, localDB);
       });
@@ -481,7 +481,7 @@ class App extends Component {
     let { upload_preset } = this.state;
     window.cloudinary.openUploadWidget(
       { cloud_name: "portable-media", upload_preset: upload_preset },
-      function(error, result) {
+      function (error, result) {
         if (!result) return;
         let uploads = [];
         for (var i = 0; i < result.length; i++) {
@@ -496,7 +496,7 @@ class App extends Component {
           uploads.push(obj);
         }
         DBUpdater.updateImages({ db: that.state.db, uploads: uploads });
-        setTimeout(function() {
+        setTimeout(function () {
           DBGetter.retrieveImages({
             parent: that,
             db: that.state.db,
@@ -552,11 +552,11 @@ class App extends Component {
 
   pingPeerServer = () => {
     if (peer.socket) {
-      peer.socket.send({type: 'ping'})
+      peer.socket.send({ type: 'ping' })
       console.log('doing it')
       this.pingServer = setTimeout(() => this.pingPeerServer, 1000);
     }
- 
+
   }
 
   setAsReceiver = () => {
@@ -571,7 +571,7 @@ class App extends Component {
         (window.location.protocol === "https:" ? 443 : 80),
       path: "/peerjs"
     });
-    peer.on("open", function(id) {
+    peer.on("open", function (id) {
       that.setState({ peerID: id, isReciever: "connected", isSender: false });
       that.pingPeerServer();
       let obj = { user: user, id: id };
@@ -584,14 +584,14 @@ class App extends Component {
         }
       });
     });
-    peer.on("connection", function(serverConn) {
+    peer.on("connection", function (serverConn) {
       conn = serverConn;
-      conn.on("data", function(data) {
+      conn.on("data", function (data) {
         that.setState({ currentInfo: data });
       });
-      conn.on("error", function(error) {
+      conn.on("error", function (error) {
         that.setState({ isReciever: "disconnected" });
-        that.reconnectPeer = setTimeout(function() {
+        that.reconnectPeer = setTimeout(function () {
           that.setAsReceiver();
         }, 5000);
       });
@@ -648,7 +648,7 @@ class App extends Component {
       }
     })
       .then(response => response.json())
-      .then(function(data) {
+      .then(function (data) {
         console.log(data);
       });
   };

@@ -57,7 +57,13 @@ export function setWordIndex(props){
 	if(element)
 		element.scrollIntoView({behavior: 'instant', block: 'nearest', inline:'nearest'});
 
-	updateState({wordIndex: index, boxIndex: 0});
+	const slide = slides[wordIndex];
+	let lastBox;
+	if(slide){
+		lastBox = slide.boxes.length - 1;
+	}
+			
+	updateState({wordIndex: index, boxIndex: lastBox || 0});
 	clearTimer();
 	clearCountdown();
 	updateSlide(props);
