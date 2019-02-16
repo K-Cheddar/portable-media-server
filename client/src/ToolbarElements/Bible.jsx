@@ -214,7 +214,6 @@ export default class Bible extends Component {
     let {currentBook, currentChapter} = this.state;
     this.filterVersesStart(currentBook, currentChapter, verseStartSearch);
     this.setState({verseStartSearch: verseStartSearch});
-    this.updateEndVerse('')
   }
   updateEndVerse = (verseEndSearch) => {
     let {currentBook, currentChapter} = this.state;
