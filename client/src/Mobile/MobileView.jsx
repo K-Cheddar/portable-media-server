@@ -47,6 +47,7 @@ export default class MobileView extends Component {
       updateItem,
       toggleFreeze,
       selectItemList,
+      setBoxIndex,
       logout
     } = this.props.parent; //connectToReceiver,
     let {
@@ -147,7 +148,7 @@ export default class MobileView extends Component {
             Change Item
           </button>
           {freeze && (
-            <div style={{ display: "flex", margin: "auto" }}>
+            <div style={{ display: "flex"}}>
               <button style={buttonLoggedIn} onClick={toggleFreeze}>
                 Unfreeze
               </button>
@@ -159,7 +160,7 @@ export default class MobileView extends Component {
             </div>
           )}
           {!freeze && (
-            <div style={{ display: "flex", margin: "auto" }}>
+            <div style={{ display: "flex" }}>
               <button style={buttonLoggedIn} onClick={toggleFreeze}>
                 Freeze
               </button>
@@ -178,6 +179,8 @@ export default class MobileView extends Component {
               backgrounds={backgrounds}
               item={item}
               updateItem={updateItem}
+              boxIndex={boxIndex} 
+              setBoxIndex={setBoxIndex}
             />
           </div>
           <div style={{ paddingTop: "1.5%", maxWidth: "100%" }}>

@@ -45,7 +45,7 @@ class Presentation extends React.Component{
       height: window.innerHeight
     })
     
-    if(window.innerWidth < (window.screen.width*.95) || window.innerHeight < (window.screen.height*.95) )
+    if(window.innerWidth < (window.screen.availWidth*.95) || window.innerHeight < (window.screen.availHeight*.95) )
       this.setState({fullScreen: false})
   }
 

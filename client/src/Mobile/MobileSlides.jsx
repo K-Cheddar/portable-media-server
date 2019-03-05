@@ -47,7 +47,10 @@ export default class MobileSlides extends React.Component{
       slides = item.arrangements[item.selectedArrangement].slides || null;
     else
       slides = item.slides || null;
-    let words = slides ? slides.map(a => a.boxes[boxIndex].words) : null;
+
+    let words = slides ? slides.map(({boxes}) => { 
+      return boxes[boxIndex] ? boxes[boxIndex].words : ''
+    }) : null;
     let row = [];
     let fullArray = [];
     let that = this;
