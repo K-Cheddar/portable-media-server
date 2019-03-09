@@ -48,7 +48,7 @@ export default class Timer extends Component{
       name = 'Timer'
     name = MakeUnique({name: name, property: '_id', list: allItems});
 
-    let firstSlide = name;
+    // let firstSlide = name;
     let defaultTimerBackground = userSettings.defaultTimerBackground;
     let brightness = defaultTimerBackground ? defaultTimerBackground.brightness : 100;
     let image = defaultTimerBackground ? defaultTimerBackground.name : '';

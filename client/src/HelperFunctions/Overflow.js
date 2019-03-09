@@ -54,7 +54,8 @@ export function formatLyrics(item){
 	function formatSection(lyrics, type){
 		let lines = lyrics.split('\n');
 		let fLyrics = [], currentBoxes = [], boxes=[];
-		let lineContainer = {}, box = {};
+		let box = {};
+		//lineContainer = {}
 		let maxLines = 0, lineHeight = 0, lineCounter = 0, counter = 0;
 		let boxWords = '';
 

@@ -19,6 +19,17 @@ class Presentation extends React.Component{
     this.updateDimensions();
     window.addEventListener("storage", this.updateStorage);
     window.addEventListener("resize", this.updateDimensions);
+    document.addEventListener('fullscreenchange', this.fullScreenHandler);
+    document.addEventListener('webkitfullscreenchange', this.fullScreenHandler);
+    document.addEventListener('mozfullscreenchange', this.fullScreenHandler);
+    document.addEventListener('MSFullscreenChange', this.fullScreenHandler);
+  }
+
+  isFullScreen = () => {
+    let elem = document.getElementById("fullApp");
+    if(elem.requestFullScreen || elem.mozRequestFullScreen || elem.webkitRequestFullScreen || elem.msRequestFullscreen)
+      return true;
+    return false;
   }
 
   goFullScreen = () => {
@@ -39,13 +50,19 @@ class Presentation extends React.Component{
     }
   }
 
+  fullScreenHandler = (e) => {
+    const isFullScreen = this.isFullScreen();
+    console.log(isFullScreen, 'e')
+     this.setState({fullScreen: isFullScreen})
+  }
+
   updateDimensions = () => {
     this.setState({
       width: window.innerWidth,
       height: window.innerHeight
     })
     
-    if(window.innerWidth < (window.screen.availWidth*.95) || window.innerHeight < (window.screen.availHeight*.95) )
+    if(window.innerWidth < (window.screen.availWidth*.9) || window.innerHeight < (window.screen.availHeight*.9) )
       this.setState({fullScreen: false})
   }
 

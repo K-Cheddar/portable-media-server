@@ -50,7 +50,7 @@ export default class LyricsBox extends Component{
 
   autoFormatLyrics = () => {
     let {songOrder, arrangements, selectedArrangement, formattedLyrics} = this.state;
-    let {item, boxIndex} = this.props;
+    let {item} = this.props;
     arrangements[selectedArrangement].formattedLyrics = formattedLyrics;
     arrangements[selectedArrangement].songOrder = songOrder;
     item.arrangements = arrangements;

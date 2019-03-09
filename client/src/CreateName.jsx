@@ -32,7 +32,8 @@ export default class CreateName extends React.Component{
 
   makeNameUnique = () => {
     let {name} = this.state;
-    let {allItems, background, item} = this.props;
+    let { background} = this.props;
+    //use allItems and item
     if(name === '')
       return;
     //name = MakeUnique({name: name, property: '_id', list: allItems, id: item._id});

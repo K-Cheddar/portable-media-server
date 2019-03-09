@@ -16,7 +16,7 @@ export function updateFontSize(props){
 	if(!slide)
 		return;
 
-	if(wordIndex !== 0){
+	if(wordIndex !== 0 && item.type !== 'image'){
 		for(let i = 1; i < slides.length; ++i){
 			if(!slides[i].boxes[boxIndex].excludeFromOverflow)
 				slides[i].boxes[boxIndex].fontSize = fontSize;
@@ -98,7 +98,8 @@ export function updateFontColor(props){
 }
 
 export function updateBrightness(props){
-	let {item, wordIndex, boxIndex, needsUpdate} = props.parent.state;
+	let {item, wordIndex, needsUpdate} = props.parent.state;
+	//use boxIndex
 	let {updateState, updateHistory} = props.parent;
 	let {level} = props;
 	let slides;
