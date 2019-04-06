@@ -248,13 +248,14 @@ class App extends Component {
           }
           conn = peer.connect(res.serverID);
           conn.on("open", function () {
+            setInterval(() => {that.connectToReceiver()}, 50000)
             that.setState({ isSender: "connected", isReciever: false });
           });
           conn.on("error", function (error) {
             that.setState({ isSender: "disconnected" });
             that.reconnectPeer = setTimeout(function () {
               that.connectToReceiver();
-            }, 3000);
+            }, 5000);
           });
         });
     });
@@ -550,15 +551,6 @@ class App extends Component {
     }
   };
 
-  pingPeerServer = () => {
-    if (peer.socket) {
-      peer.socket.send({ type: 'ping' })
-      console.log('doing it')
-      this.pingServer = setTimeout(() => this.pingPeerServer, 1000);
-    }
-
-  }
-
   setAsReceiver = () => {
     let { user } = this.state;
     let that = this;
@@ -573,7 +565,6 @@ class App extends Component {
     });
     peer.on("open", function (id) {
       that.setState({ peerID: id, isReciever: "connected", isSender: false });
-      that.pingPeerServer();
       let obj = { user: user, id: id };
       fetch("api/setAsReceiver", {
         method: "post",
@@ -593,7 +584,7 @@ class App extends Component {
         that.setState({ isReciever: "disconnected" });
         that.reconnectPeer = setTimeout(function () {
           that.setAsReceiver();
-        }, 5000);
+        }, 3000);
       });
     });
   };
