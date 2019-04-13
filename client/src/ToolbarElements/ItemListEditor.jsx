@@ -129,12 +129,18 @@ export default class ItemListEditor extends Component{
 
   newItemList = () => {
     let {itemLists, allItemLists, needsUpdate} = this.props;
-    let id = allItemLists[allItemLists.length-1].id;
-    let newNumber = parseInt(id.slice(-1), 10) + 1;
-    let newId = "Item List " + newNumber;
+    let newID;
     let name = DateFunctions.getDateofNextDay('Saturday');
-    name = MakeUnique({name: name, property: 'name', list: allItemLists});
-    let newList = {id: newId, name: name}
+    let newNumber = 1;
+    if(allItemLists.length) {
+      let id = allItemLists[allItemLists.length-1].id;
+      newNumber = parseInt(id.split(' ')[2], 10) + 1;
+      name = MakeUnique({name: name, property: 'name', list: allItemLists});
+    }
+    
+    newID = "Item List " + newNumber;
+    let newList = {id: newID, name: name};
+
     itemLists.push(newList);
     allItemLists.push(newList);
     needsUpdate.updateItemLists = true;
@@ -182,6 +188,8 @@ export default class ItemListEditor extends Component{
   render(){
 
     let {itemLists, allItemLists} = this.props;
+    console.log('itemLists', itemLists);
+    console.log('allItemLists', allItemLists);
     let {selectedIndex, name, deleteOverlay, ailsSearch, ilsSearch, message} = this.state;
 
     let outlineName = 'Service Outline'

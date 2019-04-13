@@ -111,10 +111,10 @@ export function duplicateList(props){
 	let {id} = props;
 	let {updateState, selectItemList} = props.parent;
 	let {db, allItemLists, itemLists} = props.parent.state;
-
-	let newID = allItemLists[allItemLists.length-1].id;
-	let newNumber = parseInt(newID.slice(-1), 10) + 1;
-	newID = 'Item List ' + newNumber;
+	
+	let lastID = allItemLists[allItemLists.length-1].id;
+	let newNumber = parseInt(lastID.split(' ')[2], 10) + 1;
+	let newID = 'Item List ' + newNumber;
 	let name = DateFunctions.getDateofNextDay('Saturday');
 	name = MakeUnique({name: name, property: 'name', list: allItemLists});
 	db.get(id).then(function(doc){
