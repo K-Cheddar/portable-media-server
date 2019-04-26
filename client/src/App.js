@@ -33,6 +33,7 @@ var cloud = new cloudinary.Cloudinary({
 
 var peer;
 var conn;
+
 // let requestedBytes = 1024*1024*10; // 10MB
 //  window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
 //
@@ -146,6 +147,7 @@ class App extends Component {
     this.state = JSON.parse(JSON.stringify(initialState));
 
     this.updateInterval = null;
+    this.connectorInterval = null;
     this.reconnectPeer = null;
     this.sync = null;
 
@@ -248,7 +250,9 @@ class App extends Component {
           }
           conn = peer.connect(res.serverID);
           conn.on("open", function () {
-            setInterval(() => {that.connectToReceiver()}, 50000)
+            console.log('Connection open function running')
+            clearInterval(this.connectorInterval);
+            this.connectorInterval = setInterval(() => {that.connectToReceiver()}, 50000)
             that.setState({ isSender: "connected", isReciever: false });
           });
           conn.on("error", function (error) {
