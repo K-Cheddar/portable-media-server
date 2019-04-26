@@ -62,8 +62,10 @@ class Presentation extends React.Component{
       height: window.innerHeight
     })
     
-    if(window.innerWidth < (window.screen.availWidth*.925) || window.innerHeight < (window.screen.availHeight*.925) )
+    if( (screen.availHeight || screen.height-30) <= window.innerHeight) {
       this.setState({fullScreen: false})
+      // browser is almost certainly fullscreen
+  }
   }
 
   updateStorage = (e) => {

@@ -250,7 +250,7 @@ class App extends Component {
           }
           conn = peer.connect(res.serverID);
           conn.on("open", function () {
-            console.log('Connection open function running')
+            console.log('Connection open function running');
             clearInterval(this.connectorInterval);
             this.connectorInterval = setInterval(() => {that.connectToReceiver()}, 50000)
             that.setState({ isSender: "connected", isReciever: false });
