@@ -75,6 +75,9 @@ class Presentation extends React.Component{
       width: window.innerWidth,
       height: window.innerHeight
     })
+
+    if(this.isMobileBrowser())
+      return;
     
     if(window.screenTop || window.screenY){
       this.setState({fullScreen: false})
