@@ -19,10 +19,10 @@ class Presentation extends React.Component{
     this.updateDimensions();
     window.addEventListener("storage", this.updateStorage);
     window.addEventListener("resize", this.updateDimensions);
-    document.addEventListener('fullscreenchange', this.fullScreenHandler);
-    document.addEventListener('webkitfullscreenchange', this.fullScreenHandler);
-    document.addEventListener('mozfullscreenchange', this.fullScreenHandler);
-    document.addEventListener('MSFullscreenChange', this.fullScreenHandler);
+    document.addEventListener('fullscreenchange', this.updateDimensions);
+    document.addEventListener('webkitfullscreenchange', this.updateDimensions);
+    document.addEventListener('mozfullscreenchange', this.updateDimensions);
+    document.addEventListener('MSFullscreenChange', this.updateDimensions);
   }
 
   isFullScreen = () => {
@@ -52,8 +52,22 @@ class Presentation extends React.Component{
 
   fullScreenHandler = (e) => {
     const isFullScreen = this.isFullScreen();
-    console.log(isFullScreen, 'e')
+    this.updateDimensions();
      this.setState({fullScreen: isFullScreen})
+  }
+
+  isMobileBrowser = () => {
+    if( navigator.userAgent.match(/Android/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/iPod/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i)
+  ){
+    return true;
+  }
+  else 
+    return false;
   }
 
   updateDimensions = () => {
@@ -62,10 +76,12 @@ class Presentation extends React.Component{
       height: window.innerHeight
     })
     
-    if( (screen.availHeight || screen.height-30) <= window.innerHeight) {
+    if(window.screenTop || window.screenY){
       this.setState({fullScreen: false})
-      // browser is almost certainly fullscreen
-  }
+    }
+    else {
+      this.setState({fullScreen: true})
+    }
   }
 
   updateStorage = (e) => {
