@@ -167,6 +167,16 @@ class App extends Component {
     let sDatabase = localStorage.getItem("database");
     let sUploadPreset = localStorage.getItem("upload_preset");
 
+    setInterval(() => {
+      fetch("api/heartbeat", {
+        method: "get",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+    },50000)
+
     if (sLoggedIn === "true") this.setState({ isLoggedIn: true });
     else this.setState({ isLoggedIn: false });
     if (sUser !== "null" && sUser !== null) this.setState({ user: sUser });
@@ -251,8 +261,6 @@ class App extends Component {
           conn = peer.connect(res.serverID);
           conn.on("open", function () {
             // console.log('Connection open function running');
-            // clearInterval(this.connectorInterval);
-            // this.connectorInterval = setInterval(() => {that.connectToReceiver()}, 50000)
             that.setState({ isSender: "connected", isReciever: false });
           });
           conn.on("error", function (error) {
