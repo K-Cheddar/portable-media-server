@@ -167,6 +167,14 @@ class App extends Component {
     let sDatabase = localStorage.getItem("database");
     let sUploadPreset = localStorage.getItem("upload_preset");
 
+    fetch("api/heartbeat", {
+      method: "get",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+
     setInterval(() => {
       fetch("api/heartbeat", {
         method: "get",
@@ -175,7 +183,7 @@ class App extends Component {
           "Content-Type": "application/json"
         }
       })
-    },50000)
+    },45000)
 
     if (sLoggedIn === "true") this.setState({ isLoggedIn: true });
     else this.setState({ isLoggedIn: false });
@@ -193,7 +201,7 @@ class App extends Component {
       if (Object.keys(success).length < 6) {
         window.location.reload(true);
       }
-    }, 15000);
+    }, 30000);
   }
 
   addItem = item => {
