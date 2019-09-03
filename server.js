@@ -32,6 +32,7 @@ app.use(function(req, res, next) {
 let currentInfo = {};
 
 app.get('/api/heartbeat', (req, res) => {
+	res.send({ info: 'Heartbeat successful' });
 });
 
 // API calls
