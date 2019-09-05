@@ -13,10 +13,19 @@ const status = {
 };
 
 var bodyParser = require('body-parser');
-let srv = app.listen(port, () => console.log(`Listening on port ${port}`));
-app.use('/peerjs', require('peer').ExpressPeerServer(srv, {
+
+const ExpressPeerServer = require('peer').ExpressPeerServer;
+const server = app.listen(port);
+
+const options = {
 	debug: true
-}));
+};
+
+const peerserver = ExpressPeerServer(server, options);
+app.use('/api', peerserver);
+
+// let srv = app.listen(port, () => console.log(`Listening on port ${port}`));
+// app.use('/peerjs', require('peer').ExpressPeerServer(srv, {	debug: true }));
 app.use(bodyParser.json() );
 app.use(express.json());
 
@@ -69,6 +78,7 @@ app.get('/api/hello', (req, res) => {
 app.post('/api/getReceiverId', (req, res) => {
 	let obj = req.body;
 	let user = obj.user;
+	console.log(obj);
 	res.send({ serverID: peerServer[user] });
 });
 
@@ -81,6 +91,7 @@ app.post('/api/currentInfo', (req, res) => {
 let peerServer = {};
 app.post('/api/setAsReceiver', (req, res) => {
 	let obj = req.body;
+	console.log(obj);
 	peerServer[obj.user] = obj.id;
 });
 

@@ -249,36 +249,35 @@ class App extends Component {
         (window.location.protocol === "https:" ? 443 : 80),
       path: "/peerjs"
     });
-    peer.on("open", function (id) {
-      let obj = { user: user };
-      fetch("api/getReceiverId", {
-        method: "post",
-        body: JSON.stringify(obj),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
+    let obj = { user: user };
+    fetch("api/getReceiverId", {
+      method: "post",
+      body: JSON.stringify(obj),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+      .then(function (response) {
+        return response.json();
       })
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (res) {
-          if (res.serverID === undefined) {
-            return;
-          }
-          conn = peer.connect(res.serverID);
-          conn.on("open", function () {
-            // console.log('Connection open function running');
-            that.setState({ isSender: "connected", isReciever: false });
-          });
-          conn.on("error", function (error) {
-            that.setState({ isSender: "disconnected" });
-            that.reconnectPeer = setTimeout(function () {
-              that.connectToReceiver();
-            }, 5000);
-          });
+      .then(function (res) {
+        if (res.serverID === undefined) {
+          return;
+        }
+        console.log(res)
+        conn = peer.connect(res.serverID);
+        conn.on("open", function () {
+          // console.log('Connection open function running');
+          that.setState({ isSender: "connected", isReciever: false });
         });
-    });
+        conn.on("error", function (error) {
+          that.setState({ isSender: "disconnected" });
+          that.reconnectPeer = setTimeout(function () {
+            that.connectToReceiver();
+          }, 5000);
+        });
+      });
   };
 
   DBReplicate = (db, remoteDB, localDB) => {
@@ -575,26 +574,25 @@ class App extends Component {
     let { user } = this.state;
     let that = this;
     clearTimeout(this.reconnectPeer);
+    const dateID = Date.now();
 
-    peer = new Peer({
+    peer = new Peer(dateID, {
       host: window.location.hostname,
       port:
         window.location.port ||
         (window.location.protocol === "https:" ? 443 : 80),
       path: "/peerjs"
     });
-    peer.on("open", function (id) {
-      that.setState({ peerID: id, isReciever: "connected", isSender: false });
-      let obj = { user: user, id: id };
-      fetch("api/setAsReceiver", {
-        method: "post",
-        body: JSON.stringify(obj),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      });
+    let obj = { user, id:dateID };
+    fetch("api/setAsReceiver", {
+      method: "post",
+      body: JSON.stringify(obj),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
     });
+    console.log(peer)
     peer.on("connection", function (serverConn) {
       conn = serverConn;
       conn.on("data", function (data) {
