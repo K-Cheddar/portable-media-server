@@ -19,6 +19,7 @@ import Toolbar from "./ToolbarElements/ToolBar";
 import Loading from "./Loading";
 import cloudinary from "cloudinary-core";
 import { HotKeys } from "react-hotkeys";
+import firebase from 'firebase';
 import * as SlideCreation from "./HelperFunctions/SlideCreation";
 import Peer from "peerjs";
 
@@ -33,6 +34,21 @@ var cloud = new cloudinary.Cloudinary({
 
 var peer;
 var conn;
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD8JdTmUVvAhQjBYnt59dOUqucnWiRMyMk",
+  authDomain: "portable-media.firebaseapp.com",
+  databaseURL: "https://portable-media.firebaseio.com",
+  projectId: "portable-media",
+  storageBucket: "portable-media.appspot.com",
+  messagingSenderId: "456418139697",
+  appId: "1:456418139697:web:02dabb94557dbf1dc07f10"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+var database = firebase.database();
+console.log('Data', database)
 
 // let requestedBytes = 1024*1024*10; // 10MB
 //  window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
@@ -167,24 +183,6 @@ class App extends Component {
     let sDatabase = localStorage.getItem("database");
     let sUploadPreset = localStorage.getItem("upload_preset");
 
-    fetch("api/heartbeat", {
-      method: "get",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    })
-
-    setInterval(() => {
-      fetch("api/heartbeat", {
-        method: "get",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
-    },45000)
-
     if (sLoggedIn === "true") this.setState({ isLoggedIn: true });
     else this.setState({ isLoggedIn: false });
     if (sUser !== "null" && sUser !== null) this.setState({ user: sUser });
@@ -194,6 +192,7 @@ class App extends Component {
     if (sUploadPreset) this.setState({ upload_preset: sUploadPreset });
 
     this.init(database, true);
+    this.firebaseCurrent()
     let that = this;
     setTimeout(function () {
       let success = that.state.retrieved;
@@ -202,6 +201,11 @@ class App extends Component {
         window.location.reload(true);
       }
     }, 30000);
+  }
+
+  firebaseCurrent = () => {
+    const reff = database.ref(`users/${this.state.user}`);
+    reff.on('value', (snap) => {this.setState({currentInfo: snap.val()})})
   }
 
   addItem = item => {
@@ -709,7 +713,9 @@ class App extends Component {
 
     if (conn) conn.send(update);
     this.setState({ currentInfo: update });
-    DBUpdater.updateCurrent({ db: this.state.remoteDB, obj: update });
+    // DBUpdater.updateCurrent({ db: this.state.remoteDB, obj: update });
+    console.log('update', update, ...update)
+    database.ref(`users/${this.state.user}`).set({...update});
     localStorage.setItem("presentation", JSON.stringify(update));
   };
 
