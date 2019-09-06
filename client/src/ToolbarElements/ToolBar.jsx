@@ -78,7 +78,7 @@ export default class Toolbar extends Component {
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList, updateUserSetting, updateBoxPosition,
         updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish} = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn,
-      allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
+      allItemLists, needsUpdate, userSettings, backgrounds, mode,
       undoReady, redoReady, boxIndex} = this.props.parent.state;
     let {tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen} = this.state;
 

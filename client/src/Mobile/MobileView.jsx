@@ -59,7 +59,6 @@ export default class MobileView extends Component {
       itemLists,
       selectedItemList,
       isLoggedIn,
-      isSender,
       boxIndex
     } = this.props.parent.state;
 

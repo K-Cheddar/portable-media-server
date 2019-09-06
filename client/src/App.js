@@ -132,8 +132,6 @@ const initialState = {
   upload_preset: "bpqu4ma5",
   retrieved: {},
   attempted: {},
-  isReciever: false,
-  isSender: false,
   userSettings: {},
   mode: "edit",
   undoReady: false,
