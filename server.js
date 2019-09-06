@@ -8,21 +8,9 @@ const cheerio = require('cheerio');
 const qs = require('querystring');
 const h2p = require('html2plaintext');
 
-const status = {
-	users: []
-};
 
 var bodyParser = require('body-parser');
 
-const ExpressPeerServer = require('peer').ExpressPeerServer;
-const server = app.listen(port);
-
-const options = {
-	debug: true
-};
-
-const peerserver = ExpressPeerServer(server, options);
-app.use('/api', peerserver);
 
 // let srv = app.listen(port, () => console.log(`Listening on port ${port}`));
 // app.use('/peerjs', require('peer').ExpressPeerServer(srv, {	debug: true }));
@@ -36,12 +24,6 @@ app.use(function(req, res, next) {
 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
 	res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
 	next();
-});
-
-let currentInfo = {};
-
-app.get('/api/heartbeat', (req, res) => {
-	res.send({ info: 'Heartbeat successful' });
 });
 
 // API calls
@@ -75,24 +57,10 @@ app.get('/api/hello', (req, res) => {
 // 	console.log(status.users);
 // });
 
-app.post('/api/getReceiverId', (req, res) => {
-	let obj = req.body;
-	let user = obj.user;
-	console.log(obj);
-	res.send({ serverID: peerServer[user] });
-});
-
 app.post('/api/currentInfo', (req, res) => {
 	let obj = req.body;
 	let t = obj.words;
 	res.send({t});
-});
-
-let peerServer = {};
-app.post('/api/setAsReceiver', (req, res) => {
-	let obj = req.body;
-	console.log(obj);
-	peerServer[obj.user] = obj.id;
 });
 
 app.post('/api/getLyrics', (req, res) => {

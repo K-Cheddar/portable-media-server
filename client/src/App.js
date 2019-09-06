@@ -21,7 +21,6 @@ import cloudinary from "cloudinary-core";
 import { HotKeys } from "react-hotkeys";
 import firebase from 'firebase';
 import * as SlideCreation from "./HelperFunctions/SlideCreation";
-import Peer from "peerjs";
 
 PouchDB.plugin(require("pouchdb-upsert"));
 
@@ -32,7 +31,6 @@ var cloud = new cloudinary.Cloudinary({
   secure: true
 });
 
-var peer;
 var conn;
 
 const firebaseConfig = {
@@ -134,7 +132,6 @@ const initialState = {
   upload_preset: "bpqu4ma5",
   retrieved: {},
   attempted: {},
-  peerID: "",
   isReciever: false,
   isSender: false,
   userSettings: {},
@@ -164,7 +161,6 @@ class App extends Component {
 
     this.updateInterval = null;
     this.connectorInterval = null;
-    this.reconnectPeer = null;
     this.sync = null;
 
     this.handlers = {
@@ -239,49 +235,6 @@ class App extends Component {
       background: background
     };
     DBUpdater.addItem({ parent: this, item: item });
-  };
-
-  connectToReceiver = () => {
-    let { user } = this.state;
-    let that = this;
-    clearTimeout(this.reconnectPeer);
-
-    peer = new Peer({
-      host: window.location.hostname,
-      port:
-        window.location.port ||
-        (window.location.protocol === "https:" ? 443 : 80),
-      path: "/peerjs"
-    });
-    let obj = { user: user };
-    fetch("api/getReceiverId", {
-      method: "post",
-      body: JSON.stringify(obj),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (res) {
-        if (res.serverID === undefined) {
-          return;
-        }
-        console.log(res)
-        conn = peer.connect(res.serverID);
-        conn.on("open", function () {
-          // console.log('Connection open function running');
-          that.setState({ isSender: "connected", isReciever: false });
-        });
-        conn.on("error", function (error) {
-          that.setState({ isSender: "disconnected" });
-          that.reconnectPeer = setTimeout(function () {
-            that.connectToReceiver();
-          }, 5000);
-        });
-      });
   };
 
   DBReplicate = (db, remoteDB, localDB) => {
@@ -572,43 +525,6 @@ class App extends Component {
       let id = itemList[index] ? itemList[index]._id : 0;
       DBGetter.getItem({ id: id, parent: this, index: index });
     }
-  };
-
-  setAsReceiver = () => {
-    let { user } = this.state;
-    let that = this;
-    clearTimeout(this.reconnectPeer);
-    const dateID = Date.now();
-
-    peer = new Peer(dateID, {
-      host: window.location.hostname,
-      port:
-        window.location.port ||
-        (window.location.protocol === "https:" ? 443 : 80),
-      path: "/peerjs"
-    });
-    let obj = { user, id:dateID };
-    fetch("api/setAsReceiver", {
-      method: "post",
-      body: JSON.stringify(obj),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    });
-    console.log(peer)
-    peer.on("connection", function (serverConn) {
-      conn = serverConn;
-      conn.on("data", function (data) {
-        that.setState({ currentInfo: data });
-      });
-      conn.on("error", function (error) {
-        that.setState({ isReciever: "disconnected" });
-        that.reconnectPeer = setTimeout(function () {
-          that.setAsReceiver();
-        }, 3000);
-      });
-    });
   };
 
   setSlideBackground = background => {
