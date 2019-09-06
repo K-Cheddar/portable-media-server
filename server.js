@@ -1,40 +1,65 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const cors = require('cors');
 const port = process.env.PORT || 5000;
+const request = require('request');
+const cheerio = require('cheerio');
+const qs = require('querystring');
+const h2p = require('html2plaintext');
+
+
 var bodyParser = require('body-parser');
-let srv = app.listen(port, () => console.log(`Listening on port ${port}`));
-app.use('/peerjs', require('peer').ExpressPeerServer(srv, {
-	debug: true
-}));
-app.use( bodyParser.json() );
+
+app.listen(port, () => console.log(`Listening on port ${port}`));
+
+app.use(bodyParser.json() );
 app.use(express.json());
-let currentInfo = {};
+
+app.use(cors());
+app.use(function(req, res, next) {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+	res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+	next();
+});
+
 // API calls
 app.get('/api/hello', (req, res) => {
 	res.send({ express: 'Hello From Express' });
 });
 
-app.get('/api/getPort', (req, res) => {
-	res.send({ port: port });
-});
-
-app.post('/api/getReceiverId', (req, res) => {
-	let obj = req.body;
-	let user = obj.user;
-	res.send({ serverID: peerServer[user] });
-});
+// app.post('/api/updateUsers', (req, res) => {
+// 	const { user, action } = req.body;
+// 	const { users } = status;
+// 	if (action === 'add') {
+// 		const currentUser = users.find(e => e.user === user);
+// 		if(currentUser) {
+// 			currentUser.count += 1;
+// 		}
+// 		else {
+// 			status.users.push({user, count: 1 });
+// 		}
+// 	}
+// 	else if (action === 'remove') {
+// 		const currentUser = users.find(e => e.user === user);
+// 		if(currentUser) {
+// 			if(currentUser.count > 1) {
+// 				currentUser.count -= 1; 
+// 			}
+// 			else {
+// 				status.users = users.filter(e => e.user !== currentUser.user);
+// 			}
+// 		}
+// 	}
+// 	console.log(status.users);
+// });
 
 app.post('/api/currentInfo', (req, res) => {
 	let obj = req.body;
 	let t = obj.words;
 	res.send({t});
-});
-
-let peerServer = {};
-app.post('/api/setAsReceiver', (req, res) => {
-	let obj = req.body;
-	peerServer[obj.user] = obj.id;
 });
 
 app.post('/api/getLyrics', (req, res) => {
