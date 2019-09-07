@@ -49,14 +49,14 @@ export function changes(props){
 export function init(props){
 	let {db} = props;
 	let {updateState, getSuccess, getAttempted} = props.parent;
-	db.get('currentInfo').then(function(doc){
-		updateState({currentInfo: doc.info});
-		getSuccess('currentInfo');
-	}).catch(function(){
-		console.log('currentInfo not loaded');
-	}).then(function(){
-		getAttempted('currentInfo');
-	});
+	// db.get('currentInfo').then(function(doc){
+	// 	updateState({currentInfo: doc.info});
+	// 	getSuccess('currentInfo');
+	// }).catch(function(){
+	// 	console.log('currentInfo not loaded');
+	// }).then(function(){
+	// 	getAttempted('currentInfo');
+	// });
 	db.get('ItemLists').then(function (doc) {
 		if(doc.itemLists[0]){
 			db.get(doc.itemLists[0].id).then(function(doc2){

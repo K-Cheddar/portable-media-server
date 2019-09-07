@@ -177,16 +177,37 @@ class App extends Component {
     let sDatabase = localStorage.getItem("database");
     let sUploadPreset = localStorage.getItem("upload_preset");
 
+    fetch("api/heartbeat", {
+      method: "get",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+
+    setInterval(() => {
+      fetch("api/heartbeat", {
+        method: "get",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+    },45000)
+
     if (sLoggedIn === "true") this.setState({ isLoggedIn: true });
     else this.setState({ isLoggedIn: false });
-    if (sUser !== "null" && sUser !== null) this.setState({ user: sUser });
+    if (sUser !== "null" && sUser !== null) {
+      this.setState({ user: sUser });
+      this.firebaseCurrent(sUser)
+    } 
     if (sDatabase && sDatabase !== "null") {
       database = sDatabase;
     }
     if (sUploadPreset) this.setState({ upload_preset: sUploadPreset });
 
     this.init(database, true);
-    this.firebaseCurrent()
+ 
     let that = this;
     setTimeout(function () {
       let success = that.state.retrieved;
@@ -197,10 +218,13 @@ class App extends Component {
     }, 30000);
   }
 
-  firebaseCurrent = () => {
-    const reff = database.ref(`users/${this.state.user}`);
-    reff.on('value', (snap) => {this.setState({currentInfo: snap.val()})})
+  firebaseCurrent = (user) => {
+    const reff = database.ref(`users/${user}`);
+    reff.on('value', (snap) => {
+      this.setState({currentInfo: snap.val()})
+    })
   }
+
 
   addItem = item => {
     DBUpdater.addItem({ parent: this, item: item });
@@ -307,7 +331,7 @@ class App extends Component {
   getAttempted = type => {
     let { attempted, retrieved, remoteDB, db } = this.state;
     attempted[type] = true;
-    if (Object.keys(attempted).length >= 6) {
+    if (Object.keys(attempted).length >= 5) {
       if (!retrieved.finished) {
         if (navigator.onLine) {
           let that = this;
@@ -338,7 +362,7 @@ class App extends Component {
     let { retrieved } = this.state;
     retrieved[type] = true;
     //don't begin auto update until all values have been retrieved
-    if (Object.keys(retrieved).length >= 6) {
+    if (Object.keys(retrieved).length >= 5) {
       retrieved.finished = true;
       this.updateInterval = setInterval(this.update, 250); //auto save to database every second if update has occurred
       let that = this;
