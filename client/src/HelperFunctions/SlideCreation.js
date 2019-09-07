@@ -74,7 +74,7 @@ export function newSlide (props) {
 	};
 
 	if(type === 'Announcement')
-		obj.duration = 10;
+		obj.duration = 15;
 	if(type === 'Announcement Title')
 		obj.duration = 5;
 

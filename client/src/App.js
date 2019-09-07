@@ -811,7 +811,6 @@ class App extends Component {
                     {...props}
                     currentInfo={currentInfo}
                     backgrounds={backgrounds}
-                    setAsReceiver={this.setAsReceiver}
                   />
                 )}
               />
@@ -821,8 +820,6 @@ class App extends Component {
                     {...props}
                     isLoggedIn={isLoggedIn}
                     logout={this.logout}
-                    setAsReceiver={this.setAsReceiver}
-                    connectToReceiver={this.connectToReceiver}
                   />
                 )}
               />

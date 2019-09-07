@@ -33,8 +33,6 @@ class Presentation extends React.Component{
   }
 
   goFullScreen = () => {
-    if(this.props.type === 'remote')
-      this.props.setAsReceiver();
     let elem = document.getElementById("fullApp");
     if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
         if (elem.requestFullScreen) {
