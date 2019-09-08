@@ -21,6 +21,8 @@ import cloudinary from "cloudinary-core";
 import { HotKeys } from "react-hotkeys";
 import firebase from 'firebase';
 import * as SlideCreation from "./HelperFunctions/SlideCreation";
+import nkjv from './assets/nkjv.json';
+import nlt from './assets/nlt.json';
 
 PouchDB.plugin(require("pouchdb-upsert"));
 
@@ -176,24 +178,6 @@ class App extends Component {
     let sUser = localStorage.getItem("user");
     let sDatabase = localStorage.getItem("database");
     let sUploadPreset = localStorage.getItem("upload_preset");
-
-    fetch("api/heartbeat", {
-      method: "get",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    })
-
-    setInterval(() => {
-      fetch("api/heartbeat", {
-        method: "get",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
-    },45000)
 
     if (sLoggedIn === "true") this.setState({ isLoggedIn: true });
     else this.setState({ isLoggedIn: false });
@@ -716,6 +700,47 @@ class App extends Component {
     this.setState({ undoReady: u, redoReady: r });
   };
 
+  runBibleConvert = () => {
+    let newNLT = {...nkjv};
+    let sum = 0;
+    for (let i = 0; i < nkjv.books.length; ++i) {
+      let currentBook = nkjv.books[i];
+      if (currentBook.name === 'Psalm') {
+        currentBook.name = 'Psalms';
+      }
+      for (let j = 0; j < currentBook.chapters.length; ++j) {
+        let currentChapter = currentBook.chapters[j];
+        for (let k = 0; k < currentChapter.verses.length; ++k){
+          let currentVerse = currentChapter.verses[k];
+          let text = ""
+          try {
+            text = nlt[currentBook.name][j+1][k+1];
+          }
+          catch(err) {
+            console.log(currentBook.name, j + 1, k + 1)
+          }
+          
+          if(text === "See Footnote") {
+            currentVerse.text = '[Excluded From NLT]'
+          }
+          else {
+            currentVerse.text = text;
+          }
+        }
+      }
+    }
+    fetch("api/bible", {
+      method: "post",
+      body: JSON.stringify(nkjv),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+     
+    console.log(newNLT);
+  }
+
   updateItem = item => {
     ItemUpdate.updateItem({ item: item, parent: this });
   };
@@ -788,6 +813,7 @@ class App extends Component {
 
     return (
       <HotKeys handlers={this.handlers} keyMap={map}>
+        <button onClick={this.runBibleConvert}>Convert It</button>
         <div id="fullApp" style={style}>
           <Toolbar parent={this} formatBible={Overflow.formatBible} />
           {!retrieved.finished && <Loading retrieved={retrieved} />}

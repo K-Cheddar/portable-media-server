@@ -11,9 +11,11 @@ const h2p = require('html2plaintext');
 
 var bodyParser = require('body-parser');
 
+var fs = require('fs');
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
-app.use(bodyParser.json() );
+app.use(bodyParser.json({limit: '10mb', extended: true}) );
 app.use(express.json());
 
 app.use(cors());
@@ -55,6 +57,17 @@ app.get('/api/hello', (req, res) => {
 // 	}
 // 	console.log(status.users);
 // });
+
+app.post('/api/bible', (req, res) => {
+	let obj = req.body;
+	fs.writeFile('test.json', JSON.stringify(obj), function(err) {
+		if (err) {
+			console.log(err);
+		}
+	});
+
+	res.send({obj});
+});
 
 app.post('/api/currentInfo', (req, res) => {
 	let obj = req.body;

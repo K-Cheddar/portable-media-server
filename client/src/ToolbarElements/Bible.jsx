@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import kjv from '../assets/kjv';
+import nkjv from '../assets/nkjv';
+import niv from '../assets/niv';
+import nlt from '../assets/nlt';
 import {HotKeys} from 'react-hotkeys';
 import * as SlideCreation from '../HelperFunctions/SlideCreation';
 import playVerse from '../assets/playVerse.png';
@@ -27,7 +30,10 @@ export default class Bible extends Component {
       filteredVersesEnd: [],
       allBooks: [],
       allChapters: [],
-      allVerses: []
+      allVerses: [],
+      versions: ['kjv', 'nkjv', 'niv', 'nlt'],
+      version: 'kjv',
+      bibles: {kjv, nkjv, niv, nlt}
     }
     this.handlers = {
       'nextField': this.nextField,
@@ -39,25 +45,34 @@ export default class Bible extends Component {
     if(bibleWindow)
       bibleWindow.focus();
 
+    this.selectVersion('kjv');
+  }
+
+  selectVersion = (version) => {
+    const { bibles, bookSearch } = this.state;
+    console.log('version', version, 'Book', bookSearch)
     this.setState({
-      allBooks: kjv.books.map((e, index) => ({index: index, name: e.name})),
-      filteredBooks: kjv.books.map((e, index) => ({index: index, name: e.name})),
-      allChapters: kjv.books[0].chapters.map((e, index) => ({index: index, chapter: e.chapter})),
-      filteredChapters: kjv.books[0].chapters.map((e, index) => ({index: index, chapter: e.chapter})),
-      allVerses: kjv.books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
-      filteredVersesStart: kjv.books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
-      filteredVersesEnd: kjv.books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
+      version,
+      allBooks: bibles[version].books.map((e, index) => ({index: index, name: e.name})),
+      filteredBooks: bibles[version].books.map((e, index) => ({index: index, name: e.name})),
+      allChapters: bibles[version].books[0].chapters.map((e, index) => ({index: index, chapter: e.chapter})),
+      filteredChapters: bibles[version].books[0].chapters.map((e, index) => ({index: index, chapter: e.chapter})),
+      allVerses: bibles[version].books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
+      filteredVersesStart: bibles[version].books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
+      filteredVersesEnd: bibles[version].books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
+    }, () => {
+      this.filterBooks(bookSearch)
     })
   }
 
   createVersesItem = () => {
-    let {currentBook, currentChapter, startVerse, endVerse} = this.state;
-    let verses = kjv.books[currentBook].chapters[currentChapter].verses.filter(
+    let {currentBook, currentChapter, startVerse, endVerse, version, bibles} = this.state;
+    let verses = bibles[version].books[currentBook].chapters[currentChapter].verses.filter(
       e => (e.verse >= startVerse+1 && e.verse <= endVerse+1)
     );
 
     let verseNum = (endVerse !== startVerse) ? (startVerse+1)+ "-" + (endVerse+1) : (startVerse+1)
-    let name = kjv.books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
+    let name = bibles[version].books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
     let defaultBibleBackground = this.props.state.userSettings.defaultBibleBackground;
     let background = defaultBibleBackground ? defaultBibleBackground.name : '';
     let brightness = defaultBibleBackground ? defaultBibleBackground.brightness : 100;
@@ -78,11 +93,11 @@ export default class Bible extends Component {
     this.props.functions.addItem(item);
   }
   displayVerse = (index) => {
-    let {currentBook, currentChapter, startVerse} = this.state;
+    let {currentBook, currentChapter, startVerse, bibles, version} = this.state;
     let verseNum = startVerse + index;
-    let verse = [kjv.books[currentBook].chapters[currentChapter].verses[verseNum]]
+    let verse = [bibles[version].books[currentBook].chapters[currentChapter].verses[verseNum]]
 
-    let name = kjv.books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
+    let name = bibles[version].books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
     let defaultBibleBackground = this.props.state.userSettings.defaultBibleBackground;
     let background = defaultBibleBackground ? defaultBibleBackground.name : '';
     let brightness = defaultBibleBackground ? defaultBibleBackground.brightness : 100;
@@ -117,7 +132,8 @@ export default class Bible extends Component {
     this.setState({filteredBooks: filteredBooks})
   }
   filterChapters = (currentBook, chapterSearch) => {
-    let allChapters = kjv.books[currentBook].chapters.map((e, index) => ({index: index, chapter: e.chapter}));
+    const {bibles, version} = this.state;
+    let allChapters = bibles[version].books[currentBook].chapters.map((e, index) => ({index: index, chapter: e.chapter}));
     let filteredChapters = [];
     if(chapterSearch.length > 0)
       filteredChapters = allChapters.filter(ele => ele.chapter.toString().toLowerCase().includes(chapterSearch.toLowerCase()))
@@ -133,7 +149,8 @@ export default class Bible extends Component {
     this.setState({allChapters: allChapters, filteredChapters: filteredChapters})
   }
   filterVersesStart = (currentBook, currentChapter, verseStartSearch) => {
-    let allVerses = kjv.books[currentBook].chapters[currentChapter].verses.map((e, index) => ({index: index, verse: e}));
+    const {bibles, version} = this.state;
+    let allVerses = bibles[version].books[currentBook].chapters[currentChapter].verses.map((e, index) => ({index: index, verse: e}));
     let filteredVersesStart = [];
     if(verseStartSearch.length > 0)
       filteredVersesStart = allVerses.filter(ele => ele.verse.verse.toString().toLowerCase().includes(verseStartSearch.toLowerCase()))
@@ -148,7 +165,8 @@ export default class Bible extends Component {
     this.setState({allVerses: allVerses, filteredVersesStart: filteredVersesStart})
   }
   filterVersesEnd = (currentBook, currentChapter, verseEndSearch) => {
-    let allVerses = kjv.books[currentBook].chapters[currentChapter].verses.map((e, index) => ({index: index, verse: e}));
+    const {bibles, version} = this.state;
+    let allVerses = bibles[version].books[currentBook].chapters[currentChapter].verses.map((e, index) => ({index: index, verse: e}));
     let filteredVersesEnd = [];
     if(verseEndSearch.length > 0)
       filteredVersesEnd = allVerses.filter(ele => ele.verse.verse.toString().toLowerCase().includes(verseEndSearch.toLowerCase()))
@@ -228,7 +246,7 @@ export default class Bible extends Component {
     let {currentBook, currentChapter, startVerse, endVerse,
       bookSearch, chapterSearch, verseStartSearch, verseEndSearch,
       filteredBooks, filteredChapters, filteredVersesStart, filteredVersesEnd,
-      allVerses, allBooks} = this.state;
+      allVerses, allBooks, version} = this.state;
 
     let {freeze, backgrounds, currentInfo} = this.props.state;
     let {toggleFreeze} = this.props.functions;
@@ -323,6 +341,12 @@ export default class Bible extends Component {
       <HotKeys handlers={this.handlers} tabIndex="-1" id='bibleWindow'>
           <div style={{position:'relative', height: '75vh', backgroundColor:"#383838",
             margin: '1vh 0', color: 'white'}}>
+              <select value={version} onChange={ (e) => this.selectVersion(e.target.value)}>
+                <option value='kjv'>King James Version</option>
+                <option value='nkjv'>New King James Version</option>
+                <option value='niv'>New International Version</option>
+                <option value='nlt'>New Living Translation</option>
+              </select>
             <div style={{display:'flex'}}>
               <div style={{display: 'flex', width:'27vw', height:'70vh',
                 fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
