@@ -95,7 +95,7 @@ class Presentation extends React.Component{
   }
 
   render() {
-    let {backgrounds, type, currentInfo} = this.props;
+    let {backgrounds, type, currentInfo = {}} = this.props;
     let {localSlide, localTime, width, height, fullScreen} = this.state;
     let slide;
 

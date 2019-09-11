@@ -205,7 +205,9 @@ class App extends Component {
   firebaseCurrent = (user) => {
     const reff = database.ref(`users/${user}`);
     reff.on('value', (snap) => {
-      this.setState({currentInfo: snap.val()})
+      if (snap.val()) {
+        this.setState({currentInfo: snap.val()})
+      }
     })
   }
 
@@ -794,7 +796,7 @@ class App extends Component {
   };
 
   render() {
-    let { backgrounds, currentInfo, isLoggedIn, retrieved } = this.state;
+    let { backgrounds, currentInfo = {}, isLoggedIn, retrieved } = this.state;
 
     let style = {
       height: "100vh",
@@ -813,7 +815,6 @@ class App extends Component {
 
     return (
       <HotKeys handlers={this.handlers} keyMap={map}>
-        <button onClick={this.runBibleConvert}>Convert It</button>
         <div id="fullApp" style={style}>
           <Toolbar parent={this} formatBible={Overflow.formatBible} />
           {!retrieved.finished && <Loading retrieved={retrieved} />}

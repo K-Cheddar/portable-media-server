@@ -28,22 +28,22 @@ export function changes(props){
 		// }
 
 	});
-	let dbchanges = remoteDB.changes({
-		since: 'now',
-		live: true,
-		include_docs: true,
-		timeout: false
-	}).on('change', function(change) {
-		if(change.id === 'currentInfo'){
-			if(getTime() < change.doc.info.time)
-				updateState({currentInfo: change.doc.info});
-		}
-	}).on('error', function(){
-		dbchanges.cancel();
-		setTimeout(function(){
-			changes(props);
-		},2500);
-	});
+	// let dbchanges = remoteDB.changes({
+	// 	since: 'now',
+	// 	live: true,
+	// 	include_docs: true,
+	// 	timeout: false
+	// }).on('change', function(change) {
+	// 	if(change.id === 'currentInfo'){
+	// 		if(getTime() < change.doc.info.time)
+	// 			updateState({currentInfo: change.doc.info});
+	// 	}
+	// }).on('error', function(){
+	// 	dbchanges.cancel();
+	// 	setTimeout(function(){
+	// 		changes(props);
+	// 	},2500);
+	// });
 }
 
 export function init(props){
