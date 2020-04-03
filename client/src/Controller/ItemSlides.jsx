@@ -126,7 +126,7 @@ class ItemSlides extends React.Component{
     if(item.type === 'announcements'){
       slides = item.slides;
       let fontSize = slides[slides.length-1].boxes[2].fontSize;
-      slides.push(SlideCreation.newSlide({type: "Announcement", textFontSize: fontSize}))
+      slides.push(SlideCreation.newSlide({type: "Announcement", fontSize}))
     }
     if(item.type === 'image'){
       slides = item.slides;
@@ -294,7 +294,7 @@ class ItemSlides extends React.Component{
 
     let style;
 
-    let widthNumber = freeSlides ? 34/slidesPerRow : 37/slidesPerRow
+    let widthNumber = freeSlides || item.type === 'bible' ? 34/slidesPerRow : 37/slidesPerRow
     let width = widthNumber + "vw"
     let height = (widthNumber*.5625) + "vw"
     let titleSize = .5+ 1.25/slidesPerRow + "vw"
@@ -318,7 +318,7 @@ class ItemSlides extends React.Component{
         let deleteEnable = false;
         if(item.type === 'image')
           deleteEnable = item.slides.length > 1;
-        if(item.type === 'announcements')
+        if(item.type === 'announcements' || item.type === 'bible')
           deleteEnable = index+i > 1 || index > 0;
         if(selected){
           style = slideSelectedStyle;

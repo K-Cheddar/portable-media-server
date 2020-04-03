@@ -43,7 +43,7 @@ export default class SongSectionsArea extends Component{
     //   index--;
     if(name === type)
       index = formattedLyrics.length-1;
-    console.log(element.type, type, sectionIndex, index);
+    // console.log(element.type, type, sectionIndex, index);
     formattedLyrics.splice(sectionIndex, 1);
     formattedLyrics.splice(index, 0, element);
     this.props.updateSections({formattedLyrics: formattedLyrics, index: index});

@@ -50,7 +50,7 @@ export default class Bible extends Component {
 
   selectVersion = (version) => {
     const { bibles, bookSearch } = this.state;
-    console.log('version', version, 'Book', bookSearch)
+    // console.log('version', version, 'Book', bookSearch)
     this.setState({
       version,
       allBooks: bibles[version].books.map((e, index) => ({index: index, name: e.name})),
@@ -143,7 +143,7 @@ export default class Bible extends Component {
     let index = -1;
     if(element){
       index = allChapters.findIndex(e => e.chapter === element.chapter)
-      console.log("chapter", index)
+      // console.log("chapter", index)
       this.selectChapter(index);
     }
     this.setState({allChapters: allChapters, filteredChapters: filteredChapters})
@@ -182,12 +182,12 @@ export default class Bible extends Component {
   }
 
   nextField = () => {
-    console.log(document.activeElement);
+    // console.log(document.activeElement);
   }
 
   selectBook = (index) => {
     let {chapterSearch, verseStartSearch, verseEndSearch} = this.state;
-    console.log(index, chapterSearch)
+    // console.log(index, chapterSearch)
     this.filterChapters(index, chapterSearch);
     this.filterVersesStart(index, 0, verseStartSearch);
     this.filterVersesEnd(index, 0, verseEndSearch);
