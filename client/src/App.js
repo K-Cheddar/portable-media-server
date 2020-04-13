@@ -624,11 +624,11 @@ class App extends Component {
   updateCurrent = props => {
     if (this.state.freeze) return;
 
-    let { slide, image } = props;
+    let { slide, image, isBible = false, name = '' } = props;
 
     let date = new Date();
     let time = date.getTime();
-    let update = { time: time };
+    let update = { time, isBible, name };
     if (image || image === "")
       update.slide = { boxes: [{ words: "", background: image, style: {} }] };
     else update.slide = JSON.parse(JSON.stringify(slide));

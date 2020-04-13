@@ -82,7 +82,7 @@ export default class Bible extends Component {
       "slides": [
         SlideCreation.newSlide({type: "Title", fontSize: 4.5, words: name,
           background: background, brightness: brightness}),
-        SlideCreation.newSlide({type: "Verse", fontSize: 2.5,
+        SlideCreation.newSlide({type: "Verse", fontSize: 2.5, name, isBible: true,
           background: background, brightness: brightness})
       ],
       "type": "bible",
@@ -97,7 +97,7 @@ export default class Bible extends Component {
     let verseNum = startVerse + index;
     let verse = [bibles[version].books[currentBook].chapters[currentChapter].verses[verseNum]]
 
-    let name = bibles[version].books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
+    let name = bibles[version].books[currentBook].name + " " + (currentChapter+1) + ":" + (verseNum + 1)
     let defaultBibleBackground = this.props.state.userSettings.defaultBibleBackground;
     let background = defaultBibleBackground ? defaultBibleBackground.name : '';
     let brightness = defaultBibleBackground ? defaultBibleBackground.brightness : 100;
@@ -114,7 +114,7 @@ export default class Bible extends Component {
     };
 
     item = this.props.formatBible(item, 'fit', verse);
-    this.props.functions.updateCurrent({slide: item.slides[1], displayDirect: true});
+    this.props.functions.updateCurrent({slide: item.slides[1], displayDirect: true, isBible: true, name: name});
   }
 
   filterBooks = (bookSearch) => {
