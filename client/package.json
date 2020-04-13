@@ -6,7 +6,7 @@
   "dependencies": {
     "cloudinary-core": "^2.5.0",
     "eslint": "^6.3.0",
-    "npm": "^6.5.0",
+    "npm": "^6.13.4",
     "pouchdb": "^7.0.0",
     "pouchdb-upsert": "^2.2.0",
     "rc-slider": "^8.6.4",
