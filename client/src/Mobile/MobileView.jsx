@@ -8,7 +8,6 @@ import MobileListChanger from "./MobileListChanger";
 
 import on from "../assets/on.png";
 import off from "../assets/off.png";
-import connected from "../assets/connected.png";
 
 export default class MobileView extends Component {
   constructor() {
@@ -60,7 +59,6 @@ export default class MobileView extends Component {
       itemLists,
       selectedItemList,
       isLoggedIn,
-      isSender,
       boxIndex
     } = this.props.parent.state;
 
@@ -81,13 +79,7 @@ export default class MobileView extends Component {
       fontSize: "calc(8px + 0.75vw)",
       color: "black"
     };
-    let connectedIcon = {
-      marginLeft: "0.5vw",
-      width: "5vw",
-      height: "3.85vw",
-      margin: "auto",
-      display: "block"
-    };
+
     let menuStyle = {
       backgroundColor: "#383838",
       position: "absolute",
@@ -127,12 +119,6 @@ export default class MobileView extends Component {
             >
               Home
             </button>
-            {/*{(item.type === 'song') && <button style={menuItem}
-                onClick={this.openArrangeLyrics}>Arrange Lyrics</button>}
-                <button style={menuItem} onClick={connectToReceiver}> Connect To Receiver </button>*/}
-            {isSender && (
-              <img style={connectedIcon} alt="connected" src={connected} />
-            )}
             {!isLoggedIn && (
               <Link to="/login">
                 <button style={menuItem}>Login</button>

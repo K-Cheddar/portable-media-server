@@ -19,8 +19,10 @@ import Toolbar from "./ToolbarElements/ToolBar";
 import Loading from "./Loading";
 import cloudinary from "cloudinary-core";
 import { HotKeys } from "react-hotkeys";
+import firebase from 'firebase';
 import * as SlideCreation from "./HelperFunctions/SlideCreation";
-import Peer from "peerjs";
+import nkjv from './assets/nkjv.json';
+import nlt from './assets/nlt.json';
 
 PouchDB.plugin(require("pouchdb-upsert"));
 
@@ -31,8 +33,22 @@ var cloud = new cloudinary.Cloudinary({
   secure: true
 });
 
-var peer;
 var conn;
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD8JdTmUVvAhQjBYnt59dOUqucnWiRMyMk",
+  authDomain: "portable-media.firebaseapp.com",
+  databaseURL: "https://portable-media.firebaseio.com",
+  projectId: "portable-media",
+  storageBucket: "portable-media.appspot.com",
+  messagingSenderId: "456418139697",
+  appId: "1:456418139697:web:02dabb94557dbf1dc07f10"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+var database = firebase.database();
+console.log('Data', database)
 
 // let requestedBytes = 1024*1024*10; // 10MB
 //  window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
@@ -118,9 +134,6 @@ const initialState = {
   upload_preset: "bpqu4ma5",
   retrieved: {},
   attempted: {},
-  peerID: "",
-  isReciever: false,
-  isSender: false,
   userSettings: {},
   mode: "edit",
   undoReady: false,
@@ -148,7 +161,6 @@ class App extends Component {
 
     this.updateInterval = null;
     this.connectorInterval = null;
-    this.reconnectPeer = null;
     this.sync = null;
 
     this.handlers = {
@@ -167,33 +179,19 @@ class App extends Component {
     let sDatabase = localStorage.getItem("database");
     let sUploadPreset = localStorage.getItem("upload_preset");
 
-    fetch("api/heartbeat", {
-      method: "get",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    })
-
-    setInterval(() => {
-      fetch("api/heartbeat", {
-        method: "get",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
-    },45000)
-
     if (sLoggedIn === "true") this.setState({ isLoggedIn: true });
     else this.setState({ isLoggedIn: false });
-    if (sUser !== "null" && sUser !== null) this.setState({ user: sUser });
+    if (sUser !== "null" && sUser !== null) {
+      this.setState({ user: sUser });
+      this.firebaseCurrent(sUser)
+    } 
     if (sDatabase && sDatabase !== "null") {
       database = sDatabase;
     }
     if (sUploadPreset) this.setState({ upload_preset: sUploadPreset });
 
     this.init(database, true);
+ 
     let that = this;
     setTimeout(function () {
       let success = that.state.retrieved;
@@ -203,6 +201,16 @@ class App extends Component {
       }
     }, 30000);
   }
+
+  firebaseCurrent = (user) => {
+    const reff = database.ref(`users/${user}`);
+    reff.on('value', (snap) => {
+      if (snap.val()) {
+        this.setState({currentInfo: snap.val()})
+      }
+    })
+  }
+
 
   addItem = item => {
     DBUpdater.addItem({ parent: this, item: item });
@@ -235,50 +243,6 @@ class App extends Component {
       background: background
     };
     DBUpdater.addItem({ parent: this, item: item });
-  };
-
-  connectToReceiver = () => {
-    let { user } = this.state;
-    let that = this;
-    clearTimeout(this.reconnectPeer);
-
-    peer = new Peer({
-      host: window.location.hostname,
-      port:
-        window.location.port ||
-        (window.location.protocol === "https:" ? 443 : 80),
-      path: "/peerjs"
-    });
-    peer.on("open", function (id) {
-      let obj = { user: user };
-      fetch("api/getReceiverId", {
-        method: "post",
-        body: JSON.stringify(obj),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (res) {
-          if (res.serverID === undefined) {
-            return;
-          }
-          conn = peer.connect(res.serverID);
-          conn.on("open", function () {
-            // console.log('Connection open function running');
-            that.setState({ isSender: "connected", isReciever: false });
-          });
-          conn.on("error", function (error) {
-            that.setState({ isSender: "disconnected" });
-            that.reconnectPeer = setTimeout(function () {
-              that.connectToReceiver();
-            }, 5000);
-          });
-        });
-    });
   };
 
   DBReplicate = (db, remoteDB, localDB) => {
@@ -353,7 +317,7 @@ class App extends Component {
   getAttempted = type => {
     let { attempted, retrieved, remoteDB, db } = this.state;
     attempted[type] = true;
-    if (Object.keys(attempted).length >= 6) {
+    if (Object.keys(attempted).length >= 5) {
       if (!retrieved.finished) {
         if (navigator.onLine) {
           let that = this;
@@ -384,7 +348,7 @@ class App extends Component {
     let { retrieved } = this.state;
     retrieved[type] = true;
     //don't begin auto update until all values have been retrieved
-    if (Object.keys(retrieved).length >= 6) {
+    if (Object.keys(retrieved).length >= 5) {
       retrieved.finished = true;
       this.updateInterval = setInterval(this.update, 250); //auto save to database every second if update has occurred
       let that = this;
@@ -571,44 +535,6 @@ class App extends Component {
     }
   };
 
-  setAsReceiver = () => {
-    let { user } = this.state;
-    let that = this;
-    clearTimeout(this.reconnectPeer);
-
-    peer = new Peer({
-      host: window.location.hostname,
-      port:
-        window.location.port ||
-        (window.location.protocol === "https:" ? 443 : 80),
-      path: "/peerjs"
-    });
-    peer.on("open", function (id) {
-      that.setState({ peerID: id, isReciever: "connected", isSender: false });
-      let obj = { user: user, id: id };
-      fetch("api/setAsReceiver", {
-        method: "post",
-        body: JSON.stringify(obj),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      });
-    });
-    peer.on("connection", function (serverConn) {
-      conn = serverConn;
-      conn.on("data", function (data) {
-        that.setState({ currentInfo: data });
-      });
-      conn.on("error", function (error) {
-        that.setState({ isReciever: "disconnected" });
-        that.reconnectPeer = setTimeout(function () {
-          that.setAsReceiver();
-        }, 3000);
-      });
-    });
-  };
-
   setSlideBackground = background => {
     SlideUpdate.setSlideBackground({ background: background, parent: this });
   };
@@ -698,11 +624,11 @@ class App extends Component {
   updateCurrent = props => {
     if (this.state.freeze) return;
 
-    let { slide, image } = props;
+    let { slide, image, isBible = false, name = '' } = props;
 
     let date = new Date();
     let time = date.getTime();
-    let update = { time: time };
+    let update = { time, isBible, name };
     if (image || image === "")
       update.slide = { boxes: [{ words: "", background: image, style: {} }] };
     else update.slide = JSON.parse(JSON.stringify(slide));
@@ -711,7 +637,9 @@ class App extends Component {
 
     if (conn) conn.send(update);
     this.setState({ currentInfo: update });
-    DBUpdater.updateCurrent({ db: this.state.remoteDB, obj: update });
+    // DBUpdater.updateCurrent({ db: this.state.remoteDB, obj: update });
+    console.log('update', update, ...update)
+    database.ref(`users/${this.state.user}`).set({...update});
     localStorage.setItem("presentation", JSON.stringify(update));
   };
 
@@ -774,6 +702,47 @@ class App extends Component {
     this.setState({ undoReady: u, redoReady: r });
   };
 
+  runBibleConvert = () => {
+    let newNLT = {...nkjv};
+    let sum = 0;
+    for (let i = 0; i < nkjv.books.length; ++i) {
+      let currentBook = nkjv.books[i];
+      if (currentBook.name === 'Psalm') {
+        currentBook.name = 'Psalms';
+      }
+      for (let j = 0; j < currentBook.chapters.length; ++j) {
+        let currentChapter = currentBook.chapters[j];
+        for (let k = 0; k < currentChapter.verses.length; ++k){
+          let currentVerse = currentChapter.verses[k];
+          let text = ""
+          try {
+            text = nlt[currentBook.name][j+1][k+1];
+          }
+          catch(err) {
+            console.log(currentBook.name, j + 1, k + 1)
+          }
+          
+          if(text === "See Footnote") {
+            currentVerse.text = '[Excluded From NLT]'
+          }
+          else {
+            currentVerse.text = text;
+          }
+        }
+      }
+    }
+    fetch("api/bible", {
+      method: "post",
+      body: JSON.stringify(nkjv),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+     
+    console.log(newNLT);
+  }
+
   updateItem = item => {
     ItemUpdate.updateItem({ item: item, parent: this });
   };
@@ -827,7 +796,7 @@ class App extends Component {
   };
 
   render() {
-    let { backgrounds, currentInfo, isLoggedIn, retrieved } = this.state;
+    let { backgrounds, currentInfo = {}, isLoggedIn, retrieved } = this.state;
 
     let style = {
       height: "100vh",
@@ -893,7 +862,6 @@ class App extends Component {
                     {...props}
                     currentInfo={currentInfo}
                     backgrounds={backgrounds}
-                    setAsReceiver={this.setAsReceiver}
                   />
                 )}
               />
@@ -903,8 +871,6 @@ class App extends Component {
                     {...props}
                     isLoggedIn={isLoggedIn}
                     logout={this.logout}
-                    setAsReceiver={this.setAsReceiver}
-                    connectToReceiver={this.connectToReceiver}
                   />
                 )}
               />
