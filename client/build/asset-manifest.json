@@ -1,8 +1,8 @@
 {
   "main.css": "static/css/main.4a4041d1.css",
   "main.css.map": "static/css/main.4a4041d1.css.map",
-  "main.js": "static/js/main.defa94e5.js",
-  "main.js.map": "static/js/main.defa94e5.js.map",
+  "main.js": "static/js/main.36a791a1.js",
+  "main.js.map": "static/js/main.36a791a1.js.map",
   "static\\media\\addItem.png": "static/media/addItem.be7b05dc.png",
   "static\\media\\allItemsIcon.png": "static/media/allItemsIcon.7c3d4167.png",
   "static\\media\\announcementsIcon.png": "static/media/announcementsIcon.30ad16e3.png",
@@ -16,7 +16,6 @@
   "static\\media\\color-picker-close.png": "static/media/color-picker-close.0d8934b5.png",
   "static\\media\\color-picker.png": "static/media/color-picker.5ea115d3.png",
   "static\\media\\deleteX.png": "static/media/deleteX.da6302ed.png",
-  "static\\media\\disconnected.png": "static/media/disconnected.5662fe99.png",
   "static\\media\\duplicate.png": "static/media/duplicate.31a866aa.png",
   "static\\media\\edit.png": "static/media/edit.0dd83694.png",
   "static\\media\\expandDown.png": "static/media/expandDown.7dfc39db.png",
