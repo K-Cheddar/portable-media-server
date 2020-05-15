@@ -137,7 +137,8 @@ const initialState = {
   userSettings: {},
   mode: "edit",
   undoReady: false,
-  redoReady: false
+  redoReady: false,
+  overlayInfo: {}
 };
 
 let undoHistory = [];
@@ -203,12 +204,23 @@ class App extends Component {
   }
 
   firebaseCurrent = (user) => {
-    const reff = database.ref(`users/${user}`);
+    const reff = database.ref(`users/${user}/presentation`);
     reff.on('value', (snap) => {
       if (snap.val()) {
         this.setState({currentInfo: snap.val()})
       }
     })
+    const reff2 = database.ref(`users/${user}/overlay`);
+    reff2.on('value', (snap) => {
+      if (snap.val()) {
+        this.setState({overlayInfo: snap.val()})
+      }
+    })
+  }
+
+  firebaseUpdateOverlay = (info) => {
+    this.setState({overlayInfo: info})
+    database.ref(`users/${this.state.user}/overlay`).set({...info});
   }
 
 
@@ -639,7 +651,7 @@ class App extends Component {
     this.setState({ currentInfo: update });
     // DBUpdater.updateCurrent({ db: this.state.remoteDB, obj: update });
     console.log('update', update, ...update)
-    database.ref(`users/${this.state.user}`).set({...update});
+    database.ref(`users/${this.state.user}/presentation`).set({...update});
     localStorage.setItem("presentation", JSON.stringify(update));
   };
 
@@ -816,7 +828,7 @@ class App extends Component {
     return (
       <HotKeys handlers={this.handlers} keyMap={map}>
         <div id="fullApp" style={style}>
-          <Toolbar parent={this} formatBible={Overflow.formatBible} />
+          <Toolbar database={database} parent={this} formatBible={Overflow.formatBible} />
           {!retrieved.finished && <Loading retrieved={retrieved} />}
           <div>
             {/* Route components are rendered if the path prop matches the current URL */}

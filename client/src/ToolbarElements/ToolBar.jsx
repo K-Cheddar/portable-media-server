@@ -6,12 +6,14 @@ import UserSettings from './UserSettings';
 import TextBoxEditor from './TextBoxEditor';
 import ProjectorControl from './ProjectorControl'
 import AllItems from './AllItems';
+import LiveStreamingHelper from './LiveStreamingHelper';
 
 import open from '../assets/open.png';
 import bibleIcon from '../assets/bibleIcon.png'
 import songIcon from '../assets/songIcon.png'
 import allItemsIcon from '../assets/allItemsIcon.png';
 import timerIcon from '../assets/timerIcon.png'
+import liveStreamingIcon from '../assets/live_streaming_icon.png'
 import announcementsIcon from '../assets/announcementsIcon.png'
 import undoButton from '../assets/undo.png'
 import redoButton from '../assets/redo.png'
@@ -24,9 +26,18 @@ export default class Toolbar extends Component {
       tab: "Existing",
       menuMousedOver: false,
       itemListsOpen: false,
-      settingsOpen: false,
-      allItemsOpen: false
+      settingsOpen: false, 
+      allItemsOpen: false,
+      liveStreamHelper: false
     }
+  }
+
+  openLiveStreamHelper = () => {
+    this.setState({liveStreamHelper: true})
+  }
+
+  closeLiveStreamHelper = () => {
+    this.setState({liveStreamHelper: false})
   }
 
   openAllItems = (tab) => {
@@ -73,14 +84,14 @@ export default class Toolbar extends Component {
 
   render(){
 
-    let {formatBible} = this.props;
+    let {formatBible, database} = this.props;
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish} = this.props.parent; //updateItemStructure
+        updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish, firebaseUpdateOverlay} = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn,
       allItemLists, needsUpdate, userSettings, backgrounds, mode,
-      undoReady, redoReady, boxIndex} = this.props.parent.state;
-    let {tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen} = this.state;
+      undoReady, redoReady, boxIndex, overlayInfo} = this.props.parent.state;
+    let {tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen, liveStreamHelper} = this.state;
 
     let menuItem = {
       display:'inline-block', width:'90%', padding: '2.5%', backgroundColor:'#fff', margin: '5%',
@@ -200,6 +211,14 @@ export default class Toolbar extends Component {
                    />
                  <div>Timer</div>
               </div>
+              <div onClick={ () => this.openLiveStreamHelper()} className='imgButton'
+                style={{fontSize: '0.65vw', height: '4.5vh', marginRight:'0.5vw', textAlign: 'center'}}>
+                <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
+                   alt="liveStreamingIcon" src={liveStreamingIcon}
+                   />
+                 <div>LS Helper</div>
+              </div>
             </div>
             </div>}
           </li>
@@ -237,6 +256,7 @@ export default class Toolbar extends Component {
         />}
         {settingsOpen && <UserSettings state={this.props.parent.state} close={this.closeSettings}
         updateUserSetting={updateUserSetting}/>}
+        {liveStreamHelper && <LiveStreamingHelper database={database} close={this.closeLiveStreamHelper} firebaseUpdateOverlay={firebaseUpdateOverlay} overlayInfo={overlayInfo}/>}
         {allItemsOpen && <AllItems close={this.closeAllItems} state={this.props.parent.state}
         functions={this.props.parent} tab={tab} formatBible={formatBible}/>}
       </div>
