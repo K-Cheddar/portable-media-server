@@ -138,7 +138,9 @@ const initialState = {
   mode: "edit",
   undoReady: false,
   redoReady: false,
-  overlayInfo: {}
+  overlayInfo: {},
+  overlayQueue: [],
+  bibleSelection: {}
 };
 
 let undoHistory = [];
@@ -218,6 +220,8 @@ class App extends Component {
     })
   }
 
+  setOverlayQueue = (overlayQueue) => this.setState({overlayQueue})
+ 
   firebaseUpdateOverlay = (info) => {
     this.setState({overlayInfo: info})
     database.ref(`users/${this.state.user}/overlay`).set({...info});
@@ -624,6 +628,10 @@ class App extends Component {
       }
     }
   };
+
+  updateBibleSelection = (bibleSelection) => {
+    this.setState({bibleSelection})
+  }
 
   updateBoxPosition = position => {
     Formatter.updateBoxPosition({ position: position, parent: this });

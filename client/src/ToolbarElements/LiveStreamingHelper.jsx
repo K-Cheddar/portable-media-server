@@ -1,5 +1,6 @@
 import React from 'react';
 import {HotKeys} from 'react-hotkeys';
+import deleteX from '../assets/deleteX.png';
 import closeIcon from '../assets/closeIcon.png'
 import checkOn from '../assets/checkOn.png';
 
@@ -27,6 +28,18 @@ const presets = {
     subHeading: 'Access Code: 295041786',
     duration: 20,
     type: 'stick-to-bottom'
+  },
+  scripture: {
+    heading: '',
+    subHeading: 'Scripture Reading',
+    duration: 7,
+    type: 'floating'
+  },
+  prayer: {
+    heading: '',
+    subHeading: 'Prayer',
+    duration: 7,
+    type: 'floating'
   }
 }
 
@@ -50,6 +63,26 @@ export default class LiveStreamingHelper extends React.Component{
     const presetVal = presets[val];
     this.setState({...presetVal})
   }
+  
+  addToQueue = () => {
+    const {setOverlayQueue, overlayQueue} = this.props;
+    const queue = [...overlayQueue];
+    queue.push(this.state);
+    setOverlayQueue(queue);
+  }
+
+  removeFromQueue = (index) => {
+    const {setOverlayQueue, overlayQueue} = this.props;
+    const queue = [...overlayQueue];
+    queue.splice(index, 1)
+    setOverlayQueue(queue);
+  }
+
+  getFromQueue = (index) => {
+    const {overlayQueue} = this.props;
+    const queue = [...overlayQueue];
+    this.setState({...queue[index]})
+  }
 
   sendOverlay = () => {
     const { firebaseUpdateOverlay } = this.props;
@@ -67,7 +100,7 @@ export default class LiveStreamingHelper extends React.Component{
   }
   
 	render() {
-    const {close, database} = this.props;
+    const {close, overlayQueue} = this.props;
     const {heading, subHeading, type, duration, sent} = this.state
 
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
@@ -90,7 +123,7 @@ export default class LiveStreamingHelper extends React.Component{
     }
     
     const previewStyle = {
-      width: '24vw', height: '13.5vw', border: '2px solid black', position: 'relative', margin: '16px'
+      width: '24vw', height: '13.5vw', border: '2px solid black', position: 'relative', margin: '16px 0'
     }
 
     const stickyStyle = {
@@ -124,52 +157,78 @@ export default class LiveStreamingHelper extends React.Component{
 
       )
     }
+
+    const queue = overlayQueue.map(({heading}, index) => {
+      return (
+        <div style={{display: 'flex'}} key={heading+index}>
+          <button style={buttonStyle} onClick={() => this.getFromQueue(index)} >{heading}</button>
+          <img className='imgButton' style={{marginLeft:'1vw', width:'1.5vw', height:'1.5vw'}}
+          onClick={ () => this.removeFromQueue(index)}
+          alt="delete" src={deleteX}/>
+        </div>
+      )
+    })
     
 		return (
       <HotKeys handlers={this.handlers} style={windowBackground}>
         <div style={style}>
-        <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw',
-              padding: '0.25vh 0.25vw', position: 'absolute', right: '1vw'}}
-               alt="closeIcon" src={closeIcon}
-              onClick={close}
-              />
-        <div style={{marginBottom: '16px', fontSize: '110%'}}>Send Overlay To Stream</div>
-				<div>
-					<div>
-						<div>Heading:</div>
-						<input style={{width: '16vw'}} type="text" value={heading} onChange={(e) => this.setState({heading: e.target.value})}/>
-					</div>
-					<div>
-						<div>Sub Heading:</div>
-						<input style={{width: '16vw'}} type="text" value={subHeading} onChange={(e) => this.setState({subHeading: e.target.value})}/>
-					</div>
-					<div>
-						<div>Type</div>
-						<button style={{...buttonStyle, ...stickyActive && buttonActiveStyle}} onClick={() => this.setState({type: 'stick-to-bottom'})} disabled={stickyActive} >Stick To Bottom</button>
-						<button style={{...buttonStyle, ...floatingActive && buttonActiveStyle}} onClick={() => this.setState({type: 'floating'})} disabled={floatingActive} >Floating</button>
-					</div>
-					<div>
-						<div>Duration</div>
-						<input style={{width: '32px'}} type='number' value={duration} onChange={(e) => this.setState({duration: e.target.value})}/>
-					</div>
-				</div>
-        <div></div>
-				<Preview/>
-				<div style={{display: 'flex'}}>
-					<button style={buttonStyle} disabled={sent} onClick={this.sendOverlay} >Send</button>
+          <div>
           <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw',
-            padding: '0.25vh 0.25vw', visibility: sent ? 'visible' : 'hidden'}}
-              alt="checkOn" src={checkOn} />
-					<button style={buttonStyle} onClick={this.clearOverlay} >Clear Overlay</button>
-				</div>
-        <div style={{margin: '32px 0', borderTop: '2px solid black'}}>
-          <div style={{padding: '16px'}}>Presets</div>
+                padding: '0.25vh 0.25vw', position: 'absolute', right: '1vw'}}
+                alt="closeIcon" src={closeIcon}
+                onClick={close}
+                />
+          <div style={{marginBottom: '16px', fontSize: '110%'}}>Send Overlay To Stream</div>
           <div style={{display: 'flex'}}>
-            <button style={buttonStyle} onClick={() => this.sendPreset('pastorRose')} >Pastor Rose</button>
-            <button style={buttonStyle} onClick={() => this.sendPreset('pastorBinns')} >Pastor Binns</button>
-            <button style={buttonStyle} onClick={() => this.sendPreset('elderHamilton')} >Elder Hamilton</button>
-            <button style={buttonStyle} onClick={() => this.sendPreset('callIn')} >Call In</button>
+            <div>
+            <div>
+              <div>Heading:</div>
+              <input style={{width: '16vw'}} type="text" value={heading} onChange={(e) => this.setState({heading: e.target.value})}/>
+            </div>
+            <div>
+              <div>Sub Heading:</div>
+              <input style={{width: '16vw'}} type="text" value={subHeading} onChange={(e) => this.setState({subHeading: e.target.value})}/>
+            </div>
+            <div>
+              <div>Type</div>
+              <button style={{...buttonStyle, ...stickyActive && buttonActiveStyle}} onClick={() => this.setState({type: 'stick-to-bottom'})} disabled={stickyActive} >Stick To Bottom</button>
+              <button style={{...buttonStyle, ...floatingActive && buttonActiveStyle}} onClick={() => this.setState({type: 'floating'})} disabled={floatingActive} >Floating</button>
+            </div>
+            <div>
+              <div>Duration</div>
+              <input style={{width: '32px'}} type='number' value={duration} onChange={(e) => this.setState({duration: e.target.value})}/>
+            </div>
+            <button style={{...buttonStyle, marginTop: '32px'}} disabled={sent} onClick={this.addToQueue} >Add to Queue</button>
+            </div>
+            <div>
+             <Preview/>
+             <div style={{display: 'flex'}}>
+            <button style={buttonStyle} disabled={sent} onClick={this.sendOverlay} >Send</button>
+            <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw',
+              padding: '0.25vh 0.25vw', visibility: sent ? 'visible' : 'hidden'}}
+                alt="checkOn" src={checkOn} />
+            <button style={buttonStyle} onClick={this.clearOverlay} >Clear Overlay</button>
           </div>
+            </div>
+
+          </div>
+          <div style={{margin: '32px 0', borderTop: '2px solid black'}}>
+            <div style={{padding: '16px'}}>Presets</div>
+            <div style={{display: 'flex'}}>
+              <button style={buttonStyle} onClick={() => this.sendPreset('pastorRose')} >Pastor Rose</button>
+              <button style={buttonStyle} onClick={() => this.sendPreset('pastorBinns')} >Pastor Binns</button>
+              <button style={buttonStyle} onClick={() => this.sendPreset('elderHamilton')} >Elder Hamilton</button>
+              <button style={buttonStyle} onClick={() => this.sendPreset('callIn')} >Call In</button>
+            </div>
+            <div style={{display: 'flex', marginTop: '16px'}}>
+              <button style={buttonStyle} onClick={() => this.sendPreset('scripture')} >Scripture</button>
+              <button style={buttonStyle} onClick={() => this.sendPreset('prayer')} >Prayer</button>
+            </div>
+          </div>
+          </div>
+          <div style={{margin: '32px 0', borderTop: '2px solid black'}}>
+          <div style={{padding: '16px'}}>Queue</div>
+          {queue}
         </div>
         </div>
       </HotKeys>

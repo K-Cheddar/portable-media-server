@@ -12,9 +12,11 @@ import DisplayWindow from '../DisplayElements/DisplayWindow';
 
 export default class Bible extends Component {
 
-  constructor(){
-    super()
-    this.state = {
+  constructor(props){
+    super(props);
+    const {state: {bibleSelection}} = props;
+    console.log({bibleSelection})
+    this.initialState = {
       currentBook: 0,
       currentChapter: 0,
       startVerse: 0,
@@ -35,6 +37,10 @@ export default class Bible extends Component {
       version: 'kjv',
       bibles: {kjv, nkjv, niv, nlt}
     }
+
+    const stateNotEmpty = bibleSelection && Object.keys(bibleSelection).length !== 0;
+    this.state = stateNotEmpty ? {...bibleSelection} : this.initialState;
+    
     this.handlers = {
       'nextField': this.nextField,
     }
@@ -42,11 +48,22 @@ export default class Bible extends Component {
   }
   componentDidMount(){
     let bibleWindow = document.getElementById("bibleWindow");
-    if(bibleWindow)
-      bibleWindow.focus();
-
-    this.selectVersion('kjv');
+    if(bibleWindow) bibleWindow.focus();
+    const {bibleSelection} = this.props.state;
+    const stateEmpty = !bibleSelection || Object.keys(bibleSelection).length === 0;
+    if (stateEmpty) this.selectVersion(this.state.version);
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    const {currentBook: prevBook, currentChapter: prevChapter, endVerse: prevEnd, startVerse: prevStart} = prevState;
+    const {currentBook, currentChapter, endVerse, startVerse} = this.state;
+    if (prevBook !== currentBook || prevChapter !== currentChapter || prevEnd !== endVerse || prevStart !== startVerse) {
+      this.props.functions.updateBibleSelection(this.state)
+      console.log("UPDATING Bible");
+    }
+  }
+
+  resetState = () => this.setState({...this.initialState}, () => this.selectVersion(this.state.version))
 
   selectVersion = (version) => {
     const { bibles, bookSearch } = this.state;
@@ -242,6 +259,7 @@ export default class Bible extends Component {
     this.setState({verseEndSearch: verseEndSearch})
   }
 
+
   render(){
     let {currentBook, currentChapter, startVerse, endVerse,
       bookSearch, chapterSearch, verseStartSearch, verseEndSearch,
@@ -347,6 +365,7 @@ export default class Bible extends Component {
                 <option value='niv'>New International Version</option>
                 <option value='nlt'>New Living Translation</option>
               </select>
+              <button style={{...buttonStyle, fontSize: "calc(8px + 0.4vw)", marginLeft: '16px' }} onClick={this.resetState} >Reset</button>
             <div style={{display:'flex'}}>
               <div style={{display: 'flex', width:'27vw', height:'70vh',
                 fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
