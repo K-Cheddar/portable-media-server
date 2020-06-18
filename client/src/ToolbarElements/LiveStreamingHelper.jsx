@@ -161,7 +161,7 @@ export default class LiveStreamingHelper extends React.Component{
     const queue = overlayQueue.map(({heading}, index) => {
       return (
         <div style={{display: 'flex'}} key={heading+index}>
-          <button style={{...buttonStyle, margin: '8px 0'}} onClick={() => this.getFromQueue(index)} >{heading}</button>
+          <button style={{...buttonStyle, margin: '8px 0', height: '3vw'}} onClick={() => this.getFromQueue(index)} >{heading}</button>
           <img className='imgButton' style={{margin:'0.5vw', width:'1.5vw', height:'1.5vw'}}
           onClick={ () => this.removeFromQueue(index)}
           alt="delete" src={deleteX}/>
@@ -212,7 +212,7 @@ export default class LiveStreamingHelper extends React.Component{
             </div>
 
           </div>
-          <div style={{margin: '32px 0', borderTop: '2px solid black'}}>
+          <div style={{margin: '8px 0', borderTop: '2px solid black'}}>
             <div style={{padding: '16px'}}>Presets</div>
             <div style={{display: 'flex'}}>
               <button style={buttonStyle} onClick={() => this.sendPreset('pastorRose')} >Pastor Rose</button>
@@ -226,7 +226,7 @@ export default class LiveStreamingHelper extends React.Component{
             </div>
           </div>
           </div>
-          <div style={{margin: '32px 0', borderTop: '2px solid black'}}>
+          <div style={{borderTop: '2px solid black'}}>
           <div style={{padding: '16px'}}>Queue</div>
           <div style={{display: 'flex', marginTop: '16px', flexWrap:'wrap', overflow:'auto', height: '6vw'}}>{queue}</div>
           
