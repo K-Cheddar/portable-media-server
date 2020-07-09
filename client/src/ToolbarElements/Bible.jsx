@@ -44,8 +44,10 @@ export default class Bible extends Component {
     
     this.handlers = {
       // 'nextField': this.nextField,
-      // 'prevItem': this.prevItem,
-      // 'nextItem': this.nextItem,
+      'prevItem': this.prevItem,
+      'nextItem': this.nextItem,
+      'nextSlide': this.displayNextVerse,
+      'prevSlide': this.displayPrevVerse
     }
 
   }
@@ -116,6 +118,42 @@ export default class Bible extends Component {
     item = this.props.formatBible(item, 'create', verses);
     this.props.functions.addItem(item);
   }
+
+  nextField = () => {
+    console.log(document.activeElement);
+  }
+
+  nextItem = () => {
+    console.log('next')
+  }
+
+  prevItem = () => {
+    console.log('prev')
+  }
+
+  displayNextVerse = () => {
+    const { displayedVerse, filteredVersesEnd, endVerse} = this.state;
+    const nextVerse = displayedVerse + 1;
+    if (nextVerse < filteredVersesEnd.length) {
+      this.displayVerse(nextVerse);
+    }
+    if (nextVerse > endVerse) {
+      this.selectEndVerse(nextVerse)
+    }
+  }
+
+  displayPrevVerse = () => {
+    const { displayedVerse, startVerse } = this.state;
+    const nextVerse = displayedVerse - 1;
+    if (nextVerse>= 0) {
+      this.displayVerse(nextVerse);
+    }
+    if (nextVerse < startVerse) {
+      this.selectStartVerse(nextVerse)
+    }
+  }
+
+
   displayVerse = (index) => {
     let {currentBook, currentChapter, startVerse, bibles, version} = this.state;
     let verseNum = startVerse + index;
@@ -207,10 +245,6 @@ export default class Bible extends Component {
     this.setState({filteredVersesEnd: filteredVersesEnd})
   }
 
-  // nextField = () => {
-  //   console.log(document.activeElement);
-  // }
-
   selectBook = (index) => {
     let {chapterSearch, verseStartSearch, verseEndSearch} = this.state;
     // console.log(index, chapterSearch)
@@ -270,7 +304,6 @@ export default class Bible extends Component {
     this.setState({verseEndSearch: verseEndSearch})
   }
 
-
   render(){
     let {currentBook, currentChapter, startVerse, endVerse,
       bookSearch, chapterSearch, verseStartSearch, verseEndSearch,
@@ -287,7 +320,7 @@ export default class Bible extends Component {
     let displayText = text.map((element, index) => {
       const selected = index === displayedVerse;
       return(
-        <div style={{margin: '0.5vmax', display: 'flex', background: selected ? '#06d1d1' : ''}} key={index}>
+        <div style={{margin: '0.5vmax', display: 'flex', background: selected ? '#347373' : ''}} key={index}>
           <img className='imgButton' style={{display:'block', width:'1.5vw', height:'1.5vw'}}
              onClick={ () => this.displayVerse(index)} alt="playVerse" src={playVerse}
             />
