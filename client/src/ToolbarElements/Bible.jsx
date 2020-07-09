@@ -35,14 +35,17 @@ export default class Bible extends Component {
       allVerses: [],
       versions: ['kjv', 'nkjv', 'niv', 'nlt'],
       version: 'kjv',
-      bibles: {kjv, nkjv, niv, nlt}
+      bibles: {kjv, nkjv, niv, nlt},
+      displayedVerse: -1,
     }
 
     const stateNotEmpty = bibleSelection && Object.keys(bibleSelection).length !== 0;
     this.state = stateNotEmpty ? {...bibleSelection} : this.initialState;
     
     this.handlers = {
-      'nextField': this.nextField,
+      // 'nextField': this.nextField,
+      // 'prevItem': this.prevItem,
+      // 'nextItem': this.nextItem,
     }
 
   }
@@ -66,8 +69,8 @@ export default class Bible extends Component {
   resetState = () => this.setState({...this.initialState}, () => this.selectVersion(this.state.version))
 
   selectVersion = (version) => {
-    const { bibles, bookSearch } = this.state;
-    // console.log('version', version, 'Book', bookSearch)
+    const { bibles, bookSearch, currentBook, currentChapter, startVerse, endVerse } = this.state;
+    
     this.setState({
       version,
       allBooks: bibles[version].books.map((e, index) => ({index: index, name: e.name})),
@@ -78,7 +81,11 @@ export default class Bible extends Component {
       filteredVersesStart: bibles[version].books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
       filteredVersesEnd: bibles[version].books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
     }, () => {
-      this.filterBooks(bookSearch)
+      this.filterBooks(bookSearch);
+      this.selectBook(currentBook);
+      this.selectChapter(currentChapter);
+      this.selectStartVerse(startVerse);
+      this.selectEndVerse(endVerse);
     })
   }
 
@@ -129,6 +136,8 @@ export default class Bible extends Component {
       ],
       "type": "bible"
     };
+
+    this.setState({displayedVerse: index})
 
     item = this.props.formatBible(item, 'fit', verse);
     this.props.functions.updateCurrent({slide: item.slides[1], displayDirect: true, isBible: true, name: name});
@@ -198,9 +207,9 @@ export default class Bible extends Component {
     this.setState({filteredVersesEnd: filteredVersesEnd})
   }
 
-  nextField = () => {
-    // console.log(document.activeElement);
-  }
+  // nextField = () => {
+  //   console.log(document.activeElement);
+  // }
 
   selectBook = (index) => {
     let {chapterSearch, verseStartSearch, verseEndSearch} = this.state;
@@ -212,7 +221,8 @@ export default class Bible extends Component {
       currentBook: index,
       currentChapter: 0,
       startVerse: 0,
-      endVerse: 0
+      endVerse: 0,
+      displayedVerse: -1
     })
   }
   selectChapter = (index) => {
@@ -222,7 +232,8 @@ export default class Bible extends Component {
     this.setState({
       currentChapter: index,
       startVerse: 0,
-      endVerse: 0
+      endVerse: 0,
+      displayedVerse: -1
     })
   }
   selectStartVerse = (index) => {
@@ -264,7 +275,7 @@ export default class Bible extends Component {
     let {currentBook, currentChapter, startVerse, endVerse,
       bookSearch, chapterSearch, verseStartSearch, verseEndSearch,
       filteredBooks, filteredChapters, filteredVersesStart, filteredVersesEnd,
-      allVerses, allBooks, version} = this.state;
+      allVerses, allBooks, version, displayedVerse} = this.state;
 
     let {freeze, backgrounds, currentInfo} = this.props.state;
     let {toggleFreeze} = this.props.functions;
@@ -274,8 +285,9 @@ export default class Bible extends Component {
 
     let text = allVerses.filter(e => (e.verse.verse >= startVerse+1 && e.verse.verse <= endVerse+1));
     let displayText = text.map((element, index) => {
+      const selected = index === displayedVerse;
       return(
-        <div style={{margin: '0.5vmax', display: 'flex'}} key={index}>
+        <div style={{margin: '0.5vmax', display: 'flex', background: selected ? '#06d1d1' : ''}} key={index}>
           <img className='imgButton' style={{display:'block', width:'1.5vw', height:'1.5vw'}}
              onClick={ () => this.displayVerse(index)} alt="playVerse" src={playVerse}
             />
