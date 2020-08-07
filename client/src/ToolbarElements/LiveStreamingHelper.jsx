@@ -24,8 +24,8 @@ const presets = {
     type: 'floating'
   },
   callIn: {
-    heading: 'Call: 408 418 9388',
-    subHeading: 'Access Code: 295041786',
+    heading: 'Call: 929 205 6099',
+    subHeading: 'Access Code: 496 303 3021',
     duration: 20,
     type: 'stick-to-bottom'
   },
