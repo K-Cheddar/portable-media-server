@@ -90,7 +90,7 @@ function updateSlide(props){
 	else
 		slides = item.slides;
 
-	updateCurrent({slide: slides[index], isBible: item.type === 'bible', name: item.name});
+	updateCurrent({slide: slides[index], isBible: item.type === 'bible', name: item.name, isAnnouncement: item.type === 'announcements'});
 
 	if(item.type === 'announcements'){
 		let length = item.slides.length;
