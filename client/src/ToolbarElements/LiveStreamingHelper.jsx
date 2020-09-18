@@ -6,9 +6,9 @@ import checkOn from '../assets/checkOn.png';
 
 const presets = {
   pastorRose: {
-    heading: 'Pastor Noel Rose',
+    heading: 'Pastor N Abraham Rose',
     subHeading: 'Pastor of Eliathah Seventh-day Adventist Church',
-    duration: 7,
+    duration: 10,
     type: 'floating'
   },
   elderHamilton: {
