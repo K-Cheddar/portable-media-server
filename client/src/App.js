@@ -202,7 +202,7 @@ class App extends Component {
       if (Object.keys(success).length < 6) {
         window.location.reload(true);
       }
-    }, 30000);
+    }, 300000);
   }
 
   firebaseCurrent = (user) => {
