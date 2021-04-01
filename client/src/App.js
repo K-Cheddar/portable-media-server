@@ -139,6 +139,7 @@ const initialState = {
   undoReady: false,
   redoReady: false,
   overlayInfo: {},
+  overlayPresets: [],
   overlayQueue: [],
   bibleSelection: {}
 };
@@ -218,15 +219,30 @@ class App extends Component {
         this.setState({overlayInfo: snap.val()})
       }
     })
+    const reff3 = database.ref(`users/${user}/overlayPresets`);
+    reff3.on('value', (snap) => {
+      if (snap.val()) {
+        const { presets = [], queue = [] } = snap.val();
+        this.setState({ overlayPresets: presets, overlayQueue: queue })
+      }
+    })
   }
 
-  setOverlayQueue = (overlayQueue) => this.setState({overlayQueue})
- 
   firebaseUpdateOverlay = (info) => {
     this.setState({overlayInfo: info})
     database.ref(`users/${this.state.user}/overlay`).set({...info});
   }
-
+ 
+  firebaseUpdateOverlayPresets = (arr, type) => {
+    if (type === 'preset') {
+      this.setState({overlayPresets: arr})
+      database.ref(`users/${this.state.user}/overlayPresets/presets`).set(arr);
+    }
+    else if (type === 'queue') {
+      this.setState({overlayQueue: arr})
+      database.ref(`users/${this.state.user}/overlayPresets/queue`).set(arr);
+    }
+  }
 
   addItem = item => {
     DBUpdater.addItem({ parent: this, item: item });

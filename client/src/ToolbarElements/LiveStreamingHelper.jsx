@@ -4,45 +4,6 @@ import deleteX from '../assets/deleteX.png';
 import closeIcon from '../assets/closeIcon.png'
 import checkOn from '../assets/checkOn.png';
 
-const presets = {
-  pastorRose: {
-    heading: 'Pastor N Abraham Rose',
-    subHeading: 'Pastor of Eliathah Seventh-day Adventist Church',
-    duration: 10,
-    type: 'floating'
-  },
-  elderHamilton: {
-    heading: 'Elder Vivolin Hamilton',
-    subHeading: 'Sabbath School Co-Host',
-    duration: 7,
-    type: 'floating'
-  },
-  pastorBinns: {
-    heading: 'Pastor Ian Binns',
-    subHeading: 'Sabbath School Host',
-    duration: 7,
-    type: 'floating'
-  },
-  callIn: {
-    heading: 'Call: 929 205 6099',
-    subHeading: 'Access Code: 496 303 3021',
-    duration: 20,
-    type: 'stick-to-bottom'
-  },
-  scripture: {
-    heading: '',
-    subHeading: 'Scripture Reading',
-    duration: 7,
-    type: 'floating'
-  },
-  prayer: {
-    heading: '',
-    subHeading: 'Prayer',
-    duration: 7,
-    type: 'floating'
-  }
-}
-
 export default class LiveStreamingHelper extends React.Component{
 
 	constructor (props) {
@@ -53,35 +14,45 @@ export default class LiveStreamingHelper extends React.Component{
 			subHeading: '',
 			type: 'stick-to-bottom',
       duration: 7,
-      sent: false
+      sent: false,
+      index: -1,
+      isPreset: true
     }
     const infoNotEmpty = info && Object.keys(info).length !== 0;
     this.state = infoNotEmpty ? {...info} : this.initialState;
   }
   
-  sendPreset = (val) => {
-    const presetVal = presets[val];
-    this.setState({...presetVal})
-  }
-  
   addToQueue = () => {
-    const {setOverlayQueue, overlayQueue} = this.props;
+    const {firebaseUpdateOverlayPresets, overlayQueue} = this.props;
     const queue = [...overlayQueue];
     queue.push(this.state);
-    setOverlayQueue(queue);
+    firebaseUpdateOverlayPresets(queue, 'queue');
   }
 
   removeFromQueue = (index) => {
-    const {setOverlayQueue, overlayQueue} = this.props;
+    const {firebaseUpdateOverlayPresets, overlayQueue} = this.props;
     const queue = [...overlayQueue];
     queue.splice(index, 1)
-    setOverlayQueue(queue);
+    firebaseUpdateOverlayPresets(queue, 'queue');
   }
 
+  // removeFromPresets = (index) => {
+  //   const { firebaseUpdateOverlayPresets, overlayPresets} = this.props;
+  //   const presets = [...overlayPresets];
+  //   presets.splice(index, 1)
+  //   setOverlayQueue(queue);
+  // }
+
   getFromQueue = (index) => {
-    const {overlayQueue} = this.props;
+    const { overlayQueue } = this.props;
     const queue = [...overlayQueue];
-    this.setState({...queue[index]})
+    this.setState({...queue[index], index, isPreset: false })
+  }
+
+  getFromPresets = (index) => {
+    const { overlayPresets } = this.props;
+    const queue = [...overlayPresets];
+    this.setState({...queue[index], index, isPreset: true })
   }
 
   sendOverlay = () => {
@@ -98,16 +69,27 @@ export default class LiveStreamingHelper extends React.Component{
     firebaseUpdateOverlay({ action: 'clear' })
     this.setState(this.initialState)
   }
+
+  updatePreset = () => {
+    const { firebaseUpdateOverlayPresets, overlayPresets } = this.props;
+    const { isPreset, index } = this.state;
+
+    if (isPreset && index >= 0) {
+      overlayPresets[index] = {...this.state}
+
+      firebaseUpdateOverlayPresets(overlayPresets, 'preset');
+    }
+  }
   
 	render() {
-    const {close, overlayQueue} = this.props;
-    const {heading, subHeading, type, duration, sent} = this.state
+    const {close, overlayQueue = [], overlayPresets} = this.props;
+    const {heading, subHeading, type, duration, sent, isPreset} = this.state
 
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
     zIndex: 5, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
 
     let style = {position:'fixed', zIndex:6, right:'15%', top:'5%', color:'white',
-      width:'65vw', height: '80vh', backgroundColor:"#383838", padding:'1%', border: '0.1vw solid white',
+      width:'65vw', height: '90vh', backgroundColor:"#383838", padding:'1%', border: '0.1vw solid white',
       borderRadius: '1vw'}
 
     let buttonStyle = {
@@ -158,12 +140,23 @@ export default class LiveStreamingHelper extends React.Component{
       )
     }
 
-    const queue = overlayQueue.map(({heading}, index) => {
+    const queue = overlayQueue.map(({heading, subHeading}, index) => {
       return (
         <div style={{display: 'flex'}} key={heading+index}>
-          <button style={{...buttonStyle, margin: '8px 0', height: '3vw'}} onClick={() => this.getFromQueue(index)} >{heading}</button>
+          <button style={{...buttonStyle, margin: '8px 0', height: '3vw'}} onClick={() => this.getFromQueue(index)} >{heading || subHeading}</button>
           <img className='imgButton' style={{margin:'0.5vw', width:'1.5vw', height:'1.5vw'}}
           onClick={ () => this.removeFromQueue(index)}
+          alt="delete" src={deleteX}/>
+        </div>
+      )
+    })
+
+    const presets = overlayPresets.map(({heading, subHeading}, index) => {
+      return (
+        <div style={{display: 'flex'}} key={heading+index}>
+          <button style={{...buttonStyle, margin: '8px 0', height: '3vw'}} onClick={() => this.getFromPresets(index)} >{heading || subHeading}</button>
+          <img className='imgButton' style={{margin:'0.5vw', width:'1.5vw', height:'1.5vw', visibility: 'hidden'}}
+          onClick={ () => this.removeFromPresets(index)}
           alt="delete" src={deleteX}/>
         </div>
       )
@@ -199,6 +192,10 @@ export default class LiveStreamingHelper extends React.Component{
               <input style={{width: '32px'}} type='number' value={duration} onChange={(e) => this.setState({duration: e.target.value})}/>
             </div>
             <button style={{...buttonStyle, marginTop: '32px'}} disabled={sent} onClick={this.addToQueue} >Add to Queue</button>
+            <button style={{...buttonStyle, marginTop: '16px', ...!isPreset && {backgroundColor: '#999999', cursor: 'not-allowed'} }}
+               disabled={!isPreset} onClick={this.updatePreset} 
+               >Save Preset
+              </button>
             </div>
             <div>
              <Preview/>
@@ -213,22 +210,13 @@ export default class LiveStreamingHelper extends React.Component{
 
           </div>
           <div style={{margin: '8px 0', borderTop: '2px solid black'}}>
-            <div style={{padding: '16px'}}>Presets</div>
-            <div style={{display: 'flex'}}>
-              <button style={buttonStyle} onClick={() => this.sendPreset('pastorRose')} >Pastor Rose</button>
-              <button style={buttonStyle} onClick={() => this.sendPreset('pastorBinns')} >Pastor Binns</button>
-              <button style={buttonStyle} onClick={() => this.sendPreset('elderHamilton')} >Elder Hamilton</button>
-              <button style={buttonStyle} onClick={() => this.sendPreset('callIn')} >Call In</button>
-            </div>
-            <div style={{display: 'flex', marginTop: '16px'}}>
-              <button style={buttonStyle} onClick={() => this.sendPreset('scripture')} >Scripture</button>
-              <button style={buttonStyle} onClick={() => this.sendPreset('prayer')} >Prayer</button>
-            </div>
+            <div style={{padding: '8px'}}>Presets</div>
+            <div style={{display: 'flex', flexWrap:'wrap', overflow:'auto', height: '8vw'}}>{presets}</div>
           </div>
           </div>
           <div style={{borderTop: '2px solid black'}}>
-          <div style={{padding: '16px'}}>Queue</div>
-          <div style={{display: 'flex', marginTop: '16px', flexWrap:'wrap', overflow:'auto', height: '6vw'}}>{queue}</div>
+          <div style={{padding: '8px'}}>Queue</div>
+          <div style={{display: 'flex', marginTop: '8px', flexWrap:'wrap', overflow:'auto', height: '10vw'}}>{queue}</div>
           
         </div>
         </div>

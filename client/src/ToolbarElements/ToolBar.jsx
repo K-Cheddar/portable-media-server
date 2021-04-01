@@ -87,10 +87,11 @@ export default class Toolbar extends Component {
     let {formatBible, database} = this.props;
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish, firebaseUpdateOverlay, setOverlayQueue} = this.props.parent; //updateItemStructure
+        updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish, firebaseUpdateOverlay,
+        firebaseUpdateOverlayPresets } = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn,
       allItemLists, needsUpdate, userSettings, backgrounds, mode,
-      undoReady, redoReady, boxIndex, overlayInfo, overlayQueue} = this.props.parent.state;
+      undoReady, redoReady, boxIndex, overlayInfo, overlayQueue, overlayPresets} = this.props.parent.state;
     let {tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen, liveStreamHelper} = this.state;
 
     let menuItem = {
@@ -258,7 +259,8 @@ export default class Toolbar extends Component {
         updateUserSetting={updateUserSetting}/>}
         {liveStreamHelper && <LiveStreamingHelper database={database} close={this.closeLiveStreamHelper} 
         firebaseUpdateOverlay={firebaseUpdateOverlay} overlayInfo={overlayInfo}
-        overlayQueue={overlayQueue} setOverlayQueue={setOverlayQueue} />}
+        overlayQueue={overlayQueue} firebaseUpdateOverlayPresets={firebaseUpdateOverlayPresets}
+         overlayPresets={overlayPresets} />}
         {allItemsOpen && <AllItems close={this.closeAllItems} state={this.props.parent.state}
         functions={this.props.parent} tab={tab} formatBible={formatBible}/>}
       </div>
