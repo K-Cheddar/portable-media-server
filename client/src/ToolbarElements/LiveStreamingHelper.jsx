@@ -16,7 +16,8 @@ export default class LiveStreamingHelper extends React.Component{
       duration: 7,
       sent: false,
       index: -1,
-      isPreset: true
+      isPreset: true,
+      showDelete: true,
     }
     const infoNotEmpty = info && Object.keys(info).length !== 0;
     this.state = infoNotEmpty ? {...info} : this.initialState;
@@ -71,30 +72,39 @@ export default class LiveStreamingHelper extends React.Component{
   }
 
   updatePreset = () => {
-    const { firebaseUpdateOverlayPresets, overlayPresets } = this.props;
+    const { firebaseUpdateOverlayPresets, overlayPresets, overlayQueue } = this.props;
     const { isPreset, index } = this.state;
 
     if (isPreset && index >= 0) {
       overlayPresets[index] = {...this.state}
 
       firebaseUpdateOverlayPresets(overlayPresets, 'preset');
+    } else if (!isPreset && index >= 0) {
+      overlayQueue[index] = {...this.state}
+
+      firebaseUpdateOverlayPresets(overlayQueue, 'queue');
     }
+  }
+
+  toggleDelete = () => {
+    this.setState({showDelete: !this.state.showDelete});
+    setTimeout(() => this.updatePreset(), 0 )
   }
   
 	render() {
     const {close, overlayQueue = [], overlayPresets} = this.props;
-    const {heading, subHeading, type, duration, sent, isPreset} = this.state
+    const {heading, subHeading, type, duration, sent, isPreset, showDelete} = this.state
 
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
     zIndex: 5, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
 
-    let style = {position:'fixed', zIndex:6, right:'15%', top:'5%', color:'white',
-      width:'65vw', height: '90vh', backgroundColor:"#383838", padding:'1%', border: '0.1vw solid white',
+    let style = {position:'fixed', zIndex:6, right:'15%', top:'2%', color:'white',
+      width:'67vw', height: '92vh', backgroundColor:"#383838", padding:'1%', border: '0.1vw solid white',
       borderRadius: '1vw'}
 
     let buttonStyle = {
       fontSize: "calc(8px + 0.6vw)", margin:'0.25%', width:'11vw', backgroundColor:'#383838',
-          border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white',
+          border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', overflow: 'hidden'
     }
     
     const stickyActive = type === 'stick-to-bottom';
@@ -105,7 +115,7 @@ export default class LiveStreamingHelper extends React.Component{
     }
     
     const previewStyle = {
-      width: '24vw', height: '13.5vw', border: '2px solid black', position: 'relative', margin: '16px 0'
+      width: '24vw', height: '13.5vw', border: '2px solid black', position: 'relative', margin: '16px 32px'
     }
 
     const stickyStyle = {
@@ -132,21 +142,29 @@ export default class LiveStreamingHelper extends React.Component{
       </div>
       )
       return(
-        <div style={previewStyle}>
-          <div style={{textAlign: 'center', borderBottom: '2px solid black', padding: '8px'}}>Preview</div>
-          {stickyActive ? sticky : floating}
+        <div>
+          <div style={previewStyle}>
+            <div style={{textAlign: 'center', borderBottom: '2px solid black', padding: '8px'}}>Preview</div>
+            {stickyActive ? sticky : floating}
+          </div>
+          <div style={{display: 'flex', margin: '16px 32px'}}>
+              <button style={buttonStyle} disabled={sent} onClick={this.sendOverlay} >Send</button>
+              <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw',
+                padding: '0.25vh 0.25vw', visibility: sent ? 'visible' : 'hidden'}}
+                  alt="checkOn" src={checkOn} />
+              <button style={buttonStyle} onClick={this.clearOverlay} >Clear Overlay</button>
+            </div>
         </div>
-
       )
     }
 
-    const queue = overlayQueue.map(({heading, subHeading}, index) => {
+    const queue = overlayQueue.map(({heading, subHeading, showDelete : qShowDelete}, index) => {
       return (
-        <div style={{display: 'flex'}} key={heading+index}>
-          <button style={{...buttonStyle, margin: '8px 0', height: '3vw'}} onClick={() => this.getFromQueue(index)} >{heading || subHeading}</button>
-          <img className='imgButton' style={{margin:'0.5vw', width:'1.5vw', height:'1.5vw'}}
+        <div style={{display: 'flex', margin: '8px', width: '12vw'}} key={heading+index}>
+          <button style={{...buttonStyle, height: '3vw'}} onClick={() => this.getFromQueue(index)} >{heading || subHeading}</button>
+          {qShowDelete && <img className='imgButton' style={{marginTop:'12px', width:'1.5vw', height:'1.5vw'}}
           onClick={ () => this.removeFromQueue(index)}
-          alt="delete" src={deleteX}/>
+          alt="delete" src={deleteX}/> }
         </div>
       )
     })
@@ -154,10 +172,10 @@ export default class LiveStreamingHelper extends React.Component{
     const presets = overlayPresets.map(({heading, subHeading}, index) => {
       return (
         <div style={{display: 'flex'}} key={heading+index}>
-          <button style={{...buttonStyle, margin: '8px 0', height: '3vw'}} onClick={() => this.getFromPresets(index)} >{heading || subHeading}</button>
-          <img className='imgButton' style={{margin:'0.5vw', width:'1.5vw', height:'1.5vw', visibility: 'hidden'}}
+          <button style={{...buttonStyle, margin: '8px', height: '3vw'}} onClick={() => this.getFromPresets(index)} >{heading || subHeading}</button>
+          {/* <img className='imgButton' style={{margin:'0.5vw', width:'1.5vw', height:'1.5vw', visibility: 'hidden'}}
           onClick={ () => this.removeFromPresets(index)}
-          alt="delete" src={deleteX}/>
+          alt="delete" src={deleteX}/> */}
         </div>
       )
     })
@@ -191,32 +209,25 @@ export default class LiveStreamingHelper extends React.Component{
               <div>Duration</div>
               <input style={{width: '32px'}} type='number' value={duration} onChange={(e) => this.setState({duration: e.target.value})}/>
             </div>
-            <button style={{...buttonStyle, marginTop: '32px'}} disabled={sent} onClick={this.addToQueue} >Add to Queue</button>
-            <button style={{...buttonStyle, marginTop: '16px', ...!isPreset && {backgroundColor: '#999999', cursor: 'not-allowed'} }}
-               disabled={!isPreset} onClick={this.updatePreset} 
-               >Save Preset
-              </button>
+            <div style={{display: 'flex', marginTop: '32px'}}>
+              <button style={{...buttonStyle}} disabled={sent} onClick={this.addToQueue} >Add to Queue</button>
+              <button style={{...buttonStyle, marginLeft: '16px' }} onClick={this.updatePreset} >Save</button>
+            </div>
+            <button style={{...buttonStyle, marginTop: '16px'}}  onClick={this.toggleDelete} >{showDelete ? 'Hide Delete' : 'Show Delete'}</button>
             </div>
             <div>
              <Preview/>
-             <div style={{display: 'flex'}}>
-            <button style={buttonStyle} disabled={sent} onClick={this.sendOverlay} >Send</button>
-            <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw',
-              padding: '0.25vh 0.25vw', visibility: sent ? 'visible' : 'hidden'}}
-                alt="checkOn" src={checkOn} />
-            <button style={buttonStyle} onClick={this.clearOverlay} >Clear Overlay</button>
-          </div>
             </div>
 
           </div>
           <div style={{margin: '8px 0', borderTop: '2px solid black'}}>
             <div style={{padding: '8px'}}>Presets</div>
-            <div style={{display: 'flex', flexWrap:'wrap', overflow:'auto', height: '8vw'}}>{presets}</div>
+            <div style={{display: 'flex', flexWrap:'wrap', overflow:'auto'}}>{presets}</div>
           </div>
           </div>
           <div style={{borderTop: '2px solid black'}}>
           <div style={{padding: '8px'}}>Queue</div>
-          <div style={{display: 'flex', marginTop: '8px', flexWrap:'wrap', overflow:'auto', height: '10vw'}}>{queue}</div>
+          <div style={{display: 'flex', marginTop: '8px', flexWrap:'wrap', overflow:'auto', height: '16vw'}}>{queue}</div>
           
         </div>
         </div>
