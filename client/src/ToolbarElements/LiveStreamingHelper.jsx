@@ -18,15 +18,75 @@ export default class LiveStreamingHelper extends React.Component{
       index: -1,
       isPreset: true,
       showDelete: true,
+      mouseX: 0,
+      mouseY: 0,
+      indexBeingDragged:-1,
+      mouseDown: false,
     }
     const infoNotEmpty = info && Object.keys(info).length !== 0;
-    this.state = infoNotEmpty ? {...info} : this.initialState;
+    this.state = infoNotEmpty ? {...this.initialState, ...info} : this.initialState;
+  }
+
+  updateMouse = (e) => {
+    if(!this.state.mouseDown)
+      return;
+    this.setState({
+      mouseX: e.clientX,
+      mouseY: e.clientY
+    })
+  }
+
+  insertElement = ( newIndex, oldIndex  ) => {
+    const { overlayQueue } = this.props;
+    const ele = overlayQueue.splice(oldIndex, 1)[0];
+    overlayQueue.splice(newIndex, 0, ele);
+  }
+
+  setElement = (index) => {
+    this.setState({
+      mouseDown: true
+    });
+
+    console.log("INDEX", index, this.state)
+
+    this.checkHeld = setTimeout(function() {
+      let {mouseDown, indexBeingDragged } = this.state;
+      if(mouseDown && indexBeingDragged === -1){
+        this.setState({indexBeingDragged: index})
+      }
+    }.bind(this), 250);
+
+  }
+
+  setTarget = (index) => {
+    if(!this.state.mouseDown)
+      return;
+
+    let {indexBeingDragged} = this.state;
+    if((indexBeingDragged !== -1) && (indexBeingDragged !== index)){
+      this.getFromQueue(index);
+      this.insertElement(index, indexBeingDragged);
+      this.setState({indexBeingDragged: index})
+    }
+  }
+
+  releaseElement = () => {
+    if(!this.state.mouseDown)
+      return;
+    const { firebaseUpdateOverlayPresets, overlayQueue } = this.props;
+    firebaseUpdateOverlayPresets(overlayQueue, 'queue');
+    clearTimeout(this.checkHeld)
+    this.setState({
+      indexBeingDragged: -1,
+      mouseDown: false
+    })
   }
   
   addToQueue = () => {
     const {firebaseUpdateOverlayPresets, overlayQueue} = this.props;
     const queue = [...overlayQueue];
-    queue.push(this.state);
+    const newItem = {...this.state, index: queue.length};
+    queue.push(newItem);
     firebaseUpdateOverlayPresets(queue, 'queue');
   }
 
@@ -73,14 +133,15 @@ export default class LiveStreamingHelper extends React.Component{
 
   updatePreset = () => {
     const { firebaseUpdateOverlayPresets, overlayPresets, overlayQueue } = this.props;
-    const { isPreset, index } = this.state;
+    const { isPreset, index, heading, subHeading, type, duration, showDelete } = this.state;
+    console.log("STATE: ", this.state);
 
     if (isPreset && index >= 0) {
-      overlayPresets[index] = {...this.state}
+      overlayPresets[index] = {heading, subHeading, type, duration, showDelete };
 
       firebaseUpdateOverlayPresets(overlayPresets, 'preset');
     } else if (!isPreset && index >= 0) {
-      overlayQueue[index] = {...this.state}
+      overlayQueue[index] = {heading, subHeading, type, duration, showDelete };
 
       firebaseUpdateOverlayPresets(overlayQueue, 'queue');
     }
@@ -93,7 +154,8 @@ export default class LiveStreamingHelper extends React.Component{
   
 	render() {
     const {close, overlayQueue = [], overlayPresets} = this.props;
-    const {heading, subHeading, type, duration, sent, isPreset, showDelete} = this.state
+    const {heading, subHeading, type, duration, sent, isPreset, 
+      showDelete, indexBeingDragged, index: currentIndex, mouseX, mouseY} = this.state
 
     let windowBackground = {position: 'fixed',top: 0, left:0, height: '100vh', width: '100vw',
     zIndex: 5, backgroundColor: 'rgba(62, 64, 66, 0.5)'}
@@ -104,15 +166,14 @@ export default class LiveStreamingHelper extends React.Component{
 
     let buttonStyle = {
       fontSize: "calc(8px + 0.6vw)", margin:'0.25%', width:'11vw', backgroundColor:'#383838',
-          border:'0.2vw solid #06d1d1', borderRadius:'0.5vw', color: 'white', overflow: 'hidden'
+          borderRadius:'0.5vw', color: 'white', overflow: 'hidden',
+          borderWidth: '0.2vw', borderStyle: 'solid', borderColor: '#06d1d1'
     }
     
     const stickyActive = type === 'stick-to-bottom';
     const floatingActive = type === 'floating';
 
-    const buttonActiveStyle = {
-      border:'0.2vw solid yellow'
-    }
+    const buttonActiveStyle = { borderWidth: '0.2vw', borderStyle: 'solid', borderColor: 'yellow'}
     
     const previewStyle = {
       width: '24vw', height: '13.5vw', border: '2px solid black', position: 'relative', margin: '16px 32px'
@@ -159,9 +220,21 @@ export default class LiveStreamingHelper extends React.Component{
     }
 
     const queue = overlayQueue.map(({heading, subHeading, showDelete : qShowDelete}, index) => {
+      const beingDraggedStyle = { borderColor: '#ffdb3a', opacity:'0.5', position: 'fixed', 
+      left: `calc(${mouseX}px - 5px)`, top: `calc(${mouseY}px - 5px)` };
+      const selectedStyle = { borderColor: '#06d117' };
       return (
         <div style={{display: 'flex', margin: '8px', width: '12vw'}} key={heading+index}>
-          <button style={{...buttonStyle, height: '3vw'}} onClick={() => this.getFromQueue(index)} >{heading || subHeading}</button>
+          <button 
+            style={{...buttonStyle, height: '3vw',
+            ...(currentIndex === index && !isPreset && {...selectedStyle}),
+            ...(indexBeingDragged === index && {...beingDraggedStyle})}}
+            onClick={() => this.getFromQueue(index)} 
+            onMouseDown={() => this.setElement(index)}
+            onMouseOver={() => this.setTarget(index)}
+          >
+                {heading || subHeading}
+            </button>
           {qShowDelete && <img className='imgButton' style={{marginTop:'12px', width:'1.5vw', height:'1.5vw'}}
           onClick={ () => this.removeFromQueue(index)}
           alt="delete" src={deleteX}/> }
@@ -170,9 +243,12 @@ export default class LiveStreamingHelper extends React.Component{
     })
 
     const presets = overlayPresets.map(({heading, subHeading}, index) => {
+      const selectedStyle = { borderColor: '#06d117' };
       return (
         <div style={{display: 'flex'}} key={heading+index}>
-          <button style={{...buttonStyle, margin: '8px', height: '3vw'}} onClick={() => this.getFromPresets(index)} >{heading || subHeading}</button>
+          <button style={{...buttonStyle, margin: '8px', height: '3vw',
+           ...(currentIndex === index && isPreset && {...selectedStyle})}} 
+           onClick={() => this.getFromPresets(index)} >{heading || subHeading}</button>
           {/* <img className='imgButton' style={{margin:'0.5vw', width:'1.5vw', height:'1.5vw', visibility: 'hidden'}}
           onClick={ () => this.removeFromPresets(index)}
           alt="delete" src={deleteX}/> */}
@@ -182,7 +258,7 @@ export default class LiveStreamingHelper extends React.Component{
     
 		return (
       <HotKeys handlers={this.handlers} style={windowBackground}>
-        <div style={style}>
+        <div style={style} onMouseUp={this.releaseElement} onMouseMove={this.updateMouse}>
           <div>
           <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw',
                 padding: '0.25vh 0.25vw', position: 'absolute', right: '1vw'}}
@@ -227,7 +303,7 @@ export default class LiveStreamingHelper extends React.Component{
           </div>
           <div style={{borderTop: '2px solid black'}}>
           <div style={{padding: '8px'}}>Queue</div>
-          <div style={{display: 'flex', marginTop: '8px', flexWrap:'wrap', overflow:'auto', height: '16vw'}}>{queue}</div>
+          <div style={{display: 'flex', marginTop: '8px', flexWrap:'wrap', overflow:'auto', height: '16vw', position: 'relative'}}>{queue}</div>
           
         </div>
         </div>
