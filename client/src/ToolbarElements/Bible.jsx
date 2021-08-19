@@ -311,7 +311,7 @@ export default class Bible extends Component {
       allVerses, allBooks, version, displayedVerse} = this.state;
 
     let {freeze, backgrounds, currentInfo} = this.props.state;
-    let {toggleFreeze} = this.props.functions;
+    let {toggleFreeze, updateCurrent } = this.props.functions;
 
     if(!allBooks[0])
       return null;
@@ -474,6 +474,8 @@ export default class Bible extends Component {
                   <DisplayWindow backgrounds={backgrounds} slide={currentInfo.slide} width={"16vw"} title={"Presentation "}
                     titleSize="1.25vw"
                     />
+                  <button style={{...buttonStyle, position: 'absolute', right: '0.5vw', top: '0.5vh'}}
+                     onClick={ () => updateCurrent({image: '', displayDirect: true})}>Clear Verse</button>
                   <button style={{...buttonStyle, position: 'absolute', right: '0.5vw', bottom: '0.5vh'}}
                      onClick={this.createVersesItem}>Add Verses</button>
                 </div>
