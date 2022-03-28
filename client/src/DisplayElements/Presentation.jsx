@@ -140,7 +140,7 @@ class Presentation extends React.Component{
             </div>
           </div>
         </div>}
-        {fullScreen && <DisplayWindow slide={slide} backgrounds={backgrounds} width={'100vw'}
+        {fullScreen && <DisplayWindow type={type} slide={slide} backgrounds={backgrounds} width={'100vw'}
         title={''} titleSize={''} presentation={true} extraPadding={extraPadding}/>
         }
       </div>

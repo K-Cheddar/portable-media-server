@@ -124,7 +124,7 @@ export default class Toolbar extends Component {
             <div className='toolbarSection' onMouseLeave={this.closeMenu}>
               <button onClick={this.openMenu} style={menuButton}>Menu</button>
                 <div style={menuMousedOver ? {backgroundColor:'#c4c4c4', position:'absolute', width:'9vw', zIndex: 4} : {display:'none'}}>
-                  <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
+                  <button style={menuItem} onClick={this.openPresentation}>Open Stage Display</button>
                   <Link to="/"><button style={menuItem}>Home</button></Link>
                   <button style={menuItem} onClick={this.openSettings}> Open Settings </button>
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
