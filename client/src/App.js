@@ -33,6 +33,7 @@ var cloud = new cloudinary.Cloudinary({
   secure: true
 });
 
+
 var conn;
 
 const firebaseConfig = {
@@ -204,6 +205,38 @@ class App extends Component {
         window.location.reload(true);
       }
     }, 300000);
+
+    var uploadWidget = window.cloudinary.createUploadWidget(
+			{
+				cloudName: 'portable-media',
+				uploadPreset: sUploadPreset
+			},
+			(error, result) => {
+				if (!error && result && result.event === 'success') {
+          let uploads = [];
+          for (var i = 0; i < result.length; i++) {
+            let type = result[i].format === "mp4" ? "video" : "image";
+            let obj = {
+              name: result[i].public_id,
+              type: type,
+              category: "Uncategorized",
+              url: result[i].url
+            };
+            console.log(result);
+            uploads.push(obj);
+          }
+          DBUpdater.updateImages({ db: that.state.db, uploads: uploads });
+          setTimeout(function () {
+            DBGetter.retrieveImages({
+              parent: that,
+              db: that.state.db,
+              cloud: cloud
+            });
+          }, 1000);
+				}
+			}
+		);
+    this.setState({ uploadWidget })
   }
 
   firebaseCurrent = (user) => {
@@ -417,8 +450,14 @@ class App extends Component {
     let remoteURL =
       process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database;
     let localDB = "portable-media";
-    let db = new PouchDB(localDB);
-    let remoteDB = new PouchDB(remoteURL);
+    let db = new PouchDB(localDB, {skip_setup: true});
+    let remoteDB = null;
+    try {
+      remoteDB = new PouchDB(remoteURL);
+    } catch (e) {
+      console.log("Problem is here");
+    }
+    
     let that = this;
     if (!first) {
       db.destroy().then(function () {
@@ -494,34 +533,8 @@ class App extends Component {
   };
 
   openUploader = () => {
-    let that = this;
-    let { upload_preset } = this.state;
-    window.cloudinary.openUploadWidget(
-      { cloud_name: "portable-media", upload_preset: upload_preset },
-      function (error, result) {
-        if (!result) return;
-        let uploads = [];
-        for (var i = 0; i < result.length; i++) {
-          let type = result[i].format === "mp4" ? "video" : "image";
-          let obj = {
-            name: result[i].public_id,
-            type: type,
-            category: "Uncategorized",
-            url: result[i].url
-          };
-          console.log(result);
-          uploads.push(obj);
-        }
-        DBUpdater.updateImages({ db: that.state.db, uploads: uploads });
-        setTimeout(function () {
-          DBGetter.retrieveImages({
-            parent: that,
-            db: that.state.db,
-            cloud: cloud
-          });
-        }, 1000);
-      }
-    );
+    let { uploadWidget } = this.state;
+    uploadWidget.open();
   };
 
   overrideUndoRedo = e => {

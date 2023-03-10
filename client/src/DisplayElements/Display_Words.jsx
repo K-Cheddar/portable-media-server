@@ -215,7 +215,7 @@ export default class Display_Words extends Component {
       whiteSpace:'pre-wrap', color: fontColor, fontSize: actualfontSize, fontFamily: "Verdana",
       margin: `${marginT_B}% ${marginL_R}%`, textShadow: `${SS} ${SS} ${SS} black, ${SS} ${SS} ${SS} black`,
       width: width, height: height, position: 'absolute', zIndex: this.props.zIndex+1, top: top, left: left,
-      WebkitTextStroke: `${strokeRadius} ${strokeColor}`, overflow: 'hidden'
+      WebkitTextStroke: `${strokeRadius} ${strokeColor}`, overflow: 'hidden', wordBreak: 'break-word'
     }
 
     return wordsStyle;

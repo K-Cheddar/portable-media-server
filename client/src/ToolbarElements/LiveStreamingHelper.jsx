@@ -233,7 +233,10 @@ export default class LiveStreamingHelper extends React.Component{
             onMouseDown={() => this.setElement(index)}
             onMouseOver={() => this.setTarget(index)}
           >
-                {heading || subHeading}
+                <div>
+                 {heading || subHeading}
+                </div>
+                <div style={{fontSize: "calc(4px + 0.4vw)" }}>{!!heading && subHeading}</div>
             </button>
           {qShowDelete && <img className='imgButton' style={{marginTop:'12px', width:'1.5vw', height:'1.5vw'}}
           onClick={ () => this.removeFromQueue(index)}
