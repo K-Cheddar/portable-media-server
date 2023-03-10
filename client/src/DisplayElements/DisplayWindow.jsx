@@ -12,9 +12,9 @@ export default class DisplayWindow extends React.Component{
 	}
 
 	render() {
-		let {backgrounds = [], slide, width ='25vw', title = '', titleSize = '5vw', presentation, extraPadding, editor} = this.props;
+		let {backgrounds = [], slide, width ='25vw', title = '', titleSize = '5vw', presentation, extraPadding, editor, type} = this.props;
 
-		if(!slide){
+		if(!slide || (slide && !slide.boxes)){
 			slide = {boxes: [{words: '', background: '', style: {}}]};
 		}
 
@@ -60,9 +60,10 @@ export default class DisplayWindow extends React.Component{
 			let isVideo = false;
 			let zIndex = index+1;
 			let background = box.background;
-			let words = box.words;
+			let words = box.words || '';
+			const showBackground = !slide.type || slide.type === 'Image' || type !== 'local';
 			let id = `background-text-${title}-${words}`;
-			if(backgrounds.some(e => e.name === background)){
+			if(showBackground && backgrounds.some(e => e.name === background)){
 				asset = backgrounds.find(e => e.name === background);
 				img = asset.image.src;
 				if(asset.type === 'video' && (title === 'Presentation' || presentation || editor))

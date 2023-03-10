@@ -6,14 +6,14 @@ import UserSettings from './UserSettings';
 import TextBoxEditor from './TextBoxEditor';
 import ProjectorControl from './ProjectorControl'
 import AllItems from './AllItems';
+import LiveStreamingHelper from './LiveStreamingHelper';
 
-import connected from '../assets/connected.png';
-import disconnected from '../assets/disconnected.png';
 import open from '../assets/open.png';
 import bibleIcon from '../assets/bibleIcon.png'
 import songIcon from '../assets/songIcon.png'
 import allItemsIcon from '../assets/allItemsIcon.png';
 import timerIcon from '../assets/timerIcon.png'
+import liveStreamingIcon from '../assets/live_streaming_icon.png'
 import announcementsIcon from '../assets/announcementsIcon.png'
 import undoButton from '../assets/undo.png'
 import redoButton from '../assets/redo.png'
@@ -26,9 +26,18 @@ export default class Toolbar extends Component {
       tab: "Existing",
       menuMousedOver: false,
       itemListsOpen: false,
-      settingsOpen: false,
-      allItemsOpen: false
+      settingsOpen: false, 
+      allItemsOpen: false,
+      liveStreamHelper: false
     }
+  }
+
+  openLiveStreamHelper = () => {
+    this.setState({liveStreamHelper: true})
+  }
+
+  closeLiveStreamHelper = () => {
+    this.setState({liveStreamHelper: false})
   }
 
   openAllItems = (tab) => {
@@ -75,15 +84,15 @@ export default class Toolbar extends Component {
 
   render(){
 
-    let {formatBible} = this.props;
+    let {formatBible, database} = this.props;
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor,
-       updateBrightness, updateState, deleteItemList, newItemList, duplicateList,
-       setAsReceiver, connectToReceiver, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish} = this.props.parent; //updateItemStructure
+       updateBrightness, updateState, deleteItemList, newItemList, duplicateList, updateUserSetting, updateBoxPosition,
+        updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish, firebaseUpdateOverlay,
+        firebaseUpdateOverlayPresets } = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn,
-      allItemLists, isReciever, isSender, needsUpdate, userSettings, backgrounds, mode,
-      undoReady, redoReady, boxIndex} = this.props.parent.state;
-    let {tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen} = this.state;
+      allItemLists, needsUpdate, userSettings, backgrounds, mode,
+      undoReady, redoReady, boxIndex, overlayInfo, overlayQueue, overlayPresets} = this.props.parent.state;
+    let {tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen, liveStreamHelper} = this.state;
 
     let menuItem = {
       display:'inline-block', width:'90%', padding: '2.5%', backgroundColor:'#fff', margin: '5%',
@@ -115,10 +124,8 @@ export default class Toolbar extends Component {
             <div className='toolbarSection' onMouseLeave={this.closeMenu}>
               <button onClick={this.openMenu} style={menuButton}>Menu</button>
                 <div style={menuMousedOver ? {backgroundColor:'#c4c4c4', position:'absolute', width:'9vw', zIndex: 4} : {display:'none'}}>
-                  <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
+                  <button style={menuItem} onClick={this.openPresentation}>Open Stage Display</button>
                   <Link to="/"><button style={menuItem}>Home</button></Link>
-                  <button style={menuItem} onClick={setAsReceiver}> Become Receiver </button>
-                  <button style={menuItem} onClick={connectToReceiver}> Connect To Receiver </button>
                   <button style={menuItem} onClick={this.openSettings}> Open Settings </button>
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
                   {isLoggedIn && <button style={menuItem} onClick={this.logout}>Logout</button>}
@@ -205,6 +212,14 @@ export default class Toolbar extends Component {
                    />
                  <div>Timer</div>
               </div>
+              <div onClick={ () => this.openLiveStreamHelper()} className='imgButton'
+                style={{fontSize: '0.65vw', height: '4.5vh', marginRight:'0.5vw', textAlign: 'center'}}>
+                <img style={{display:'block', width:'1.25vw', height:'1.25vw', margin: 'auto',
+                  padding: '0.25vh 0.25vw'}}
+                   alt="liveStreamingIcon" src={liveStreamingIcon}
+                   />
+                 <div>LS Helper</div>
+              </div>
             </div>
             </div>}
           </li>
@@ -228,34 +243,6 @@ export default class Toolbar extends Component {
           </li>
           <li style={{width: '16.5vw'}}>
             <div className='toolbarSection' style={{display: 'flex'}}>
-              <div style={{width: '9vw'}}>
-                {isReciever && <div style={{display:'flex', marginTop: '0.65vh'}}>
-                  <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}}>Direct Receiving:</div>
-                    {(isReciever === 'connected') &&
-                      <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
-                         alt="connected" src={connected}
-                        />
-                    }
-                    {(isReciever === 'disconnected') &&
-                      <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
-                         alt="disconnected" src={disconnected}
-                        />
-                    }
-                </div>}
-                {isSender && <div style={{display:'flex', marginTop: '0.65vh'}}>
-                  <div style={{fontSize: "calc(7px + 0.35vw)", width: '6vw'}} >Direct Sending:</div>
-                  {(isSender === 'connected') &&
-                    <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
-                       alt="connected" src={connected}
-                      />
-                  }
-                  {(isSender === 'disconnected') &&
-                    <img style={{ marginLeft:'0.35vw', width:'1.25vw', height:'.96vw'}}
-                       alt="disconnected" src={disconnected}
-                      />
-                  }
-                </div>}
-              </div>
               <div style={{display:'flex', backgroundColor: '#383838', color:'white', padding: '0.5vw', height: '2vh'}}>
                 <div style={{fontSize: "calc(8px + 0.35vw)", fontWeight: 'bold'}}>User:</div>
                 <div style={{fontSize: "calc(8px + 0.25vw)", color:'#06d1d1', marginLeft: '0.25vw'}}>{user}</div>
@@ -270,6 +257,10 @@ export default class Toolbar extends Component {
         />}
         {settingsOpen && <UserSettings state={this.props.parent.state} close={this.closeSettings}
         updateUserSetting={updateUserSetting}/>}
+        {liveStreamHelper && <LiveStreamingHelper database={database} close={this.closeLiveStreamHelper} 
+        firebaseUpdateOverlay={firebaseUpdateOverlay} overlayInfo={overlayInfo}
+        overlayQueue={overlayQueue} firebaseUpdateOverlayPresets={firebaseUpdateOverlayPresets}
+         overlayPresets={overlayPresets} />}
         {allItemsOpen && <AllItems close={this.closeAllItems} state={this.props.parent.state}
         functions={this.props.parent} tab={tab} formatBible={formatBible}/>}
       </div>

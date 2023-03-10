@@ -5,7 +5,7 @@ export default class RemotePresentation extends Component{
 	render(){
 		return (
 			<Presentation type={'remote'} currentInfo={this.props.currentInfo}
-				backgrounds={this.props.backgrounds} setAsReceiver={this.props.setAsReceiver}/>
+				backgrounds={this.props.backgrounds} />
 		);
 	}
 }

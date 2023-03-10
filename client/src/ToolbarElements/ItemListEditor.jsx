@@ -188,8 +188,8 @@ export default class ItemListEditor extends Component{
   render(){
 
     let {itemLists, allItemLists} = this.props;
-    console.log('itemLists', itemLists);
-    console.log('allItemLists', allItemLists);
+    // console.log('itemLists', itemLists);
+    // console.log('allItemLists', allItemLists);
     let {selectedIndex, name, deleteOverlay, ailsSearch, ilsSearch, message} = this.state;
 
     let outlineName = 'Service Outline'

@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import kjv from '../assets/kjv';
+import nkjv from '../assets/nkjv';
+import niv from '../assets/niv';
+import nlt from '../assets/nlt';
 import {HotKeys} from 'react-hotkeys';
 import * as SlideCreation from '../HelperFunctions/SlideCreation';
 import playVerse from '../assets/playVerse.png';
@@ -9,9 +12,11 @@ import DisplayWindow from '../DisplayElements/DisplayWindow';
 
 export default class Bible extends Component {
 
-  constructor(){
-    super()
-    this.state = {
+  constructor(props){
+    super(props);
+    const {state: {bibleSelection}} = props;
+    console.log({bibleSelection})
+    this.initialState = {
       currentBook: 0,
       currentChapter: 0,
       startVerse: 0,
@@ -27,37 +32,73 @@ export default class Bible extends Component {
       filteredVersesEnd: [],
       allBooks: [],
       allChapters: [],
-      allVerses: []
+      allVerses: [],
+      versions: ['kjv', 'nkjv', 'niv', 'nlt'],
+      version: 'kjv',
+      bibles: {kjv, nkjv, niv, nlt},
+      displayedVerse: -1,
     }
+
+    const stateNotEmpty = bibleSelection && Object.keys(bibleSelection).length !== 0;
+    this.state = stateNotEmpty ? {...bibleSelection} : this.initialState;
+    
     this.handlers = {
-      'nextField': this.nextField,
+      // 'nextField': this.nextField,
+      'prevItem': this.prevItem,
+      'nextItem': this.nextItem,
+      'nextSlide': this.displayNextVerse,
+      'prevSlide': this.displayPrevVerse
     }
 
   }
   componentDidMount(){
     let bibleWindow = document.getElementById("bibleWindow");
-    if(bibleWindow)
-      bibleWindow.focus();
+    if(bibleWindow) bibleWindow.focus();
+    const {bibleSelection} = this.props.state;
+    const stateEmpty = !bibleSelection || Object.keys(bibleSelection).length === 0;
+    if (stateEmpty) this.selectVersion(this.state.version);
+  }
 
+  componentDidUpdate(prevProps, prevState) {
+    const {currentBook: prevBook, currentChapter: prevChapter, endVerse: prevEnd, startVerse: prevStart} = prevState;
+    const {currentBook, currentChapter, endVerse, startVerse} = this.state;
+    if (prevBook !== currentBook || prevChapter !== currentChapter || prevEnd !== endVerse || prevStart !== startVerse) {
+      this.props.functions.updateBibleSelection(this.state)
+      console.log("UPDATING Bible");
+    }
+  }
+
+  resetState = () => this.setState({...this.initialState}, () => this.selectVersion(this.state.version))
+
+  selectVersion = (version) => {
+    const { bibles, bookSearch, currentBook, currentChapter, startVerse, endVerse } = this.state;
+    
     this.setState({
-      allBooks: kjv.books.map((e, index) => ({index: index, name: e.name})),
-      filteredBooks: kjv.books.map((e, index) => ({index: index, name: e.name})),
-      allChapters: kjv.books[0].chapters.map((e, index) => ({index: index, chapter: e.chapter})),
-      filteredChapters: kjv.books[0].chapters.map((e, index) => ({index: index, chapter: e.chapter})),
-      allVerses: kjv.books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
-      filteredVersesStart: kjv.books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
-      filteredVersesEnd: kjv.books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
+      version,
+      allBooks: bibles[version].books.map((e, index) => ({index: index, name: e.name})),
+      filteredBooks: bibles[version].books.map((e, index) => ({index: index, name: e.name})),
+      allChapters: bibles[version].books[0].chapters.map((e, index) => ({index: index, chapter: e.chapter})),
+      filteredChapters: bibles[version].books[0].chapters.map((e, index) => ({index: index, chapter: e.chapter})),
+      allVerses: bibles[version].books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
+      filteredVersesStart: bibles[version].books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
+      filteredVersesEnd: bibles[version].books[0].chapters[0].verses.map((e, index) => ({index: index, verse: e})),
+    }, () => {
+      this.filterBooks(bookSearch);
+      this.selectBook(currentBook);
+      this.selectChapter(currentChapter);
+      this.selectStartVerse(startVerse);
+      this.selectEndVerse(endVerse);
     })
   }
 
   createVersesItem = () => {
-    let {currentBook, currentChapter, startVerse, endVerse} = this.state;
-    let verses = kjv.books[currentBook].chapters[currentChapter].verses.filter(
+    let {currentBook, currentChapter, startVerse, endVerse, version, bibles} = this.state;
+    let verses = bibles[version].books[currentBook].chapters[currentChapter].verses.filter(
       e => (e.verse >= startVerse+1 && e.verse <= endVerse+1)
     );
 
     let verseNum = (endVerse !== startVerse) ? (startVerse+1)+ "-" + (endVerse+1) : (startVerse+1)
-    let name = kjv.books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
+    let name = bibles[version].books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
     let defaultBibleBackground = this.props.state.userSettings.defaultBibleBackground;
     let background = defaultBibleBackground ? defaultBibleBackground.name : '';
     let brightness = defaultBibleBackground ? defaultBibleBackground.brightness : 100;
@@ -67,7 +108,7 @@ export default class Bible extends Component {
       "slides": [
         SlideCreation.newSlide({type: "Title", fontSize: 4.5, words: name,
           background: background, brightness: brightness}),
-        SlideCreation.newSlide({type: "Verse", fontSize: 2.5,
+        SlideCreation.newSlide({type: "Verse", fontSize: 2.5, name, isBible: true,
           background: background, brightness: brightness})
       ],
       "type": "bible",
@@ -77,12 +118,48 @@ export default class Bible extends Component {
     item = this.props.formatBible(item, 'create', verses);
     this.props.functions.addItem(item);
   }
-  displayVerse = (index) => {
-    let {currentBook, currentChapter, startVerse} = this.state;
-    let verseNum = startVerse + index;
-    let verse = [kjv.books[currentBook].chapters[currentChapter].verses[verseNum]]
 
-    let name = kjv.books[currentBook].name + " " + (currentChapter+1) + ":" + verseNum
+  nextField = () => {
+    console.log(document.activeElement);
+  }
+
+  nextItem = () => {
+    console.log('next')
+  }
+
+  prevItem = () => {
+    console.log('prev')
+  }
+
+  displayNextVerse = () => {
+    const { displayedVerse, filteredVersesEnd, endVerse} = this.state;
+    const nextVerse = displayedVerse + 1;
+    if (nextVerse < filteredVersesEnd.length) {
+      this.displayVerse(nextVerse);
+    }
+    if (nextVerse > endVerse) {
+      this.selectEndVerse(nextVerse)
+    }
+  }
+
+  displayPrevVerse = () => {
+    const { displayedVerse, startVerse } = this.state;
+    const nextVerse = displayedVerse - 1;
+    if (nextVerse>= 0) {
+      this.displayVerse(nextVerse);
+    }
+    if (nextVerse < startVerse) {
+      this.selectStartVerse(nextVerse)
+    }
+  }
+
+
+  displayVerse = (index) => {
+    let {currentBook, currentChapter, startVerse, bibles, version} = this.state;
+    let verseNum = startVerse + index;
+    let verse = [bibles[version].books[currentBook].chapters[currentChapter].verses[verseNum]]
+
+    let name = bibles[version].books[currentBook].name + " " + (currentChapter+1) + ":" + (verseNum + 1)
     let defaultBibleBackground = this.props.state.userSettings.defaultBibleBackground;
     let background = defaultBibleBackground ? defaultBibleBackground.name : '';
     let brightness = defaultBibleBackground ? defaultBibleBackground.brightness : 100;
@@ -98,8 +175,10 @@ export default class Bible extends Component {
       "type": "bible"
     };
 
+    this.setState({displayedVerse: index})
+
     item = this.props.formatBible(item, 'fit', verse);
-    this.props.functions.updateCurrent({slide: item.slides[1], displayDirect: true});
+    this.props.functions.updateCurrent({slide: item.slides[1], displayDirect: true, isBible: true, name: name});
   }
 
   filterBooks = (bookSearch) => {
@@ -117,7 +196,8 @@ export default class Bible extends Component {
     this.setState({filteredBooks: filteredBooks})
   }
   filterChapters = (currentBook, chapterSearch) => {
-    let allChapters = kjv.books[currentBook].chapters.map((e, index) => ({index: index, chapter: e.chapter}));
+    const {bibles, version} = this.state;
+    let allChapters = bibles[version].books[currentBook].chapters.map((e, index) => ({index: index, chapter: e.chapter}));
     let filteredChapters = [];
     if(chapterSearch.length > 0)
       filteredChapters = allChapters.filter(ele => ele.chapter.toString().toLowerCase().includes(chapterSearch.toLowerCase()))
@@ -127,13 +207,14 @@ export default class Bible extends Component {
     let index = -1;
     if(element){
       index = allChapters.findIndex(e => e.chapter === element.chapter)
-      console.log("chapter", index)
+      // console.log("chapter", index)
       this.selectChapter(index);
     }
     this.setState({allChapters: allChapters, filteredChapters: filteredChapters})
   }
   filterVersesStart = (currentBook, currentChapter, verseStartSearch) => {
-    let allVerses = kjv.books[currentBook].chapters[currentChapter].verses.map((e, index) => ({index: index, verse: e}));
+    const {bibles, version} = this.state;
+    let allVerses = bibles[version].books[currentBook].chapters[currentChapter].verses.map((e, index) => ({index: index, verse: e}));
     let filteredVersesStart = [];
     if(verseStartSearch.length > 0)
       filteredVersesStart = allVerses.filter(ele => ele.verse.verse.toString().toLowerCase().includes(verseStartSearch.toLowerCase()))
@@ -148,7 +229,8 @@ export default class Bible extends Component {
     this.setState({allVerses: allVerses, filteredVersesStart: filteredVersesStart})
   }
   filterVersesEnd = (currentBook, currentChapter, verseEndSearch) => {
-    let allVerses = kjv.books[currentBook].chapters[currentChapter].verses.map((e, index) => ({index: index, verse: e}));
+    const {bibles, version} = this.state;
+    let allVerses = bibles[version].books[currentBook].chapters[currentChapter].verses.map((e, index) => ({index: index, verse: e}));
     let filteredVersesEnd = [];
     if(verseEndSearch.length > 0)
       filteredVersesEnd = allVerses.filter(ele => ele.verse.verse.toString().toLowerCase().includes(verseEndSearch.toLowerCase()))
@@ -163,13 +245,9 @@ export default class Bible extends Component {
     this.setState({filteredVersesEnd: filteredVersesEnd})
   }
 
-  nextField = () => {
-    console.log(document.activeElement);
-  }
-
   selectBook = (index) => {
     let {chapterSearch, verseStartSearch, verseEndSearch} = this.state;
-    console.log(index, chapterSearch)
+    // console.log(index, chapterSearch)
     this.filterChapters(index, chapterSearch);
     this.filterVersesStart(index, 0, verseStartSearch);
     this.filterVersesEnd(index, 0, verseEndSearch);
@@ -177,7 +255,8 @@ export default class Bible extends Component {
       currentBook: index,
       currentChapter: 0,
       startVerse: 0,
-      endVerse: 0
+      endVerse: 0,
+      displayedVerse: -1
     })
   }
   selectChapter = (index) => {
@@ -187,7 +266,8 @@ export default class Bible extends Component {
     this.setState({
       currentChapter: index,
       startVerse: 0,
-      endVerse: 0
+      endVerse: 0,
+      displayedVerse: -1
     })
   }
   selectStartVerse = (index) => {
@@ -228,18 +308,19 @@ export default class Bible extends Component {
     let {currentBook, currentChapter, startVerse, endVerse,
       bookSearch, chapterSearch, verseStartSearch, verseEndSearch,
       filteredBooks, filteredChapters, filteredVersesStart, filteredVersesEnd,
-      allVerses, allBooks} = this.state;
+      allVerses, allBooks, version, displayedVerse} = this.state;
 
     let {freeze, backgrounds, currentInfo} = this.props.state;
-    let {toggleFreeze} = this.props.functions;
+    let {toggleFreeze, updateCurrent } = this.props.functions;
 
     if(!allBooks[0])
       return null;
 
     let text = allVerses.filter(e => (e.verse.verse >= startVerse+1 && e.verse.verse <= endVerse+1));
     let displayText = text.map((element, index) => {
+      const selected = index === displayedVerse;
       return(
-        <div style={{margin: '0.5vmax', display: 'flex'}} key={index}>
+        <div style={{margin: '0.5vmax', display: 'flex', background: selected ? '#347373' : ''}} key={index}>
           <img className='imgButton' style={{display:'block', width:'1.5vw', height:'1.5vw'}}
              onClick={ () => this.displayVerse(index)} alt="playVerse" src={playVerse}
             />
@@ -323,6 +404,13 @@ export default class Bible extends Component {
       <HotKeys handlers={this.handlers} tabIndex="-1" id='bibleWindow'>
           <div style={{position:'relative', height: '75vh', backgroundColor:"#383838",
             margin: '1vh 0', color: 'white'}}>
+              <select value={version} onChange={ (e) => this.selectVersion(e.target.value)}>
+                <option value='kjv'>King James Version</option>
+                <option value='nkjv'>New King James Version</option>
+                <option value='niv'>New International Version</option>
+                <option value='nlt'>New Living Translation</option>
+              </select>
+              <button style={{...buttonStyle, fontSize: "calc(8px + 0.4vw)", marginLeft: '16px' }} onClick={this.resetState} >Reset</button>
             <div style={{display:'flex'}}>
               <div style={{display: 'flex', width:'27vw', height:'70vh',
                 fontSize: "calc(8px + 0.4vmax)", textAlign: 'center'}}>
@@ -386,6 +474,8 @@ export default class Bible extends Component {
                   <DisplayWindow backgrounds={backgrounds} slide={currentInfo.slide} width={"16vw"} title={"Presentation "}
                     titleSize="1.25vw"
                     />
+                  <button style={{...buttonStyle, position: 'absolute', right: '0.5vw', top: '0.5vh'}}
+                     onClick={ () => updateCurrent({image: '', displayDirect: true})}>Clear Verse</button>
                   <button style={{...buttonStyle, position: 'absolute', right: '0.5vw', bottom: '0.5vh'}}
                      onClick={this.createVersesItem}>Add Verses</button>
                 </div>

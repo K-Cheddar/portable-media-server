@@ -28,35 +28,35 @@ export function changes(props){
 		// }
 
 	});
-	let dbchanges = remoteDB.changes({
-		since: 'now',
-		live: true,
-		include_docs: true,
-		timeout: false
-	}).on('change', function(change) {
-		if(change.id === 'currentInfo'){
-			if(getTime() < change.doc.info.time)
-				updateState({currentInfo: change.doc.info});
-		}
-	}).on('error', function(){
-		dbchanges.cancel();
-		setTimeout(function(){
-			changes(props);
-		},2500);
-	});
+	// let dbchanges = remoteDB.changes({
+	// 	since: 'now',
+	// 	live: true,
+	// 	include_docs: true,
+	// 	timeout: false
+	// }).on('change', function(change) {
+	// 	if(change.id === 'currentInfo'){
+	// 		if(getTime() < change.doc.info.time)
+	// 			updateState({currentInfo: change.doc.info});
+	// 	}
+	// }).on('error', function(){
+	// 	dbchanges.cancel();
+	// 	setTimeout(function(){
+	// 		changes(props);
+	// 	},2500);
+	// });
 }
 
 export function init(props){
 	let {db} = props;
 	let {updateState, getSuccess, getAttempted} = props.parent;
-	db.get('currentInfo').then(function(doc){
-		updateState({currentInfo: doc.info});
-		getSuccess('currentInfo');
-	}).catch(function(){
-		console.log('currentInfo not loaded');
-	}).then(function(){
-		getAttempted('currentInfo');
-	});
+	// db.get('currentInfo').then(function(doc){
+	// 	updateState({currentInfo: doc.info});
+	// 	getSuccess('currentInfo');
+	// }).catch(function(){
+	// 	console.log('currentInfo not loaded');
+	// }).then(function(){
+	// 	getAttempted('currentInfo');
+	// });
 	db.get('ItemLists').then(function (doc) {
 		if(doc.itemLists[0]){
 			db.get(doc.itemLists[0].id).then(function(doc2){
