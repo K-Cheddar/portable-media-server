@@ -314,7 +314,9 @@ class App extends Component {
     let that = this;
     let opts = { live: true, retry: true };
     that.setState({ db: db, remoteDB: remoteDB });
-    remoteDB.replicate.to(localDB).on("complete", function (info) {
+    remoteDB.replicate.to(localDB, {
+      retry: true
+    }).on("complete", function (info) {
       DBSetup(db);
       DBGetter.init({ parent: that, db: db });
       DBGetter.retrieveImages({ parent: that, db: db, cloud: cloud });
