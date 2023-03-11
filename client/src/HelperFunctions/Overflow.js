@@ -7,8 +7,7 @@ export function formatSong(item) {
 
 	let slides = item.arrangements[item.selectedArrangement].slides;
 
-	let formattedLyrics =
-    item.arrangements[item.selectedArrangement].formattedLyrics;
+	let formattedLyrics = item.arrangements[item.selectedArrangement].formattedLyrics;
 	let songOrder = item.arrangements[item.selectedArrangement].songOrder;
 	for (let i = 0; i < formattedLyrics.length; ++i) {
 		let type = formattedLyrics[i].name;
@@ -22,7 +21,9 @@ export function formatSong(item) {
 		for (let j = 0; j < slides.length; j++) {
 			if (type === slides[j].type) ++counter;
 		}
-		if (songOrderCounter !== 0) slideSpan = counter / songOrderCounter;
+		if (songOrderCounter !== 0) {
+			slideSpan = counter / songOrderCounter;
+		} 
 		else slideSpan = counter;
 		formattedLyrics[i].slideSpan = slideSpan;
 	}
@@ -43,8 +44,7 @@ export function formatLyrics(item) {
 		}),
 	];
 	let songOrder = item.arrangements[item.selectedArrangement].songOrder;
-	let formattedLyrics =
-    item.arrangements[item.selectedArrangement].formattedLyrics;
+	let formattedLyrics = item.arrangements[item.selectedArrangement].formattedLyrics;
 	let fontSize = slides[1] ? slides[1].boxes[1].fontSize : 2.5;
 
 	for (let i = 0; i < songOrder.length; ++i) {
@@ -465,7 +465,7 @@ export function formatAnnouncements(props) {
 function getMaxLines(fontSize, height, topMarg) {
 	fontSize = fontSize + 'vw';
 	let windowWidth = window.innerWidth;
-	let topMargin = 1 - (topMarg * 2) / 100;
+	let topMargin = 1 - (topMarg * 2) / 100 || .86;
 
 	if (!height) height = 86;
 	else height *= topMargin;
