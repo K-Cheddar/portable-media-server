@@ -19,7 +19,9 @@ import Toolbar from "./ToolbarElements/ToolBar";
 import Loading from "./Loading";
 import cloudinary from "cloudinary-core";
 import { HotKeys } from "react-hotkeys";
-import firebase from 'firebase';
+import { onValue, ref, set } from 'firebase/database';
+import { getAuth, signInAnonymously } from "firebase/auth";
+import firebaseDatabase from './Firebase';
 import * as SlideCreation from "./HelperFunctions/SlideCreation";
 import nkjv from './assets/nkjv.json';
 import nlt from './assets/nlt.json';
@@ -36,20 +38,6 @@ var cloud = new cloudinary.Cloudinary({
 
 var conn;
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD8JdTmUVvAhQjBYnt59dOUqucnWiRMyMk",
-  authDomain: "portable-media.firebaseapp.com",
-  databaseURL: "https://portable-media.firebaseio.com",
-  projectId: "portable-media",
-  storageBucket: "portable-media.appspot.com",
-  messagingSenderId: "456418139697",
-  appId: "1:456418139697:web:02dabb94557dbf1dc07f10"
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-var database = firebase.database();
-console.log('Data', database)
 
 // let requestedBytes = 1024*1024*10; // 10MB
 //  window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
@@ -189,6 +177,9 @@ class App extends Component {
     if (sUser !== "null" && sUser !== null) {
       this.setState({ user: sUser });
       this.firebaseCurrent(sUser)
+      // Authenticate anonymously for firebase
+      const auth = getAuth();
+      signInAnonymously(auth);
     } 
     if (sDatabase && sDatabase !== "null") {
       database = sDatabase;
@@ -240,40 +231,68 @@ class App extends Component {
   }
 
   firebaseCurrent = (user) => {
-    const reff = database.ref(`users/${user}/presentation`);
-    reff.on('value', (snap) => {
+    const query1 = ref(firebaseDatabase, `users/${user}/presentation`);
+    onValue(query1, (snap) => {
       if (snap.val()) {
         this.setState({currentInfo: snap.val()})
       }
     })
-    const reff2 = database.ref(`users/${user}/overlay`);
-    reff2.on('value', (snap) => {
+    // const reff = database.ref(`users/${user}/presentation`);
+    // reff.on('value', (snap) => {
+    //   if (snap.val()) {
+    //     this.setState({currentInfo: snap.val()})
+    //   }
+    // })
+    const query2 = ref(firebaseDatabase, `users/${user}/overlay`);
+    onValue(query2, (snap) => {
       if (snap.val()) {
         this.setState({overlayInfo: snap.val()})
       }
     })
-    const reff3 = database.ref(`users/${user}/overlayPresets`);
-    reff3.on('value', (snap) => {
+    // const reff2 = database.ref(`users/${user}/overlay`);
+    // reff2.on('value', (snap) => {
+    //   if (snap.val()) {
+    //     this.setState({overlayInfo: snap.val()})
+    //   }
+    // })
+
+    const query3 = ref(firebaseDatabase, `users/${user}/overlayPresets`);
+    onValue(query3, (snap) => {
       if (snap.val()) {
         const { presets = [], queue = [] } = snap.val();
         this.setState({ overlayPresets: presets, overlayQueue: queue })
       }
     })
+
+
+    // const reff3 = database.ref(`users/${user}/overlayPresets`);
+    // reff3.on('value', (snap) => {
+    //   if (snap.val()) {
+    //     const { presets = [], queue = [] } = snap.val();
+    //     this.setState({ overlayPresets: presets, overlayQueue: queue })
+    //   }
+    // })
   }
 
   firebaseUpdateOverlay = (info) => {
     this.setState({overlayInfo: info})
-    database.ref(`users/${this.state.user}/overlay`).set({...info});
+    const query = ref(firebaseDatabase, `users/${this.state.user}/overlay`);
+    set(query, {...info})
+    // database.ref(`users/${this.state.user}/overlay`).set({...info});
   }
  
   firebaseUpdateOverlayPresets = (arr, type) => {
     if (type === 'preset') {
       this.setState({overlayPresets: arr})
-      database.ref(`users/${this.state.user}/overlayPresets/presets`).set(arr);
+      // database.ref(`users/${this.state.user}/overlayPresets/presets`).set(arr);
+      const presetQuery = ref(firebaseDatabase, `users/${this.state.user}/overlayPresets/presets`);
+      set(presetQuery, arr)
     }
     else if (type === 'queue') {
       this.setState({overlayQueue: arr})
-      database.ref(`users/${this.state.user}/overlayPresets/queue`).set(arr);
+      // database.ref(`users/${this.state.user}/overlayPresets/queue`).set(arr);
+      const presetQuery = ref(firebaseDatabase, `users/${this.state.user}/overlayPresets/queue`);
+      set(presetQuery, arr)
     }
   }
 
@@ -689,8 +708,10 @@ class App extends Component {
     if (conn) conn.send(update);
     this.setState({ currentInfo: update });
     // DBUpdater.updateCurrent({ db: this.state.remoteDB, obj: update });
-    console.log('update', update, ...update)
-    database.ref(`users/${this.state.user}/presentation`).set({...update});
+    console.log('update', update);
+    const query = ref(firebaseDatabase, `users/${this.state.user}/presentation`);
+    set(query, {...update})
+    // database.ref(`users/${this.state.user}/presentation`).set({...update});
     localStorage.setItem("presentation", JSON.stringify(update));
   };
 
@@ -867,7 +888,7 @@ class App extends Component {
     return (
       <HotKeys handlers={this.handlers} keyMap={map}>
         <div id="fullApp" style={style}>
-          <Toolbar database={database} parent={this} formatBible={Overflow.formatBible} />
+          <Toolbar parent={this} formatBible={Overflow.formatBible} />
           {!retrieved.finished && <Loading retrieved={retrieved} />}
           <div>
             {/* Route components are rendered if the path prop matches the current URL */}

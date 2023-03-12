@@ -180,19 +180,19 @@ export default class LiveStreamingHelper extends React.Component{
     }
 
     const stickyStyle = {
-      width: 'calc(100% - 16px)', backgroundColor: '#486938', color: 'white', position: 'absolute', bottom: 0,
-      textAlign: 'center', display: 'flex', padding: '8px', justifyContent: 'center', fontWeight: 'bold', fontSize: '85%'
+      width: 'calc(100% - 16px)', backgroundColor: '#00009f', color: 'white', position: 'absolute', bottom: 0,
+      textAlign: 'center', display: 'flex', padding: '8px', justifyContent: 'center', fontWeight: 'bold', fontSize: '70%',
     }
 
     const floatingStyle = {
-      width: '60%', margin:'0 20% 5%', backgroundColor: '#3c6572', color: 'white', position: 'absolute', bottom: 0,
-      textAlign: 'center', padding: '8px', justifyContent: 'center', fontWeight: 'bold'
+      width: 'fit-content', backgroundColor: 'rgb(86 86 86)', color: 'white', position: 'absolute', bottom: '4px',
+      left: '4px', textAlign: 'left', padding: '8px', justifyContent: 'center', fontWeight: 'bold', borderLeft: '3px solid #00009f'
     }
 
     const Preview = () => {
       const floating = (
         <div style={floatingStyle}>
-          <div style={{marginBottom: '8px'}}>{heading}</div>
+          <div style={{marginBottom: '8px', textTransform: 'uppercase', fontSize: '90%'}}>{heading}</div>
           <div style={{fontSize: '70%'}}>{subHeading}</div>
       </div>
       )
@@ -226,7 +226,7 @@ export default class LiveStreamingHelper extends React.Component{
       return (
         <div style={{display: 'flex', margin: '8px', width: '12vw'}} key={heading+index}>
           <button 
-            style={{...buttonStyle, height: '3vw',
+            style={{...buttonStyle, borderRadius: '.25vw', maxHeight: '5vw',
             ...(currentIndex === index && !isPreset && {...selectedStyle}),
             ...(indexBeingDragged === index && {...beingDraggedStyle})}}
             onClick={() => this.getFromQueue(index)} 
@@ -236,7 +236,7 @@ export default class LiveStreamingHelper extends React.Component{
                 <div>
                  {heading || subHeading}
                 </div>
-                <div style={{fontSize: "calc(4px + 0.4vw)" }}>{!!heading && subHeading}</div>
+                {!!heading && subHeading && <div style={{fontSize: "calc(5px + 0.4vw)", borderTop: '1px solid gray', paddingTop: '1px', marginTop: '1px' }}>{subHeading}</div> }
             </button>
           {qShowDelete && <img className='imgButton' style={{marginTop:'12px', width:'1.5vw', height:'1.5vw'}}
           onClick={ () => this.removeFromQueue(index)}
@@ -249,7 +249,7 @@ export default class LiveStreamingHelper extends React.Component{
       const selectedStyle = { borderColor: '#06d117' };
       return (
         <div style={{display: 'flex'}} key={heading+index}>
-          <button style={{...buttonStyle, margin: '8px', height: '3vw',
+          <button style={{...buttonStyle, margin: '8px', maxHeight: '5vw',
            ...(currentIndex === index && isPreset && {...selectedStyle})}} 
            onClick={() => this.getFromPresets(index)} >{heading || subHeading}</button>
           {/* <img className='imgButton' style={{margin:'0.5vw', width:'1.5vw', height:'1.5vw', visibility: 'hidden'}}
