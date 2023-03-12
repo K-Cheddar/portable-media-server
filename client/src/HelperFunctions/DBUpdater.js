@@ -4,6 +4,14 @@ import MakeUnique from './MakeUnique';
 
 let updaterInterval = null;
 
+export function addImages(props){
+	let {db, upload} = props;
+	db.get('images').then(function(doc){
+		doc.backgrounds = doc.backgrounds.concat(upload);
+		return db.put(doc);
+	});
+}
+
 export function addItem(props){
 	let {item} = props;
 	let {updateState, setItemIndex, addItemToList} = props.parent;
@@ -211,10 +219,12 @@ export function updateCurrent(props){
 	db.upsert('currentInfo', updateValues);
 }
 
-export function updateImages(props){
-	let {db, uploads} = props;
+export function updateImageList(props) {
+	const { db, index } = props;
 	db.get('images').then(function(doc){
-		doc.backgrounds = doc.backgrounds.concat(uploads);
+		const newBackgrounds = [...doc.backgrounds];
+		newBackgrounds.splice(index, 1);
+		doc.backgrounds = newBackgrounds;
 		return db.put(doc);
 	});
 }
