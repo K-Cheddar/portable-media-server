@@ -19,7 +19,9 @@ import Toolbar from "./ToolbarElements/ToolBar";
 import Loading from "./Loading";
 import cloudinary from "cloudinary-core";
 import { HotKeys } from "react-hotkeys";
-import firebase from 'firebase';
+import { onValue, ref, set } from 'firebase/database';
+import { getAuth, signInAnonymously } from "firebase/auth";
+import firebaseDatabase from './Firebase';
 import * as SlideCreation from "./HelperFunctions/SlideCreation";
 import nkjv from './assets/nkjv.json';
 import nlt from './assets/nlt.json';
@@ -33,22 +35,9 @@ var cloud = new cloudinary.Cloudinary({
   secure: true
 });
 
+
 var conn;
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD8JdTmUVvAhQjBYnt59dOUqucnWiRMyMk",
-  authDomain: "portable-media.firebaseapp.com",
-  databaseURL: "https://portable-media.firebaseio.com",
-  projectId: "portable-media",
-  storageBucket: "portable-media.appspot.com",
-  messagingSenderId: "456418139697",
-  appId: "1:456418139697:web:02dabb94557dbf1dc07f10"
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-var database = firebase.database();
-console.log('Data', database)
 
 // let requestedBytes = 1024*1024*10; // 10MB
 //  window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
@@ -138,7 +127,10 @@ const initialState = {
   mode: "edit",
   undoReady: false,
   redoReady: false,
-  overlayInfo: {}
+  overlayInfo: {},
+  overlayPresets: [],
+  overlayQueue: [],
+  bibleSelection: {}
 };
 
 let undoHistory = [];
@@ -185,6 +177,9 @@ class App extends Component {
     if (sUser !== "null" && sUser !== null) {
       this.setState({ user: sUser });
       this.firebaseCurrent(sUser)
+      // Authenticate anonymously for firebase
+      const auth = getAuth();
+      signInAnonymously(auth);
     } 
     if (sDatabase && sDatabase !== "null") {
       database = sDatabase;
@@ -200,29 +195,106 @@ class App extends Component {
       if (Object.keys(success).length < 6) {
         window.location.reload(true);
       }
-    }, 30000);
+    }, 300000);
+
+    var uploadWidget = window.cloudinary.createUploadWidget(
+			{
+				cloudName: 'portable-media',
+				uploadPreset: sUploadPreset
+			},
+			(error, result) => {
+				if (!error && result && result.event === 'success') {
+          let uploads = [];
+          for (var i = 0; i < result.length; i++) {
+            let type = result[i].format === "mp4" ? "video" : "image";
+            let obj = {
+              name: result[i].public_id,
+              type: type,
+              category: "Uncategorized",
+              url: result[i].url
+            };
+            console.log(result);
+            uploads.push(obj);
+          }
+          DBUpdater.updateImages({ db: that.state.db, uploads: uploads });
+          setTimeout(function () {
+            DBGetter.retrieveImages({
+              parent: that,
+              db: that.state.db,
+              cloud: cloud
+            });
+          }, 1000);
+				}
+			}
+		);
+    this.setState({ uploadWidget })
   }
 
   firebaseCurrent = (user) => {
-    const reff = database.ref(`users/${user}/presentation`);
-    reff.on('value', (snap) => {
+    const query1 = ref(firebaseDatabase, `users/${user}/presentation`);
+    onValue(query1, (snap) => {
       if (snap.val()) {
         this.setState({currentInfo: snap.val()})
       }
     })
-    const reff2 = database.ref(`users/${user}/overlay`);
-    reff2.on('value', (snap) => {
+    // const reff = database.ref(`users/${user}/presentation`);
+    // reff.on('value', (snap) => {
+    //   if (snap.val()) {
+    //     this.setState({currentInfo: snap.val()})
+    //   }
+    // })
+    const query2 = ref(firebaseDatabase, `users/${user}/overlay`);
+    onValue(query2, (snap) => {
       if (snap.val()) {
         this.setState({overlayInfo: snap.val()})
       }
     })
+    // const reff2 = database.ref(`users/${user}/overlay`);
+    // reff2.on('value', (snap) => {
+    //   if (snap.val()) {
+    //     this.setState({overlayInfo: snap.val()})
+    //   }
+    // })
+
+    const query3 = ref(firebaseDatabase, `users/${user}/overlayPresets`);
+    onValue(query3, (snap) => {
+      if (snap.val()) {
+        const { presets = [], queue = [] } = snap.val();
+        this.setState({ overlayPresets: presets, overlayQueue: queue })
+      }
+    })
+
+
+    // const reff3 = database.ref(`users/${user}/overlayPresets`);
+    // reff3.on('value', (snap) => {
+    //   if (snap.val()) {
+    //     const { presets = [], queue = [] } = snap.val();
+    //     this.setState({ overlayPresets: presets, overlayQueue: queue })
+    //   }
+    // })
   }
 
   firebaseUpdateOverlay = (info) => {
     this.setState({overlayInfo: info})
-    database.ref(`users/${this.state.user}/overlay`).set({...info});
+    const query = ref(firebaseDatabase, `users/${this.state.user}/overlay`);
+    set(query, {...info})
+    // database.ref(`users/${this.state.user}/overlay`).set({...info});
   }
-
+ 
+  firebaseUpdateOverlayPresets = (arr, type) => {
+    if (type === 'preset') {
+      this.setState({overlayPresets: arr})
+      // database.ref(`users/${this.state.user}/overlayPresets/presets`).set(arr);
+      const presetQuery = ref(firebaseDatabase, `users/${this.state.user}/overlayPresets/presets`);
+      set(presetQuery, arr)
+    }
+    else if (type === 'queue') {
+      this.setState({overlayQueue: arr})
+      // database.ref(`users/${this.state.user}/overlayPresets/queue`).set(arr);
+      const presetQuery = ref(firebaseDatabase, `users/${this.state.user}/overlayPresets/queue`);
+      set(presetQuery, arr)
+    }
+  }
 
   addItem = item => {
     DBUpdater.addItem({ parent: this, item: item });
@@ -261,7 +333,9 @@ class App extends Component {
     let that = this;
     let opts = { live: true, retry: true };
     that.setState({ db: db, remoteDB: remoteDB });
-    remoteDB.replicate.to(localDB).on("complete", function (info) {
+    remoteDB.replicate.to(localDB, {
+      retry: true
+    }).on("complete", function (info) {
       DBSetup(db);
       DBGetter.init({ parent: that, db: db });
       DBGetter.retrieveImages({ parent: that, db: db, cloud: cloud });
@@ -397,8 +471,14 @@ class App extends Component {
     let remoteURL =
       process.env.REACT_APP_DATABASE_STRING + "portable-media-" + database;
     let localDB = "portable-media";
-    let db = new PouchDB(localDB);
-    let remoteDB = new PouchDB(remoteURL);
+    let db = new PouchDB(localDB, {skip_setup: true});
+    let remoteDB = null;
+    try {
+      remoteDB = new PouchDB(remoteURL);
+    } catch (e) {
+      console.log("Problem is here");
+    }
+    
     let that = this;
     if (!first) {
       db.destroy().then(function () {
@@ -474,34 +554,8 @@ class App extends Component {
   };
 
   openUploader = () => {
-    let that = this;
-    let { upload_preset } = this.state;
-    window.cloudinary.openUploadWidget(
-      { cloud_name: "portable-media", upload_preset: upload_preset },
-      function (error, result) {
-        if (!result) return;
-        let uploads = [];
-        for (var i = 0; i < result.length; i++) {
-          let type = result[i].format === "mp4" ? "video" : "image";
-          let obj = {
-            name: result[i].public_id,
-            type: type,
-            category: "Uncategorized",
-            url: result[i].url
-          };
-          console.log(result);
-          uploads.push(obj);
-        }
-        DBUpdater.updateImages({ db: that.state.db, uploads: uploads });
-        setTimeout(function () {
-          DBGetter.retrieveImages({
-            parent: that,
-            db: that.state.db,
-            cloud: cloud
-          });
-        }, 1000);
-      }
-    );
+    let { uploadWidget } = this.state;
+    uploadWidget.open();
   };
 
   overrideUndoRedo = e => {
@@ -625,6 +679,10 @@ class App extends Component {
     }
   };
 
+  updateBibleSelection = (bibleSelection) => {
+    this.setState({bibleSelection})
+  }
+
   updateBoxPosition = position => {
     Formatter.updateBoxPosition({ position: position, parent: this });
   };
@@ -636,11 +694,11 @@ class App extends Component {
   updateCurrent = props => {
     if (this.state.freeze) return;
 
-    let { slide, image, isBible = false, name = '' } = props;
+    let { slide, image, isBible = false, name = '', isAnnouncement = false } = props;
 
     let date = new Date();
     let time = date.getTime();
-    let update = { time, isBible, name };
+    let update = { time, isBible, name, isAnnouncement };
     if (image || image === "")
       update.slide = { boxes: [{ words: "", background: image, style: {} }] };
     else update.slide = JSON.parse(JSON.stringify(slide));
@@ -650,8 +708,10 @@ class App extends Component {
     if (conn) conn.send(update);
     this.setState({ currentInfo: update });
     // DBUpdater.updateCurrent({ db: this.state.remoteDB, obj: update });
-    console.log('update', update, ...update)
-    database.ref(`users/${this.state.user}/presentation`).set({...update});
+    console.log('update', update);
+    const query = ref(firebaseDatabase, `users/${this.state.user}/presentation`);
+    set(query, {...update})
+    // database.ref(`users/${this.state.user}/presentation`).set({...update});
     localStorage.setItem("presentation", JSON.stringify(update));
   };
 
@@ -828,7 +888,7 @@ class App extends Component {
     return (
       <HotKeys handlers={this.handlers} keyMap={map}>
         <div id="fullApp" style={style}>
-          <Toolbar database={database} parent={this} formatBible={Overflow.formatBible} />
+          <Toolbar parent={this} formatBible={Overflow.formatBible} />
           {!retrieved.finished && <Loading retrieved={retrieved} />}
           <div>
             {/* Route components are rendered if the path prop matches the current URL */}

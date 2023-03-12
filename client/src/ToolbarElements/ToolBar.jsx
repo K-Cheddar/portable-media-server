@@ -84,13 +84,14 @@ export default class Toolbar extends Component {
 
   render(){
 
-    let {formatBible, database} = this.props;
+    let {formatBible} = this.props;
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList, updateUserSetting, updateBoxPosition,
-        updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish, firebaseUpdateOverlay} = this.props.parent; //updateItemStructure
+        updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish, firebaseUpdateOverlay,
+        firebaseUpdateOverlayPresets } = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn,
       allItemLists, needsUpdate, userSettings, backgrounds, mode,
-      undoReady, redoReady, boxIndex, overlayInfo} = this.props.parent.state;
+      undoReady, redoReady, boxIndex, overlayInfo, overlayQueue, overlayPresets} = this.props.parent.state;
     let {tab, menuMousedOver, itemListsOpen, settingsOpen, allItemsOpen, liveStreamHelper} = this.state;
 
     let menuItem = {
@@ -123,7 +124,7 @@ export default class Toolbar extends Component {
             <div className='toolbarSection' onMouseLeave={this.closeMenu}>
               <button onClick={this.openMenu} style={menuButton}>Menu</button>
                 <div style={menuMousedOver ? {backgroundColor:'#c4c4c4', position:'absolute', width:'9vw', zIndex: 4} : {display:'none'}}>
-                  <button style={menuItem} onClick={this.openPresentation}>Open Display</button>
+                  <button style={menuItem} onClick={this.openPresentation}>Open Stage Display</button>
                   <Link to="/"><button style={menuItem}>Home</button></Link>
                   <button style={menuItem} onClick={this.openSettings}> Open Settings </button>
                   {!isLoggedIn && <Link to="/login"><button style={menuItem}>Login</button></Link>}
@@ -256,7 +257,10 @@ export default class Toolbar extends Component {
         />}
         {settingsOpen && <UserSettings state={this.props.parent.state} close={this.closeSettings}
         updateUserSetting={updateUserSetting}/>}
-        {liveStreamHelper && <LiveStreamingHelper database={database} close={this.closeLiveStreamHelper} firebaseUpdateOverlay={firebaseUpdateOverlay} overlayInfo={overlayInfo}/>}
+        {liveStreamHelper && <LiveStreamingHelper close={this.closeLiveStreamHelper} 
+        firebaseUpdateOverlay={firebaseUpdateOverlay} overlayInfo={overlayInfo}
+        overlayQueue={overlayQueue} firebaseUpdateOverlayPresets={firebaseUpdateOverlayPresets}
+         overlayPresets={overlayPresets} />}
         {allItemsOpen && <AllItems close={this.closeAllItems} state={this.props.parent.state}
         functions={this.props.parent} tab={tab} formatBible={formatBible}/>}
       </div>
