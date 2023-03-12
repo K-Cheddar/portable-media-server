@@ -16,14 +16,6 @@ export default class Backgrounds extends React.Component{
     }
   }
 
-  close = () => {
-    this.setState({allOpen: false})
-  }
-
-  open = () => {
-    this.setState({allOpen: true})
-  }
-
   closeName = () => {
     this.setState({nameOpen: false})
   }
@@ -128,7 +120,7 @@ export default class Backgrounds extends React.Component{
       marginTop: '1vh',   border: '0.25vw solid #c4c4c4', position:'absolute'
     }
     let backgroundTableStyle = {
-        overflowY: 'scroll',    width: width,     height: '36vh',
+        overflowY: 'scroll',    width: width,     maxHeight: '75vh',
         background: '#383838',  marginTop: '1vh',   border: '0.25vw solid #c4c4c4',
         position:'absolute'
     }
@@ -154,23 +146,21 @@ export default class Backgrounds extends React.Component{
             {slides &&<button style={buttonStyle} onClick={this.setItemBackground}>Set Item Background</button>}
             {slides &&<button style={buttonStyle} onClick={this.setSlideBackground}>Set Slide Background</button>}
           </div>
-          <div >
+          <div style={{ position: 'relative' }}>
             {!allOpen && <div style={backgroundsRowStyle}>
             {BCKS}
           </div>}
             {allOpen && <div style={backgroundTableStyle}>{BCKS}</div>}
-            {!allOpen && <img className='imgButton'
-              style={{display:'block', width:'1vw', height:'1vw', marginLeft:"2%",
-                position: 'absolute', right: '-2vw', bottom: '0vh'}}
-               onClick={this.open}
-               alt="expandDown" src={expandDown}
-              />}
-            {allOpen && <img className='imgButton'
-              style={{display:'block', width:'1vw', height:'1vw', marginLeft:"2%",
-                position: 'absolute', right: '-2vw', bottom: "-25vh"}}
-               onClick={this.close}
-               alt="collapseUp" src={collapseUp}
-              />}
+            <img className='imgButton'
+              style={{
+                display:'block', width:'1vw', height:'1vw', marginLeft:"4px",
+                position: 'absolute', right: '-2vw', top: '0', ...(allOpen && {transform: 'rotate(180deg)'} )
+              }}
+              onClick={() => this.setState( {allOpen: !allOpen })}
+              alt="expandDown" 
+              src={expandDown}
+
+            />  
           </div>
 
           {nameOpen && <CreateName option="create" name={selectedBackground} type={'image'}

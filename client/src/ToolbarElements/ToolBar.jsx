@@ -88,7 +88,7 @@ export default class Toolbar extends Component {
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList, updateUserSetting, updateBoxPosition,
         updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish, firebaseUpdateOverlay,
-        firebaseUpdateOverlayPresets } = this.props.parent; //updateItemStructure
+        firebaseUpdateOverlayPresets, updateImageList } = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn,
       allItemLists, needsUpdate, userSettings, backgrounds, mode,
       undoReady, redoReady, boxIndex, overlayInfo, overlayQueue, overlayPresets} = this.props.parent.state;
@@ -256,7 +256,7 @@ export default class Toolbar extends Component {
           needsUpdate={needsUpdate}
         />}
         {settingsOpen && <UserSettings state={this.props.parent.state} close={this.closeSettings}
-        updateUserSetting={updateUserSetting}/>}
+        updateUserSetting={updateUserSetting} updateImageList={updateImageList} />}
         {liveStreamHelper && <LiveStreamingHelper close={this.closeLiveStreamHelper} 
         firebaseUpdateOverlay={firebaseUpdateOverlay} overlayInfo={overlayInfo}
         overlayQueue={overlayQueue} firebaseUpdateOverlayPresets={firebaseUpdateOverlayPresets}

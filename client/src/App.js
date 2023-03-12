@@ -204,19 +204,15 @@ class App extends Component {
 			},
 			(error, result) => {
 				if (!error && result && result.event === 'success') {
-          let uploads = [];
-          for (var i = 0; i < result.length; i++) {
-            let type = result[i].format === "mp4" ? "video" : "image";
-            let obj = {
-              name: result[i].public_id,
-              type: type,
-              category: "Uncategorized",
-              url: result[i].url
-            };
-            console.log(result);
-            uploads.push(obj);
-          }
-          DBUpdater.updateImages({ db: that.state.db, uploads: uploads });
+          const { type: resultType, public_id, url } = result.info;
+          let type = resultType === "mp4" ? "video" : "image";
+          let upload = {
+            name: public_id,
+            type: type,
+            category: "Uncategorized",
+            url: url
+          };
+          DBUpdater.addImages({ db: that.state.db, upload });
           setTimeout(function () {
             DBGetter.retrieveImages({
               parent: that,
@@ -237,24 +233,13 @@ class App extends Component {
         this.setState({currentInfo: snap.val()})
       }
     })
-    // const reff = database.ref(`users/${user}/presentation`);
-    // reff.on('value', (snap) => {
-    //   if (snap.val()) {
-    //     this.setState({currentInfo: snap.val()})
-    //   }
-    // })
+
     const query2 = ref(firebaseDatabase, `users/${user}/overlay`);
     onValue(query2, (snap) => {
       if (snap.val()) {
         this.setState({overlayInfo: snap.val()})
       }
     })
-    // const reff2 = database.ref(`users/${user}/overlay`);
-    // reff2.on('value', (snap) => {
-    //   if (snap.val()) {
-    //     this.setState({overlayInfo: snap.val()})
-    //   }
-    // })
 
     const query3 = ref(firebaseDatabase, `users/${user}/overlayPresets`);
     onValue(query3, (snap) => {
@@ -264,33 +249,22 @@ class App extends Component {
       }
     })
 
-
-    // const reff3 = database.ref(`users/${user}/overlayPresets`);
-    // reff3.on('value', (snap) => {
-    //   if (snap.val()) {
-    //     const { presets = [], queue = [] } = snap.val();
-    //     this.setState({ overlayPresets: presets, overlayQueue: queue })
-    //   }
-    // })
   }
 
   firebaseUpdateOverlay = (info) => {
     this.setState({overlayInfo: info})
     const query = ref(firebaseDatabase, `users/${this.state.user}/overlay`);
     set(query, {...info})
-    // database.ref(`users/${this.state.user}/overlay`).set({...info});
   }
  
   firebaseUpdateOverlayPresets = (arr, type) => {
     if (type === 'preset') {
       this.setState({overlayPresets: arr})
-      // database.ref(`users/${this.state.user}/overlayPresets/presets`).set(arr);
       const presetQuery = ref(firebaseDatabase, `users/${this.state.user}/overlayPresets/presets`);
       set(presetQuery, arr)
     }
     else if (type === 'queue') {
       this.setState({overlayQueue: arr})
-      // database.ref(`users/${this.state.user}/overlayPresets/queue`).set(arr);
       const presetQuery = ref(firebaseDatabase, `users/${this.state.user}/overlayPresets/queue`);
       set(presetQuery, arr)
     }
@@ -707,11 +681,8 @@ class App extends Component {
 
     if (conn) conn.send(update);
     this.setState({ currentInfo: update });
-    // DBUpdater.updateCurrent({ db: this.state.remoteDB, obj: update });
-    console.log('update', update);
     const query = ref(firebaseDatabase, `users/${this.state.user}/presentation`);
     set(query, {...update})
-    // database.ref(`users/${this.state.user}/presentation`).set({...update});
     localStorage.setItem("presentation", JSON.stringify(update));
   };
 
@@ -818,6 +789,10 @@ class App extends Component {
   updateItem = item => {
     ItemUpdate.updateItem({ item: item, parent: this });
   };
+
+  updateImageList = (index) => {
+    DBUpdater.updateImageList({ db: this.state.db, index })
+  }
 
   updateItemStructure = () => {
     DBUpdater.updateItemStructure(this.state.db);
