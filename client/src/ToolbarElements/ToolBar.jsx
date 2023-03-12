@@ -84,7 +84,7 @@ export default class Toolbar extends Component {
 
   render(){
 
-    let {formatBible, database} = this.props;
+    let {formatBible} = this.props;
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList, updateUserSetting, updateBoxPosition,
         updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish, firebaseUpdateOverlay,
@@ -257,7 +257,7 @@ export default class Toolbar extends Component {
         />}
         {settingsOpen && <UserSettings state={this.props.parent.state} close={this.closeSettings}
         updateUserSetting={updateUserSetting}/>}
-        {liveStreamHelper && <LiveStreamingHelper database={database} close={this.closeLiveStreamHelper} 
+        {liveStreamHelper && <LiveStreamingHelper close={this.closeLiveStreamHelper} 
         firebaseUpdateOverlay={firebaseUpdateOverlay} overlayInfo={overlayInfo}
         overlayQueue={overlayQueue} firebaseUpdateOverlayPresets={firebaseUpdateOverlayPresets}
          overlayPresets={overlayPresets} />}
