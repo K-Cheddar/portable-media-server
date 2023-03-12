@@ -2,6 +2,7 @@ import React from 'react';
 import blank from '../assets/blank.png';
 import brightness_img from '../assets/brightness.png';
 import closeIcon from '../assets/closeIcon.png'
+import deleteX from '../assets/deleteX.png';
 import Slider from 'rc-slider';
 
 export default class UserSettings extends React.Component{
@@ -11,7 +12,8 @@ export default class UserSettings extends React.Component{
 
     this.state = {
       selectedSetting: 'defaultBibleBackground',
-      brightness: 100
+      brightness: 100,
+      showDelete: false
     }
   }
 
@@ -56,8 +58,9 @@ export default class UserSettings extends React.Component{
     return backgroundStyle;
   }
 
+
   render(){
-    let {selectedSetting, brightness} = this.state;
+    let { selectedSetting, brightness, showDelete } = this.state;
     let {backgrounds, userSettings} = this.props.state;
 
     let settingObjs = [
@@ -71,19 +74,25 @@ export default class UserSettings extends React.Component{
     ]
 
     let fullArray= [], row = []
-    let numCols = 7;
+    let numCols = 8;
     let style={
-      position:'absolute',    zIndex:6,                   left:'15%',
+      position:'absolute',    zIndex:6,                   left:'8%',
       top:'10%',              backgroundColor: '#383838', border: '0.1vw solid white',
       boxShadow: '0 5px 10px rgb(0, 0, 0)',               borderRadius: '1vw',
-      padding: 10,            width: '60vw',              height: '60vh',
+      padding: 10,            width: '82vw',              height: '75vh',
       color: 'white'
     }
 
     let backgroundTableStyle = {
-        overflowY: 'scroll',    height: '38vh',
+        overflowY: 'scroll',    height: '65vh',
         background: '#383838',  marginTop: '1vh',   border: '0.25vw solid #c4c4c4',
         position:'relative',    marginLeft: '2vw'
+    }
+
+    let buttonStyle = {
+      fontSize: "calc(8px + 0.6vw)", margin:'0.25%', width:'11vw', backgroundColor:'#383838',
+          borderRadius:'0.5vw', color: 'white', overflow: 'hidden',
+          borderWidth: '0.2vw', borderStyle: 'solid', borderColor: '#06d1d1'
     }
 
     let itemStyle = {
@@ -100,10 +109,10 @@ export default class UserSettings extends React.Component{
 
     let sliderStyle = {width: '5vw', margin: '.5vw 1vw'}
 
-    let sectionStyle = {display: 'flex', border: '.25vw solid #383838', height: '5vh',
-       marginTop: '0.65vh', padding:'1%'}
+    let sectionStyle = {display: 'flex', border: '2px solid #606060', height: '5vh',
+       marginTop: '8px', padding:'3px'}
     let selectedSectionStyle = Object.assign({}, sectionStyle);
-    selectedSectionStyle.border = '.25vw solid #4286f4'
+    selectedSectionStyle.border = '2px solid #4286f4'
 
     for(var i = 0; i < backgrounds.length; i+=numCols){
       for(var j = i; j < i+numCols; ++j){
@@ -118,9 +127,12 @@ export default class UserSettings extends React.Component{
     let BCKS = fullArray.map((element, index) => {
       let row = element.map(function (pic, i){
         return(
-          <div key={index*numCols+i}>
+          <div key={index*numCols+i + pic.name} style={{ display: 'flex', border: '1px solid gray', padding: '2px', margin: '2px'}}>
             <img className='imgButton' onClick={ () => that.changeSetting(pic.name)}
               style={itemStyle} alt={pic.name} src={pic.image.src}/>
+            {showDelete && <img className='imgButton' style={{marginTop:'12px', width:'1.5vw', height:'1.5vw'}}
+              onClick={ () => that.props.updateImageList(index*numCols+i)}
+              alt="delete" src={deleteX}/> }
           </div>
         )
       })
@@ -136,8 +148,10 @@ export default class UserSettings extends React.Component{
         <div onClick={ () => this.setState({
             selectedSetting: element.name,
             brightness: userSettings[element.name] ? userSettings[element.name].brightness : 100
-          })}
-          style={selectedSetting === element.name ? selectedSectionStyle : sectionStyle}>
+            })}
+            style={selectedSetting === element.name ? selectedSectionStyle : sectionStyle}
+            key={element.name}
+          >
           <div style={sectionWords}>{element.type}</div>
           <div style={style}></div>
         </div>
@@ -153,6 +167,7 @@ export default class UserSettings extends React.Component{
                   />
                 <Slider style={sliderStyle} min={1} value={brightness} onChange={this.changeBrightness}
                 onAfterChange={() => this.updateBrightness(brightness)}/>
+                <button onClick={() => this.setState({ showDelete: !this.state.showDelete })} style={buttonStyle}>Show Delete</button>
                 <img className='imgButton' style={{display:'block', width:'1.25vw', height:'1.25vw',
                   padding: '0.25vh 0.25vw', position: 'absolute', right: '1vw'}}
                    alt="closeIcon" src={closeIcon}
