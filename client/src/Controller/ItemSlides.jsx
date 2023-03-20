@@ -318,7 +318,7 @@ class ItemSlides extends React.Component{
         let deleteEnable = false;
         if(item.type === 'image')
           deleteEnable = item.slides.length > 1;
-        if(item.type === 'announcements' || item.type === 'bible')
+        if(item.type === 'announcements')
           deleteEnable = index+i > 1 || index > 0;
         if(selected){
           style = slideSelectedStyle;

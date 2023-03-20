@@ -20,7 +20,7 @@ import Loading from "./Loading";
 import cloudinary from "cloudinary-core";
 import { HotKeys } from "react-hotkeys";
 import { onValue, ref, set } from 'firebase/database';
-import { getAuth, signInAnonymously } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
 import firebaseDatabase from './Firebase';
 import * as SlideCreation from "./HelperFunctions/SlideCreation";
 import nkjv from './assets/nkjv.json';
@@ -177,9 +177,7 @@ class App extends Component {
     if (sUser !== "null" && sUser !== null) {
       this.setState({ user: sUser });
       this.firebaseCurrent(sUser)
-      // Authenticate anonymously for firebase
-      const auth = getAuth();
-      signInAnonymously(auth);
+      this.signIntoFirebase();
     } 
     if (sDatabase && sDatabase !== "null") {
       database = sDatabase;
@@ -248,7 +246,11 @@ class App extends Component {
         this.setState({ overlayPresets: presets, overlayQueue: queue })
       }
     })
+  }
 
+  firebaseSetAnnouncements = (id) => {
+    const query = ref(firebaseDatabase, `users/${this.state.user}/backend/announcementId`);
+    set(query, id)
   }
 
   firebaseUpdateOverlay = (info) => {
@@ -547,6 +549,12 @@ class App extends Component {
     ++undoIndex;
     this.updateUndoIndex();
   };
+
+  signIntoFirebase = () => {
+    // Authenticate for firebase
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, "eliathahsdatechteam@gmail.com", "TamTam7550");
+  }
 
   setBoxIndex = index => {
     this.setState({ boxIndex: index });
