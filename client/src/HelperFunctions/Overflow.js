@@ -223,7 +223,6 @@ function formatBibleVerses(verses, item, mode) {
 						break verseLoop;
 					}
 				}
-				console.log(currentBoxes);
 				formattedVerses.push(
 					SlideCreation.newSlide({
 						type: 'Verse ' + verses[i].verse,
@@ -271,7 +270,6 @@ function formatBibleVerses(verses, item, mode) {
 					slide = update + ' ';
 				else {
 					slide = slide.replace(/\s+/g, ' ').trim();
-					console.log(slide);
 					formattedVerses.push(
 						SlideCreation.newSlide({
 							type: type,
@@ -309,13 +307,14 @@ export function formatAnnouncements(props) {
 		box.height,
 		box.topMargin
 	);
-	console.log(lineHeight, maxLines);
 	const filteredLines = [];
 	for (let j = 0; j < lines.length; ++j) {
-		const cleanLine = lines[j].replace(/[^\w\s'".?;:!&()-]/g, '');
+
+		// eslint-disable-next-line no-irregular-whitespace
+		const cleanLine = lines[j].replace(/[^\w\s'".?;:!&()-][\t\u200B-\u200D\uFEFF~​]/g, '').replace(/\s+/g, ' ');
 		const trimmed = cleanLine.trim();
 
-		if (trimmed === '' || trimmed === '\n' || trimmed === '\r') {
+		if (!/\S/g.test(trimmed) || trimmed.length < 2) {
 			continue;
 		}
 
@@ -325,7 +324,6 @@ export function formatAnnouncements(props) {
 		let line = filteredLines[i];
 
 		if (line.replace(/[_\s]+/gm, '').trim() === '') {
-			console.log('new section');
 			line = filteredLines[i + 1];
 			i += 1;
 			if (currentSection.length !== 0) sections.push(currentSection);
@@ -334,8 +332,6 @@ export function formatAnnouncements(props) {
 			currentSection.push({ title: line });
 			if (sections[currentSectionNumber]) {
 				let slideSpan = Math.ceil(lineCounter / maxLines);
-				console.log({ slideSpan, lineCounter, maxLines });
-				console.log(Math.ceil(lineCounter / slideSpan));
 				sections[currentSectionNumber][0].linesPerSlide = Math.ceil(
 					lineCounter / slideSpan
 				);
@@ -362,17 +358,15 @@ export function formatAnnouncements(props) {
 	if (sections.length === 0) return null;
 	
 	let slideSpan = Math.ceil(lineCounter / maxLines);
-	console.log({ currentSectionNumber, lineCounter, maxLines });
 	sections[currentSectionNumber][0].linesPerSlide = Math.ceil(
 		lineCounter / slideSpan
 	);
 	let words;
 	let slides = [];
-	console.log(sections);
 
 	for (let i = 0; i < sections.length; ++i) {
 		let lineCounter = 0;
-		let linesPerSlide = sections[i][0].linesPerSlide;
+		// let linesPerSlide = sections[i][0].linesPerSlide;
 		let title = sections[i][0].title;
 		words = '';
 		for (let j = 1; j < sections[i].length; ++j) {
@@ -420,7 +414,7 @@ export function formatAnnouncements(props) {
 							brightness: brightness,
 						})
 					);
-				if (section.lines <= 3) words = '• ' + section.text + '\n';
+				if (section.lines <= 3) words = '• ' + section.text.trim() + '\n';
 				else words = section.text + '\n';
 				lineCounter = section.lines;
 			} else if (lineCounter <= maxLines) {
@@ -482,7 +476,6 @@ function getMaxLines(fontSize, height, topMarg) {
 	document.body.removeChild(singleSpan);
 
 	let maxLines = Math.floor(height / lineHeight);
-	console.log(lineHeight, height, windowWidth, maxLines);
 	let obj = { maxLines: maxLines, lineHeight: lineHeight };
 	return obj;
 }
@@ -503,10 +496,12 @@ function getNumLines(text, fontSize, lineHeight, width, sideMarg) {
 	textSpan.style.whiteSpace = 'pre-wrap';
 	textSpan.style.width = width + 'px';
 	textSpan.style.position = 'fixed';
+	textSpan.style.wordBreak = 'break-word';
 	// textSpan.style.zIndex = 10;
 	document.body.appendChild(textSpan);
 	let textSpanHeight = textSpan.offsetHeight;
 	document.body.removeChild(textSpan);
+
 
 	let lines = Math.floor(textSpanHeight / lineHeight);
 	return lines;

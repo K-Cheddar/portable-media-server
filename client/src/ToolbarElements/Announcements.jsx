@@ -76,6 +76,7 @@ export default class Announcements extends React.Component{
         "type": 'announcements',
         "background": image
       }
+      this.props.functions.firebaseSetAnnouncements(name);
       this.props.functions.addItem(item);
   }
 
