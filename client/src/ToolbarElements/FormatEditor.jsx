@@ -7,6 +7,8 @@ import cPickerClose from "../assets/color-picker-close.png";
 import brightness_img from "../assets/brightness.png";
 import skipTitle from "../assets/skipTitle.png";
 import skipTitleOff from "../assets/skipTitleOff.png";
+import keepRatioImg from "../assets/1-1-ratio.png";
+import dontKeepRatioImg from "../assets/16-9-ratio.jpg";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
@@ -130,6 +132,14 @@ class FormatEditor extends React.Component {
     else this.props.updateSkipTitle(true);
   };
 
+  updateKeepRatio = () => {
+    const { item, wordIndex} = this.props;
+    if (item && item.slides) {
+      this.props.updateKeepRatio(!item.slides[wordIndex].boxes[0].keepRatio);
+    }
+    
+  };
+
   updateNextOnFinish = () => {
     if (this.props.item.nextOnFinish) this.props.updateNextOnFinish(false);
     else this.props.updateNextOnFinish(true);
@@ -138,7 +148,7 @@ class FormatEditor extends React.Component {
   render() {
     let { cPickerOpen, fontSize, brightness } = this.state;
     let sliderStyle = { width: "5vw", margin: ".5vw 1vw" };
-    let { item } = this.props;
+    let { item, wordIndex } = this.props;
     let showSkipTitle = false;
     if (item.type === "song")
       if (item.arrangements[item.selectedArrangement].slides.length > 1)
@@ -312,6 +322,44 @@ class FormatEditor extends React.Component {
               <div>Next On Finish</div>
             </div>
           )}
+          {item && item.slides && 
+            <div
+              onClick={this.updateKeepRatio}
+              className="imgButton"
+              style={{
+                fontSize: "calc(5px + 0.35vw)",
+                height: "5vh",
+                marginRight: "0.5vw"
+              }}
+            >
+              {item.slides[wordIndex].boxes[0].keepRatio && (
+                <img
+                  style={{
+                    display: "block",
+                    width: "1.25vw",
+                    height: "1.25vw",
+                    margin: "auto",
+                    padding: "0.25vh 0.25vw"
+                  }}
+                  alt="keepRatioImg"
+                  src={keepRatioImg}
+                />
+              )}
+              {!item.slides[wordIndex].boxes[0].keepRatio && (
+                <img
+                  style={{
+                    display: "block",
+                    width: "1.25vw",
+                    height: "1.25vw",
+                    margin: "auto",
+                    padding: "0.25vh 0.25vw"
+                  }}
+                  alt="dontKeepRatioImg"
+                  src={dontKeepRatioImg}
+                />
+              )}
+              <div>Change Ratio</div>
+            </div>}
         </div>
       </div>
     );

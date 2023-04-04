@@ -70,20 +70,26 @@ export default class Backgrounds extends React.Component{
       slides = item.slides;
 
     let itemStyle = {
-        border:'0.25vw',   borderColor: '#383838',    borderStyle:'solid',
-        height: '3vmax',   width: '5.33vmax',         padding: '.1vmax'
+        border:'0.25vw',      borderColor: '#383838', borderStyle:'solid',
+        height: '3vmax',      width: '5.33vmax',      padding: '.1vmax',
+        position: 'relative', display: 'flex',        justifyContent: 'center'
       }
     let itemSelectedStyle = {
-        border:'0.25vw',    borderColor: '#4286f4',     borderStyle:'solid',
-        height: '3vmax',    width: '5.33vmax',          padding: '.1vmax'
+        border:'0.25vw',      borderColor: '#4286f4',   borderStyle:'solid',
+        height: '3vmax',      width: '5.33vmax',        padding: '.1vmax',
+        position: 'relative', display: 'flex',          justifyContent: 'center'
       }
+
+    let imageStyle = {
+      height: '100%' 
+    }
 
     if(backgrounds && !allOpen){
       BCKS = backgrounds.map((pic, index) => {
       let itemSelected = (index === selected);
       return(
-        <div key={index}>
-          <img onClick={ () => this.selectBackground(index)} style={itemSelected ? itemSelectedStyle: itemStyle} alt={pic.name} src={pic.image.src}/>
+        <div key={index} style={itemSelected ? itemSelectedStyle: itemStyle}>
+          <img onClick={ () => this.selectBackground(index)} alt={pic.name} src={pic.image.src} style={imageStyle}/>
         </div>
       )
     })
@@ -102,9 +108,9 @@ export default class Backgrounds extends React.Component{
         let row = element.map(function (pic, i){
           let itemSelected = (index*numCols + i === selected);
           return(
-            <div key={index*numCols+i}>
+            <div key={index*numCols+i} style={itemSelected ? itemSelectedStyle: itemStyle}>
               <img onClick={ () => that.selectBackground(index*numCols+i)}
-                style={itemSelected ? itemSelectedStyle: itemStyle} alt={pic.name} src={pic.image.src}/>
+                 alt={pic.name} src={pic.image.src} style={imageStyle}/>
             </div>
           )
         })

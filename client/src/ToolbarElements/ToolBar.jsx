@@ -88,7 +88,7 @@ export default class Toolbar extends Component {
     let {selectItemList, toggleFreeze, updateFontSize, updateFontColor,
        updateBrightness, updateState, deleteItemList, newItemList, duplicateList, updateUserSetting, updateBoxPosition,
         updateCurrent, undo, redo, updateSkipTitle, updateNextOnFinish, firebaseUpdateOverlay,
-        firebaseUpdateOverlayPresets, updateImageList } = this.props.parent; //updateItemStructure
+        firebaseUpdateOverlayPresets, updateImageList, updateKeepRatio } = this.props.parent; //updateItemStructure
     let {selectedItemList, itemLists, wordIndex, freeze, item, user, isLoggedIn,
       allItemLists, needsUpdate, userSettings, backgrounds, mode,
       undoReady, redoReady, boxIndex, overlayInfo, overlayQueue, overlayPresets} = this.props.parent.state;
@@ -227,7 +227,7 @@ export default class Toolbar extends Component {
             {mode === 'edit' && <div className='toolbarSection'>
                <FormatEditor item={item} updateFontSize={updateFontSize} updateFontColor={updateFontColor}
                  wordIndex={wordIndex} updateBrightness={updateBrightness} updateSkipTitle={updateSkipTitle}
-                 boxIndex={boxIndex} updateNextOnFinish={updateNextOnFinish}/>
+                 boxIndex={boxIndex} updateNextOnFinish={updateNextOnFinish} updateKeepRatio={updateKeepRatio} />
              </div>}
           </li>
           <li style={{width: '20vw'}}>

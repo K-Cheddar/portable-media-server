@@ -128,6 +128,29 @@ export function updateBrightness(props){
 
 }
 
+export function updateKeepRatio(props){
+	let {item, wordIndex, needsUpdate} = props.parent.state;
+	let {updateState, updateHistory} = props.parent;
+	let { val } = props;
+	let slides;
+	if (item.type === 'song')
+		slides = item.arrangements[item.selectedArrangement].slides || null;
+	else
+		slides = item.slides || null;
+
+	let slide = slides ? slides[wordIndex] : null;
+
+	if(!slide)
+		return;
+
+	slide.boxes[0].keepRatio = val;
+
+	needsUpdate.updateItem = true;
+	updateHistory({type: 'update', item: item});
+	updateState({item: item,needsUpdate: needsUpdate});
+
+}
+
 export function updateBoxPosition(props){
 	let {item, wordIndex, boxIndex} = props.parent.state;
 	let {x, y, width, height, applyAll, match} = props.position;
