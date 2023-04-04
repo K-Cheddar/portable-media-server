@@ -151,7 +151,7 @@ export default class DisplayWindow extends React.Component{
             editor={editor} handleTextChange={this.props.handleTextChange} animate={animate}
             zIndex={zIndex} presentation={presentation} extraPadding={extraPadding}>
           </DisplayWords>
-          <DisplayBackground img={img} brightness={box.brightness} title={title} isVideo={isVideo}
+          <DisplayBackground img={img} brightness={box.brightness} keepRatio={box.keepRatio} title={title} isVideo={isVideo}
             asset={asset} animate={animate} zIndex={zIndex} position={box} presentation={presentation}>
           </DisplayBackground>
         </Rnd>
@@ -162,7 +162,7 @@ export default class DisplayWindow extends React.Component{
           editor={editor} handleTextChange={this.props.handleTextChange} animate={animate}
           zIndex={zIndex} presentation={presentation} extraPadding={extraPadding}>
         </DisplayWords>
-        <DisplayBackground img={img} brightness={box.brightness} title={title} isVideo={isVideo}
+        <DisplayBackground img={img} brightness={box.brightness} keepRatio={box.keepRatio} title={title} isVideo={isVideo}
           asset={asset} animate={animate} zIndex={zIndex} position={box} presentation={presentation}>
         </DisplayBackground>
       </div>}

@@ -26,9 +26,9 @@ export default class Display_Background extends Component {
     if(animate){
       if(this.props.img !== nextProps.img || this.props.brightness !== nextProps.brightness ||
       JSON.stringify(this.props.position) !== JSON.stringify(nextProps.position)){
-        let {img, brightness, position} = nextProps;
+        let {img, brightness, position, keepRatio} = nextProps;
         this.setState({
-          prevBackgroundStyle: this.computeBackgroundStyle(img, brightness, position),
+          prevBackgroundStyle: this.computeBackgroundStyle(img, brightness, position, keepRatio),
           backgroundUpdaterIndex: 0})
       }
     }
@@ -58,30 +58,36 @@ export default class Display_Background extends Component {
     }
   }
 
-  computeBackgroundStyle = (img, brightness, position) => {
+  computeBackgroundStyle = (img, brightness, position, keepRatio) => {
 
     let level = "100%";
     if(brightness)
       level = brightness+"%"
 
-    let backgroundStyle= { position:'absolute', backgroundSize: '100% 100%',
+    let backgroundStyle= { position:'absolute',
+      backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
       filter: `brightness(${level})`, width: '100%', height: '100%',
       maxHeight:'80vw', zIndex: this.props.zIndex}
     if(position && position.transparent)
       backgroundStyle.background = 'transparent';
     else
       backgroundStyle.backgroundImage = 'url('+img+')'
+    if (keepRatio) {
+      backgroundStyle.backgroundSize = 'auto 100%'
+    } else {
+      backgroundStyle.backgroundSize = '100% 100%'
+    }
 
     return backgroundStyle;
 
   }
 
   render(){
-    let {img, brightness, position, isVideo, asset, animate} = this.props;
+    let {img, brightness, position, isVideo, asset, animate, keepRatio} = this.props;
     let {backgroundUpdaterIndex, prevBackgroundStyle} = this.state;
 
-    let backgroundStyle = this.computeBackgroundStyle(img, brightness, position);
-    let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'}
+    let backgroundStyle = this.computeBackgroundStyle(img, brightness, position, keepRatio);
+    let videoStyle = {width:'100%', height:'100%', position:'absolute', zIndex:'-1'} 
 
     return(
       <div>
