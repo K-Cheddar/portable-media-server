@@ -816,6 +816,10 @@ class App extends Component {
     ItemUpdate.updateSkipTitle({ val: val, parent: this });
   };
 
+  updateKeepRatio = val => {
+    Formatter.updateKeepRatio({ val: val, parent: this });
+  }
+
   updateNextOnFinish = val => {
     ItemUpdate.updateNextOnFinish({ val: val, parent: this });
   };
