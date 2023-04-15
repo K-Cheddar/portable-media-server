@@ -322,7 +322,7 @@ class FormatEditor extends React.Component {
               <div>Next On Finish</div>
             </div>
           )}
-          {item && item.slides && 
+          {item && item.slides && item.slides[wordIndex] && item.slides[wordIndex].boxes && item.slides[wordIndex].boxes[0] &&
             <div
               onClick={this.updateKeepRatio}
               className="imgButton"
